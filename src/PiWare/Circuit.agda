@@ -14,7 +14,7 @@ data ℂ (α : Set) : Wires → Wires → Set where
     _⟫_  : ∀ {i m o} → ℂ α i m → ℂ α m o → ℂ α i o
     _||_ : ∀ {i₁ o₁ i₂ o₂} → ℂ α i₁ o₁ → ℂ α i₂ o₂ → ℂ α (i₁ ⊞ i₂) (o₁ ⊞ o₂)
 
-infixr 5 _||_
+infixl 5 _||_
 infixl 4 _⟫_
 
 
