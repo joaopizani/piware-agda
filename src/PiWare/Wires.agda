@@ -9,7 +9,7 @@ open import Data.Sum using (_⊎_)
 -- Elements of this type describe the *structure* of circuit IO ports
 data Wires : Set where
     ↿    : Wires
-    _⊠_ : Wires → ℕ     → Wires
+    _⊠_ : Wires → ℕ     → Wires  -- a vector of 'n+1' wires
     _⊞_ : Wires → Wires → Wires
 
 infixl 9 _⊠_

@@ -18,4 +18,5 @@ infixr 5 _||_
 infixl 4 _⟫_
 
 
--- "Smart constructors"
+-- "Smart constructors", specific instances of serial and (specially) parallel
+-- composition to avoid having to pass arguments which should be implicit
