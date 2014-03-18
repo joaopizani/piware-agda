@@ -6,8 +6,8 @@ open import Data.Bool using (Bool; not; _∧_; _∨_)
 open import Data.Vec using (Vec; [_]; splitAt; _++_; map; lookup; _>>=_)
                      renaming (_∷_ to _◁_; [] to ε)
 open import Data.Unit using (tt)
-open import Data.Fin using (Fin)
-                     renaming (zero to Fz; suc to Fs; raise to raiseLeft)
+open import Data.Fin using (Fin; raise; inject+)
+                     renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 
 open import PiWare.Wires
@@ -19,15 +19,15 @@ import Data.Nat.Properties as NatProps
 private
     module CSℕ = Algebra.CommutativeSemiring NatProps.commutativeSemiring
 
-raiseRight : ∀ {m} n → Fin m → Fin (m + n)
-raiseRight {m} n i rewrite CSℕ.+-comm m n = raiseLeft {m} n i
+--raiseRight : ∀ {m} n → Fin m → Fin (m + n)
+--raiseRight {m} n i rewrite CSℕ.+-comm m n = raiseLeft {m} n i
 ---
 
 wireToIdx : ∀ {w} → ⟬ w ⟭ → Fin (# w)
 wireToIdx {↿}     tt        = Fz
-wireToIdx {w ⊠ n} (i , w′)  = raiseRight (n * # w) (wireToIdx w′)
-wireToIdx {w ⊞ v} (inj₁ w′) = raiseRight (# v) (wireToIdx w′)
-wireToIdx {w ⊞ v} (inj₂ v′) = raiseLeft (# w) (wireToIdx v′)
+wireToIdx {w ⊠ n}   = inject+ (n * # w) (wireToIdx w′) --raise (n * # w) (wireToIdx w′)
+wireToIdx {w ⊞ v} (inj₁ w′) = inject+ (# v) (wireToIdx w′) -- inject (# v) (wireToIdx w′)
+wireToIdx {w ⊞ v} (inj₂ v′) = raise (# w) (wireToIdx v′)
 
 allFins : ∀ {n} → Vec (Fin n) n
 allFins {zero}  = ε
@@ -46,3 +46,4 @@ allWires {w ⊞ v} = map inj₁ allWires ++ map inj₂ allWires
 ⟦ c ⟫ d  ⟧        w           = ⟦ d ⟧ (⟦ c ⟧ w)
 ⟦ _||_ {i₁} c d ⟧ w with splitAt (# i₁) w
 ⟦ _||_ {i₁} c d ⟧ w | w₁ , (w₂ , _) = ⟦ c ⟧ w₁ ++ ⟦ d ⟧ w₂
+
