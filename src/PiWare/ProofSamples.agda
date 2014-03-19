@@ -4,8 +4,8 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Data.Bool using (Bool; true; false; _∧_; _∨_; not; _xor_)
 open import Data.Vec using (Vec; [_]) renaming (_∷_ to _◁_; [] to ε)
 
-open import PiWare.Simulation
 open import PiWare.Samples
+open import PiWare.Simulation.Boolean
 
 
 nand : Bool → Bool → Bool

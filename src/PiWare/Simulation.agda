@@ -38,10 +38,3 @@ allWires {w ⊞ v} = map inj₁ allWires ++ map inj₂ allWires
 ⟦ c ⟫ d  ⟧[ a ] w           = ⟦ d ⟧[ a ] (⟦ c ⟧[ a ] w)
 ⟦ _||_ {i₁} c d ⟧[ a ] w with splitAt (# i₁) w
 ⟦ _||_ {i₁} c d ⟧[ a ] w | w₁ , (w₂ , _) = ⟦ c ⟧[ a ] w₁ ++ ⟦ d ⟧[ a ] w₂
-
-
-boolAlgebra : Algℂ Bool
-boolAlgebra = algℂ[ not , _∧_ , _∨_ ]
-
-⟦_⟧b : ∀ {i o} → ℂ Bool i o → (Vec Bool (# i) → Vec Bool (# o))
-⟦ c ⟧b = ⟦ c ⟧[ boolAlgebra ]
