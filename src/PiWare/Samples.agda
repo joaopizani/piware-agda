@@ -22,5 +22,9 @@ sampleXor =
 
 sampleHalfAdder : ℂ Bool (↿ ⊞ ↿) (↿ ⊞ ↿)
 sampleHalfAdder =
-    fork2 ⟫    sampleXor
-            || And
+    fork2 ⟫    And
+            || sampleXor
+
+sampleFullAdder : ℂ Bool ((↿ ⊞ ↿) ⊞ ↿) (↿ ⊞ ↿)
+sampleFullAdder = (hadd || pid) ⟫ pALR ⟫ (pid || hadd) ⟫ pARL ⟫ (Or || pid)
+    where hadd = sampleHalfAdder

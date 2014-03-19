@@ -13,20 +13,11 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import PiWare.Wires
 open import PiWare.Circuit
 
---- This should even maybe be in the library...
-import Algebra
-import Data.Nat.Properties as NatProps
-private
-    module CSℕ = Algebra.CommutativeSemiring NatProps.commutativeSemiring
-
---raiseRight : ∀ {m} n → Fin m → Fin (m + n)
---raiseRight {m} n i rewrite CSℕ.+-comm m n = raiseLeft {m} n i
----
 
 wireToIdx : ∀ {w} → ⟬ w ⟭ → Fin (# w)
 wireToIdx {↿}     tt        = Fz
-wireToIdx {w ⊠ n}   = inject+ (n * # w) (wireToIdx w′) --raise (n * # w) (wireToIdx w′)
-wireToIdx {w ⊞ v} (inj₁ w′) = inject+ (# v) (wireToIdx w′) -- inject (# v) (wireToIdx w′)
+wireToIdx {w ⊠ n} (i , w′)  = inject+ (n * # w) (wireToIdx w′)
+wireToIdx {w ⊞ v} (inj₁ w′) = inject+ (# v) (wireToIdx w′)
 wireToIdx {w ⊞ v} (inj₂ v′) = raise (# w) (wireToIdx v′)
 
 allFins : ∀ {n} → Vec (Fin n) n
@@ -38,12 +29,19 @@ allWires {↿}      = [ tt ]
 allWires {w ⊠ n} = allFins {suc n}  >>=  λ i → map (λ w′ → (i , w′)) (allWires {w})
 allWires {w ⊞ v} = map inj₁ allWires ++ map inj₂ allWires
 
-⟦_⟧ : ∀ {i o} → ℂ Bool i o → (Vec Bool (# i) → Vec Bool (# o))
-⟦ Not    ⟧        (x ◁ ε)     = [ not x ]
-⟦ And    ⟧        (x ◁ y ◁ ε) = [ x ∧ y ]
-⟦ Or     ⟧        (x ◁ y ◁ ε) = [ x ∨ y ]
-⟦ Plug f ⟧        w           = map (λ o → lookup (wireToIdx (f o)) w) allWires
-⟦ c ⟫ d  ⟧        w           = ⟦ d ⟧ (⟦ c ⟧ w)
-⟦ _||_ {i₁} c d ⟧ w with splitAt (# i₁) w
-⟦ _||_ {i₁} c d ⟧ w | w₁ , (w₂ , _) = ⟦ c ⟧ w₁ ++ ⟦ d ⟧ w₂
 
+⟦_⟧[_] : ∀ {α i o} → ℂ α i o → Algℂ α → (Vec α (# i) → Vec α (# o))
+⟦ Not    ⟧[ a ] (x ◁ ε)     = [ (Algℂ.¬ a) x ]
+⟦ And    ⟧[ a ] (x ◁ y ◁ ε) = [ (Algℂ.∧ a) x y ]
+⟦ Or     ⟧[ a ] (x ◁ y ◁ ε) = [ (Algℂ.∨ a) x y ]
+⟦ Plug f ⟧[ a ] w           = map (λ o → lookup (wireToIdx (f o)) w) allWires
+⟦ c ⟫ d  ⟧[ a ] w           = ⟦ d ⟧[ a ] (⟦ c ⟧[ a ] w)
+⟦ _||_ {i₁} c d ⟧[ a ] w with splitAt (# i₁) w
+⟦ _||_ {i₁} c d ⟧[ a ] w | w₁ , (w₂ , _) = ⟦ c ⟧[ a ] w₁ ++ ⟦ d ⟧[ a ] w₂
+
+
+boolAlgebra : Algℂ Bool
+boolAlgebra = algℂ[ not , _∧_ , _∨_ ]
+
+⟦_⟧b : ∀ {i o} → ℂ Bool i o → (Vec Bool (# i) → Vec Bool (# o))
+⟦ c ⟧b = ⟦ c ⟧[ boolAlgebra ]
