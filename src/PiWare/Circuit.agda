@@ -2,7 +2,8 @@ module PiWare.Circuit where
 
 open import Function using (id)
 open import Data.Sum using (inj₁; inj₂)
-open import PiWare.Wires
+
+open import PiWare.Wires using (Wires; ↿; _⊞_; ⟬_⟭)
 
 
 -- Core Circuit type
@@ -19,7 +20,7 @@ data ℂ (α : Set) : Wires → Wires → Set where
 infixl 5 _||_
 infixl 4 _⟫_
 
--- "Algebra" for evaluation of a circuit, closely related to the ℂ datatype itself.
+-- "Algebra" for evaluating a circuit, closely related to the ℂ type itself.
 -- Each field of the algebra corresponds to a "fundamental" constructor of ℂ
 record Algℂ (α : Set) : Set where
    constructor algℂ[_,_,_]

@@ -1,9 +1,10 @@
 module PiWare.Samples where
 
 open import Data.Bool using (Bool)
-open import PiWare.Wires
-open import PiWare.Circuit
-open import PiWare.Plugs
+
+open import PiWare.Wires using (↿; _⊞_)
+open import PiWare.Circuit using (ℂ; Not; And; Or; _⟫_; _||_)
+open import PiWare.Plugs using (pid; fork2; pALR; pARL)
 
 
 sampleNotNotNot : ℂ Bool ↿ ↿
