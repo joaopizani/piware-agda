@@ -38,6 +38,12 @@ pARL = Plug pARL′
           pARL′ (inj₁ (inj₂ lr)) = inj₂ (inj₁ lr)
           pARL′ (inj₂ r)         = inj₂ (inj₂ r)
 
+pSwap : ∀ {α w v} → ℂ α (w ⊞ v) (v ⊞ w)
+pSwap = Plug pSwap'
+    where pSwap' : ∀ {w v} → ⟬ v ⊞ w ⟭ → ⟬ w ⊞ v ⟭
+          pSwap' (inj₁ x) = inj₂ x
+          pSwap' (inj₂ x) = inj₁ x
+
 pIntertwine : ∀ {α a b c d} → ℂ α ((a ⊞ b) ⊞ (c ⊞ d)) ((a ⊞ c) ⊞ (b ⊞ d))
 pIntertwine = Plug pIntertwine'
     where pIntertwine' : ∀ {a b c d} → ⟬ (a ⊞ c) ⊞ (b ⊞ d) ⟭ → ⟬ (a ⊞ b) ⊞ (c ⊞ d) ⟭
@@ -70,7 +76,7 @@ pCons = Plug pCons'
           pCons' (Fs i , w') = inj₂ (i , w')
 
 pSingletonOut : ∀ {α w} → ℂ α (w ⊠ 0) w
-pSingletonOut {α} {w} = pHead {α} {w} {0}
+pSingletonOut {α} {w} = pHead {α}
 
 pSingletonIn : ∀ {α w} → ℂ α w (w ⊠ 0)
 pSingletonIn = Plug pSingletonIn'

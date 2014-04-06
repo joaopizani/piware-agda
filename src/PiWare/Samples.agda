@@ -7,7 +7,7 @@ open import PiWare.Wires using (↿; _⊞_; _⊠_)
 open import PiWare.Circuit using (ℂ; Not; And; Or; _⟫_; _||_)
 open import PiWare.Plugs
     using ( pid; fork2; pALR; pARL; pHead; pSingletonOut
-          ; pSingletonIn; pCons; pUncons; pIntertwine )
+          ; pSingletonIn; pCons; pUncons; pIntertwine; pSwap )
 
 
 sampleNotNotNot : ℂ Bool ↿ ↿
@@ -38,17 +38,18 @@ sampleFullAdder =
     ⟫ Or   || pid
     where hadd = sampleHalfAdder
 
-sampleRipple : (n : ℕ) → ℂ Bool ((↿ ⊠ n) ⊞ (↿ ⊠ n) ⊞ ↿) ((↿ ⊠ n) ⊞ ↿)
-sampleRipple zero = {!!}
-sampleRipple (suc m) = {!
-
+sampleRipple : (n : ℕ) → ℂ Bool (↿ ⊞ ((↿ ⊠ n) ⊞ (↿ ⊠ n))) ((↿ ⊠ n) ⊞ ↿)
+sampleRipple zero = 
+                    pSwap
+    ⟫ (pSingletonOut || pSingletonOut) || pid
+    ⟫           sampleFullAdder
+    ⟫   pSingletonIn || pid
+sampleRipple (suc m) = 
       pid || ((pUncons || pUncons) ⟫ pIntertwine)
     ⟫                addBlock
     ⟫              pCons || pid
-
-!}
-
     where
-        addBlock : ∀ {α} → ℂ α (↿  ⊞  ( (↿ ⊞ ↿) ⊞ (↿ ⊠ m ⊞ ↿ ⊠ m) ))
-                      ((↿ ⊞ ↿ ⊠ m) ⊞ ↿)
+        addBlock : ℂ Bool
+                   (↿ ⊞ ((↿ ⊞ ↿) ⊞ (↿ ⊠ m ⊞ ↿ ⊠ m)))
+                   ((↿ ⊞ ↿ ⊠ m) ⊞ ↿)
         addBlock = {!!}
