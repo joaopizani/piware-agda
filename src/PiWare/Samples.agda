@@ -1,44 +1,41 @@
 module PiWare.Samples where
 
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Bool using (Bool)
 
-open import PiWare.Wires using (↿; _⊞_; _⊠_)
-open import PiWare.Circuit using (ℂ; Not; And; Or; _⟫_; _||_)
+open import PiWare.Circuit using (ℂ; Not; And; Or; _⟫_; _||_; _><_)
 open import PiWare.Plugs
-    using ( pid; fork2; pALR; pARL; pHead; pSingletonOut
-          ; pSingletonIn; pCons; pUncons; pIntertwine; pSwap )
+    using (pid; fork2; pALR; pARL; pHead; pCons; pUncons; pIntertwine)
 
 
-sampleNotNotNot : ℂ Bool ↿ ↿
+sampleNotNotNot : ℂ Bool 1 1
 sampleNotNotNot = Not ⟫ Not ⟫ Not
 
-sampleNand : ℂ Bool (↿ ⊞ ↿) ↿
+sampleNand : ℂ Bool 2 1
 sampleNand = And ⟫ Not
 
-sample1And2Or3And4 : ℂ Bool ((↿ ⊞ ↿) ⊞ (↿ ⊞ ↿)) ↿
+sample1And2Or3And4 : ℂ Bool 4 1
 sample1And2Or3And4 = And || And ⟫ Or
 
-sampleXor : ℂ Bool (↿ ⊞ ↿) ↿
+sampleXor : ℂ Bool 2 1
 sampleXor =
-    fork2 ⟫    (Not || pid  ⟫ And)
-            || (pid || Not  ⟫ And)  ⟫ Or
+    fork2 ⟫    (Not >< pid  ⟫ And)
+            || (pid >< Not  ⟫ And)  ⟫ Or
 
-sampleHalfAdder : ℂ Bool (↿ ⊞ ↿) (↿ ⊞ ↿)
+sampleHalfAdder : ℂ Bool 2 2
 sampleHalfAdder =
     fork2 ⟫    And
             || sampleXor
 
-sampleFullAdder : ℂ Bool ((↿ ⊞ ↿) ⊞ ↿) (↿ ⊞ ↿)
+sampleFullAdder : ℂ Bool 3 2
 sampleFullAdder =
-      hadd || pid
-    ⟫     pALR
-    ⟫ pid  || hadd
-    ⟫     pARL
-    ⟫ Or   || pid
+      hadd           || pid
+    ⟫ pid {Bool} {1} || hadd
+    ⟫ Or             || pid
     where hadd = sampleHalfAdder
 
-sampleRipple : (n : ℕ) → ℂ Bool (↿ ⊞ ((↿ ⊠ n) ⊞ (↿ ⊠ n))) ((↿ ⊠ n) ⊞ ↿)
+{-
+sampleRipple : (n : ℕ) → ℂ Bool (1 + (n + n)) (1 + n)
 sampleRipple zero = 
                     pSwap
     ⟫ (pSingletonOut || pSingletonOut) || pid
@@ -49,7 +46,6 @@ sampleRipple (suc m) =
     ⟫                addBlock
     ⟫              pCons || pid
     where
-        addBlock : ℂ Bool
-                   (↿ ⊞ ((↿ ⊞ ↿) ⊞ (↿ ⊠ m ⊞ ↿ ⊠ m)))
-                   ((↿ ⊞ ↿ ⊠ m) ⊞ ↿)
+        addBlock : ℂ Bool  (1 + (2 + (m + m)))  (1 + (1 + m))
         addBlock = {!!}
+-}

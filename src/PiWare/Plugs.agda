@@ -43,6 +43,7 @@ pComm {_} {w} {v} = Plug pComm'
     where pComm' : Fin (v + w) → Fin (w + v)
           pComm' x rewrite CS.+-comm w v = x
 
+-- Is not actually intertwining. Size-only indices don't make the type completely specify a plug.
 pIntertwine : {α : Set} {a b c d : ℕ} → ℂ α ((a + b) + (c + d)) ((a + c) + (b + d))
 pIntertwine {_} {a} {b} {c} {d} = Plug pIntertwine'
     where pIntertwine' : Fin ((a + c) + (b + d)) → Fin ((a + b) + (c + d))
