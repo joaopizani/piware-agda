@@ -1,14 +1,12 @@
 module PiWare.Plugs where
 
-open import Function using (id)
-open import Data.Sum using (inj₁; inj₂)
-open import Data.Product using (_,_)
-open import Data.Unit using (tt)
-open import Data.Nat using (suc)
-open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
+open import Function using (id; _$_)
+open import Data.Nat using (ℕ; _+_; suc; zero; _*_)
+open import Data.Nat.DivMod using (DivMod; _divMod_)
+open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
+open import Relation.Binary.PropositionalEquality using (sym)
 
-open import PiWare.Wires
-open import PiWare.Circuit
+open import PiWare.Circuit 
 
 
 -- identity
@@ -16,70 +14,62 @@ pid : ∀ {α w} → ℂ α w w
 pid = Plug id
 
 -- forking
-fork2 : ∀ {α w} → ℂ α w (w ⊞ w)
+fork2 : {α : Set} {w : ℕ} → ℂ α w (w + w)
 fork2 = Plug fork2′
-    where fork2′ : ∀ {w} → ⟬ w ⊞ w ⟭ → ⟬ w ⟭
-          fork2′ (inj₁ x) = x
-          fork2′ (inj₂ y) = y
+    where fork2′ : {w : ℕ} → Fin (w + w) → Fin w
+          fork2′ {zero}   ()
+          fork2′ {suc w'} x = DivMod.remainder $ (toℕ x) divMod (suc w')
 
 
--- associativity plugs
-pALR : ∀ {α w v y} → ℂ α ((w ⊞ v) ⊞ y) (w ⊞ (v ⊞ y))
-pALR = Plug pALR′
-    where pALR′ : ∀ {w v y} → ⟬ w ⊞ (v ⊞ y) ⟭ → ⟬ (w ⊞ v) ⊞ y ⟭
-          pALR′ (inj₁ l)         = inj₁ (inj₁ l)
-          pALR′ (inj₂ (inj₁ rl)) = inj₁ (inj₂ rl)
-          pALR′ (inj₂ (inj₂ rr)) = inj₂ rr
+open import Algebra
+import Data.Nat.Properties as Nat
+private
+    module CS = CommutativeSemiring Nat.commutativeSemiring
 
-pARL : ∀ {α w v y} → ℂ α (w ⊞ (v ⊞ y)) ((w ⊞ v) ⊞ y)
-pARL = Plug pARL′
-    where pARL′ : ∀ {w v y} → ⟬ (w ⊞ v) ⊞ y ⟭ → ⟬ w ⊞ (v ⊞ y) ⟭
-          pARL′ (inj₁ (inj₁ ll)) = inj₁ ll
-          pARL′ (inj₁ (inj₂ lr)) = inj₂ (inj₁ lr)
-          pARL′ (inj₂ r)         = inj₂ (inj₂ r)
+-- associativity and commutativity plugs
+pALR : {α : Set} {w v y : ℕ} → ℂ α ((w + v) + y) (w + (v + y))
+pALR {_} {w} {v} {y} = Plug pALR′
+    where pALR′ : Fin (w + (v + y)) → Fin ((w + v) + y)
+          pALR′ x rewrite CS.+-assoc w v y = x
 
-pSwap : ∀ {α w v} → ℂ α (w ⊞ v) (v ⊞ w)
-pSwap = Plug pSwap'
-    where pSwap' : ∀ {w v} → ⟬ v ⊞ w ⟭ → ⟬ w ⊞ v ⟭
-          pSwap' (inj₁ x) = inj₂ x
-          pSwap' (inj₂ x) = inj₁ x
+pARL : {α : Set} {w v y : ℕ} → ℂ α (w + (v + y)) ((w + v) + y)
+pARL {_} {w} {v} {y} = Plug pARL′
+    where pARL′ : Fin ((w + v) + y) → Fin (w + (v + y))
+          pARL′ x rewrite CS.+-assoc w v y = x
 
-pIntertwine : ∀ {α a b c d} → ℂ α ((a ⊞ b) ⊞ (c ⊞ d)) ((a ⊞ c) ⊞ (b ⊞ d))
-pIntertwine = Plug pIntertwine'
-    where pIntertwine' : ∀ {a b c d} → ⟬ (a ⊞ c) ⊞ (b ⊞ d) ⟭ → ⟬ (a ⊞ b) ⊞ (c ⊞ d) ⟭
-          pIntertwine' (inj₁ (inj₁ x)) = inj₁ (inj₁ x)
-          pIntertwine' (inj₁ (inj₂ x)) = inj₂ (inj₁ x)
-          pIntertwine' (inj₂ (inj₁ x)) = inj₁ (inj₂ x)
-          pIntertwine' (inj₂ (inj₂ x)) = inj₂ (inj₂ x)
+
+pComm : {α : Set} {w v : ℕ} → ℂ α (w + v) (v + w)
+pComm {_} {w} {v} = Plug pComm'
+    where pComm' : Fin (v + w) → Fin (w + v)
+          pComm' x rewrite CS.+-comm w v = x
+
+pIntertwine : {α : Set} {a b c d : ℕ} → ℂ α ((a + b) + (c + d)) ((a + c) + (b + d))
+pIntertwine {_} {a} {b} {c} {d} = Plug pIntertwine'
+    where pIntertwine' : Fin ((a + c) + (b + d)) → Fin ((a + b) + (c + d))
+          pIntertwine' x rewrite sym (CS.+-assoc (a + b) c d)
+                               | CS.+-assoc a b c
+                               | CS.+-comm b c
+                               | sym (CS.+-assoc a c b)
+                               | CS.+-assoc (a + c) b d = x
 
 -- vector plugs
-pHead : ∀ {α w n} → ℂ α (w ⊠ n) w
+pHead : {α : Set} {n : ℕ} → ℂ α (suc n) 1
 pHead = Plug pHead'
-    where pHead' : ∀ {w n} → ⟬ w ⟭ → ⟬ w ⊠ n ⟭
-          pHead' w' = Fz , w'
+    where pHead' : {n : ℕ} → Fin 1 → Fin (suc n)
+          pHead' Fz = Fz
+          pHead' (Fs ())
 
-pTail : ∀ {α w n} → ℂ α (w ⊠ suc n) (w ⊠ n)
+pTail : {α : Set} {n : ℕ} → ℂ α (suc n) n
 pTail = Plug pTail'
-    where pTail' : ∀ {w n} → ⟬ w ⊠ n ⟭ → ⟬ w ⊠ suc n ⟭
-          pTail' (i , w') = Fs i , w'
+    where pTail' : {n : ℕ} → Fin n → Fin (suc n)
+          pTail' x = Fs x
 
-pUncons : ∀ {α w n} → ℂ α (w ⊠ suc n) (w ⊞  w ⊠ n)
-pUncons = Plug pUncons'
-    where pUncons' : ∀ {w n} → ⟬ w ⊞  w ⊠ n ⟭ → ⟬ w ⊠ suc n ⟭
-          pUncons' (inj₁ w')       = Fz , w'
-          pUncons' (inj₂ (i , v')) = Fs i , v'
+pUncons : {α : Set} {w n : ℕ} → ℂ α (suc n * w) (w + n * w)
+pUncons {_} {w} {n} = Plug pUncons'
+    where pUncons' : Fin (w + n * w) → Fin (suc n * w)
+          pUncons' x = x
 
-pCons : ∀ {α w n} → ℂ α (w ⊞  w ⊠ n) (w ⊠ suc n)
-pCons = Plug pCons'
-    where pCons' : ∀ {w n} → ⟬ w ⊠ suc n ⟭ → ⟬ w ⊞  w ⊠ n ⟭
-          pCons' (Fz , w')   = inj₁ w'
-          pCons' (Fs i , w') = inj₂ (i , w')
-
-pSingletonOut : ∀ {α w} → ℂ α (w ⊠ 0) w
-pSingletonOut {α} {w} = pHead {α}
-
-pSingletonIn : ∀ {α w} → ℂ α w (w ⊠ 0)
-pSingletonIn = Plug pSingletonIn'
-    where pSingletonIn' : ∀ {w} → ⟬ w ⊠ 0 ⟭ → ⟬ w ⟭
-          pSingletonIn' (Fz    , w') = w'
-          pSingletonIn' (Fs () , w')
+pCons : ∀ {α w n} → ℂ α (w + n * w) (suc n * w)
+pCons {_} {w} {n} = Plug pCons'
+    where pCons' : Fin (suc n * w) → Fin (w + n * w)
+          pCons' x = x
