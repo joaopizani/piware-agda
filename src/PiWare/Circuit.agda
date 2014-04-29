@@ -32,82 +32,89 @@ record Algℂ (α : Set) : Set where
 
 
 -- Provides a mapping between "high-level" metalanguage types and vectors of bits
-record Synthesizable (α : Set) : Set where
-    constructor Synth[_,_]
-    field
-        # : ℕ  -- size
-        ⇓ : α → Vec Bool #  -- mapping to bit vectors
+record Synth (α : Set) {#α : ℕ} : Set where
+    constructor Synth[_]
+    field ⇓ : α → Vec Bool #α  -- mapping to bit vectors
 
-open Synthesizable {{...}}
+open Synth {{...}}
 
--- TODO: Wouldn't it be better to make this into a datatype?
-Circuit : (i o : Set) ⦃ _ : Synthesizable i ⦄ ⦃ _ : Synthesizable o ⦄ → Set
-Circuit i o ⦃ si ⦄ ⦃ so ⦄ = ℂ Bool (# ⦃ si ⦄) (# ⦃ so ⦄)
 
-synthBool : Synthesizable Bool
-synthBool = Synth[ 1 , toVec ]
-    where toVec : Bool → Vec Bool 1
+data Circ (i o : Set) {#i #o : ℕ} : Set where
+  MkCirc : ⦃ si : Synth i {#i} ⦄ ⦃ so : Synth o {#o} ⦄ → ℂ Bool #i #o → Circ i o {#i} {#o}
+
+synthBool : Synth Bool
+synthBool = Synth[ toVec ]
+    where toVec : Bool → Vec Bool _
           toVec b = [ b ]
 
-synthPair : {α β : Set} ⦃ _ : Synthesizable α ⦄ ⦃ _ : Synthesizable β ⦄ → Synthesizable (α × β)
-synthPair {α} {β} ⦃ sα ⦄ ⦃ sβ ⦄ = Synth[ pairSize , toVec ]
-    where pairSize : ℕ
-          pairSize = (# ⦃ sα ⦄) + (# ⦃ sβ ⦄)
-
-          toVec : (α × β) → Vec Bool pairSize
+synthPair : {α β : Set} {#α #β : ℕ} ⦃ _ : Synth α {#α} ⦄ ⦃ _ : Synth β {#β} ⦄
+            → Synth (α × β) {#α + #β}
+synthPair {α} {β} = Synth[ toVec ]
+    where toVec : (α × β) → Vec Bool _
           toVec (a , b) = (⇓ a) ++ (⇓ b)
 
-synthVec : {α : Set} {n : ℕ} ⦃ _ : Synthesizable α ⦄ → Synthesizable (Vec α n)
-synthVec {α} {n} ⦃ sα ⦄ = Synth[ vecSize , toVec ]
-    where vecSize : ℕ
-          vecSize = n * (# ⦃ sα ⦄)
-
-          toVec : Vec α n → Vec Bool vecSize
+synthVec : {α : Set} {#α n : ℕ} ⦃ _ : Synth α {#α} ⦄
+           → Synth (Vec α n) {n * #α}
+synthVec {α} {_} {n} = Synth[ toVec ]
+    where toVec : Vec α n → Vec Bool _
           toVec v = v >>= ⇓
 
-synthBoolPair : Synthesizable (Bool × Bool)
+-- TODO: why doesn't this work in a where binding (or let)?
+synthBoolPair : Synth (Bool × Bool)
 synthBoolPair = synthPair
+
+synthBoolVec : ∀ {n} → Synth (Vec Bool n)
+synthBoolVec = synthVec
+
+synthBoolVec2 : Synth (Vec Bool 2)
+synthBoolVec2 = synthBoolVec
 
 
 
 -- "Smart constructors"
+¬ : Circ Bool Bool
+¬ = MkCirc Not
 
-¬ : Circuit Bool Bool
-¬ = Not
+∧ : Circ (Bool × Bool) Bool
+∧ = MkCirc And
 
-∧ : Circuit (Bool × Bool) Bool
-∧ = And
+∨ : Circ (Bool × Bool) Bool
+∨ = MkCirc Or
 
-∨ : Circuit (Bool × Bool) Bool
-∨ = Or
+_>>_ : {α β γ : Set} {#α #β #γ : ℕ} ⦃ sα : Synth α {#α} ⦄ ⦃ sβ : Synth β {#β} ⦄ ⦃ sγ : Synth γ {#γ} ⦄
+       → Circ α β {#α} {#β} → Circ β γ {#β} {#γ} → Circ α γ {#α} {#γ}
+_>>_ ⦃ sα = sα ⦄ ⦃ sγ = sγ ⦄ (MkCirc c₁) (MkCirc c₂) = MkCirc ⦃ sα ⦄ ⦃ sγ ⦄ (c₁ ⟫ c₂)
 
-_>>_ : {α β γ : Set} ⦃ sα : Synthesizable α ⦄ ⦃ sβ : Synthesizable β ⦄ ⦃ sγ : Synthesizable γ ⦄
-       → Circuit α β → Circuit β γ → Circuit α γ
-_>>_ c₁ c₂ = c₁ ⟫ c₂
+testNotNot : Circ Bool Bool
+testNotNot = ¬ >> ¬
 
-_><_ : {i₁ o₁ i₂ o₂ : Set}
-       ⦃ si₁ : Synthesizable i₁ ⦄ ⦃ so₁ : Synthesizable o₁ ⦄ ⦃ si₂ : Synthesizable i₂ ⦄ ⦃ so₂ : Synthesizable o₂ ⦄
-       → Circuit i₁ o₁ → Circuit i₂ o₂
-       → Circuit (i₁ × i₂) (o₁ × o₂) ⦃ synthPair ⦃ si₁ ⦄ ⦃ si₂ ⦄ ⦄  ⦃ synthPair ⦃ so₁ ⦄ ⦃ so₂ ⦄ ⦄
-_><_ c₁ c₂ = c₁ || c₂
-
-⑂ : {α : Set} ⦃ sα : Synthesizable α ⦄  →  Circuit α (α × α) ⦃ sα ⦄ ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄
-⑂ {α} ⦃ sα ⦄ = Plug {Bool} {# ⦃ sα ⦄} {# ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄} ⑂'
-    where ⑂' : Fin (# ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄) → Fin (# ⦃ sα ⦄)
-          ⑂' x = {!!}
+_><_ : {i₁ o₁ i₂ o₂ : Set} {#i₁ #o₁ #i₂ #o₂ : ℕ}
+       ⦃ si₁ : Synth i₁ {#i₁} ⦄ ⦃ so₁ : Synth o₁ {#o₁} ⦄ ⦃ si₂ : Synth i₂ {#i₂} ⦄ ⦃ so₂ : Synth o₂ {#o₂} ⦄
+       → Circ i₁ o₁ {#i₁} {#o₁}
+       → Circ i₂ o₂ {#i₂} {#o₂}
+       → Circ (i₁ × i₂) (o₁ × o₂) {#i₁ + #i₂} {#o₁ + #o₂}
+_><_ ⦃ si₁ ⦄ ⦃ so₁ ⦄ ⦃ si₂ ⦄ ⦃ so₂ ⦄ (MkCirc c₁) (MkCirc c₂) =
+    MkCirc  ⦃ synthPair ⦃ si₁ ⦄ ⦃ si₂ ⦄ ⦄  ⦃ synthPair ⦃ so₁ ⦄ ⦃ so₂ ⦄ ⦄  (c₁ || c₂)
 
 
-{-
-⟦_⟧[_] : ∀ {α i o} → ℂ α i o → Algℂ α → (Vec α (# i) → Vec α (# o))
-⟦ Not    ⟧[ a ] (x ◁ ε)     = [ (Algℂ.¬ a) x ]
-⟦ And    ⟧[ a ] (x ◁ y ◁ ε) = [ (Algℂ.∧ a) x y ]
-⟦ Or     ⟧[ a ] (x ◁ y ◁ ε) = [ (Algℂ.∨ a) x y ]
-⟦ Plug f ⟧[ a ] w           = map (λ o → lookup (wireToIdx (f o)) w) allWires
-⟦ c ⟫ d  ⟧[ a ] w           = ⟦ d ⟧[ a ] (⟦ c ⟧[ a ] w)
-⟦ _||_ {i₁} c d ⟧[ a ] w with splitAt (# i₁) w
-⟦ _||_ {i₁} c d ⟧[ a ] w | w₁ , (w₂ , _) = ⟦ c ⟧[ a ] w₁ ++ ⟦ d ⟧[ a ] w₂
--}
+testAndTree : Circ ((Bool × Bool) × (Bool × Bool)) Bool
+testAndTree =
+    let
+        synthBoolPairPair : Synth ((Bool × Bool) × (Bool × Bool))
+        synthBoolPairPair = synthPair
+    in (∧ >< ∧) >> ∧
 
-eval : {α β : Set} ⦃ sα : Synthesizable α ⦄ ⦃ sβ : Synthesizable β ⦄
-       → Circuit α β → (Vec Bool (# ⦃ sα ⦄) → Vec Bool (# ⦃ sβ ⦄))
-eval c i = {!!}
+-- ⑂ : {α : Set} ⦃ sα : Synthesizable α ⦄  →  Circuit α (α × α) ⦃ sα ⦄ ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄
+-- ⑂ {α} ⦃ sα ⦄ = Plug {Bool} {# ⦃ sα ⦄} {# ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄} ⑂'
+--     where ⑂' : Fin (# ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄) → Fin (# ⦃ sα ⦄)
+--           ⑂' x = {!!}
+
+
+
+-- eval : {α β : Set} {n m : ℕ} → (s : Signal α β {n} {m}) → Vec Bool n → Vec Bool m
+-- eval (MkSig {{sα}} {{sβ}} Not) i = {!!}
+-- eval (MkSig {{sα}} {{sβ}} And) i = {!!}
+-- eval (MkSig {{sα}} {{sβ}} Or) i = {!!}
+-- eval (MkSig {{sα}} {{sβ}} (Plug f)) i₁ = {!!}
+-- eval (MkSig {{sα}} {{sβ}} (x ⟫ x₁)) i₁ = {!!}
+-- eval (MkSig {{sα}} {{sβ}} (x || x₁)) i = {!!}
