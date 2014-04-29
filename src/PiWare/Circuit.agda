@@ -1,10 +1,10 @@
 module PiWare.Circuit where
 
-open import Data.Nat using (ℕ; _+_)
+open import Data.Nat using (ℕ; _+_; _*_)
 open import Data.Fin using (Fin)
 open import Data.Bool using (Bool)
 open import Data.Product using (_×_; _,_)
-open import Data.Vec using (Vec; [_]; _++_)
+open import Data.Vec using (Vec; [_]; _++_; _>>=_)
 
 
 -- Core Circuit type
@@ -40,8 +40,9 @@ record Synthesizable (α : Set) : Set where
 
 open Synthesizable {{...}}
 
+-- TODO: Wouldn't it be better to make this into a datatype?
 Circuit : (i o : Set) ⦃ _ : Synthesizable i ⦄ ⦃ _ : Synthesizable o ⦄ → Set
-Circuit i o ⦃ si ⦄ ⦃ so ⦄ = ℂ Bool (# {i} ⦃ si ⦄) (# {o} ⦃ so ⦄)
+Circuit i o ⦃ si ⦄ ⦃ so ⦄ = ℂ Bool (# ⦃ si ⦄) (# ⦃ so ⦄)
 
 synthBool : Synthesizable Bool
 synthBool = Synth[ 1 , toVec ]
@@ -51,13 +52,21 @@ synthBool = Synth[ 1 , toVec ]
 synthPair : {α β : Set} ⦃ _ : Synthesizable α ⦄ ⦃ _ : Synthesizable β ⦄ → Synthesizable (α × β)
 synthPair {α} {β} ⦃ sα ⦄ ⦃ sβ ⦄ = Synth[ pairSize , toVec ]
     where pairSize : ℕ
-          pairSize = (# {α} ⦃ sα ⦄) + (# {β} ⦃ sβ ⦄)
+          pairSize = (# ⦃ sα ⦄) + (# ⦃ sβ ⦄)
 
           toVec : (α × β) → Vec Bool pairSize
           toVec (a , b) = (⇓ a) ++ (⇓ b)
 
+synthVec : {α : Set} {n : ℕ} ⦃ _ : Synthesizable α ⦄ → Synthesizable (Vec α n)
+synthVec {α} {n} ⦃ sα ⦄ = Synth[ vecSize , toVec ]
+    where vecSize : ℕ
+          vecSize = n * (# ⦃ sα ⦄)
+
+          toVec : Vec α n → Vec Bool vecSize
+          toVec v = v >>= ⇓
+
 synthBoolPair : Synthesizable (Bool × Bool)
-synthBoolPair = synthPair {Bool} {Bool}
+synthBoolPair = synthPair
 
 
 
@@ -86,3 +95,19 @@ _><_ c₁ c₂ = c₁ || c₂
 ⑂ {α} ⦃ sα ⦄ = Plug {Bool} {# ⦃ sα ⦄} {# ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄} ⑂'
     where ⑂' : Fin (# ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄) → Fin (# ⦃ sα ⦄)
           ⑂' x = {!!}
+
+
+{-
+⟦_⟧[_] : ∀ {α i o} → ℂ α i o → Algℂ α → (Vec α (# i) → Vec α (# o))
+⟦ Not    ⟧[ a ] (x ◁ ε)     = [ (Algℂ.¬ a) x ]
+⟦ And    ⟧[ a ] (x ◁ y ◁ ε) = [ (Algℂ.∧ a) x y ]
+⟦ Or     ⟧[ a ] (x ◁ y ◁ ε) = [ (Algℂ.∨ a) x y ]
+⟦ Plug f ⟧[ a ] w           = map (λ o → lookup (wireToIdx (f o)) w) allWires
+⟦ c ⟫ d  ⟧[ a ] w           = ⟦ d ⟧[ a ] (⟦ c ⟧[ a ] w)
+⟦ _||_ {i₁} c d ⟧[ a ] w with splitAt (# i₁) w
+⟦ _||_ {i₁} c d ⟧[ a ] w | w₁ , (w₂ , _) = ⟦ c ⟧[ a ] w₁ ++ ⟦ d ⟧[ a ] w₂
+-}
+
+eval : {α β : Set} ⦃ sα : Synthesizable α ⦄ ⦃ sβ : Synthesizable β ⦄
+       → Circuit α β → (Vec Bool (# ⦃ sα ⦄) → Vec Bool (# ⦃ sβ ⦄))
+eval c i = {!!}
