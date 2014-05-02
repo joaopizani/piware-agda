@@ -20,7 +20,7 @@ data Coreℂ (α : Set) : ℕ → ℕ → Set where
     _>>_ : {i m o : ℕ} → Coreℂ α i m → Coreℂ α m o → Coreℂ α i o
     _><_ : {i₁ o₁ i₂ o₂ : ℕ} → Coreℂ α i₁ o₁ → Coreℂ α i₂ o₂ → Coreℂ α (i₁ + i₂) (o₁ + o₂)
 
-infixl 5 _><_
+infixr 5 _><_
 infixl 4 _>>_
 
 -- "Algebra" for evaluating a circuit, closely related to the ℂ type itself.
@@ -32,59 +32,58 @@ record Algℂ (α : Set) : Set where
        ∧ : α → α → α
        ∨ : α → α → α
 
+-- Binary words
+𝕎 : ℕ → Set
+𝕎 n = Vec 𝔹 n
 
 -- Provides a mapping between "high-level" metalanguage types and vectors of bits
-record Synth (α : Set) {#α : ℕ} : Set where
-    constructor Synth[_,_]
+record ⇓𝕎⇑ (α : Set) {#α : ℕ} : Set where
+    constructor ⇓𝕎⇑[_,_]
     field
         ⇓ : α → Vec 𝔹 #α  -- to bit vectors
         ⇑ : Vec 𝔹 #α → α  -- from bit vectors
 
-open Synth {{...}}
+open ⇓𝕎⇑ {{...}}
 
-
-data ℂ (i o : Set) {#i #o : ℕ} : Set where
-  Mkℂ : ⦃ si : Synth i {#i} ⦄ ⦃ so : Synth o {#o} ⦄ → Coreℂ 𝔹 #i #o → ℂ i o {#i} {#o}
-
-synth𝔹 : Synth 𝔹
-synth𝔹 = Synth[ toVec , fromVec ]
-    where toVec : 𝔹 → Vec 𝔹 _
-          toVec b = [ b ]
+⇓𝕎⇑-𝔹 : ⇓𝕎⇑ 𝔹
+⇓𝕎⇑-𝔹 = ⇓𝕎⇑[ down , up ]
+    where down : 𝔹 → 𝕎 _
+          down b = [ b ]
           
-          fromVec : Vec 𝔹 _ → 𝔹
-          fromVec (bit ◁ ε) = bit
+          up : 𝕎 _ → 𝔹
+          up (bit ◁ ε) = bit
 
-synthPair : {α β : Set} {#α #β : ℕ} ⦃ _ : Synth α {#α} ⦄ ⦃ _ : Synth β {#β} ⦄
-            → Synth (α × β) {#α + #β}
-synthPair {α} {β} {#α} = Synth[ toVec , fromVec ]
-    where toVec : (α × β) → Vec 𝔹 _
-          toVec (a , b) = (⇓ a) ++ (⇓ b)
+⇓𝕎⇑-× : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α × β) {#α + #β}
+⇓𝕎⇑-× {α} {β} {#α} = ⇓𝕎⇑[ down , up ]
+    where down : (α × β) → Vec 𝔹 _
+          down (a , b) = (⇓ a) ++ (⇓ b)
 
-          fromVec : Vec 𝔹 _ → (α × β)
-          fromVec bits with splitAt #α bits
-          fromVec .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = (⇑ ⇓a) , (⇑ ⇓b)
+          up : Vec 𝔹 _ → (α × β)
+          up bits with splitAt #α bits
+          up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = (⇑ ⇓a) , (⇑ ⇓b)
 
-synthVec : {α : Set} {#α n : ℕ} ⦃ _ : Synth α {#α} ⦄
-           → Synth (Vec α n) {n * #α}
-synthVec {α} {#α} {n} = Synth[ toVec , fromVec ]
-    where toVec : Vec α n → Vec 𝔹 _
-          toVec v = v >>= ⇓
+⇓𝕎⇑-Vec : {α : Set} {#α n : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α n) {n * #α}
+⇓𝕎⇑-Vec {α} {#α} {n} = ⇓𝕎⇑[ down , up ]
+    where down : Vec α n → 𝕎 _
+          down v = v >>= ⇓
 
-          fromVec : Vec 𝔹 _ → Vec α n
-          fromVec bits with group n #α bits
-          fromVec .(concat grps) | grps , refl = map ⇑ grps
+          up : 𝕎 _ → Vec α n
+          up bits with group n #α bits
+          up .(concat grps) | grps , refl = map ⇑ grps
 
-synthVec𝔹 : ∀ {n} → Synth (Vec 𝔹 n)
-synthVec𝔹 = synthVec
+⇓𝕎⇑-Vec𝔹 : ∀ {n} → ⇓𝕎⇑ (Vec 𝔹 n)
+⇓𝕎⇑-Vec𝔹 = ⇓𝕎⇑-Vec
 
 
+-- "High-level" circuit datatype, packing the synthesis information
+data ℂ (i o : Set) {#i #o : ℕ} : Set where Mkℂ : ⦃ _ : ⇓𝕎⇑ i {#i} ⦄ ⦃ _ : ⇓𝕎⇑ o {#o} ⦄ → Coreℂ 𝔹 #i #o → ℂ i o {#i} {#o}
 
 -- "Smart constructors"
 ¬ : ℂ 𝔹 𝔹
 ¬ = Mkℂ Not
 
-synthPair𝔹 : Synth (𝔹 × 𝔹)
-synthPair𝔹 = synthPair
+⇓𝕎⇑-𝔹×𝔹 : ⇓𝕎⇑ (𝔹 × 𝔹)
+⇓𝕎⇑-𝔹×𝔹 = ⇓𝕎⇑-×
 
 ∧ : ℂ (𝔹 × 𝔹) 𝔹
 ∧ = Mkℂ And
@@ -93,26 +92,27 @@ synthPair𝔹 = synthPair
 ∨ = Mkℂ Or
 
 _⟫_ : {α β γ : Set} {#α #β #γ : ℕ}
-      ⦃ sα : Synth α {#α} ⦄ ⦃ sβ : Synth β {#β} ⦄ ⦃ sγ : Synth γ {#γ} ⦄
+      ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {#γ} ⦄
       → ℂ α β {#α} {#β} → ℂ β γ {#β} {#γ} → ℂ α γ {#α} {#γ}
 _⟫_ ⦃ sα = sα ⦄ ⦃ sγ = sγ ⦄ (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ sα ⦄ ⦃ sγ ⦄ (c₁ >> c₂)
 
 _||_ : {i₁ o₁ i₂ o₂ : Set} {#i₁ #o₁ #i₂ #o₂ : ℕ}
-       ⦃ si₁ : Synth i₁ {#i₁} ⦄ ⦃ so₁ : Synth o₁ {#o₁} ⦄ ⦃ si₂ : Synth i₂ {#i₂} ⦄ ⦃ so₂ : Synth o₂ {#o₂} ⦄
+       ⦃ si₁ : ⇓𝕎⇑ i₁ {#i₁} ⦄ ⦃ so₁ : ⇓𝕎⇑ o₁ {#o₁} ⦄ ⦃ si₂ : ⇓𝕎⇑ i₂ {#i₂} ⦄ ⦃ so₂ : ⇓𝕎⇑ o₂ {#o₂} ⦄
        → ℂ i₁ o₁ {#i₁} {#o₁} → ℂ i₂ o₂ {#i₂} {#o₂} →  ℂ (i₁ × i₂) (o₁ × o₂) {#i₁ + #i₂} {#o₁ + #o₂}
 _||_ ⦃ si₁ ⦄ ⦃ so₁ ⦄ ⦃ si₂ ⦄ ⦃ so₂ ⦄ (Mkℂ c₁) (Mkℂ c₂) =
-    Mkℂ  ⦃ synthPair ⦃ si₁ ⦄ ⦃ si₂ ⦄ ⦄  ⦃ synthPair ⦃ so₁ ⦄ ⦃ so₂ ⦄ ⦄  (c₁ >< c₂)
+    Mkℂ  ⦃ ⇓𝕎⇑-× ⦃ si₁ ⦄ ⦃ si₂ ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ so₁ ⦄ ⦃ so₂ ⦄ ⦄  (c₁ >< c₂)
 
-infixl 7 _||_
+infixr 7 _||_
 infixl 6 _⟫_
+
 
 testNotNot : ℂ 𝔹 𝔹
 testNotNot = ¬ ⟫ ¬
 
 testAndTree : ℂ ((𝔹 × 𝔹) × (𝔹 × 𝔹)) 𝔹
 testAndTree =
-    let synth𝔹 : Synth ((𝔹 × 𝔹) × (𝔹 × 𝔹))
-        synth𝔹 = synthPair
+    let ⇓𝕎⇑-pairPair : ⇓𝕎⇑ ((𝔹 × 𝔹) × (𝔹 × 𝔹))
+        ⇓𝕎⇑-pairPair = ⇓𝕎⇑-×
     in ∧ || ∧  ⟫  ∧
 
 
@@ -132,11 +132,4 @@ core⟦ c₁ >< c₂ ⟧ .(v₁ ++ v₂) | v₁ , v₂ , refl = core⟦ c₁ ⟧
 
 ⟦_⟧ : {α β : Set} {#α #β : ℕ} → ℂ α β {#α} {#β} → (α → β)
 ⟦ (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ cc) ⟧ a = ⇑ (core⟦ cc ⟧ (⇓ a))
-
-
--- ⑂ : {α : Set} ⦃ sα : Synthesizable α ⦄  →  Circuit α (α × α) ⦃ sα ⦄ ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄
--- ⑂ {α} ⦃ sα ⦄ = Plug {𝔹} {# ⦃ sα ⦄} {# ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄} ⑂'
---     where ⑂' : Fin (# ⦃ synthPair ⦃ sα ⦄ ⦃ sα ⦄ ⦄) → Fin (# ⦃ sα ⦄)
---           ⑂' x = {!!}
-
 
