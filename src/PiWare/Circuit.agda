@@ -32,6 +32,8 @@ record Algℂ (α : Set) : Set where
        ∧ : α → α → α
        ∨ : α → α → α
 
+
+
 -- Binary words
 𝕎 : ℕ → Set
 𝕎 n = Vec 𝔹 n
@@ -44,14 +46,6 @@ record ⇓𝕎⇑ (α : Set) {#α : ℕ} : Set where
         ⇑ : Vec 𝔹 #α → α  -- from bit vectors
 
 open ⇓𝕎⇑ {{...}}
-
-⇓𝕎⇑-𝔹 : ⇓𝕎⇑ 𝔹
-⇓𝕎⇑-𝔹 = ⇓𝕎⇑[ down , up ]
-    where down : 𝔹 → 𝕎 _
-          down b = [ b ]
-          
-          up : 𝕎 _ → 𝔹
-          up (bit ◁ ε) = bit
 
 ⇓𝕎⇑-× : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α × β) {#α + #β}
 ⇓𝕎⇑-× {α} {β} {#α} = ⇓𝕎⇑[ down , up ]
@@ -71,8 +65,18 @@ open ⇓𝕎⇑ {{...}}
           up bits with group n #α bits
           up .(concat grps) | grps , refl = map ⇑ grps
 
+
+⇓𝕎⇑-𝔹 : ⇓𝕎⇑ 𝔹
+⇓𝕎⇑-𝔹 = ⇓𝕎⇑[ down , up ]
+    where down : 𝔹 → 𝕎 _
+          down b = [ b ]
+          
+          up : 𝕎 _ → 𝔹
+          up (bit ◁ ε) = bit
+
 ⇓𝕎⇑-Vec𝔹 : ∀ {n} → ⇓𝕎⇑ (Vec 𝔹 n)
 ⇓𝕎⇑-Vec𝔹 = ⇓𝕎⇑-Vec
+
 
 
 -- "High-level" circuit datatype, packing the synthesis information
@@ -104,16 +108,6 @@ _||_ ⦃ si₁ ⦄ ⦃ so₁ ⦄ ⦃ si₂ ⦄ ⦃ so₂ ⦄ (Mkℂ c₁) (Mkℂ
 
 infixr 7 _||_
 infixl 6 _⟫_
-
-
-testNotNot : ℂ 𝔹 𝔹
-testNotNot = ¬ ⟫ ¬
-
-testAndTree : ℂ ((𝔹 × 𝔹) × (𝔹 × 𝔹)) 𝔹
-testAndTree =
-    let ⇓𝕎⇑-pairPair : ⇓𝕎⇑ ((𝔹 × 𝔹) × (𝔹 × 𝔹))
-        ⇓𝕎⇑-pairPair = ⇓𝕎⇑-×
-    in ∧ || ∧  ⟫  ∧
 
 
 

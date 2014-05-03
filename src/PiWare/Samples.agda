@@ -1,37 +1,48 @@
 module PiWare.Samples where
 
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Bool using (Bool)
+open import Data.Bool using () renaming (Bool to 𝔹)
+open import Data.Product using (_×_)
 
-open import PiWare.Circuit using (ℂ; Not; And; Or; _⟫_; _||_; _><_)
 open import PiWare.Plugs
-    using (pid; fork2; pALR; pARL; pHead; pCons; pUncons; pIntertwine)
+open import PiWare.Circuit
 
 
-sampleNotNotNot : ℂ Bool 1 1
-sampleNotNotNot = Not ⟫ Not ⟫ Not
+sampleNotNotNot : ℂ 𝔹 𝔹
+sampleNotNotNot = ¬ ⟫ ¬ ⟫ ¬
 
-sampleNand : ℂ Bool 2 1
-sampleNand = And ⟫ Not
+sampleNand : ℂ (𝔹 × 𝔹) 𝔹
+sampleNand = ∧ ⟫ ¬
 
-sample1And2Or3And4 : ℂ Bool 4 1
-sample1And2Or3And4 = And || And ⟫ Or
+⇓𝕎⇑-pairPair : ⇓𝕎⇑ ((𝔹 × 𝔹) × (𝔹 × 𝔹))
+⇓𝕎⇑-pairPair = ⇓𝕎⇑-×
 
-sampleXor : ℂ Bool 2 1
+sample1And2Or3And4 : ℂ ((𝔹 × 𝔹) × (𝔹 × 𝔹)) 𝔹
+sample1And2Or3And4 = (∧ || ∧) ⟫ ∨
+
+sampleXor : ℂ (𝔹 × 𝔹) 𝔹
 sampleXor =
-    fork2 ⟫    (Not >< pid  ⟫ And)
-            || (pid >< Not  ⟫ And)  ⟫ Or
+      pFork×
+    ⟫ (¬ || pid ⟫ ∧)  ||  (pid || ¬ ⟫ ∧)
+    ⟫ ∨
 
-sampleHalfAdder : ℂ Bool 2 2
+sampleHalfAdder : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)
 sampleHalfAdder =
-    fork2 ⟫    And
-            || sampleXor
+      pFork×
+    ⟫ ∧ || sampleXor
 
-sampleFullAdder : ℂ Bool 3 2
+⇓𝕎⇑-𝔹andPair : ⇓𝕎⇑ (𝔹 × (𝔹 × 𝔹))
+⇓𝕎⇑-𝔹andPair = ⇓𝕎⇑-×
+
+⇓𝕎⇑-pairAnd𝔹 : ⇓𝕎⇑ ((𝔹 × 𝔹) × 𝔹)
+⇓𝕎⇑-pairAnd𝔹 = ⇓𝕎⇑-×
+
+sampleFullAdder : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)
 sampleFullAdder =
-      hadd           || pid
-    ⟫ pid {Bool} {1} || hadd
-    ⟫ Or             || pid
+      hadd || pid
+    ⟫    pALR
+    ⟫ pid  || hadd
+    ⟫    pARL
+    ⟫ ∨    || pid
     where hadd = sampleHalfAdder
 
 {-
