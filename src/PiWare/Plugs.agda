@@ -1,7 +1,7 @@
 module PiWare.Plugs where
 
 open import Data.Bool using () renaming (Bool to 𝔹)
-open import Data.Nat using (ℕ; _+_; _*_; suc; _≤?_; _≤_; _≥_)
+open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≤_; _≥_)
 open import Data.Nat.DivMod using (_divMod_; DivMod)
 open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+)
                      renaming (zero to Fz; suc to Fs)
@@ -10,7 +10,7 @@ open import Data.Product using (_×_)
 open import Data.Vec using (Vec)
 open import Function using (_∘_; id)
 open import Relation.Nullary using (yes; no) renaming (¬_ to ¬¬_)
-open import Relation.Binary.PropositionalEquality using (sym)
+open import Relation.Binary.PropositionalEquality using (sym; refl; cong)
 
 open import PiWare.Circuit 
 
@@ -41,6 +41,7 @@ private
     import Algebra as Alg
     import Data.Nat.Properties as NP
     open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (+-assoc)
+    open import Data.Nat.Properties.Simple using (*-right-zero; +-right-identity)
 
     pALR' : {α : Set} {w v y : ℕ} → Coreℂ α ((w + v) + y) (w + (v + y))
     pALR' {_} {w} {v} {y} = Plug p
@@ -65,18 +66,19 @@ private
         where p : Fin w → Fin (suc n * w)
               p x = inject+ (n * w) x
 
-    pFork' : {α : Set} {n k : ℕ} → Coreℂ α (suc n) (k * suc n)
-    pFork' {α} {n} {k} = Plug p
-        where p : Fin (k * suc n) → Fin (suc n)
-              p x = DivMod.remainder ((toℕ x) divMod (suc n))
-
-
-pSwap : {α β : Set} {#α #β : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ → ℂ (α × β) (β × α)
-pSwap {#α = #α} {#β = #β} = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ (pSwap' {𝔹} {#α} {#β})
+    pFork' : {α : Set} {k n : ℕ} → Coreℂ α n (k * n)
+    pFork' {_} {k} {zero}  rewrite *-right-zero k = pid'
+    pFork' {_} {k} {suc m} = Plug p
+        where p : Fin (k * suc m) → Fin (suc m)
+              p x = DivMod.remainder ((toℕ x) divMod (suc m))
 
 
 pid : {α : Set} {#α : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α α
 pid ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ pid'
+
+
+pSwap : {α β : Set} {#α #β : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ → ℂ (α × β) (β × α)
+pSwap {#α = #α} {#β = #β} = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ (pSwap' {𝔹} {#α} {#β})
 
 
 pALR : {α β γ : Set} {#α #β #γ : ℕ}
@@ -86,7 +88,6 @@ pALR {#α = #α} {#β = #β} {#γ = #γ} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ sγ ⦄ ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄
         (pALR' {𝔹} {#α} {#β} {#γ})
         
-
 pARL : {α β γ : Set} {#α #β #γ : ℕ}
        → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {#γ} ⦄
        → ℂ (α × (β × γ)) ((α × β) × γ)
@@ -98,12 +99,20 @@ pARL {#α = #α} {#β = #β} {#γ = #γ} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
 pHead : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) α
 pHead {_} {#α} {n} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc n} ⦃ sα ⦄ ⦄  ⦃ sα ⦄  (pHead' {𝔹} {n} {#α})
 
-
 pUncons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
 pUncons {n = n} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc n} ⦃ sα ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = n} ⦃ sα ⦄ ⦄ ⦄  pid'
 
-
 pCons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (α × Vec α n) (Vec α (suc n))
 pCons {n = n} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = n} ⦃ sα ⦄ ⦄ ⦄  ⦃ ⇓𝕎⇑-Vec {n = suc n} ⦃ sα ⦄ ⦄  pid'
+
+
+pForkVec : {α : Set} {#α k : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α k)
+pForkVec {_} {#α} {k} ⦃ sα ⦄ =
+    Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄  (pFork' {𝔹} {k} {#α})
+
+pFork× : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (α × α)
+pFork× {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  coreC
+    where coreC : Coreℂ 𝔹 #α (#α + #α)
+          coreC rewrite sym (cong (_+_ #α) (+-right-identity #α)) = pFork' {𝔹} {2} {#α}
