@@ -1,14 +1,15 @@
 module PiWare.Plugs where
 
+open import Function using (_∘_; id)
+open import Data.Product using (_×_)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Data.Vec using (Vec)
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≤_; _≥_)
 open import Data.Nat.DivMod using (_divMod_; DivMod)
 open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+)
                      renaming (zero to Fz; suc to Fs)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Product using (_×_)
-open import Data.Vec using (Vec)
-open import Function using (_∘_; id)
+
 open import Relation.Nullary using (yes; no) renaming (¬_ to ¬¬_)
 open import Relation.Binary.PropositionalEquality using (sym; refl; cong)
 

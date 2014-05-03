@@ -7,14 +7,21 @@ open import PiWare.Plugs
 open import PiWare.Circuit
 
 
+-- instances that Agda can't figure out, lacking recursive resolution
+⇓𝕎⇑-𝔹andPair : ⇓𝕎⇑ (𝔹 × (𝔹 × 𝔹))
+⇓𝕎⇑-pairAnd𝔹 : ⇓𝕎⇑ ((𝔹 × 𝔹) × 𝔹)
+⇓𝕎⇑-pairPair  : ⇓𝕎⇑ ((𝔹 × 𝔹) × (𝔹 × 𝔹))
+
+⇓𝕎⇑-𝔹andPair = ⇓𝕎⇑-×
+⇓𝕎⇑-pairAnd𝔹 = ⇓𝕎⇑-×
+⇓𝕎⇑-pairPair  = ⇓𝕎⇑-×
+
+
 sampleNotNotNot : ℂ 𝔹 𝔹
 sampleNotNotNot = ¬ ⟫ ¬ ⟫ ¬
 
 sampleNand : ℂ (𝔹 × 𝔹) 𝔹
 sampleNand = ∧ ⟫ ¬
-
-⇓𝕎⇑-pairPair : ⇓𝕎⇑ ((𝔹 × 𝔹) × (𝔹 × 𝔹))
-⇓𝕎⇑-pairPair = ⇓𝕎⇑-×
 
 sample1And2Or3And4 : ℂ ((𝔹 × 𝔹) × (𝔹 × 𝔹)) 𝔹
 sample1And2Or3And4 = (∧ || ∧) ⟫ ∨
@@ -30,12 +37,6 @@ sampleHalfAdder =
       pFork×
     ⟫ ∧ || sampleXor
 
-⇓𝕎⇑-𝔹andPair : ⇓𝕎⇑ (𝔹 × (𝔹 × 𝔹))
-⇓𝕎⇑-𝔹andPair = ⇓𝕎⇑-×
-
-⇓𝕎⇑-pairAnd𝔹 : ⇓𝕎⇑ ((𝔹 × 𝔹) × 𝔹)
-⇓𝕎⇑-pairAnd𝔹 = ⇓𝕎⇑-×
-
 sampleFullAdder : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)
 sampleFullAdder =
       hadd || pid
@@ -44,6 +45,7 @@ sampleFullAdder =
     ⟫    pARL
     ⟫ ∨    || pid
     where hadd = sampleHalfAdder
+
 
 {-
 sampleRipple : (n : ℕ) → ℂ Bool (1 + (n + n)) (1 + n)

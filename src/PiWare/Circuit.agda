@@ -2,10 +2,11 @@ module PiWare.Circuit where
 
 open import Data.Nat using (ℕ; _+_; _*_; zero; suc)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
-open import Data.Bool using (not; true; false) renaming (Bool to 𝔹; _∧_ to _and_; _∨_ to _or_)
+open import Data.Bool using (not) renaming (Bool to 𝔹; _∧_ to _and_; _∨_ to _or_)
 open import Data.Product using (_×_; _,_)
 open import Data.Vec using (Vec; [_]; _++_; _>>=_; splitAt; group; concat; map; lookup)
                      renaming (_∷_ to _◁_; [] to ε)
+
 open import Relation.Binary.PropositionalEquality using (refl)
 
 
