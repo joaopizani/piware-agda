@@ -24,59 +24,8 @@ data Coreℂ (α : Set) : ℕ → ℕ → Set where
 infixr 5 _><_
 infixl 4 _>>_
 
--- "Algebra" for evaluating a circuit, closely related to the ℂ type itself.
--- Each field of the algebra corresponds to a "fundamental" constructor of ℂ
-record Algℂ (α : Set) : Set where
-   constructor algℂ[_,_,_]
-   field
-       ¬ : α → α
-       ∧ : α → α → α
-       ∨ : α → α → α
 
 
-
--- Binary words
-𝕎 : ℕ → Set
-𝕎 n = Vec 𝔹 n
-
--- Provides a mapping between "high-level" metalanguage types and vectors of bits
-record ⇓𝕎⇑ (α : Set) {#α : ℕ} : Set where
-    constructor ⇓𝕎⇑[_,_]
-    field
-        ⇓ : α → Vec 𝔹 #α  -- to bit vectors
-        ⇑ : Vec 𝔹 #α → α  -- from bit vectors
-
-open ⇓𝕎⇑ {{...}}
-
-⇓𝕎⇑-× : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α × β) {#α + #β}
-⇓𝕎⇑-× {α} {β} {#α} = ⇓𝕎⇑[ down , up ]
-    where down : (α × β) → Vec 𝔹 _
-          down (a , b) = (⇓ a) ++ (⇓ b)
-
-          up : Vec 𝔹 _ → (α × β)
-          up bits with splitAt #α bits
-          up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = (⇑ ⇓a) , (⇑ ⇓b)
-
-⇓𝕎⇑-Vec : {α : Set} {#α n : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α n) {n * #α}
-⇓𝕎⇑-Vec {α} {#α} {n} = ⇓𝕎⇑[ down , up ]
-    where down : Vec α n → 𝕎 _
-          down v = v >>= ⇓
-
-          up : 𝕎 _ → Vec α n
-          up bits with group n #α bits
-          up .(concat grps) | grps , refl = map ⇑ grps
-
-
-⇓𝕎⇑-𝔹 : ⇓𝕎⇑ 𝔹
-⇓𝕎⇑-𝔹 = ⇓𝕎⇑[ down , up ]
-    where down : 𝔹 → 𝕎 _
-          down b = [ b ]
-          
-          up : 𝕎 _ → 𝔹
-          up (bit ◁ ε) = bit
-
-⇓𝕎⇑-Vec𝔹 : ∀ {n} → ⇓𝕎⇑ (Vec 𝔹 n)
-⇓𝕎⇑-Vec𝔹 = ⇓𝕎⇑-Vec
 
 
 
@@ -127,4 +76,3 @@ core⟦ c₁ >< c₂ ⟧ .(v₁ ++ v₂) | v₁ , v₂ , refl = core⟦ c₁ ⟧
 
 ⟦_⟧ : {α β : Set} {#α #β : ℕ} → ℂ α β {#α} {#β} → (α → β)
 ⟦ (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ cc) ⟧ a = ⇑ (core⟦ cc ⟧ (⇓ a))
-
