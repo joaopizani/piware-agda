@@ -1,7 +1,7 @@
 module PiWare.Plugs where
 
 open import Function using (_∘_; id)
-open import Data.Product using (_×_)
+open import Data.Product using (_×_; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Vec using (Vec)
 open import Data.Bool using () renaming (Bool to 𝔹)
@@ -41,8 +41,8 @@ private
 
     import Algebra as Alg
     import Data.Nat.Properties as NP
-    open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (+-assoc)
-    open import Data.Nat.Properties.Simple using (*-right-zero; +-right-identity)
+    open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (+-assoc; +-identity)
+    open import Data.Nat.Properties.Simple using (*-right-zero)
 
     pALR' : {α : Set} {w v y : ℕ} → Coreℂ α ((w + v) + y) (w + (v + y))
     pALR' {_} {w} {v} {y} = Plug p
@@ -118,12 +118,12 @@ pCons {n = n} ⦃ sα ⦄ =
 pSingletonIn : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α 1)
 pSingletonIn {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  coreC
     where coreC : Coreℂ 𝔹 #α (1 * #α)
-          coreC rewrite +-right-identity #α = pid'
+          coreC rewrite (proj₂ +-identity) #α = pid'
           
 pSingletonOut : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α 1) α
 pSingletonOut {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  coreC
     where coreC : Coreℂ 𝔹 (1 * #α) #α
-          coreC rewrite +-right-identity #α = pid'
+          coreC rewrite (proj₂ +-identity) #α = pid'
 
 
 pForkVec : {α : Set} {#α k : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α k)
@@ -133,4 +133,4 @@ pForkVec {_} {#α} {k} ⦃ sα ⦄ =
 pFork× : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (α × α)
 pFork× {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  coreC
     where coreC : Coreℂ 𝔹 #α (#α + #α)
-          coreC rewrite sym (cong (_+_ #α) (+-right-identity #α)) = pFork' {𝔹} {2} {#α}
+          coreC rewrite sym (cong (_+_ #α) ((proj₂ +-identity) #α)) = pFork' {𝔹} {2} {#α}
