@@ -5,6 +5,7 @@ open import Data.Product using (_×_)
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Vec using (Vec)
 
+open import PiWare.Synthesizable.Bool
 open import PiWare.Plugs
 open import PiWare.Circuit
 

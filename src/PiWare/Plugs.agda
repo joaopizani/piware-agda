@@ -13,7 +13,9 @@ open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+)
 open import Relation.Nullary using (yes; no) renaming (¬_ to ¬¬_)
 open import Relation.Binary.PropositionalEquality using (sym; refl; cong)
 
-open import PiWare.Circuit 
+open import PiWare.Synthesizable.Bool
+open import PiWare.Circuit.Core
+open import PiWare.Circuit
 
 
 

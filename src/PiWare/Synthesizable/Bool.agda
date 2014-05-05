@@ -4,7 +4,6 @@ open import Data.Product using (_×_)
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Vec using (Vec; [_]) renaming ([] to ε; _∷_ to _◁_)
 
--- re-exporting all the basic instances also
 import PiWare.Synthesizable
 open PiWare.Synthesizable 𝔹 public
 
