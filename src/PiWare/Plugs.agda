@@ -22,12 +22,12 @@ open import PiWare.Circuit
 
 -- Plugs
 private
-    postulate massageInequality : {n m : ℕ} → ¬¬ (suc n ≤ m) → (n ≥ m)
+    postulate notLEQtoGEQ : {n m : ℕ} → ¬¬ (suc n ≤ m) → (n ≥ m)
 
     splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
     splitFin {n} {_} x with suc (toℕ x) ≤? n
     splitFin {_} {_} x | yes proof = inj₁ (fromℕ≤ proof)
-    splitFin {n} {m} x | no  proof = inj₂ (reduce≥ {n} {m} x (massageInequality proof)) 
+    splitFin {n} {m} x | no  proof = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ proof)) 
 
     uniteFinSwap : ∀ {n m} → Fin n ⊎ Fin m → Fin (m + n)
     uniteFinSwap {_} {m} (inj₁ x) = raise   m x
@@ -41,6 +41,7 @@ private
     pid' : ∀ {α n} → Coreℂ α n n
     pid' = Plug id
 
+    -- associativity plugs
     import Algebra as Alg
     import Data.Nat.Properties as NP
     open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (+-assoc; +-identity)
@@ -107,15 +108,15 @@ pARL {#α = #α} {#β = #β} {#γ = #γ} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
         
 
 pHead : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) α
-pHead {_} {#α} {n} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc n} ⦃ sα ⦄ ⦄  ⦃ sα ⦄  (pHead' {𝔹} {n} {#α})
+pHead {_} {#α} {k} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ sα ⦄  (pHead' {𝔹} {k} {#α})
 
 pUncons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
-pUncons {n = n} ⦃ sα ⦄ =
-    Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc n} ⦃ sα ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = n} ⦃ sα ⦄ ⦄ ⦄  pid'
+pUncons {n = k} ⦃ sα ⦄ =
+    Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄ ⦄  pid'
 
 pCons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (α × Vec α n) (Vec α (suc n))
-pCons {n = n} ⦃ sα ⦄ =
-    Mkℂ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = n} ⦃ sα ⦄ ⦄ ⦄  ⦃ ⇓𝕎⇑-Vec {n = suc n} ⦃ sα ⦄ ⦄  pid'
+pCons {n = k} ⦃ sα ⦄ =
+    Mkℂ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄ ⦄  ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  pid'
     
 pSingletonIn : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α 1)
 pSingletonIn {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  coreC

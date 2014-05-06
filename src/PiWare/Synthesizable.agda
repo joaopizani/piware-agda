@@ -32,10 +32,10 @@ open ⇓𝕎⇑ {{...}}
 
 ⇓𝕎⇑-Vec : {α : Set} {#α n : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α n) {n * #α}
 ⇓𝕎⇑-Vec {α} {#α} {n} = ⇓𝕎⇑[ down , up ]
-    where down : Vec α n → 𝕎 _
+    where down : Vec α n → 𝕎 (n * #α)
           down v = v >>= ⇓
 
-          up : 𝕎 _ → Vec α n
+          up : 𝕎 (n * #α) → Vec α n
           up atoms with group n #α atoms
           up .(concat grps) | grps , refl = map ⇑ grps
 

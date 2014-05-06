@@ -1,23 +1,13 @@
 module PiWare.Samples where
 
 open import Data.Bool using () renaming (Bool to 𝔹)
-open import Data.Product using (_×_)
+open import Data.Product using (_×_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Vec using (Vec)
 
 open import PiWare.Synthesizable.Bool
 open import PiWare.Plugs
 open import PiWare.Circuit
-
-
--- instances that Agda can't figure out, lacking recursive resolution
-⇓𝕎⇑-𝔹andPair : ⇓𝕎⇑ (𝔹 × (𝔹 × 𝔹))
-⇓𝕎⇑-pairAnd𝔹 : ⇓𝕎⇑ ((𝔹 × 𝔹) × 𝔹)
-⇓𝕎⇑-pairPair  : ⇓𝕎⇑ ((𝔹 × 𝔹) × (𝔹 × 𝔹))
-
-⇓𝕎⇑-𝔹andPair = ⇓𝕎⇑-×
-⇓𝕎⇑-pairAnd𝔹 = ⇓𝕎⇑-×
-⇓𝕎⇑-pairPair  = ⇓𝕎⇑-×
 
 
 sampleNotNotNot : ℂ 𝔹 𝔹
@@ -68,6 +58,14 @@ private
     ⇓𝕎⇑-uncons×       = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-uncons ⦄ ⦃ ⇓𝕎⇑-uncons ⦄
     ⇓𝕎⇑-uncons×𝔹     = ⇓𝕎⇑-uncons× {𝔹}
 
+    import Algebra as Alg
+    import Data.Nat.Properties as NP
+    open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (*-identity)
+
+    addBlock : {m : ℕ} → ℂ (((𝔹 × 𝔹) × (Vec 𝔹 (suc m) × Vec 𝔹 (suc m))) × 𝔹) ((𝔹 × Vec 𝔹 (suc m)) × 𝔹)
+                           {(2 + (suc m + suc m)) + 1}  {(1 + suc m) + 1}
+    addBlock {m} rewrite (proj₂ *-identity) m = {!!}
+
 sampleRipple : (n : ℕ) → let n' = suc n in
                          let W = 𝕎 n' in
                          ℂ ((W × W) × 𝔹) (W × 𝔹) {(n' + n') + 1} {n' + 1}
@@ -86,11 +84,7 @@ sampleRipple (suc m) =
 
         ⇓𝕎⇑-addBlockOut : ⇓𝕎⇑ ((𝔹 × Vec 𝔹 m) × 𝔹)
         ⇓𝕎⇑-addBlockOut = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-𝔹 ⦄ ⦃ ⇓𝕎⇑-Vec ⦄ ⦄ ⦃ ⇓𝕎⇑-𝔹 ⦄
-
-        addBlock : ℂ (((𝔹 × 𝔹) × (Vec 𝔹 (suc m) × Vec 𝔹 (suc m))) × 𝔹) ((𝔹 × Vec 𝔹 (suc m)) × 𝔹)
-                     {(2 + (suc m + suc m)) + 1}  {(1 + suc m) + 1}
-        addBlock = {!!}
     in
         (pUncons || pUncons ⟫ pIntertwine) || pid
-      ⟫                addBlock
+      ⟫                addBlock {m}
       ⟫              pCons || pid
