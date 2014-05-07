@@ -1,6 +1,6 @@
 module PiWare.Plugs where
 
-open import Function using (_∘_; id)
+open import Function using (_∘_; _$_; id)
 open import Data.Product using (_×_; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Vec using (Vec)
@@ -22,6 +22,7 @@ open import PiWare.Circuit
 
 -- Plugs
 private
+    -- TODO
     postulate notLEQtoGEQ : {n m : ℕ} → ¬¬ (suc n ≤ m) → (n ≥ m)
 
     splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
@@ -34,9 +35,7 @@ private
     uniteFinSwap {n} {_} (inj₂ y) = inject+ n y
 
     pSwap' : {α : Set} {n m : ℕ} → Coreℂ α (n + m) (m + n)
-    pSwap' {_} {n} {m} = Plug p
-        where p : Fin (m + n) → Fin (n + m)
-              p = uniteFinSwap ∘ splitFin {m} {n}
+    pSwap' {_} {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
 
     pid' : ∀ {α n} → Coreℂ α n n
     pid' = Plug id
@@ -66,21 +65,25 @@ private
         >>  pARL' {α} {a} {c} {b + d}
 
     pHead' : {α : Set} {n w : ℕ} → Coreℂ α (suc n * w) w
-    pHead' {α} {n} {w} = Plug p
-        where p : Fin w → Fin (suc n * w)
-              p x = inject+ (n * w) x
+    pHead' {α} {n} {w} = Plug (inject+ (n * w))
 
     pFork' : {α : Set} {k n : ℕ} → Coreℂ α n (k * n)
     pFork' {_} {k} {zero}  rewrite *-right-zero k = pid'
-    pFork' {_} {k} {suc m} = Plug p
-        where p : Fin (k * suc m) → Fin (suc m)
-              p x = DivMod.remainder ((toℕ x) divMod (suc m))
+    pFork' {_} {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
+
+    pFst' : {α : Set} {m n : ℕ} → Coreℂ α (m + n) m
+    pFst' {_} {m} {n} = Plug (inject+ n)
+
+    pSnd' : {α : Set} {m n : ℕ} → Coreℂ α (m + n) n
+    pSnd' {_} {m} {n} = Plug (raise m)
 
 
+-- identity
 pid : {α : Set} {#α : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α α
 pid ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ pid'
 
 
+-- rearranging wires
 pSwap : {α β : Set} {#α #β : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ → ℂ (α × β) (β × α)
 pSwap {#α = #α} {#β = #β} = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ (pSwap' {𝔹} {#α} {#β})
 
@@ -92,6 +95,8 @@ pIntertwine {#α = #α} {#β = #β} {#γ = #γ} {#δ = #δ}  ⦃ sα ⦄ ⦃ sβ
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄
         (pIntertwine' {𝔹} {#α} {#β} {#γ} {#δ})
 
+
+-- associativity
 pALR : {α β γ : Set} {#α #β #γ : ℕ}
        → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {#γ} ⦄
        → ℂ ((α × β) × γ) (α × (β × γ))
@@ -105,19 +110,32 @@ pARL : {α β γ : Set} {#α #β #γ : ℕ}
 pARL {#α = #α} {#β = #β} {#γ = #γ} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ sγ ⦄ ⦄
         (pARL' {𝔹} {#α} {#β} {#γ})
-        
+ 
 
+-- vector plugs
 pHead : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) α
 pHead {_} {#α} {k} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ sα ⦄  (pHead' {𝔹} {k} {#α})
+
+
+⇓𝕎⇑-pUncons-in : {α : Set} {#α : ℕ} {n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α (suc n))
+⇓𝕎⇑-pUncons-in {n = k} ⦃ sα ⦄ = ⇓𝕎⇑-Vec {n = suc k}
+
+⇓𝕎⇑-pUncons-out : {α : Set} {#α : ℕ} {n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (α × Vec α n)
+⇓𝕎⇑-pUncons-out {n = k} ⦃ sα ⦄ = ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄
 
 pUncons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
 pUncons {n = k} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄ ⦄  pid'
 
+
 pCons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (α × Vec α n) (Vec α (suc n))
 pCons {n = k} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄ ⦄  ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  pid'
     
+
+⇓𝕎⇑-pSingletonIn-out : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α 1)
+⇓𝕎⇑-pSingletonIn-out ⦃ sα ⦄ = ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄
+
 pSingletonIn : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α 1)
 pSingletonIn {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  coreC
     where coreC : Coreℂ 𝔹 #α (1 * #α)
@@ -129,6 +147,7 @@ pSingletonOut {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα �
           coreC rewrite (proj₂ +-identity) #α = pid'
 
 
+-- forking
 pForkVec : {α : Set} {#α k : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α k)
 pForkVec {_} {#α} {k} ⦃ sα ⦄ =
     Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄  (pFork' {𝔹} {k} {#α})
@@ -137,3 +156,11 @@ pFork× : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ �
 pFork× {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  coreC
     where coreC : Coreℂ 𝔹 #α (#α + #α)
           coreC rewrite sym (cong (_+_ #α) ((proj₂ +-identity) #α)) = pFork' {𝔹} {2} {#α}
+
+
+-- pairs
+pFst : {α β : Set} {#α #β : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ → ℂ (α × β) α
+pFst {#α = #α} {#β = #β} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ sα ⦄ (pFst' {𝔹} {#α} {#β})
+
+pSnd : {α β : Set} {#α #β : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ → ℂ (α × β) β
+pSnd {#α = #α} {#β = #β} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ sβ ⦄ (pSnd' {𝔹} {#α} {#β})
