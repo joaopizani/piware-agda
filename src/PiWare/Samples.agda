@@ -2,12 +2,13 @@ module PiWare.Samples where
 
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_; proj₂)
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Vec using (Vec)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Vec using (Vec) renaming (_∷_ to _◁_; [] to ε)
 
 open import PiWare.Synthesizable.Bool
 open import PiWare.Plugs
 open import PiWare.Circuit
+
 
 
 sampleNotNotNot : ℂ 𝔹 𝔹
@@ -40,51 +41,33 @@ sampleFullAdder =
     where hadd = sampleHalfAdder
 
 
-private
-    ⇓𝕎⇑-×-1 : ⇓𝕎⇑ (𝕎 1 × 𝔹)
-    ⇓𝕎⇑-×-𝕎 : {n : ℕ} → ⇓𝕎⇑ (𝕎 (suc n) × 𝕎 (suc n))
-    ⇓𝕎⇑-rippleIn : {n : ℕ} → ⇓𝕎⇑ ((𝕎 (suc n) × 𝕎 (suc n)) × 𝔹)
-    ⇓𝕎⇑-rippleOut : {n : ℕ} → ⇓𝕎⇑ (𝔹 × 𝕎 (suc n))
-    ⇓𝕎⇑-uncons : {α : Set} {#α : ℕ} {n : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (α × Vec α n)
-    ⇓𝕎⇑-uncons× : {α : Set} {#α : ℕ} {n : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄
-                   → let t = α × Vec α n in ⇓𝕎⇑ (t × t)
-    ⇓𝕎⇑-uncons×𝔹 : {n : ℕ} → let t = 𝔹 × Vec 𝔹 n in ⇓𝕎⇑ (t × t)
+⇓𝕎⇑-Vec[𝔹]1×Vec[𝔹]1 : {n : ℕ} → ⇓𝕎⇑ (Vec 𝔹 n × Vec 𝔹 n)
+⇓𝕎⇑-Vec[𝔹]1×Vec[𝔹]1 = ⇓𝕎⇑-Vec[a]×b
 
-    ⇓𝕎⇑-×-1           = ⇓𝕎⇑-×
-    ⇓𝕎⇑-×-𝕎          = ⇓𝕎⇑-×
-    ⇓𝕎⇑-rippleIn      = ⇓𝕎⇑-×
-    ⇓𝕎⇑-rippleOut     = ⇓𝕎⇑-×
-    ⇓𝕎⇑-uncons ⦃ sα ⦄ = ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec ⦄
-    ⇓𝕎⇑-uncons×       = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-uncons ⦄ ⦃ ⇓𝕎⇑-uncons ⦄
-    ⇓𝕎⇑-uncons×𝔹     = ⇓𝕎⇑-uncons× {𝔹}
+⇓𝕎⇑-[Vec[𝔹]1×Vec[𝔹]1]×𝔹 : {n : ℕ} → ⇓𝕎⇑ ((Vec 𝔹 n × Vec 𝔹 n) × 𝔹)
+⇓𝕎⇑-[Vec[𝔹]1×Vec[𝔹]1]×𝔹 = ⇓𝕎⇑-×
 
-    import Algebra as Alg
-    import Data.Nat.Properties as NP
-    open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (*-identity)
+⇓𝕎⇑-Vec[𝔹]n×𝔹 : {n : ℕ} → ⇓𝕎⇑ (Vec 𝔹 n × 𝔹)
+⇓𝕎⇑-Vec[𝔹]n×𝔹 = ⇓𝕎⇑-×
 
-    addBlock : {m : ℕ} → ℂ (((𝔹 × 𝔹) × (Vec 𝔹 (suc m) × Vec 𝔹 (suc m))) × 𝔹) ((𝔹 × Vec 𝔹 (suc m)) × 𝔹)
-                           {(2 + (suc m + suc m)) + 1}  {(1 + suc m) + 1}
-    addBlock {m} rewrite (proj₂ *-identity) m = {!!}
+⇓𝕎⇑-𝔹×Vec[𝔹]n : {n : ℕ} → ⇓𝕎⇑ (𝔹 × Vec 𝔹 n)
+⇓𝕎⇑-𝔹×Vec[𝔹]n = ⇓𝕎⇑-×
 
-sampleRipple : (n : ℕ) → let n' = suc n in
-                         let W = 𝕎 n' in
-                         ℂ ((W × W) × 𝔹) (W × 𝔹) {(n' + n') + 1} {n' + 1}
-sampleRipple zero = 
-      (pSingletonOut || pSingletonOut) || pid
-    ⟫           sampleFullAdder
-    ⟫   pSingletonIn || pid
+⇓𝕎⇑-[𝔹×Vec[𝔹]n]×[𝔹×Vec[𝔹]n] : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × Vec 𝔹 n) × (𝔹 × Vec 𝔹 n))
+⇓𝕎⇑-[𝔹×Vec[𝔹]n]×[𝔹×Vec[𝔹]n] = ⇓𝕎⇑-×
 
-sampleRipple (suc m) =
-    let
-        ⇓𝕎⇑-addBlockIn : ⇓𝕎⇑ ((𝔹 × 𝔹) × (Vec 𝔹 (suc m) × Vec 𝔹 (suc m)))
-        ⇓𝕎⇑-addBlockIn = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-Vec ⦄ ⦃ ⇓𝕎⇑-Vec ⦄ ⦄
+⇓𝕎⇑-[𝔹×𝔹]×[Vec[𝔹]n×Vec[𝔹]n] : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × 𝔹) × (Vec 𝔹 n × Vec 𝔹 n))
+⇓𝕎⇑-[𝔹×𝔹]×[Vec[𝔹]n×Vec[𝔹]n] = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄
 
-        ⇓𝕎⇑-bla : ⇓𝕎⇑ (((𝔹 × 𝔹) × (Vec 𝔹 (suc m) × Vec 𝔹 (suc m))) × 𝔹)
-        ⇓𝕎⇑-bla = ⇓𝕎⇑-×  ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-Vec ⦄ ⦃ ⇓𝕎⇑-Vec ⦄ ⦄ ⦄  ⦃ ⇓𝕎⇑-𝔹 ⦄
+⇓𝕎⇑-[[𝔹×𝔹]×[Vec[𝔹]n×Vec[𝔹]n]]×𝔹 : {n : ℕ} → ⇓𝕎⇑ (((𝔹 × 𝔹) × (Vec 𝔹 n × Vec 𝔹 n)) × 𝔹)
+⇓𝕎⇑-[[𝔹×𝔹]×[Vec[𝔹]n×Vec[𝔹]n]]×𝔹 = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄ ⦃ ⇓𝕎⇑-𝔹 ⦄
 
-        ⇓𝕎⇑-addBlockOut : ⇓𝕎⇑ ((𝔹 × Vec 𝔹 m) × 𝔹)
-        ⇓𝕎⇑-addBlockOut = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-𝔹 ⦄ ⦃ ⇓𝕎⇑-Vec ⦄ ⦄ ⦃ ⇓𝕎⇑-𝔹 ⦄
-    in
-        (pUncons || pUncons ⟫ pIntertwine) || pid
-      ⟫                addBlock {m}
-      ⟫              pCons || pid
+⇓𝕎⇑-[𝔹×Vec[𝔹]n]×𝔹 : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × Vec 𝔹 n) × 𝔹)
+⇓𝕎⇑-[𝔹×Vec[𝔹]n]×𝔹 = ⇓𝕎⇑-×
+
+-- TODO
+postulate addBlock : {m : ℕ} → ℂ (((𝔹 × 𝔹) × (Vec 𝔹 m × Vec 𝔹 m)) × 𝔹) ((𝔹 × Vec 𝔹 m) × 𝔹) {(2 + (m * 1 + m * 1)) + 1}  {(1 + m * 1) + 1}
+
+sampleRipple : (n : ℕ) → let W = Vec 𝔹 n in ℂ ((W × W) × 𝔹) (W × 𝔹) {(n * 1 + n * 1) + 1} {n * 1 + 1}
+sampleRipple zero    = pFst || pid
+sampleRipple (suc m) = (pUncons || pUncons ⟫ pIntertwine) || pid  ⟫  addBlock  ⟫  pCons || pid
