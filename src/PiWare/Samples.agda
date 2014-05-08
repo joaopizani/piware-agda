@@ -26,12 +26,14 @@ sampleXor =
     ⟫ (¬ || pid ⟫ ∧)  ||  (pid || ¬ ⟫ ∧)
     ⟫ ∨
 
-sampleHalfAdder : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)  -- a × b → c × s
+-- a × b → c × s
+sampleHalfAdder : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)
 sampleHalfAdder =
       pFork×
     ⟫ ∧ || sampleXor
 
-sampleFullAdder : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)  -- (a × b) × cin → cout × s
+-- (a × b) × cin → cout × s
+sampleFullAdder : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)
 sampleFullAdder =
       hadd || pid
     ⟫    pALR
@@ -70,12 +72,13 @@ module RippleCarry where
   ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[Vec[𝔹]n×Vec[𝔹]n] = ⇓𝕎⇑-× 
   ⇓𝕎⇑-[[𝔹×𝔹]×𝔹]×[Vec[𝔹]n×Vec[𝔹]n] = ⇓𝕎⇑-×
 
-  sampleRipple : (n : ℕ) → let W = Vec 𝔹 n in ℂ (𝔹 × W × W) (W × 𝔹)  -- cin × a × b → s × cout
+  -- cin × a × b → s × cout
+  sampleRipple : (n : ℕ) →  let W = Vec 𝔹 n  in  ℂ (𝔹 × W × W) (W × 𝔹)
   sampleRipple zero    = pid || pFst ⟫ pSwap
   sampleRipple (suc m) = pid || (pUncons || pUncons ⟫ pIntertwine)  ⟫  middle  ⟫  pCons || pid
-    where middle = pAssoc ⟫ baseBlock ⟫ pALR ⟫ recursionBlock ⟫ pARL
-            where pAssoc         = pARL ⟫ pARL || pid
-                  baseBlock      = sampleFullAdder || pid
-                  recursionBlock = pid || sampleRipple m
+    where middle = pAssoc ⟫ base ⟫ pALR ⟫ recursion ⟫ pARL
+            where pAssoc    = pARL ⟫ pARL || pid
+                  base      = sampleFullAdder || pid
+                  recursion = pid || sampleRipple m
 
 open RippleCarry using (sampleRipple) public

@@ -9,7 +9,7 @@ open import Relation.Binary.PropositionalEquality using (refl)
 
 -- Binary words
 𝕎 : ℕ → Set
-𝕎 n = Vec Atom n
+𝕎 = Vec Atom
 
 
 -- Provides a mapping between "high-level" metalanguage types and vectors of bits
@@ -21,7 +21,7 @@ record ⇓𝕎⇑ (α : Set) {#α : ℕ} : Set where
 
 open ⇓𝕎⇑ {{...}}
 
-⇓𝕎⇑-× : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α × β) {#α + #β}
+⇓𝕎⇑-× : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α × β)
 ⇓𝕎⇑-× {α} {β} {#α} {#β} = ⇓𝕎⇑[ down , up ]
     where down : (α × β) → 𝕎 (#α + #β)
           down (a , b) = (⇓ a) ++ (⇓ b)
@@ -30,7 +30,7 @@ open ⇓𝕎⇑ {{...}}
           up atoms with splitAt #α atoms
           up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = (⇑ ⇓a) , (⇑ ⇓b)
 
-⇓𝕎⇑-Vec : {α : Set} {#α n : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α n) {n * #α}
+⇓𝕎⇑-Vec : {α : Set} {#α n : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α n)
 ⇓𝕎⇑-Vec {α} {#α} {n} = ⇓𝕎⇑[ down , up ]
     where down : Vec α n → 𝕎 (n * #α)
           down v = v >>= ⇓
@@ -42,7 +42,6 @@ open ⇓𝕎⇑ {{...}}
 
 
 -- TODO: Should we also put "derivable" instances here?
--- Recursive instance resolution is on the way for Agda...
 ⇓𝕎⇑-a×[b×c] : {α β γ : Set} {#α #β #γ : ℕ}
                → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {#γ} ⦄
                → ⇓𝕎⇑ (α × (β × γ))

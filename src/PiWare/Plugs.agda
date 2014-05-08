@@ -10,20 +10,20 @@ open import Data.Nat.DivMod using (_divMod_; DivMod)
 open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+)
                      renaming (zero to Fz; suc to Fs)
 
-open import Relation.Nullary using (yes; no) renaming (¬_ to ¬¬_)
+open import Relation.Nullary using (yes; no; ¬_)
 open import Relation.Binary.PropositionalEquality using (sym; refl; cong)
 
 open import PiWare.Synthesizable.Bool
 open import PiWare.Circuit.Core
-open import PiWare.Circuit
+open import PiWare.Circuit hiding (¬)
 
 
 
 
 -- Plugs
 private
-    -- TODO
-    postulate notLEQtoGEQ : {n m : ℕ} → ¬¬ (suc n ≤ m) → (n ≥ m)
+    -- TODO postulate
+    postulate notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
 
     splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
     splitFin {n} {_} x with suc (toℕ x) ≤? n
@@ -117,15 +117,15 @@ pHead : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (
 pHead {_} {#α} {k} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ sα ⦄  (pHead' {𝔹} {k} {#α})
 
 
+pUncons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
+pUncons {n = k} ⦃ sα ⦄ =
+    Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄ ⦄  pid'
+
 ⇓𝕎⇑-pUncons-in : {α : Set} {#α : ℕ} {n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α (suc n))
 ⇓𝕎⇑-pUncons-in {n = k} ⦃ sα ⦄ = ⇓𝕎⇑-Vec {n = suc k}
 
 ⇓𝕎⇑-pUncons-out : {α : Set} {#α : ℕ} {n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (α × Vec α n)
 ⇓𝕎⇑-pUncons-out {n = k} ⦃ sα ⦄ = ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄
-
-pUncons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
-pUncons {n = k} ⦃ sα ⦄ =
-    Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄ ⦄  pid'
 
 
 pCons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (α × Vec α n) (Vec α (suc n))
@@ -133,13 +133,13 @@ pCons {n = k} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄ ⦄  ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  pid'
     
 
-⇓𝕎⇑-pSingletonIn-out : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α 1)
-⇓𝕎⇑-pSingletonIn-out ⦃ sα ⦄ = ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄
-
 pSingletonIn : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α 1)
 pSingletonIn {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  coreC
     where coreC : Coreℂ 𝔹 #α (1 * #α)
           coreC rewrite (proj₂ +-identity) #α = pid'
+
+⇓𝕎⇑-pSingletonIn-out : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α 1)
+⇓𝕎⇑-pSingletonIn-out ⦃ sα ⦄ = ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄
           
 pSingletonOut : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α 1) α
 pSingletonOut {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  coreC
@@ -155,7 +155,7 @@ pForkVec {_} {#α} {k} ⦃ sα ⦄ =
 pFork× : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (α × α)
 pFork× {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  coreC
     where coreC : Coreℂ 𝔹 #α (#α + #α)
-          coreC rewrite sym (cong (_+_ #α) ((proj₂ +-identity) #α)) = pFork' {𝔹} {2} {#α}
+          coreC rewrite sym $ cong (_+_ #α) ((proj₂ +-identity) #α) = pFork' {𝔹} {2} {#α}
 
 
 -- pairs
