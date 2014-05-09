@@ -14,6 +14,10 @@ data Coreℂ (α : Set) : ℕ → ℕ → Set where
     Plug : {i o : ℕ} → (f : Fin o → Fin i) → Coreℂ α i o
     _>>_ : {i m o : ℕ} → Coreℂ α i m → Coreℂ α m o → Coreℂ α i o
     _><_ : {i₁ o₁ i₂ o₂ : ℕ} → Coreℂ α i₁ o₁ → Coreℂ α i₂ o₂ → Coreℂ α (i₁ + i₂) (o₁ + o₂)
-
+    
 infixr 5 _><_
 infixl 4 _>>_
+
+data Streamℂ (α : Set) : ℕ → ℕ → Set where
+    Comb : {i o : ℕ} → Coreℂ α i o → Streamℂ α i o
+    Loop : {i o l : ℕ} → Coreℂ α (i + l) (o + l) → Streamℂ α i o

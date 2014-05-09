@@ -10,7 +10,13 @@ open import Data.Vec using (Vec; [_]; _++_; splitAt; map; lookup)
 open import Relation.Binary.PropositionalEquality using (refl)
 
 open import PiWare.Circuit.Core
+open import Coinduction
 
+data Stream (α : Set) : Set where
+    _∷_ : (x : α) (xs : ∞ (Stream α)) → Stream α
+
+streamMap : ∀ {α β} → (α → β) → Stream α → Stream β
+streamMap f (x ∷ xs) = f x ∷ ♯ streamMap f (♭ xs)
 
 allFins : ∀ {n} → Vec (Fin n) n
 allFins {zero}  = ε
@@ -24,3 +30,7 @@ core⟦ Plug p ⟧     v           = map (λ o → lookup (p o) v) allFins
 core⟦ c₁ >> c₂ ⟧   v           = core⟦ c₂ ⟧ (core⟦ c₁ ⟧ v)
 core⟦ _><_ {i₁} c₁ c₂ ⟧ v with splitAt i₁ v
 core⟦ c₁ >< c₂ ⟧ .(v₁ ++ v₂) | v₁ , v₂ , refl = core⟦ c₁ ⟧ v₁ ++ core⟦ c₂ ⟧ v₂
+
+stream⟦_⟧ : {i o : ℕ} → Streamℂ 𝔹 i o → (Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o))
+stream⟦ Comb cc ⟧ si = streamMap core⟦ cc ⟧ si
+stream⟦ Loop cc ⟧ si = {!!}

@@ -25,5 +25,6 @@ _||_ : {i₁ o₁ i₂ o₂ : Set} {#i₁ #o₁ #i₂ #o₂ : ℕ}
 _||_ ⦃ si₁ ⦄ ⦃ so₁ ⦄ ⦃ si₂ ⦄ ⦃ so₂ ⦄ (Mkℂ c₁) (Mkℂ c₂) =
     Mkℂ  ⦃ ⇓𝕎⇑-× ⦃ si₁ ⦄ ⦃ si₂ ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ so₁ ⦄ ⦃ so₂ ⦄ ⦄  (c₁ >< c₂)
 
+
 infixr 7 _||_
 infixl 6 _⟫_
