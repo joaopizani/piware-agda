@@ -5,32 +5,43 @@ open import Data.Product using (_×_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec) renaming (_∷_ to _◁_; [] to ε)
 
-open import PiWare.Synthesizable.Bool
-open import PiWare.Plugs
-open import PiWare.Circuit
+open import PiWare.Circuit.Core
 
+open import PiWare.Synthesizable.Bool
+open import PiWare.Plugs 𝔹
+open import PiWare.Circuit 𝔹
+
+
+¬C : ℂ 𝔹 𝔹
+¬C = Mkℂ Not
+
+∧C : ℂ (𝔹 × 𝔹) 𝔹
+∧C = Mkℂ And
+
+∨C : ℂ (𝔹 × 𝔹) 𝔹
+∨C = Mkℂ Or
 
 
 sampleNotNotNot : ℂ 𝔹 𝔹
-sampleNotNotNot = ¬ ⟫ ¬ ⟫ ¬
+sampleNotNotNot = ¬C ⟫ ¬C ⟫ ¬C
 
 sampleNand : ℂ (𝔹 × 𝔹) 𝔹
-sampleNand = ∧ ⟫ ¬
+sampleNand = ∧C ⟫ ¬C
 
 sample1And2Or3And4 : ℂ ((𝔹 × 𝔹) × (𝔹 × 𝔹)) 𝔹
-sample1And2Or3And4 = (∧ || ∧) ⟫ ∨
+sample1And2Or3And4 = (∧C || ∧C) ⟫ ∨C
 
 sampleXor : ℂ (𝔹 × 𝔹) 𝔹
 sampleXor =
       pFork×
-    ⟫ (¬ || pid ⟫ ∧)  ||  (pid || ¬ ⟫ ∧)
-    ⟫ ∨
+    ⟫ (¬C || pid ⟫ ∧C)  ||  (pid || ¬C ⟫ ∧C)
+    ⟫ ∨C
 
 -- a × b → c × s
 sampleHalfAdder : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)
 sampleHalfAdder =
       pFork×
-    ⟫ ∧ || sampleXor
+    ⟫ ∧C || sampleXor
 
 -- (a × b) × cin → cout × s
 sampleFullAdder : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)
@@ -39,7 +50,7 @@ sampleFullAdder =
     ⟫    pALR
     ⟫ pid  || hadd
     ⟫    pARL
-    ⟫ ∨    || pid
+    ⟫ ∨C   || pid
     where hadd = sampleHalfAdder
 
 

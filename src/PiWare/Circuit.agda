@@ -1,16 +1,16 @@
-module PiWare.Circuit where
+module PiWare.Circuit (Atom : Set) where
 
 open import Data.Nat using (ℕ; _+_)
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_)
 
-open import PiWare.Synthesizable.Bool
+open import PiWare.Synthesizable Atom
 open import PiWare.Circuit.Core
 
 
 -- "High-level" circuit datatype, packing the synthesis information
 data ℂ (α β : Set) {#α #β : ℕ} : Set where
-    Mkℂ : ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → Coreℂ 𝔹 #α #β → ℂ α β {#α} {#β}
+    Mkℂ : ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → Coreℂ Atom #α #β → ℂ α β {#α} {#β}
 
 
 -- "Smart constructors"
@@ -27,13 +27,3 @@ _||_ ⦃ si₁ ⦄ ⦃ so₁ ⦄ ⦃ si₂ ⦄ ⦃ so₂ ⦄ (Mkℂ c₁) (Mkℂ
 
 infixr 7 _||_
 infixl 6 _⟫_
-
-
-¬ : ℂ 𝔹 𝔹
-¬ = Mkℂ Not
-
-∧ : ℂ (𝔹 × 𝔹) 𝔹
-∧ = Mkℂ And
-
-∨ : ℂ (𝔹 × 𝔹) 𝔹
-∨ = Mkℂ Or

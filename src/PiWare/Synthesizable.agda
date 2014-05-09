@@ -7,17 +7,17 @@ open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map)
 open import Relation.Binary.PropositionalEquality using (refl)
 
 
--- Binary words
+-- Words are sequences of "Atoms"
 𝕎 : ℕ → Set
 𝕎 = Vec Atom
 
 
--- Provides a mapping between "high-level" metalanguage types and vectors of bits
+-- Provides a mapping between "high-level" metalanguage types and words
 record ⇓𝕎⇑ (α : Set) {#α : ℕ} : Set where
     constructor ⇓𝕎⇑[_,_]
     field
-        ⇓ : α → Vec Atom #α  -- to bit vectors
-        ⇑ : Vec Atom #α → α  -- from bit vectors
+        ⇓ : α → Vec Atom #α
+        ⇑ : Vec Atom #α → α
 
 open ⇓𝕎⇑ {{...}}
 

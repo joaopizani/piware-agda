@@ -1,34 +1,36 @@
-module PiWare.Plugs where
+module PiWare.Plugs (Atom : Set) where
 
 open import Function using (_∘_; _$_; id)
 open import Data.Product using (_×_; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Vec using (Vec)
-open import Data.Bool using () renaming (Bool to 𝔹)
-open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≤_; _≥_)
+open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≤_; _≥_; z≤n; s≤s; ≤-pred)
 open import Data.Nat.DivMod using (_divMod_; DivMod)
 open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+)
                      renaming (zero to Fz; suc to Fs)
 
+open import Data.Empty using (⊥)
 open import Relation.Nullary using (yes; no; ¬_)
+open import Relation.Nullary.Negation using (contradiction)
 open import Relation.Binary.PropositionalEquality using (sym; refl; cong)
 
-open import PiWare.Synthesizable.Bool
 open import PiWare.Circuit.Core
-open import PiWare.Circuit hiding (¬)
-
+open import PiWare.Synthesizable Atom
+open import PiWare.Circuit Atom
 
 
 
 -- Plugs
 private
-    -- TODO postulate
-    postulate notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
+    notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
+    notLEQtoGEQ {_}     {zero}  _  = z≤n
+    notLEQtoGEQ {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
+    notLEQtoGEQ {suc n} {suc m} ¬p = s≤s $ notLEQtoGEQ (¬p ∘ s≤s)
 
     splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
     splitFin {n} {_} x with suc (toℕ x) ≤? n
-    splitFin {_} {_} x | yes proof = inj₁ (fromℕ≤ proof)
-    splitFin {n} {m} x | no  proof = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ proof)) 
+    splitFin {_} {_} x | yes p  = inj₁ (fromℕ≤ p)
+    splitFin {n} {m} x | no  ¬p = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ ¬p)) 
 
     uniteFinSwap : ∀ {n m} → Fin n ⊎ Fin m → Fin (m + n)
     uniteFinSwap {_} {m} (inj₁ x) = raise   m x
@@ -85,7 +87,7 @@ pid ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ pid'
 
 -- rearranging wires
 pSwap : {α β : Set} {#α #β : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ → ℂ (α × β) (β × α)
-pSwap {#α = #α} {#β = #β} = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ (pSwap' {𝔹} {#α} {#β})
+pSwap {#α = #α} {#β = #β} = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ (pSwap' {Atom} {#α} {#β})
 
 
 pIntertwine : {α β γ δ : Set} {#α #β #γ #δ : ℕ}
@@ -93,7 +95,7 @@ pIntertwine : {α β γ δ : Set} {#α #β #γ #δ : ℕ}
               → ℂ  ((α × β) × (γ × δ))  ((α × γ) × (β × δ))
 pIntertwine {#α = #α} {#β = #β} {#γ = #γ} {#δ = #δ}  ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ ⦃ sδ ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄
-        (pIntertwine' {𝔹} {#α} {#β} {#γ} {#δ})
+        (pIntertwine' {Atom} {#α} {#β} {#γ} {#δ})
 
 
 -- associativity
@@ -102,19 +104,19 @@ pALR : {α β γ : Set} {#α #β #γ : ℕ}
        → ℂ ((α × β) × γ) (α × (β × γ))
 pALR {#α = #α} {#β = #β} {#γ = #γ} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ sγ ⦄ ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄
-        (pALR' {𝔹} {#α} {#β} {#γ})
+        (pALR' {Atom} {#α} {#β} {#γ})
         
 pARL : {α β γ : Set} {#α #β #γ : ℕ}
        → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {#γ} ⦄
        → ℂ (α × (β × γ)) ((α × β) × γ)
 pARL {#α = #α} {#β = #β} {#γ = #γ} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ sγ ⦄ ⦄
-        (pARL' {𝔹} {#α} {#β} {#γ})
+        (pARL' {Atom} {#α} {#β} {#γ})
  
 
 -- vector plugs
 pHead : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) α
-pHead {_} {#α} {k} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ sα ⦄  (pHead' {𝔹} {k} {#α})
+pHead {_} {#α} {k} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc k} ⦃ sα ⦄ ⦄  ⦃ sα ⦄  (pHead' {Atom} {k} {#α})
 
 
 pUncons : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
@@ -135,7 +137,7 @@ pCons {n = k} ⦃ sα ⦄ =
 
 pSingletonIn : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α 1)
 pSingletonIn {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  coreC
-    where coreC : Coreℂ 𝔹 #α (1 * #α)
+    where coreC : Coreℂ Atom #α (1 * #α)
           coreC rewrite (proj₂ +-identity) #α = pid'
 
 ⇓𝕎⇑-pSingletonIn-out : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α 1)
@@ -143,24 +145,24 @@ pSingletonIn {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1
           
 pSingletonOut : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α 1) α
 pSingletonOut {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  coreC
-    where coreC : Coreℂ 𝔹 (1 * #α) #α
+    where coreC : Coreℂ Atom (1 * #α) #α
           coreC rewrite (proj₂ +-identity) #α = pid'
 
 
 -- forking
 pForkVec : {α : Set} {#α k : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α k)
 pForkVec {_} {#α} {k} ⦃ sα ⦄ =
-    Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄  (pFork' {𝔹} {k} {#α})
+    Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄  (pFork' {Atom} {k} {#α})
 
 pFork× : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (α × α)
 pFork× {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  coreC
-    where coreC : Coreℂ 𝔹 #α (#α + #α)
-          coreC rewrite sym $ cong (_+_ #α) ((proj₂ +-identity) #α) = pFork' {𝔹} {2} {#α}
+    where coreC : Coreℂ Atom #α (#α + #α)
+          coreC rewrite sym $ cong (_+_ #α) ((proj₂ +-identity) #α) = pFork' {Atom} {2} {#α}
 
 
 -- pairs
 pFst : {α β : Set} {#α #β : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ → ℂ (α × β) α
-pFst {#α = #α} {#β = #β} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ sα ⦄ (pFst' {𝔹} {#α} {#β})
+pFst {#α = #α} {#β = #β} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ sα ⦄ (pFst' {Atom} {#α} {#β})
 
 pSnd : {α β : Set} {#α #β : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ → ℂ (α × β) β
-pSnd {#α = #α} {#β = #β} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ sβ ⦄ (pSnd' {𝔹} {#α} {#β})
+pSnd {#α = #α} {#β = #β} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× ⦄ ⦃ sβ ⦄ (pSnd' {Atom} {#α} {#β})
