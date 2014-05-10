@@ -20,4 +20,4 @@ infixl 4 _>>_
 
 data Streamℂ (α : Set) : ℕ → ℕ → Set where
     Comb : {i o : ℕ} → Coreℂ α i o → Streamℂ α i o
-    Loop : {i o l : ℕ} → Coreℂ α (i + l) (o + l) → Streamℂ α i o
+    DelayLoop : {i o l : ℕ} → Coreℂ α (i + l) (o + l) → Streamℂ α i o

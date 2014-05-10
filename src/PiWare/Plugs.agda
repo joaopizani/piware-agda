@@ -21,63 +21,62 @@ open import PiWare.Circuit Atom
 
 
 -- Plugs
-private
-    notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
-    notLEQtoGEQ {_}     {zero}  _  = z≤n
-    notLEQtoGEQ {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
-    notLEQtoGEQ {suc n} {suc m} ¬p = s≤s $ notLEQtoGEQ (¬p ∘ s≤s)
+notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
+notLEQtoGEQ {_}     {zero}  _  = z≤n
+notLEQtoGEQ {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
+notLEQtoGEQ {suc n} {suc m} ¬p = s≤s $ notLEQtoGEQ (¬p ∘ s≤s)
 
-    splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
-    splitFin {n} {_} x with suc (toℕ x) ≤? n
-    splitFin {_} {_} x | yes p  = inj₁ (fromℕ≤ p)
-    splitFin {n} {m} x | no  ¬p = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ ¬p)) 
+splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
+splitFin {n} {_} x with suc (toℕ x) ≤? n
+splitFin {_} {_} x | yes p  = inj₁ (fromℕ≤ p)
+splitFin {n} {m} x | no  ¬p = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ ¬p)) 
 
-    uniteFinSwap : ∀ {n m} → Fin n ⊎ Fin m → Fin (m + n)
-    uniteFinSwap {_} {m} (inj₁ x) = raise   m x
-    uniteFinSwap {n} {_} (inj₂ y) = inject+ n y
+uniteFinSwap : ∀ {n m} → Fin n ⊎ Fin m → Fin (m + n)
+uniteFinSwap {_} {m} (inj₁ x) = raise   m x
+uniteFinSwap {n} {_} (inj₂ y) = inject+ n y
 
-    pSwap' : {α : Set} {n m : ℕ} → Coreℂ α (n + m) (m + n)
-    pSwap' {_} {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
+pSwap' : {α : Set} {n m : ℕ} → Coreℂ α (n + m) (m + n)
+pSwap' {_} {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
 
-    pid' : ∀ {α n} → Coreℂ α n n
-    pid' = Plug id
+pid' : ∀ {α n} → Coreℂ α n n
+pid' = Plug id
 
-    -- associativity plugs
-    import Algebra as Alg
-    import Data.Nat.Properties as NP
-    open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (+-assoc; +-identity)
-    open import Data.Nat.Properties.Simple using (*-right-zero)
+-- associativity plugs
+import Algebra as Alg
+import Data.Nat.Properties as NP
+open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (+-assoc; +-identity)
+open import Data.Nat.Properties.Simple using (*-right-zero)
 
-    pALR' : {α : Set} {w v y : ℕ} → Coreℂ α ((w + v) + y) (w + (v + y))
-    pALR' {_} {w} {v} {y} = Plug p
-        where p : Fin (w + (v + y)) → Fin ((w + v) + y)
-              p x rewrite +-assoc w v y = x
-              
-    pARL' : {α : Set} {w v y : ℕ} → Coreℂ α (w + (v + y)) ((w + v) + y)
-    pARL' {_} {w} {v} {y} = Plug p
-        where p : Fin ((w + v) + y) → Fin (w + (v + y))
-              p x rewrite sym (+-assoc w v y) = x
+pALR' : {α : Set} {w v y : ℕ} → Coreℂ α ((w + v) + y) (w + (v + y))
+pALR' {_} {w} {v} {y} = Plug p
+    where p : Fin (w + (v + y)) → Fin ((w + v) + y)
+          p x rewrite +-assoc w v y = x
 
-    pIntertwine' : {α : Set} {a b c d : ℕ} → Coreℂ α ((a + b) + (c + d)) ((a + c) + (b + d))
-    pIntertwine' {α} {a} {b} {c} {d} =
-            pALR' {α} {a} {b} {c + d}
-        >>  _><_ {α} {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {α} {b} {c} {d})
-        >>  _><_ {α} {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {α} {b} {c}) >< pid')
-        >>  _><_ {α} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {α} {c} {b} {d})
-        >>  pARL' {α} {a} {c} {b + d}
+pARL' : {α : Set} {w v y : ℕ} → Coreℂ α (w + (v + y)) ((w + v) + y)
+pARL' {_} {w} {v} {y} = Plug p
+    where p : Fin ((w + v) + y) → Fin (w + (v + y))
+          p x rewrite sym (+-assoc w v y) = x
 
-    pHead' : {α : Set} {n w : ℕ} → Coreℂ α (suc n * w) w
-    pHead' {α} {n} {w} = Plug (inject+ (n * w))
+pIntertwine' : {α : Set} {a b c d : ℕ} → Coreℂ α ((a + b) + (c + d)) ((a + c) + (b + d))
+pIntertwine' {α} {a} {b} {c} {d} =
+        pALR' {α} {a} {b} {c + d}
+    >>  _><_ {α} {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {α} {b} {c} {d})
+    >>  _><_ {α} {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {α} {b} {c}) >< pid')
+    >>  _><_ {α} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {α} {c} {b} {d})
+    >>  pARL' {α} {a} {c} {b + d}
 
-    pFork' : {α : Set} {k n : ℕ} → Coreℂ α n (k * n)
-    pFork' {_} {k} {zero}  rewrite *-right-zero k = pid'
-    pFork' {_} {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
+pHead' : {α : Set} {n w : ℕ} → Coreℂ α (suc n * w) w
+pHead' {α} {n} {w} = Plug (inject+ (n * w))
 
-    pFst' : {α : Set} {m n : ℕ} → Coreℂ α (m + n) m
-    pFst' {_} {m} {n} = Plug (inject+ n)
+pFork' : {α : Set} {k n : ℕ} → Coreℂ α n (k * n)
+pFork' {_} {k} {zero}  rewrite *-right-zero k = pid'
+pFork' {_} {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
 
-    pSnd' : {α : Set} {m n : ℕ} → Coreℂ α (m + n) n
-    pSnd' {_} {m} {n} = Plug (raise m)
+pFst' : {α : Set} {m n : ℕ} → Coreℂ α (m + n) m
+pFst' {_} {m} {n} = Plug (inject+ n)
+
+pSnd' : {α : Set} {m n : ℕ} → Coreℂ α (m + n) n
+pSnd' {_} {m} {n} = Plug (raise m)
 
 
 -- identity

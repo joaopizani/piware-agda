@@ -93,3 +93,17 @@ module RippleCarry where
                   recursion = pid || sampleRipple m
 
 open RippleCarry using (sampleRipple) public
+
+
+sampleXor' : Coreℂ 𝔹 2 1
+sampleXor' =
+    (_>>_ {𝔹} {2} {4} {2}
+          (pFork' {𝔹} {2} {2})
+          ((Not >< pid' {𝔹} {1} >> And)  ><  (pid' {𝔹} {1} >< Not >> And))  )
+    >> Or
+
+-- in: repeat false... out: false, true, false, true, false...
+sampleToggleXNOR' : Streamℂ 𝔹 1 1
+sampleToggleXNOR' = DelayLoop (sampleXNOR' >> pFork' {𝔹} {2} {1})
+    where sampleXNOR' : Coreℂ 𝔹 2 1
+          sampleXNOR' = sampleXor' >> Not
