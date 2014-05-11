@@ -8,7 +8,7 @@ open import PiWare.Synthesizable Atom
 open import PiWare.Circuit.Core
 
 
--- TODO: Only COMBINATIONAL "high-level" circuits right now, should have sequential too...
+-- TODO: Only COMBINATIONAL "high-level" circuits right now, should have sequential...
 
 -- "High-level" circuit datatype, packing the synthesis information
 data ℂ (α β : Set) {#α #β : ℕ} : Set where
