@@ -4,20 +4,23 @@ open import Data.Nat using (ℕ; _+_)
 open import Data.Fin using (Fin)
 
 
--- Core Circuit type
-data Coreℂ (α : Set) : ℕ → ℕ → Set where
+-- Core Circuit types
+
+-- Purely combinational
+data Combℂ (α : Set) : ℕ → ℕ → Set where
     -- Fundamental building blocks
-    Not : Coreℂ α 1 1
-    And : Coreℂ α 2 1
-    Or  : Coreℂ α 2 1
+    Not : Combℂ α 1 1
+    And : Combℂ α 2 1
+    Or  : Combℂ α 2 1
     -- Structure-related
-    Plug : {i o : ℕ} → (f : Fin o → Fin i) → Coreℂ α i o
-    _>>_ : {i m o : ℕ} → Coreℂ α i m → Coreℂ α m o → Coreℂ α i o
-    _><_ : {i₁ o₁ i₂ o₂ : ℕ} → Coreℂ α i₁ o₁ → Coreℂ α i₂ o₂ → Coreℂ α (i₁ + i₂) (o₁ + o₂)
+    Plug : {i o : ℕ} → (f : Fin o → Fin i) → Combℂ α i o
+    _>>_ : {i m o : ℕ} → Combℂ α i m → Combℂ α m o → Combℂ α i o
+    _><_ : {i₁ o₁ i₂ o₂ : ℕ} → Combℂ α i₁ o₁ → Combℂ α i₂ o₂ → Combℂ α (i₁ + i₂) (o₁ + o₂)
     
 infixr 5 _><_
 infixl 4 _>>_
 
-data Streamℂ (α : Set) : ℕ → ℕ → Set where
-    Comb : {i o : ℕ} → Coreℂ α i o → Streamℂ α i o
-    DelayLoop : {i o l : ℕ} → Coreℂ α (i + l) (o + l) → Streamℂ α i o
+-- (Possibly) sequential
+data Coreℂ (α : Set) : ℕ → ℕ → Set where
+    Comb : {i o : ℕ} → Combℂ α i o → Coreℂ α i o
+    Delayed : {i o l : ℕ} → Combℂ α (i + l) (o + l) → Coreℂ α i o

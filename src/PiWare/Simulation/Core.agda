@@ -17,25 +17,23 @@ open import PiWare.Circuit.Core
 open import PiWare.Samples
 
 
-
 allFins : ∀ {n} → Vec (Fin n) n
 allFins {zero}  = ε
 allFins {suc m} = Fz ◁ map Fs allFins
 
-core⟦_⟧ : {i o : ℕ} → Coreℂ 𝔹 i o → (Vec 𝔹 i → Vec 𝔹 o)
-core⟦ Not ⟧        (x ◁ ε)     = [ not x ]
-core⟦ And ⟧        (x ◁ y ◁ ε) = [ x ∧ y ]
-core⟦ Or  ⟧        (x ◁ y ◁ ε) = [ x ∨ y ]
-core⟦ Plug p ⟧     v           = map (λ o → lookup (p o) v) allFins
-core⟦ c₁ >> c₂ ⟧   v           = core⟦ c₂ ⟧ (core⟦ c₁ ⟧ v)
-core⟦ _><_ {i₁} c₁ c₂ ⟧ v with splitAt i₁ v
-core⟦ c₁ >< c₂ ⟧ .(v₁ ++ v₂) | v₁ , v₂ , refl = core⟦ c₁ ⟧ v₁ ++ core⟦ c₂ ⟧ v₂
+⟦_⟧' : {i o : ℕ} → Combℂ 𝔹 i o → (Vec 𝔹 i → Vec 𝔹 o)
+⟦ Not ⟧'        (x ◁ ε)     = [ not x ]
+⟦ And ⟧'        (x ◁ y ◁ ε) = [ x ∧ y ]
+⟦ Or  ⟧'        (x ◁ y ◁ ε) = [ x ∨ y ]
+⟦ Plug p ⟧'     v           = map (λ o → lookup (p o) v) allFins
+⟦ c₁ >> c₂ ⟧'   v           = ⟦ c₂ ⟧' (⟦ c₁ ⟧' v)
+⟦ _><_ {i₁} c₁ c₂ ⟧' v with splitAt i₁ v
+⟦ c₁ >< c₂ ⟧' .(v₁ ++ v₂) | v₁ , v₂ , refl = ⟦ c₁ ⟧' v₁ ++ ⟦ c₂ ⟧' v₂
 
 
-stream[_] : {i o : ℕ} → Streamℂ 𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
-stream[ Comb cc ]      si = smap core⟦ cc ⟧ si
-stream[ DelayLoop cc ] si = replicate false ∷ ♯ evalStreamAcc cc (replicate false) si
-    where evalStreamAcc : {i o l : ℕ} → Coreℂ 𝔹 (i + l) (o + l) → Vec 𝔹 l
-                          → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
-          evalStreamAcc {o = o} c acc (x ∷ xs) with splitAt o (core⟦ c ⟧ (x ++ acc))
-          ... | outBus , backBus , _ = outBus ∷ ♯ evalStreamAcc c backBus (♭ xs)
+⟦_⟧*' : {i o : ℕ} → Coreℂ 𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
+⟦ Comb c     ⟧*' si = smap ⟦ c ⟧' si
+⟦ Delayed c ⟧*'  si = replicate false ∷ ♯ ⟦ c ⟧*'' (replicate false) si
+    where ⟦_⟧*'' : {i o l : ℕ} → Combℂ 𝔹 (i + l) (o + l) → Vec 𝔹 l → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
+          ⟦ c ⟧*'' acc (x ∷ xs) with splitAt _ (⟦ c ⟧' (x ++ acc))
+          ⟦ c ⟧*'' acc (x ∷ xs) | out , back , _ = out ∷ ♯ ⟦ c ⟧*'' back (♭ xs)
