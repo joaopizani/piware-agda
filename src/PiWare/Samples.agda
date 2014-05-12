@@ -5,6 +5,10 @@ open import Data.Product using (_×_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec) renaming (_∷_ to _◁_; [] to ε)
 
+open import Algebra using () renaming (CommutativeSemiring to CS)
+open import Data.Nat.Properties using () renaming (commutativeSemiring to NatCommSemiring)
+open import Algebra.Operations (CS.semiring NatCommSemiring) using (_^_)
+
 open import PiWare.Circuit.Core
 
 open import PiWare.Synthesizable.Bool
@@ -54,45 +58,6 @@ sampleFullAdder =
     where hadd = sampleHalfAdder
 
 
-module RippleCarry where
-  ⇓𝕎⇑-𝔹×Vec[𝔹]n                     : {n : ℕ} → ⇓𝕎⇑ (𝔹 × Vec 𝔹 n)
-  ⇓𝕎⇑-Vec[𝔹]n×𝔹                     : {n : ℕ} → ⇓𝕎⇑ (Vec 𝔹 n × 𝔹)
-  ⇓𝕎⇑-𝔹×[Vec[𝔹]n×𝔹]                : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × 𝔹))
-  ⇓𝕎⇑-[𝔹×Vec[𝔹]n]×𝔹                 : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × Vec 𝔹 n) × 𝔹)
-  ⇓𝕎⇑-Vec[𝔹]n×Vec[𝔹]n               : {n : ℕ} → ⇓𝕎⇑ (Vec 𝔹 n × Vec 𝔹 n)
-  ⇓𝕎⇑-𝔹×[Vec[𝔹]n×Vec[𝔹]n]           : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × Vec 𝔹 n))
-  ⇓𝕎⇑-𝔹×[𝔹×[Vec[𝔹]n×Vec[𝔹]n]]      : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (𝔹 × (Vec 𝔹 n × Vec 𝔹 n)))
-  ⇓𝕎⇑-[𝔹×Vec[𝔹]n]×[𝔹×Vec[𝔹]n]      : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × Vec 𝔹 n) × (𝔹 × Vec 𝔹 n))
-  ⇓𝕎⇑-[𝔹×𝔹]×[Vec[𝔹]n×Vec[𝔹]n]      : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × 𝔹) × (Vec 𝔹 n × Vec 𝔹 n))
-  ⇓𝕎⇑-[𝔹×𝔹]×[𝔹×Vec[𝔹]n×Vec[𝔹]n]   : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × 𝔹) × (𝔹 × Vec 𝔹 n × Vec 𝔹 n))
-  ⇓𝕎⇑-𝔹×[[𝔹×𝔹]×[Vec[𝔹]n×Vec[𝔹]n]] : {n : ℕ} → ⇓𝕎⇑ (𝔹 × ((𝔹 × 𝔹) × (Vec 𝔹 n × Vec 𝔹 n)))
-  ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[Vec[𝔹]n×Vec[𝔹]n] : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × (𝔹 × 𝔹)) × (Vec 𝔹 n × Vec 𝔹 n))
-  ⇓𝕎⇑-[[𝔹×𝔹]×𝔹]×[Vec[𝔹]n×Vec[𝔹]n] : {n : ℕ} → ⇓𝕎⇑ (((𝔹 × 𝔹) × 𝔹) × (Vec 𝔹 n × Vec 𝔹 n))
-
-  ⇓𝕎⇑-𝔹×Vec[𝔹]n                     = ⇓𝕎⇑-×
-  ⇓𝕎⇑-Vec[𝔹]n×𝔹                     = ⇓𝕎⇑-×
-  ⇓𝕎⇑-𝔹×[Vec[𝔹]n×𝔹]                 = ⇓𝕎⇑-×
-  ⇓𝕎⇑-[𝔹×Vec[𝔹]n]×𝔹                 = ⇓𝕎⇑-×
-  ⇓𝕎⇑-Vec[𝔹]n×Vec[𝔹]n               = ⇓𝕎⇑-×
-  ⇓𝕎⇑-𝔹×[Vec[𝔹]n×Vec[𝔹]n]          = ⇓𝕎⇑-×
-  ⇓𝕎⇑-𝔹×[𝔹×[Vec[𝔹]n×Vec[𝔹]n]]      = ⇓𝕎⇑-×
-  ⇓𝕎⇑-[𝔹×Vec[𝔹]n]×[𝔹×Vec[𝔹]n]      = ⇓𝕎⇑-×
-  ⇓𝕎⇑-[𝔹×𝔹]×[Vec[𝔹]n×Vec[𝔹]n]      = ⇓𝕎⇑-×
-  ⇓𝕎⇑-[𝔹×𝔹]×[𝔹×Vec[𝔹]n×Vec[𝔹]n]   = ⇓𝕎⇑-×
-  ⇓𝕎⇑-𝔹×[[𝔹×𝔹]×[Vec[𝔹]n×Vec[𝔹]n]] = ⇓𝕎⇑-×
-  ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[Vec[𝔹]n×Vec[𝔹]n] = ⇓𝕎⇑-× 
-  ⇓𝕎⇑-[[𝔹×𝔹]×𝔹]×[Vec[𝔹]n×Vec[𝔹]n] = ⇓𝕎⇑-×
-
-  -- cin × a × b → s × cout
-  sampleRipple : (n : ℕ) →  let W = Vec 𝔹 n  in  ℂ (𝔹 × W × W) (W × 𝔹)
-  sampleRipple zero    = pid || pFst ⟫ pSwap
-  sampleRipple (suc m) = pid || (pUncons || pUncons ⟫ pIntertwine)  ⟫  middle  ⟫  pCons || pid
-    where middle = pAssoc ⟫ base ⟫ pALR ⟫ recursion ⟫ pARL
-            where pAssoc    = pARL ⟫ pARL || pid
-                  base      = sampleFullAdder || pid
-                  recursion = pid || sampleRipple m
-
-open RippleCarry using (sampleRipple) public
 
 
 sampleXor' : Combℂ 𝔹 2 1
