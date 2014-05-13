@@ -12,7 +12,8 @@ open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+)
 open import Data.Empty using (⊥)
 open import Relation.Nullary using (yes; no; ¬_)
 open import Relation.Nullary.Negation using (contradiction)
-open import Relation.Binary.PropositionalEquality using (sym; refl; cong)
+open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; refl; cong)
+open PropEq.≡-Reasoning
 
 open import PiWare.Circuit.Core
 open import PiWare.Synthesizable Atom
@@ -44,8 +45,10 @@ pid' = Plug id
 -- associativity plugs
 import Algebra as Alg
 import Data.Nat.Properties as NP
-open module CS = Alg.CommutativeSemiring NP.commutativeSemiring using (+-assoc; +-identity)
 open import Data.Nat.Properties.Simple using (*-right-zero)
+open import Algebra.Operations (Alg.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
+open module CS = Alg.CommutativeSemiring NP.commutativeSemiring
+     using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
 
 pALR' : {α : Set} {w v y : ℕ} → Combℂ α ((w + v) + y) (w + (v + y))
 pALR' {_} {w} {v} {y} = Plug p
@@ -65,8 +68,67 @@ pIntertwine' {α} {a} {b} {c} {d} =
     >>  _><_ {α} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {α} {c} {b} {d})
     >>  pARL' {α} {a} {c} {b + d}
 
+
 pHead' : {α : Set} {n w : ℕ} → Combℂ α (suc n * w) w
 pHead' {α} {n} {w} = Plug (inject+ (n * w))
+
+-- TODO: ring solver?
+pVecHalfEq : ∀ n w → w + (n + suc n) * w ≡ w + n * w + (w + n * w)
+pVecHalfEq n w =
+    begin
+      w + (n + suc n) * w
+    ≡⟨ cong (λ x → w + x * w) $ +-comm n (suc n) ⟩
+      w + (suc n + n) * w
+    ≡⟨ refl ⟩
+      w + (suc (n + n)) * w
+    ≡⟨ refl ⟩
+      w + (w + (n + n) * w)
+    ≡⟨ cong (λ x → w + (w + x)) $ distribʳ w n n ⟩
+      w + (w + (n * w + n * w))
+    ≡⟨ cong (λ x → w + x) $ sym $ +-assoc w (n * w) (n * w) ⟩
+      w + (w + n * w + n * w)
+    ≡⟨ cong (λ x → w + (x + n * w)) $ +-comm w (n * w) ⟩
+      w + (n * w + w + n * w)
+    ≡⟨ sym $ +-assoc w (n * w + w) (n * w) ⟩
+      (w + (n * w + w)) + n * w
+    ≡⟨ cong (λ x → x + n * w) $ sym $ +-assoc w (n * w) w ⟩
+      w + n * w + w + n * w
+    ≡⟨ +-assoc (w + n * w) w (n * w) ⟩
+      w + n * w + (w + n * w)
+    ∎
+
+pVecHalf' : {α : Set} {n w : ℕ} → Combℂ α ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
+pVecHalf' {_} {n} {w} rewrite (proj₂ +-identity) n | pVecHalfEq n w = Plug id
+
+eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
+eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
+
+-- TODO: ring solver? Can't use because of exponentiation
+pVecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
+pVecHalfPowEq zero w rewrite (proj₂ +-identity) w = refl
+pVecHalfPowEq (suc n) w =
+    begin
+      2 ^ suc (suc n) * w
+    ≡⟨ refl ⟩
+      2 * 2 ^ suc n * w
+    ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
+      2 * (2 ^ suc n * w)
+    ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
+      2 * (2 ^ n * w  +  2 ^ n * w)
+    ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
+      (2 ^ n * w + 2 ^ n * w) * 2
+    ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
+      2 ^ n * w * 2    +    2 ^ n * w * 2
+    ≡⟨ (let p = *-comm (2 ^ n * w) 2   in  eqAdd p p) ⟩
+      2 * (2 ^ n * w)  +    2 * (2 ^ n * w)
+    ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
+      2 * 2 ^ n * w    +    2 * 2 ^ n * w
+    ≡⟨ refl ⟩
+      2 ^ suc n * w    +    2 ^ suc n * w
+    ∎
+
+pVecHalfPow' : {α : Set} {n w : ℕ} → Combℂ α ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
+pVecHalfPow' {_} {n} {w} rewrite pVecHalfPowEq n w = Plug id
 
 pFork' : {α : Set} {k n : ℕ} → Combℂ α n (k * n)
 pFork' {_} {k} {zero}  rewrite *-right-zero k = pid'
@@ -146,6 +208,12 @@ pSingletonOut : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ →
 pSingletonOut {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  coreC
     where coreC : Combℂ Atom (1 * #α) #α
           coreC rewrite (proj₂ +-identity) #α = pid'
+
+
+pVecHalfPow : {α : Set} {#α n : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ →  ℂ  (Vec α (2 ^ suc n))  (Vec α (2 ^ n) × Vec α (2 ^ n))
+pVecHalfPow {_} {#α} {k} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 2 ^ suc k} ⦃ sα ⦄ ⦄ 
+                                      ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-Vec {n = 2 ^ k} ⦃ sα ⦄ ⦄ ⦃ ⇓𝕎⇑-Vec {n = 2 ^ k} ⦃ sα ⦄ ⦄ ⦄ 
+                                      (pVecHalfPow' {Atom} {k} {#α})
 
 
 -- forking
