@@ -5,9 +5,9 @@ open import Data.Product using (_×_; _,_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec; splitAt; _++_) renaming (_∷_ to _◁_; [] to ε)
 
-open import Algebra
-open import Data.Nat.Properties using () renaming (commutativeSemiring to NatCommSemiring)
-open import Algebra.Operations (CommutativeSemiring.semiring NatCommSemiring) using (_^_)
+import Algebra as Alg
+open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
+open import Algebra.Operations (Alg.CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 open import Relation.Binary.PropositionalEquality using (refl)
 
 open import PiWare.Circuit.Core
@@ -60,17 +60,9 @@ sampleFullAdder =
     where hadd = sampleHalfAdder
 
 
-sampleXor' : Combℂ 𝔹 2 1
-sampleXor' =
-       (pFork' {𝔹} {2} {2})
-    >> ((Not >< pid' {𝔹} {1} >> And)  ><  (pid' {𝔹} {1} >< Not >> And))
-    >> Or
-
 -- Sequential. In: (repeat false)   Out: cycle [false, true]...
-sampleToggleXNOR' : Coreℂ 𝔹 1 1
-sampleToggleXNOR' = Delayed (sampleXNOR' >> pFork' {𝔹} {2} {1})
-    where sampleXNOR' : Combℂ 𝔹 2 1
-          sampleXNOR' = sampleXor' >> Not
+sampleToggleXNOR : ℂ* 𝔹 𝔹
+sampleToggleXNOR = delayLoopC (sampleXor ⟫ ¬C ⟫ pFork×)
 
 
 -- MUXES
@@ -85,28 +77,38 @@ sampleMux2to1 =
     ⟫ (¬C || pFst ⟫ ∧C)  ||  (pid || pSnd ⟫ ∧C)
     ⟫ ∨C
 
-open module NatCS = CommutativeSemiring NatCommSemiring using (+-identity)
+-- input × load → out
+sampleReg : ℂ* (𝔹 × 𝔹) 𝔹
+sampleReg = delayLoopC (pALR ⟫ sampleMux2to1 ⟫ pFork×)
 
-private
-    ⇓𝕎⇑-A×[I] : {n : ℕ} → let A = Vec 𝔹 n in let I = Vec 𝔹 (2 ^ n) in ⇓𝕎⇑ (A × I)
-    ⇓𝕎⇑-A×[I] = ⇓𝕎⇑-×
+-- open module ℕ-CS = Alg.CommutativeSemiring ℕ-commSemiring using (+-identity)
 
-    ⇓𝕎⇑-𝔹×Vec[𝔹]n : {n : ℕ} → ⇓𝕎⇑ (𝔹 × Vec 𝔹 n)
-    ⇓𝕎⇑-𝔹×Vec[𝔹]n = ⇓𝕎⇑-×
+-- private
+--     ⇓𝕎⇑-A×[I] : {n : ℕ} → let A = Vec 𝔹 n in let I = Vec 𝔹 (2 ^ n) in ⇓𝕎⇑ (A × I)
+--     ⇓𝕎⇑-A×[I] = ⇓𝕎⇑-×
+
+--     ⇓𝕎⇑-𝔹×Vec[𝔹]n : {n : ℕ} → ⇓𝕎⇑ (𝔹 × Vec 𝔹 n)
+--     ⇓𝕎⇑-𝔹×Vec[𝔹]n = ⇓𝕎⇑-×
     
-    ⇓𝕎⇑-[𝔹×Vec[𝔹]n]×Vec[𝔹][2^n] : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × Vec 𝔹 n) × Vec 𝔹 (2 ^ n))
-    ⇓𝕎⇑-[𝔹×Vec[𝔹]n]×Vec[𝔹][2^n] = ⇓𝕎⇑-×
+--     ⇓𝕎⇑-[𝔹×Vec[𝔹]n]×Vec[𝔹][2^n] : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × Vec 𝔹 n) × Vec 𝔹 (2 ^ n))
+--     ⇓𝕎⇑-[𝔹×Vec[𝔹]n]×Vec[𝔹][2^n] = ⇓𝕎⇑-×
 
-    ⇓𝕎⇑-𝔹×[Vec[𝔹]n×Vec[𝔹][2^n]] : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × Vec 𝔹 (2 ^ n)))
-    ⇓𝕎⇑-𝔹×[Vec[𝔹]n×Vec[𝔹][2^n]] = ⇓𝕎⇑-×
+--     ⇓𝕎⇑-𝔹×[Vec[𝔹]n×Vec[𝔹][2^n]] : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × Vec 𝔹 (2 ^ n)))
+--     ⇓𝕎⇑-𝔹×[Vec[𝔹]n×Vec[𝔹][2^n]] = ⇓𝕎⇑-×
+    
+--     ⇓𝕎⇑-[Vec[𝔹]n×Vec[𝔹]n]×[Vec[𝔹][2^n]×Vec[𝔹][2^n]] : {n : ℕ} → ⇓𝕎⇑ ((Vec 𝔹 n × Vec 𝔹 n) × (Vec 𝔹 (2 ^ n) × Vec 𝔹 (2 ^ n)))
+--     ⇓𝕎⇑-[Vec[𝔹]n×Vec[𝔹]n]×[Vec[𝔹][2^n]×Vec[𝔹][2^n]] = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄
 
-sampleMux : (n : ℕ) → let A = Vec 𝔹 n  in  ℂ (A × Vec 𝔹 (2 ^ n)) 𝔹 {2 ^ n} {1}
-sampleMux zero = pSnd ⟫ pSingletonOut
-sampleMux (suc n) rewrite (proj₂ +-identity) (2 ^ n) =
-      pUncons || pid
-    ⟫        pALR
-    ⟫ pid ||      pFork× || pVecHalfPow  -- needs to become a Combℂ
-    ⟫ pid ||         pIntertwine
-    ⟫ pid || sampleMux n || sampleMux n
-    ⟫                sampleMux2to1
+--     ⇓𝕎⇑-𝔹×[Vec[𝔹]n×Vec[𝔹]n]×[Vec[𝔹][2^n]×Vec[𝔹][2^n]] : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × Vec 𝔹 n) × (Vec 𝔹 (2 ^ n) × Vec 𝔹 (2 ^ n)))
+--     ⇓𝕎⇑-𝔹×[Vec[𝔹]n×Vec[𝔹]n]×[Vec[𝔹][2^n]×Vec[𝔹][2^n]] = ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-𝔹 ⦄ ⦃ ⇓𝕎⇑-× ⦃ ⇓𝕎⇑-× ⦄ ⦃ ⇓𝕎⇑-× ⦄ ⦄
+
+-- sampleMux : (n : ℕ) → let A = Vec 𝔹 n  in  ℂ (A × Vec 𝔹 (2 ^ n)) 𝔹 {2 ^ n} {1}
+-- sampleMux zero = pSnd ⟫ pSingletonOut
+-- sampleMux (suc n) rewrite (proj₂ +-identity) (2 ^ n) =
+--       pUncons || pid
+--     ⟫        pALR
+--     ⟫ pid ||      pFork× || pVecHalfPow  -- needs to become a Combℂ
+--     ⟫ pid ||         pIntertwine
+--     ⟫ pid || sampleMux n || sampleMux n
+--     ⟫                sampleMux2to1
 
