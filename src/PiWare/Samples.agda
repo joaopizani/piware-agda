@@ -69,7 +69,8 @@ sampleToggleXNOR = delayLoopC (sampleXor ⟫ ¬C ⟫ pFork×)
 ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] : ⇓𝕎⇑ ((𝔹 × (𝔹 × 𝔹)) × (𝔹 × (𝔹 × 𝔹)))
 ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] = ⇓𝕎⇑-×
 
--- TODO: booleans for now. How to make it generic? Look at lava
+-- TODO: booleans for now. How to make it generic?
+-- Look at lava: do we need an if-then-else constructor in the BASE CIRCUIT TYPE?
 -- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
 sampleMux2to1 : ℂ (𝔹 × (𝔹 × 𝔹)) 𝔹
 sampleMux2to1 =
@@ -79,7 +80,7 @@ sampleMux2to1 =
 
 -- input × load → out
 sampleReg : ℂ* (𝔹 × 𝔹) 𝔹
-sampleReg = delayLoopC (pALR ⟫ sampleMux2to1 ⟫ pFork×)
+sampleReg = delayLoopC (pALR ⟫ pid || pSwap ⟫ sampleMux2to1 ⟫ pFork×)
 
 -- open module ℕ-CS = Alg.CommutativeSemiring ℕ-commSemiring using (+-identity)
 
