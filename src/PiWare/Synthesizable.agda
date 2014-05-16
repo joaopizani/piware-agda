@@ -16,8 +16,8 @@ open import Relation.Binary.PropositionalEquality using (refl)
 record ⇓𝕎⇑ (α : Set) {#α : ℕ} : Set where
     constructor ⇓𝕎⇑[_,_]
     field
-        ⇓ : α → Vec Atom #α
-        ⇑ : Vec Atom #α → α
+        ⇓ : α → 𝕎 #α
+        ⇑ : 𝕎 #α → α
 
 open ⇓𝕎⇑ {{...}}
 

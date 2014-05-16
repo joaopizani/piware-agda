@@ -73,11 +73,12 @@ regFirstFalse = ⟦ sampleReg ⟧* (repeat (true , true))
 proofRegHeadFalse : ∀ {loads ins} → head (⟦ sampleReg ⟧* (zipWith _,_ loads ins)) ≡ false
 proofRegHeadFalse = refl
 
-proofRegTailNeverLoad : tail (⟦ sampleReg ⟧* (repeat (false , true))) ≈ repeat false
-proofRegTailNeverLoad = refl ∷ ♯ proofRegTailNeverLoad
+proofRegTailNeverLoad' : tail (⟦ sampleReg ⟧* (repeat (false , true))) ≈ repeat false
+proofRegTailNeverLoad' = refl ∷ ♯ proofRegTailNeverLoad'
 
-proofRegTailNeverLoad' : ∀ xs → ⟦ sampleReg ⟧* (zipWith _,_ (repeat false) xs) ≈ false ∷ ♯ xs
-proofRegTailNeverLoad' xs = refl ∷ ♯ {!!}
+-- TODO: why doesn't it work?
+proofRegTailNeverLoad : ∀ xs → tail (⟦ sampleReg ⟧* (zipWith _,_ (repeat false) xs)) ≈ xs
+proofRegTailNeverLoad xs = {!!}
 
 
 proofTailFalse : tail (repeat false) ≈ repeat false
