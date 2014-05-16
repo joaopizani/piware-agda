@@ -4,7 +4,10 @@ open import Data.Product using (_×_; _,_)
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false)
                       renaming (Bool to 𝔹)
 
+open import Data.Vec using () renaming (_∷_ to _◁_; [] to ε)
+open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Coinduction
 
 open import PiWare.Samples
 open import PiWare.Simulation
@@ -55,3 +58,33 @@ proofFullAdderBool false true  true  = refl
 proofFullAdderBool false true  false = refl
 proofFullAdderBool false false true  = refl
 proofFullAdderBool false false false = refl
+
+toggle : Stream 𝔹
+toggle = ⟦ sampleToggleXNOR ⟧* (repeat false)
+
+regFirstFalse : Stream 𝔹
+regFirstFalse = ⟦ sampleReg ⟧* (repeat (true , true))
+
+
+-- head is always false
+-- when ¬load, then tail of output is repeat head of input
+-- when load, tail of output is input
+
+proofRegHeadFalse : ∀ {loads ins} → head (⟦ sampleReg ⟧* (zipWith _,_ loads ins)) ≡ false
+proofRegHeadFalse = refl
+
+proofRegTailNeverLoad : tail (⟦ sampleReg ⟧* (repeat (false , true))) ≈ repeat false
+proofRegTailNeverLoad = refl ∷ ♯ proofRegTailNeverLoad
+
+proofRegTailNeverLoad' : ∀ xs → ⟦ sampleReg ⟧* (zipWith _,_ (repeat false) xs) ≈ false ∷ ♯ xs
+proofRegTailNeverLoad' xs = refl ∷ ♯ {!!}
+
+
+proofTailFalse : tail (repeat false) ≈ repeat false
+proofTailFalse = refl ∷ ♯ proofTailFalse
+
+proofRepeatFalse : repeat false ≈ false ∷ ♯ repeat false
+proofRepeatFalse = refl ∷ ♯ proofTailFalse
+
+-- proofRepeatFalse : repeat false ≈ false ∷ ♯ repeat false
+-- proofRepeatFalse = refl ∷ {!♯ proofRepeatFalse!}
