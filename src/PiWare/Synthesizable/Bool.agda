@@ -2,18 +2,17 @@ module PiWare.Synthesizable.Bool where
 
 open import Data.Product using (_×_)
 open import Data.Bool using () renaming (Bool to 𝔹)
-open import Data.Vec using (Vec; [_]; head)
+open import Data.Vec using (Vec; head) renaming ([_] to singleton)
 
-import PiWare.Synthesizable
-open PiWare.Synthesizable 𝔹 public
+open import PiWare.Synthesizable 𝔹 public
 
 
 -- basic instance
 ⇓𝕎⇑-𝔹 : ⇓𝕎⇑ 𝔹
-⇓𝕎⇑-𝔹 = ⇓𝕎⇑[ [_] , head ]
+⇓𝕎⇑-𝔹 = ⇓𝕎⇑[ singleton , head ]
 
 
--- TODO: should we also put "derivable" instances (found by recursive resolution) here?
+-- derivable instances (can be resolved recursively from the basics)
 ⇓𝕎⇑-Vec𝔹 : ∀ {n} → ⇓𝕎⇑ (Vec 𝔹 n)
 ⇓𝕎⇑-Vec𝔹 = ⇓𝕎⇑-Vec
 

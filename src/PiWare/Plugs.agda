@@ -6,8 +6,7 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Vec using (Vec)
 open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≤_; _≥_; z≤n; s≤s; ≤-pred)
 open import Data.Nat.DivMod using (_divMod_; DivMod)
-open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+)
-                     renaming (zero to Fz; suc to Fs)
+open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+) renaming (zero to Fz; suc to Fs)
 
 open import Data.Empty using (⊥)
 open import Relation.Nullary using (yes; no; ¬_)
@@ -35,10 +34,10 @@ private
     uniteFinSwap {_} {m} (inj₁ x) = raise   m x
     uniteFinSwap {n} {_} (inj₂ y) = inject+ n y
 
-    pSwap' : {α : Set} {n m : ℕ} → Combℂ α (n + m) (m + n)
+    pSwap' : {α : Set} {n m : ℕ} → ℂ' α (n + m) (m + n)
     pSwap' {_} {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
 
-    pid' : ∀ {α n} → Combℂ α n n
+    pid' : ∀ {α n} → ℂ' α n n
     pid' = Plug id
 
     -- associativity plugs
@@ -49,26 +48,26 @@ private
     open module CS = Alg.CommutativeSemiring NP.commutativeSemiring
          using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
 
-    pALR' : {α : Set} {w v y : ℕ} → Combℂ α ((w + v) + y) (w + (v + y))
+    pALR' : {α : Set} {w v y : ℕ} → ℂ' α ((w + v) + y) (w + (v + y))
     pALR' {_} {w} {v} {y} = Plug p
         where p : Fin (w + (v + y)) → Fin ((w + v) + y)
               p x rewrite +-assoc w v y = x
 
-    pARL' : {α : Set} {w v y : ℕ} → Combℂ α (w + (v + y)) ((w + v) + y)
+    pARL' : {α : Set} {w v y : ℕ} → ℂ' α (w + (v + y)) ((w + v) + y)
     pARL' {_} {w} {v} {y} = Plug p
         where p : Fin ((w + v) + y) → Fin (w + (v + y))
               p x rewrite sym (+-assoc w v y) = x
 
-    pIntertwine' : {α : Set} {a b c d : ℕ} → Combℂ α ((a + b) + (c + d)) ((a + c) + (b + d))
+    pIntertwine' : {α : Set} {a b c d : ℕ} → ℂ' α ((a + b) + (c + d)) ((a + c) + (b + d))
     pIntertwine' {α} {a} {b} {c} {d} =
             pALR' {α} {a} {b} {c + d}
-        >>  _><_ {α} {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {α} {b} {c} {d})
-        >>  _><_ {α} {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {α} {b} {c}) >< pid')
-        >>  _><_ {α} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {α} {c} {b} {d})
-        >>  pARL' {α} {a} {c} {b + d}
+        ⟫'  _|'_ {α} {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {α} {b} {c} {d})
+        ⟫'  _|'_ {α} {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {α} {b} {c}) |' pid')
+        ⟫'  _|'_ {α} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {α} {c} {b} {d})
+        ⟫'  pARL' {α} {a} {c} {b + d}
 
 
-    pHead' : {α : Set} {n w : ℕ} → Combℂ α (suc n * w) w
+    pHead' : {α : Set} {n w : ℕ} → ℂ' α (suc n * w) w
     pHead' {α} {n} {w} = Plug (inject+ (n * w))
 
 
@@ -78,7 +77,7 @@ private
     twiceSuc = solve 2 eq refl  -- ring solver creates the equality proof
         where eq = λ n w →  w :+ (n :+ (con 1 :+ n)) :* w  :=  w :+ n :* w :+ (w :+ n :* w)
 
-    pVecHalf' : {α : Set} {n w : ℕ} → Combℂ α ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
+    pVecHalf' : {α : Set} {n w : ℕ} → ℂ' α ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
     pVecHalf' {_} {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
 
 
@@ -93,23 +92,23 @@ private
         2 * (2 ^ suc n * w)                ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
         2 * (2 ^ n * w  +  2 ^ n * w)      ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
         (2 ^ n * w + 2 ^ n * w) * 2        ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
-        2 ^ n * w * 2   +  2 ^ n * w * 2   ≡⟨ (let p = *-comm (2 ^ n * w) 2   in  eqAdd p p) ⟩
+        2 ^ n * w * 2   +  2 ^ n * w * 2   ≡⟨ (let p = *-comm (2 ^ n * w) 2       in  eqAdd p p) ⟩
         2 * (2 ^ n * w) +  2 * (2 ^ n * w) ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
         2 * 2 ^ n * w   +  2 * 2 ^ n * w   ≡⟨ refl ⟩
         2 ^ suc n * w   +  2 ^ suc n * w   ∎
 
-    pVecHalfPow' : {α : Set} {n w : ℕ} → Combℂ α ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
+    pVecHalfPow' : {α : Set} {n w : ℕ} → ℂ' α ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
     pVecHalfPow' {_} {n} {w} rewrite pVecHalfPowEq n w = Plug id
 
 
-    pFork' : {α : Set} {k n : ℕ} → Combℂ α n (k * n)
+    pFork' : {α : Set} {k n : ℕ} → ℂ' α n (k * n)
     pFork' {_} {k} {zero}  rewrite *-right-zero k = pid'
     pFork' {_} {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
 
-    pFst' : {α : Set} {m n : ℕ} → Combℂ α (m + n) m
+    pFst' : {α : Set} {m n : ℕ} → ℂ' α (m + n) m
     pFst' {_} {m} {n} = Plug (inject+ n)
 
-    pSnd' : {α : Set} {m n : ℕ} → Combℂ α (m + n) n
+    pSnd' : {α : Set} {m n : ℕ} → ℂ' α (m + n) n
     pSnd' {_} {m} {n} = Plug (raise m)
 
 
@@ -170,17 +169,17 @@ pCons {n = k} ⦃ sα ⦄ =
     
 
 pSingletonIn : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (Vec α 1)
-pSingletonIn {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  coreC
-    where coreC : Combℂ Atom #α (1 * #α)
-          coreC rewrite (proj₂ +-identity) #α = pid'
+pSingletonIn {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  c'
+    where c' : ℂ' Atom #α (1 * #α)
+          c' rewrite (proj₂ +-identity) #α = pid'
 
 ⇓𝕎⇑-pSingletonIn-out : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α 1)
 ⇓𝕎⇑-pSingletonIn-out ⦃ sα ⦄ = ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄
           
 pSingletonOut : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ (Vec α 1) α
-pSingletonOut {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  coreC
-    where coreC : Combℂ Atom (1 * #α) #α
-          coreC rewrite (proj₂ +-identity) #α = pid'
+pSingletonOut {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  c'
+    where c' : ℂ' Atom (1 * #α) #α
+          c' rewrite (proj₂ +-identity) #α = pid'
 
 
 pVecHalf : {α : Set} {#α n : ℕ} ⦃ sα : ⇓𝕎⇑ α {#α} ⦄
@@ -205,9 +204,9 @@ pForkVec {_} {#α} {k} ⦃ sα ⦄ =
     Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = k} ⦃ sα ⦄ ⦄  (pFork' {Atom} {k} {#α})
 
 pFork× : {α : Set} {#α : ℕ} → ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ → ℂ α (α × α)
-pFork× {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  coreC
-    where coreC : Combℂ Atom #α (#α + #α)
-          coreC rewrite sym $ cong (_+_ #α) ((proj₂ +-identity) #α) = pFork' {Atom} {2} {#α}
+pFork× {_} {#α} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  c'
+    where c' : ℂ' Atom #α (#α + #α)
+          c' rewrite sym $ cong (_+_ #α) ((proj₂ +-identity) #α) = pFork' {Atom} {2} {#α}
 
 
 -- pairs

@@ -1,10 +1,8 @@
 module PiWare.ProofSamples where
 
 open import Data.Product using (_×_; _,_)
-open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false)
-                      renaming (Bool to 𝔹)
+open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to 𝔹)
 
-open import Data.Vec using () renaming (_∷_ to _◁_; [] to ε)
 open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Coinduction
@@ -60,7 +58,7 @@ proofFullAdderBool false false true  = refl
 proofFullAdderBool false false false = refl
 
 toggle : Stream 𝔹
-toggle = ⟦ sampleToggleXNOR ⟧* (repeat false)
+toggle = ⟦ sampleToggle ⟧* (repeat false)
 
 regFirstFalse : Stream 𝔹
 regFirstFalse = ⟦ sampleReg ⟧* (repeat (true , true))
