@@ -4,10 +4,9 @@ open import Function using (_$_)
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
-open import Data.Bool using (not; _∧_; _∨_; false; true) renaming (Bool to 𝔹)
+open import Data.Bool using (not; _∧_; _∨_; false) renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; <_,_>)
-open import Data.Vec using (Vec; [_]; _++_; splitAt; map; lookup; replicate)
-                     renaming (_∷_ to _◁_; [] to ε)
+open import Data.Vec using (Vec; [_]; _++_; splitAt; map; lookup; replicate) renaming (_∷_ to _◁_; [] to ε)
 
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Data.Stream using (Stream; _∷_; zipWith) renaming (map to smap)
@@ -16,6 +15,7 @@ open import Coinduction
 open import PiWare.Circuit.Core
 
 
+-- helpers for circuit evaluation (both combinational and sequential)
 allFins : ∀ {n} → Vec (Fin n) n
 allFins {zero}  = ε
 allFins {suc m} = Fz ◁ map Fs allFins
@@ -24,6 +24,7 @@ plugOutputs : {α : Set} {o i : ℕ} → (Fin o → Fin i) → Vec α i → Vec 
 plugOutputs p ins = map (λ fin → lookup (p fin) ins) allFins
 
 
+-- stream helpers for sequential circuit evaluation
 fstHalfVecStream : {α : Set} {n m : ℕ} → Stream (Vec α (n + m)) → Stream (Vec α n)
 fstHalfVecStream {n = k} (v ∷ vs) with splitAt k v
 fstHalfVecStream (.(v₁ ++ v₂) ∷ vs) | v₁ , v₂ , refl = v₁ ∷ ♯ fstHalfVecStream (♭ vs)
@@ -39,16 +40,18 @@ joinVecStream : {α : Set} {n m : ℕ} → Stream (Vec α n) × Stream (Vec α m
 joinVecStream (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 
 
-⟦_⟧' : {i o : ℕ} → Combℂ 𝔹 i o → (Vec 𝔹 i → Vec 𝔹 o)
-⟦ Not ⟧'        (x ◁ ε)     = [ not x ]
-⟦ And ⟧'        (x ◁ y ◁ ε) = [ x ∧ y ]
-⟦ Or  ⟧'        (x ◁ y ◁ ε) = [ x ∨ y ]
-⟦ Plug p ⟧'     v           = plugOutputs p v
-⟦ c₁ >> c₂ ⟧'   v           = ⟦ c₂ ⟧' (⟦ c₁ ⟧' v)
-⟦ _><_ {i₁} c₁ c₂ ⟧' v with splitAt i₁ v
-⟦ c₁ >< c₂ ⟧' .(v₁ ++ v₂) | v₁ , v₂ , refl = ⟦ c₁ ⟧' v₁ ++ ⟦ c₂ ⟧' v₂
+-- combinational eval
+⟦_⟧' : {i o : ℕ} → ℂ' 𝔹 i o → (Vec 𝔹 i → Vec 𝔹 o)
+⟦ Not ⟧'      (x ◁ ε)     = [ not x ]
+⟦ And ⟧'      (x ◁ y ◁ ε) = [ x ∧ y ]
+⟦ Or  ⟧'      (x ◁ y ◁ ε) = [ x ∨ y ]
+⟦ Plug p ⟧'   v           = plugOutputs p v
+⟦ c₁ ⟫' c₂ ⟧' v           = ⟦ c₂ ⟧' (⟦ c₁ ⟧' v)
+⟦ _|'_ {i₁} c₁ c₂ ⟧' v with splitAt i₁ v
+⟦ c₁ |' c₂ ⟧' .(v₁ ++ v₂) | v₁ , v₂ , refl = ⟦ c₁ ⟧' v₁ ++ ⟦ c₂ ⟧' v₂
 
-⟦_⟧*'' : {i o l : ℕ} → Combℂ 𝔹 (i + l) (o + l) → Vec 𝔹 l → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
+-- sequential eval (accumulating parameter)
+⟦_⟧*'' : {i o l : ℕ} → ℂ' 𝔹 (i + l) (o + l) → Vec 𝔹 l → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
 ⟦ c ⟧*'' acc (x ∷ xs) with splitAt _ (⟦ c ⟧' (x ++ acc))
 ⟦ c ⟧*'' acc (x ∷ xs) | out , back , _ = out ∷ ♯ ⟦ c ⟧*'' back (♭ xs)
 

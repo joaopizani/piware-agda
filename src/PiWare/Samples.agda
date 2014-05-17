@@ -3,12 +3,11 @@ module PiWare.Samples where
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Vec using (Vec; splitAt; _++_) renaming (_∷_ to _◁_; [] to ε)
+open import Data.Vec using (Vec)
 
 import Algebra as Alg
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
 open import Algebra.Operations (Alg.CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
-open import Relation.Binary.PropositionalEquality using (refl)
 
 open import PiWare.Circuit.Core
 
@@ -18,36 +17,36 @@ open import PiWare.Circuit 𝔹
 
 
 
-¬C : ℂ 𝔹 𝔹
-¬C = Mkℂ Not
+¬ℂ : ℂ 𝔹 𝔹
+¬ℂ = Mkℂ Not
 
-∧C : ℂ (𝔹 × 𝔹) 𝔹
-∧C = Mkℂ And
+∧ℂ : ℂ (𝔹 × 𝔹) 𝔹
+∧ℂ = Mkℂ And
 
-∨C : ℂ (𝔹 × 𝔹) 𝔹
-∨C = Mkℂ Or
+∨ℂ : ℂ (𝔹 × 𝔹) 𝔹
+∨ℂ = Mkℂ Or
 
 
 sampleNotNotNot : ℂ 𝔹 𝔹
-sampleNotNotNot = ¬C ⟫ ¬C ⟫ ¬C
+sampleNotNotNot = ¬ℂ ⟫ ¬ℂ ⟫ ¬ℂ
 
 sampleNand : ℂ (𝔹 × 𝔹) 𝔹
-sampleNand = ∧C ⟫ ¬C
+sampleNand = ∧ℂ ⟫ ¬ℂ
 
 sample1And2Or3And4 : ℂ ((𝔹 × 𝔹) × (𝔹 × 𝔹)) 𝔹
-sample1And2Or3And4 = (∧C || ∧C) ⟫ ∨C
+sample1And2Or3And4 = (∧ℂ || ∧ℂ) ⟫ ∨ℂ
 
 sampleXor : ℂ (𝔹 × 𝔹) 𝔹
 sampleXor =
       pFork×
-    ⟫ (¬C || pid ⟫ ∧C)  ||  (pid || ¬C ⟫ ∧C)
-    ⟫ ∨C
+    ⟫ (¬ℂ || pid ⟫ ∧ℂ)  ||  (pid || ¬ℂ ⟫ ∧ℂ)
+    ⟫ ∨ℂ
 
 -- a × b → c × s
 sampleHalfAdder : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)
 sampleHalfAdder =
       pFork×
-    ⟫ ∧C || sampleXor
+    ⟫ ∧ℂ  || sampleXor
 
 -- (a × b) × cin → cout × s
 sampleFullAdder : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)
@@ -56,13 +55,13 @@ sampleFullAdder =
     ⟫    pALR
     ⟫ pid  || hadd
     ⟫    pARL
-    ⟫ ∨C   || pid
+    ⟫ ∨ℂ   || pid
     where hadd = sampleHalfAdder
 
 
 -- Sequential. In: (repeat false)   Out: cycle [false, true]...
-sampleToggleXNOR : ℂ* 𝔹 𝔹
-sampleToggleXNOR = delayLoopC (sampleXor ⟫ ¬C ⟫ pFork×)
+sampleToggle : ℂ* 𝔹 𝔹
+sampleToggle = delayℂ (sampleXor ⟫ ¬ℂ ⟫ pFork×)
 
 
 -- MUXES
@@ -75,13 +74,13 @@ sampleToggleXNOR = delayLoopC (sampleXor ⟫ ¬C ⟫ pFork×)
 sampleMux2to1 : ℂ (𝔹 × (𝔹 × 𝔹)) 𝔹
 sampleMux2to1 =
       pFork×
-    ⟫ (¬C || pFst ⟫ ∧C)  ||  (pid || pSnd ⟫ ∧C)
-    ⟫ ∨C
+    ⟫ (¬ℂ || pFst ⟫ ∧ℂ)  ||  (pid || pSnd ⟫ ∧ℂ)
+    ⟫ ∨ℂ
 
 
 -- input × load → out
 sampleReg : ℂ* (𝔹 × 𝔹) 𝔹
-sampleReg = delayLoopC (pALR ⟫ pid || pSwap ⟫ sampleMux2to1 ⟫ pFork×)
+sampleReg = delayℂ (pALR ⟫ pid || pSwap ⟫ sampleMux2to1 ⟫ pFork×)
 
 -- open module ℕ-CS = Alg.CommutativeSemiring ℕ-commSemiring using (+-identity)
 
@@ -109,7 +108,7 @@ sampleReg = delayLoopC (pALR ⟫ pid || pSwap ⟫ sampleMux2to1 ⟫ pFork×)
 -- sampleMux (suc n) rewrite (proj₂ +-identity) (2 ^ n) =
 --       pUncons || pid
 --     ⟫        pALR
---     ⟫ pid ||      pFork× || pVecHalfPow  -- needs to become a Combℂ
+--     ⟫ pid ||      pFork× || pVecHalfPow
 --     ⟫ pid ||         pIntertwine
 --     ⟫ pid || sampleMux n || sampleMux n
 --     ⟫                sampleMux2to1
