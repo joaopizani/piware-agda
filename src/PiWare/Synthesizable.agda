@@ -1,8 +1,9 @@
-module PiWare.Synthesizable (Atom : Set) where
+module PiWare.Synthesizable (Atom : AtomType) where
 
 open import Data.Product using (_×_; _,_)
+open import Data.Sum using (_⊎_)
 open import Data.Nat using (ℕ; _+_; _*_)
-open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map)
+open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map) renaming ([] to ε; _∷_ to _◁_)
 
 open import Relation.Binary.PropositionalEquality using (refl)
 
@@ -30,6 +31,20 @@ open ⇓𝕎⇑ {{...}}
           up : 𝕎 (#α + #β) → (α × β)
           up atoms with splitAt #α atoms
           up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = (⇑ ⇓a) , (⇑ ⇓b)
+
+padding : (#α #β actual : ℕ) {actual ≤ #α ⊔ #β} → ℕ
+padding #α #β actual = 
+
+⇓𝕎⇑-⊎ : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α ⊎ β)
+⇓𝕎⇑-⊎ {α} {β} {#α} {#β} = ⇓𝕎⇑ [ down , up ]
+    where #[α⊎β] = suc (#α ⊔ #β)
+
+          down : (α ⊎ β) → 𝕎 #[α⊎β]
+          down (inj₁ a) = atom# (# 0) ◁ ⇓ a
+          down (inj₂ b) = atom# (# 1) ◁ ⇓ b
+
+          up : 𝕎 #[α⊎β] → (α ⊎ β)
+          up (tag ◁ )
 
 ⇓𝕎⇑-Vec : {α : Set} {#α n : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ → ⇓𝕎⇑ (Vec α n)
 ⇓𝕎⇑-Vec {α} {#α} {n} = ⇓𝕎⇑[ down , up ]
