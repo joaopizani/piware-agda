@@ -3,7 +3,7 @@ module PiWare.ProofSamples where
 open import Data.Product using (_×_; _,_)
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to 𝔹)
 
-open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail)
+open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail; map)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Coinduction
 
@@ -74,10 +74,19 @@ proofRegHeadFalse = refl
 proofRegTailNeverLoad' : tail (⟦ sampleReg ⟧* (repeat (false , true))) ≈ repeat false
 proofRegTailNeverLoad' = refl ∷ ♯ proofRegTailNeverLoad'
 
--- TODO: why doesn't it work?
-proofRegTailNeverLoad : ∀ xs → tail (⟦ sampleReg ⟧* (zipWith _,_ (repeat false) xs)) ≈ xs
-proofRegTailNeverLoad xs = {!!}
+proofToggle : ∀ xs → tail (⟦ sampleToggle ⟧* xs) ≈ map not xs
+proofToggle (true ∷ xs) = refl ∷ ♯ proofToggle (♭ xs)
+proofToggle (false ∷ xs) = refl ∷ {!!}
 
+-- TODO: why doesn't it work?
+proofRegTailNeverLoad : ∀ xs → tail (⟦ sampleReg ⟧* (zipWith _,_ xs (repeat false))) ≈ xs
+proofRegTailNeverLoad (true ∷ xs) = {!refl ∷ ?!}
+proofRegTailNeverLoad (false ∷ xs) = refl ∷ ♯ proofRegTailNeverLoad (♭ xs)
+
+
+x = take 7 (⟦ sampleReg ⟧* (zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (repeat false) ))
+
+y = take 7 (⟦ sampleToggle ⟧* (repeat false))
 
 proofTailFalse : tail (repeat false) ≈ repeat false
 proofTailFalse = refl ∷ ♯ proofTailFalse

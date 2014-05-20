@@ -79,7 +79,7 @@ sampleMux2to1 =
 
 -- input × load → out
 sampleReg : ℂ* (𝔹 × 𝔹) 𝔹
-sampleReg = delayℂ (pALR ⟫ pid || pSwap ⟫ sampleMux2to1 ⟫ pFork×)
+sampleReg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ sampleMux2to1 ⟫ pFork×)
 
 -- open module ℕ-CS = Alg.CommutativeSemiring ℕ-commSemiring using (+-identity)
 
