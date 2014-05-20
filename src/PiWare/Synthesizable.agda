@@ -1,10 +1,20 @@
-module PiWare.Synthesizable (Atom : AtomType) where
+open import PiWare.Atom
 
+module PiWare.Synthesizable (AI : AtomInfo) where
+
+open module AI' = AtomInfo AI
+
+open import Function using (_$_; _∘_)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; _,_)
-open import Data.Sum using (_⊎_)
-open import Data.Nat using (ℕ; _+_; _*_)
-open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map) renaming ([] to ε; _∷_ to _◁_)
+open import Data.Bool using (false; true; if_then_else_)
+open import Data.Fin using (Fin; fromℕ≤; toℕ; _ℕ-_) renaming (zero to Fz; suc to Fs)
+open import Data.Nat using (ℕ; _+_; _*_; _≤?_; z≤n; s≤s; zero; suc; _≤_; _⊔_)
+open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map; take; replicate)
+                     renaming ([] to ε; _∷_ to _◁_)
 
+open import Relation.Nullary using (yes; no; ¬_)
+open import Relation.Nullary.Negation using (contradiction)
 open import Relation.Binary.PropositionalEquality using (refl)
 
 
@@ -55,6 +65,26 @@ padding #α #β actual =
           up atoms with group n #α atoms
           up .(concat grps) | grps , refl = map ⇑ grps
 
+¬a≤b→b≤a : {n m : ℕ} → ¬ (n ≤ m) → (m ≤ n)
+¬a≤b→b≤a {_}     {zero}  _  = z≤n
+¬a≤b→b≤a {zero}  {suc m} ¬p = contradiction (z≤n) ¬p
+¬a≤b→b≤a {suc n} {suc m} ¬p = s≤s $ ¬a≤b→b≤a (¬p ∘ s≤s)
+
+pad : (a b : ℕ) → ℕ
+pad a b with a ≤? b
+pad a b | yes p = toℕ $ b ℕ- (fromℕ≤ (s≤s p))
+pad a b | no ¬p = toℕ $ a ℕ- (fromℕ≤ (s≤s $ ¬a≤b→b≤a ¬p))
+
+⇓𝕎⇑-⊎ : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α ⊎ β)
+⇓𝕎⇑-⊎ {α} {β} {#α} {#β} = ⇓𝕎⇑[ down , up ]
+    where #[α⊎β] = suc (#α ⊔ #β)
+
+          down : α ⊎ β → 𝕎 #[α⊎β]
+          down (inj₁ a) = 𝔹→atom false ◁ (⇓ a ++ replicate (𝔹→atom false))
+          down (inj₂ b) = 𝔹→atom true  ◁ (⇓ b ++ replicate (𝔹→atom false))
+          
+          up : 𝕎 #[α⊎β] → α ⊎ β
+          up (t ◁ ab) = if (atom→𝔹 t) then inj₂ (⇑ (take #α ab)) else inj₁ (⇑ (take #β ab))
 
 
 -- derivable instances (can be resolved recursively from the basic)
