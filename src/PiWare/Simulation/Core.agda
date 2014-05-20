@@ -9,7 +9,7 @@ open import Data.Product using (_×_; _,_; <_,_>)
 open import Data.Vec using (Vec; [_]; _++_; splitAt; map; lookup; replicate) renaming (_∷_ to _◁_; [] to ε)
 
 open import Relation.Binary.PropositionalEquality using (refl)
-open import Data.Stream using (Stream; _∷_; zipWith) renaming (map to smap)
+open import Data.Stream using (Stream; _∷_; zipWith; take) renaming (map to smap)
 open import Coinduction
 
 open import PiWare.Circuit.Core
@@ -54,6 +54,8 @@ joinVecStream (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 ⟦_⟧*'' : {i o l : ℕ} → ℂ' 𝔹 (i + l) (o + l) → Vec 𝔹 l → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
 ⟦ c ⟧*'' acc (x ∷ xs) with splitAt _ (⟦ c ⟧' (x ++ acc))
 ⟦ c ⟧*'' acc (x ∷ xs) | out , back , _ = out ∷ ♯ ⟦ c ⟧*'' back (♭ xs)
+
+-- take 7 (⟦ sampleReg ⟧* (repeat (true , true)))
 
 -- sequential eval
 ⟦_⟧*' : {i o : ℕ} → ℂ'* 𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)

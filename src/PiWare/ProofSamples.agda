@@ -62,6 +62,7 @@ toggle : Stream 𝔹
 toggle = ⟦ sampleToggle ⟧* (repeat false)
 
 
+
 -- reg seems to be working (input × load → out)
 rhold = take 7 (⟦ sampleReg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (true ∷ ♯ repeat false) )
 rload = take 7 (⟦ sampleReg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (false ∷ ♯ (true ∷ ♯ repeat false)) )
