@@ -5,9 +5,10 @@ open import Data.Vec using (Vec)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Bool using () renaming (Bool to 𝔹)
 
+open import PiWare.Atom.Bool
 open import PiWare.Synthesizable.Bool
-open import PiWare.Circuit 𝔹
-open import PiWare.Plugs 𝔹
+open import PiWare.Circuit Atom𝔹
+open import PiWare.Plugs Atom𝔹
 open import PiWare.Samples using (sampleFullAdder)
 
 

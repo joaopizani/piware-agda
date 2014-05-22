@@ -1,4 +1,8 @@
-module PiWare.Plugs (Atom : Set) where
+open import PiWare.Atom
+
+module PiWare.Plugs (AI : AtomInfo) where
+
+open module AI' = AtomInfo AI
 
 open import Function using (_∘_; _$_; id)
 open import Data.Product using (_×_; proj₂)
@@ -15,8 +19,8 @@ open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; r
 open PropEq.≡-Reasoning
 
 open import PiWare.Circuit.Core
-open import PiWare.Synthesizable Atom
-open import PiWare.Circuit Atom
+open import PiWare.Synthesizable AI
+open import PiWare.Circuit AI
 
 
 private
