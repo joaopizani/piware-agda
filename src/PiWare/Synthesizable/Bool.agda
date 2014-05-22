@@ -4,7 +4,8 @@ open import Data.Product using (_×_)
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Vec using (Vec; head) renaming ([_] to singleton)
 
-open import PiWare.Synthesizable 𝔹 public
+open import PiWare.Atom.Bool using (Atom𝔹)
+open import PiWare.Synthesizable Atom𝔹 public
 
 
 -- basic instance

@@ -1,10 +1,15 @@
-module PiWare.Circuit (Atom : Set) where
+open import PiWare.Atom
 
-open import Data.Nat using (ℕ; _+_)
+module PiWare.Circuit (AI : AtomInfo) where
+
+open module AI' = AtomInfo AI
+
+open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_)
+open import Data.Sum using (_⊎_)
 
-open import PiWare.Synthesizable Atom
+open import PiWare.Synthesizable AI
 open import PiWare.Circuit.Core
 
 
@@ -28,7 +33,13 @@ _||_ : {α γ β δ : Set} {#α #γ #β #δ : ℕ}
 _||_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ c₁) (Mkℂ c₂) =
     Mkℂ  ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ sγ ⦄ ⦃ sδ ⦄ ⦄  (c₁ |' c₂)
 
+_|+_ : {α β γ : Set} {#α #β #γ : ℕ}
+       ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {#γ} ⦄
+       → ℂ α γ {#α} {#γ} → ℂ β γ {#β} {#γ} → ℂ (α ⊎ β) γ {suc (#α ⊔ #β)} {#γ}
+_|+_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ ⇓𝕎⇑-⊎ ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ |+' c₂)
+
 infixr 9 _||_
+infixr 9 _|+_
 infixl 8 _⟫_
 
 
@@ -50,5 +61,11 @@ _|*_ : {α γ β δ : Set} {#α #γ #β #δ : ℕ}
 _|*_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ* c₁) (Mkℂ* c₂) =
     Mkℂ*  ⦃ ⇓𝕎⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄  ⦃ ⇓𝕎⇑-× ⦃ sγ ⦄ ⦃ sδ ⦄ ⦄  (c₁ |'* c₂)
 
+_|+*_ : {α β γ : Set} {#α #β #γ : ℕ}
+        ⦃ sα : ⇓𝕎⇑ α {#α} ⦄ ⦃ sβ : ⇓𝕎⇑ β {#β} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {#γ} ⦄
+        → ℂ* α γ {#α} {#γ} → ℂ* β γ {#β} {#γ} → ℂ* (α ⊎ β) γ {suc (#α ⊔ #β)} {#γ}
+_|+*_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ* c₁) (Mkℂ* c₂) = Mkℂ* ⦃ ⇓𝕎⇑-⊎ ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ |+'* c₂)
+
 infixr 7 _|*_
+infixr 7 _|+*_
 infixl 6 _⟫*_
