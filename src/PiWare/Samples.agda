@@ -78,6 +78,7 @@ sampleMux2to1 =
     ⟫ (¬C || pFst ⟫ ∧C)  ||  (pid || pSnd ⟫ ∧C)
     ⟫ ∨C
 
+
 -- input × load → out
 sampleReg : ℂ* (𝔹 × 𝔹) 𝔹
 sampleReg = delayLoopC (pALR ⟫ pid || pSwap ⟫ sampleMux2to1 ⟫ pFork×)

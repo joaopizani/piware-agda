@@ -52,10 +52,11 @@ joinVecStream (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 ⟦ c ⟧*'' acc (x ∷ xs) with splitAt _ (⟦ c ⟧' (x ++ acc))
 ⟦ c ⟧*'' acc (x ∷ xs) | out , back , _ = out ∷ ♯ ⟦ c ⟧*'' back (♭ xs)
 
-⟦_⟧*' : {i o : ℕ} → Coreℂ 𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
-⟦ Comb c    ⟧*' si = smap ⟦ c ⟧' si
-⟦ Delayed c ⟧*' si = replicate false ∷ ♯ ⟦ c ⟧*'' (replicate false) si
-⟦ Plug p    ⟧*' si = smap (plugOutputs p) si
-⟦ c₁ >> c₂  ⟧*' si = ⟦ c₂ ⟧*' (⟦ c₁ ⟧*' si)
-⟦ _><_ {i₁} c₁ c₂ ⟧*' si with splitVecStream {_} {i₁} si
-⟦ c₁ >< c₂ ⟧*' si | si₁ , si₂ = joinVecStream (⟦ c₁ ⟧*' si₁ , ⟦ c₂ ⟧*' si₂)
+-- sequential eval
+⟦_⟧*' : {i o : ℕ} → ℂ'* 𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
+⟦ Comb c      ⟧*' si = smap ⟦ c ⟧' si
+⟦ DelayLoop c ⟧*' si = replicate false ∷ ♯ ⟦ c ⟧*'' (replicate false) si
+⟦ Plug p      ⟧*' si = smap (plugOutputs p) si
+⟦ c₁ ⟫'* c₂   ⟧*' si = ⟦ c₂ ⟧*' (⟦ c₁ ⟧*' si)
+⟦ _|'*_ {i₁} c₁ c₂ ⟧*' si with splitVecStream {_} {i₁} si
+⟦ c₁ |'* c₂ ⟧*' si | si₁ , si₂ = joinVecStream (⟦ c₁ ⟧*' si₁ , ⟦ c₂ ⟧*' si₂)
