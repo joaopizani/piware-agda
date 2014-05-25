@@ -1,10 +1,20 @@
-module PiWare.Synthesizable (Atom : Set) where
+open import PiWare.Atom
 
+module PiWare.Synthesizable (AI : AtomInfo) where
+
+-- opening with the AtomInfo we just got, for convenience
+open module AI' = AtomInfo AI
+
+open import Function using (_$_)
+open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_])
 open import Data.Product using (_×_; _,_)
-open import Data.Nat using (ℕ; _+_; _*_)
-open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map)
+open import Data.Bool using (if_then_else_) renaming (Bool to 𝔹)
+open import Data.Nat using (ℕ; _+_; _*_; suc; _⊔_)
+open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map) renaming (_∷_ to _◁_)
 
 open import Relation.Binary.PropositionalEquality using (refl)
+
+open import PiWare.Padding
 
 
 -- Words are sequences of "Atoms"
@@ -20,6 +30,7 @@ record ⇓𝕎⇑ (α : Set) {#α : ℕ} : Set where
         ⇑ : 𝕎 #α → α
 
 open ⇓𝕎⇑ {{...}}
+
 
 -- basic instances
 ⇓𝕎⇑-× : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α × β)
@@ -40,6 +51,13 @@ open ⇓𝕎⇑ {{...}}
           up atoms with group n #α atoms
           up .(concat grps) | grps , refl = map ⇑ grps
 
+⇓𝕎⇑-⊎ : {α β : Set} {#α #β : ℕ} ⦃ _ : ⇓𝕎⇑ α {#α} ⦄ ⦃ _ : ⇓𝕎⇑ β {#β} ⦄ → ⇓𝕎⇑ (α ⊎ β)
+⇓𝕎⇑-⊎ {α} {β} {#α} {#β} = ⇓𝕎⇑[ down , up ]
+    where down : α ⊎ β → 𝕎 (suc (#α ⊔ #β))
+          down = [ (λ a → falseA ◁ padFst #α #β falseA (⇓ a)) , (λ b → trueA ◁ padSnd #α #β falseA (⇓ b)) ]
+          
+          up : 𝕎 (suc (#α ⊔ #β)) → α ⊎ β
+          up (t ◁ ab) = if (atom→𝔹 t) then inj₂ (⇑ $ unpadSnd #α #β ab) else inj₁ (⇑ $ unpadFst #α #β ab)
 
 
 -- derivable instances (can be resolved recursively from the basic)

@@ -9,11 +9,12 @@ import Algebra as Alg
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
 open import Algebra.Operations (Alg.CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 
+open import PiWare.Atom.Bool
 open import PiWare.Circuit.Core
 
 open import PiWare.Synthesizable.Bool
-open import PiWare.Plugs 𝔹
-open import PiWare.Circuit 𝔹
+open import PiWare.Plugs Atom𝔹
+open import PiWare.Circuit Atom𝔹
 
 
 
