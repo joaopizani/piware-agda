@@ -1,9 +1,10 @@
 module PiWare.ProofSamples where
 
+open import Function using (_$_)
 open import Data.Product using (_×_; _,_)
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to 𝔹)
 
-open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail; map)
+open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail) renaming (map to smap)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Coinduction
 
@@ -60,39 +61,57 @@ proofFullAdderBool false false false = refl
 toggle : Stream 𝔹
 toggle = ⟦ sampleToggle ⟧* (repeat false)
 
-regFirstFalse : Stream 𝔹
-regFirstFalse = ⟦ sampleReg ⟧* (repeat (true , true))
+
+
+-- reg seems to be working (input × load → out)
+rhold = take 7 (⟦ sampleReg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (true ∷ ♯ repeat false) )
+rload = take 7 (⟦ sampleReg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (false ∷ ♯ (true ∷ ♯ repeat false)) )
 
 
 -- head is always false
--- when ¬load, then tail of output is repeat head of input
--- when load, tail of output is input
-
 proofRegHeadFalse : ∀ {loads ins} → head (⟦ sampleReg ⟧* (zipWith _,_ loads ins)) ≡ false
 proofRegHeadFalse = refl
 
-proofRegTailNeverLoad' : tail (⟦ sampleReg ⟧* (repeat (false , true))) ≈ repeat false
-proofRegTailNeverLoad' = refl ∷ ♯ proofRegTailNeverLoad'
 
-proofToggle : ∀ xs → tail (⟦ sampleToggle ⟧* xs) ≈ map not xs
-proofToggle (true ∷ xs) = refl ∷ ♯ proofToggle (♭ xs)
-proofToggle (false ∷ xs) = refl ∷ {!!}
+-- this works...
+proofRepeatFalse' : tail (repeat false) ≈ repeat false
+proofRepeatFalse' = refl ∷ ♯ proofRepeatFalse'
 
--- TODO: why doesn't it work?
-proofRegTailNeverLoad : ∀ xs → tail (⟦ sampleReg ⟧* (zipWith _,_ xs (repeat false))) ≈ xs
-proofRegTailNeverLoad (true ∷ xs) = {!refl ∷ ?!}
-proofRegTailNeverLoad (false ∷ xs) = refl ∷ ♯ proofRegTailNeverLoad (♭ xs)
-
-
-x = take 7 (⟦ sampleReg ⟧* (zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (repeat false) ))
-
-y = take 7 (⟦ sampleToggle ⟧* (repeat false))
-
-proofTailFalse : tail (repeat false) ≈ repeat false
-proofTailFalse = refl ∷ ♯ proofTailFalse
-
+-- only by using the tail proof
 proofRepeatFalse : repeat false ≈ false ∷ ♯ repeat false
-proofRepeatFalse = refl ∷ ♯ proofTailFalse
+proofRepeatFalse = refl ∷ ♯ proofRepeatFalse'
 
--- proofRepeatFalse : repeat false ≈ false ∷ ♯ repeat false
--- proofRepeatFalse = refl ∷ {!♯ proofRepeatFalse!}
+
+-- when ¬load, then tail of output is repeat head of input
+
+-- now with the register: first the tail
+proofRegNeverLoadHardcoded' : tail (⟦ sampleReg ⟧* (repeat (true , false))) ≈ repeat false
+proofRegNeverLoadHardcoded' = refl ∷ ♯ proofRegNeverLoadHardcoded'
+
+-- then the case including the head
+proofRegNeverLoadHardcoded : ⟦ sampleReg ⟧* (repeat (true , false)) ≈ false ∷ ♯ repeat false
+proofRegNeverLoadHardcoded = refl ∷ ♯ proofRegNeverLoadHardcoded'
+
+-- trying to be a bit more general now: first the tail
+proofRegNeverLoad' : ∀ xs → tail (⟦ sampleReg ⟧* $ zipWith _,_ xs (repeat false) ) ≈ repeat false
+proofRegNeverLoad' (x ∷ xs) = refl ∷ ♯ proofRegNeverLoad' (♭ xs)
+
+-- then the case including the head...
+proofRegNeverLoad : ∀ xs → ⟦ sampleReg ⟧* (zipWith _,_ xs (repeat false)) ≈ false ∷ ♯ repeat false
+proofRegNeverLoad xs = refl ∷ ♯ proofRegNeverLoad' xs
+
+
+-- when load, tail of output is input
+-- first hardcoded
+proofRegAlwaysLoadHardcoded' : tail (⟦ sampleReg ⟧* (repeat (true , true))) ≈ repeat true
+proofRegAlwaysLoadHardcoded' = refl ∷ ♯ proofRegAlwaysLoadHardcoded'
+
+proofRegAlwaysLoadHardcoded : ⟦ sampleReg ⟧* (repeat (true , true)) ≈ false ∷ ♯ repeat true
+proofRegAlwaysLoadHardcoded = refl ∷ ♯ proofRegAlwaysLoadHardcoded'
+
+proofRegAlwaysLoad' : ∀ xs → tail (⟦ sampleReg ⟧* (zipWith _,_ xs (repeat true))) ≈ xs
+proofRegAlwaysLoad' (true  ∷ xs) = refl ∷ ♯ {!proofRegAlwaysLoad' (♭ xs)!}
+proofRegAlwaysLoad' (false ∷ xs) = refl ∷ ♯ proofRegAlwaysLoad' (♭ xs)  -- "coincidence"?
+
+proofRegAlwaysLoad : ∀ xs → ⟦ sampleReg ⟧* (zipWith _,_ xs (repeat true)) ≈ false ∷ ♯ xs
+proofRegAlwaysLoad xs = refl ∷ ♯ proofRegAlwaysLoad' xs
