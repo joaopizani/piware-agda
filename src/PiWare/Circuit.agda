@@ -2,8 +2,6 @@ open import PiWare.Atom
 
 module PiWare.Circuit (AI : AtomInfo) where
 
-open module AI' = AtomInfo AI
-
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_)
@@ -15,10 +13,10 @@ open import PiWare.Circuit.Core
 
 -- "High-level" circuit types, packing the synthesis information
 data ℂ (α β : Set) {i j : ℕ} : Set where
-    Mkℂ : ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ' Atom i j → ℂ α β {i} {j}
+    Mkℂ : ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ' AI i j → ℂ α β {i} {j}
 
 data ℂ* (α β : Set) {i j : ℕ} : Set where
-    Mkℂ* : ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ'* Atom i j → ℂ* α β {i} {j}
+    Mkℂ* : ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ'* AI i j → ℂ* α β {i} {j}
 
 
 -- "Smart constructors"

@@ -17,71 +17,60 @@ open import PiWare.Plugs Atom𝔹
 open import PiWare.Circuit Atom𝔹
 
 
-
 ¬ℂ : ℂ 𝔹 𝔹
 ¬ℂ = Mkℂ Not
 
 ∧ℂ : ℂ (𝔹 × 𝔹) 𝔹
-∧ℂ = Mkℂ And
+∧ℂ = Mkℂ And 
 
 ∨ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ∨ℂ = Mkℂ Or
 
 
-sampleNotNotNot : ℂ 𝔹 𝔹
-sampleNotNotNot = ¬ℂ ⟫ ¬ℂ ⟫ ¬ℂ
+¬×3ℂ : ℂ 𝔹 𝔹
+¬×3ℂ = ¬ℂ ⟫ ¬ℂ ⟫ ¬ℂ
 
-sampleNand : ℂ (𝔹 × 𝔹) 𝔹
-sampleNand = ∧ℂ ⟫ ¬ℂ
+¬∧ℂ : ℂ (𝔹 × 𝔹) 𝔹
+¬∧ℂ = ∧ℂ ⟫ ¬ℂ
 
-sample1And2Or3And4 : ℂ ((𝔹 × 𝔹) × (𝔹 × 𝔹)) 𝔹
-sample1And2Or3And4 = (∧ℂ || ∧ℂ) ⟫ ∨ℂ
+⊻ℂ : ℂ (𝔹 × 𝔹) 𝔹
+⊻ℂ =   pFork×
+     ⟫ (¬ℂ || pid ⟫ ∧ℂ) || (pid || ¬ℂ ⟫ ∧ℂ)
+     ⟫ ∨ℂ
 
-sampleXor : ℂ (𝔹 × 𝔹) 𝔹
-sampleXor =
-      pFork×
-    ⟫ (¬ℂ || pid ⟫ ∧ℂ)  ||  (pid || ¬ℂ ⟫ ∧ℂ)
-    ⟫ ∨ℂ
+hadd : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)  -- a × b → c × s
+hadd =   pFork×
+       ⟫ ∧ℂ || ⊻ℂ
 
--- a × b → c × s
-sampleHalfAdder : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)
-sampleHalfAdder =
-      pFork×
-    ⟫ ∧ℂ  || sampleXor
-
--- (a × b) × cin → cout × s
-sampleFullAdder : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)
-sampleFullAdder =
-      hadd || pid
-    ⟫    pALR
-    ⟫ pid  || hadd
-    ⟫    pARL
-    ⟫ ∨ℂ   || pid
-    where hadd = sampleHalfAdder
+fadd : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)  -- (a × b) × cin → co × s
+fadd =   hadd || pid
+       ⟫    pALR
+       ⟫ pid  || hadd
+       ⟫    pARL
+       ⟫ ∨ℂ   || pid
 
 
 -- Sequential. In: (repeat false)   Out: cycle [false, true]...
-sampleToggle : ℂ* 𝔹 𝔹
-sampleToggle = delayℂ (sampleXor ⟫ ¬ℂ ⟫ pFork×)
+toggle : ℂ* 𝔹 𝔹
+toggle = delayℂ (⊻ℂ ⟫ ¬ℂ ⟫ pFork×)
 
 
 -- MUXES
 ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] : ⇓𝕎⇑ ((𝔹 × (𝔹 × 𝔹)) × (𝔹 × (𝔹 × 𝔹)))
-⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] = ⇓𝕎⇑-×
+⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹×[𝔹×𝔹] ⇓𝕎⇑-𝔹×[𝔹×𝔹]
 
 -- TODO: booleans for now. How to make it generic?
 -- Look at lava: do we need an if-then-else constructor in the BASE CIRCUIT TYPE?
 -- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
-sampleMux2to1 : ℂ (𝔹 × (𝔹 × 𝔹)) 𝔹
-sampleMux2to1 =
-      pFork×
-    ⟫ (¬ℂ || pFst ⟫ ∧ℂ)  ||  (pid || pSnd ⟫ ∧ℂ)
-    ⟫ ∨ℂ
+mux2to1 : ℂ (𝔹 × (𝔹 × 𝔹)) 𝔹
+mux2to1 =   pFork×
+          ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
+          ⟫ ∨ℂ
 
 
 -- input × load → out
-sampleReg : ℂ* (𝔹 × 𝔹) 𝔹
-sampleReg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ sampleMux2to1 ⟫ pFork×)
+reg : ℂ* (𝔹 × 𝔹) 𝔹
+reg = delayℂ (pSwap || pid  ⟫  pALR  ⟫  (pid || pSwap)  ⟫  mux2to1  ⟫  pFork×)
 
 -- open module ℕ-CS = Alg.CommutativeSemiring ℕ-commSemiring using (+-identity)
 
