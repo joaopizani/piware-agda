@@ -2,6 +2,7 @@ module PiWare.Simulation.Core where
 
 open import Function using (_$_)
 
+
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Bool using (not; _∧_; _∨_; false) renaming (Bool to 𝔹)
@@ -12,6 +13,8 @@ open import Relation.Binary.PropositionalEquality using (refl)
 open import Data.Stream using (Stream; _∷_; zipWith; take) renaming (map to smap)
 open import Coinduction
 
+-- TODO: Now hardcoded to Atom𝔹, generalize later
+open import PiWare.Atom.Bool using (Atom𝔹)
 open import PiWare.Circuit.Core
 
 
@@ -41,7 +44,7 @@ joinVecStream (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 
 
 -- combinational eval
-⟦_⟧' : {i o : ℕ} → ℂ' 𝔹 i o → (Vec 𝔹 i → Vec 𝔹 o)
+⟦_⟧' : {i o : ℕ} → ℂ' Atom𝔹 i o → (Vec 𝔹 i → Vec 𝔹 o)
 ⟦ Not ⟧'      (x ◁ ε)     = [ not x ]
 ⟦ And ⟧'      (x ◁ y ◁ ε) = [ x ∧ y ]
 ⟦ Or  ⟧'      (x ◁ y ◁ ε) = [ x ∨ y ]
@@ -58,7 +61,7 @@ joinVecStream (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 -- take 7 (⟦ sampleReg ⟧* (repeat (true , true)))
 
 -- sequential eval
-⟦_⟧*' : {i o : ℕ} → ℂ'* 𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
+⟦_⟧*' : {i o : ℕ} → ℂ'* Atom𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
 ⟦ Comb c      ⟧*' si = smap ⟦ c ⟧' si
 ⟦ DelayLoop c ⟧*' si = replicate false ∷ ♯ ⟦ c ⟧*'' (replicate false) si
 ⟦ Plug p      ⟧*' si = smap (plugOutputs p) si

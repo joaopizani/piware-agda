@@ -12,64 +12,60 @@ open import PiWare.Samples
 open import PiWare.Simulation
 
 
-proofNand : ∀ a b → ⟦ sampleNand ⟧ (a , b) ≡ not (a ∧ b)
+proofNand : ∀ a b → ⟦ ¬∧ℂ ⟧ (a , b) ≡ not (a ∧ b)
 proofNand a b = refl
 
 
-proof1And2Or3And4 : ∀ a b c d → ⟦ sample1And2Or3And4 ⟧ ((a , b) , (c , d)) ≡ (a ∧ b) ∨ (c ∧ d)
-proof1And2Or3And4 a b c d = refl
+xorEquiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
+xorEquiv true  b     = refl
+xorEquiv false true  = refl
+xorEquiv false false = refl
+
+proofXor : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ a xor b
+proofXor = xorEquiv
 
 
-booleanXorEquiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
-booleanXorEquiv true  b     = refl
-booleanXorEquiv false true  = refl
-booleanXorEquiv false false = refl
-
-proofXor : ∀ a b → ⟦ sampleXor ⟧ (a , b) ≡ a xor b
-proofXor = booleanXorEquiv
-
-
-halfAddSpec : 𝔹 → 𝔹 → (𝔹 × 𝔹)
-halfAddSpec a b = (a ∧ b) , (a xor b)
+haddSpec : 𝔹 → 𝔹 → (𝔹 × 𝔹)
+haddSpec a b = (a ∧ b) , (a xor b)
 
 -- TODO: better proof here, using proofXor, proofAnd and some "parallel proof combinator"
-proofHalfAddBool : ∀ a b → ⟦ sampleHalfAdder ⟧ (a , b) ≡ halfAddSpec a b
-proofHalfAddBool a b = cong (_,_ (a ∧ b)) (booleanXorEquiv a b)
+proofHaddBool : ∀ a b → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
+proofHaddBool a b = cong (_,_ (a ∧ b)) (xorEquiv a b)
 
 
 -- TODO: make fullAddSpec in terms of halfAddSpec?
-fullAddTable : 𝔹 → 𝔹 → 𝔹 → (𝔹 × 𝔹)
-fullAddTable false false false = false , false
-fullAddTable false false true  = false , true
-fullAddTable false true  false = false , true
-fullAddTable false true  true  = true  , false
-fullAddTable true  false false = false , true
-fullAddTable true  false true  = true  , false
-fullAddTable true  true  false = true  , false
-fullAddTable true  true  true  = true  , true
+faddSpec : 𝔹 → 𝔹 → 𝔹 → (𝔹 × 𝔹)
+faddSpec false false false = false , false
+faddSpec false false true  = false , true
+faddSpec false true  false = false , true
+faddSpec false true  true  = true  , false
+faddSpec true  false false = false , true
+faddSpec true  false true  = true  , false
+faddSpec true  true  false = true  , false
+faddSpec true  true  true  = true  , true
 
-proofFullAdderBool : ∀ a b c → ⟦ sampleFullAdder ⟧ ((a , b) , c) ≡ fullAddTable a b c
-proofFullAdderBool true  true  true  = refl
-proofFullAdderBool true  true  false = refl
-proofFullAdderBool true  false true  = refl
-proofFullAdderBool true  false false = refl
-proofFullAdderBool false true  true  = refl
-proofFullAdderBool false true  false = refl
-proofFullAdderBool false false true  = refl
-proofFullAdderBool false false false = refl
+proofFaddBool : ∀ a b c → ⟦ fadd ⟧ ((a , b) , c) ≡ faddSpec a b c
+proofFaddBool true  true  true  = refl
+proofFaddBool true  true  false = refl
+proofFaddBool true  false true  = refl
+proofFaddBool true  false false = refl
+proofFaddBool false true  true  = refl
+proofFaddBool false true  false = refl
+proofFaddBool false false true  = refl
+proofFaddBool false false false = refl
+
 
 toggle : Stream 𝔹
 toggle = ⟦ sampleToggle ⟧* (repeat false)
 
 
-
 -- reg seems to be working (input × load → out)
-rhold = take 7 (⟦ sampleReg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (true ∷ ♯ repeat false) )
-rload = take 7 (⟦ sampleReg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (false ∷ ♯ (true ∷ ♯ repeat false)) )
+rhold = take 7 (⟦ reg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (true ∷ ♯ repeat false) )
+rload = take 7 (⟦ reg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (false ∷ ♯ (true ∷ ♯ repeat false)) )
 
 
 -- head is always false
-proofRegHeadFalse : ∀ {loads ins} → head (⟦ sampleReg ⟧* (zipWith _,_ loads ins)) ≡ false
+proofRegHeadFalse : ∀ {loads ins} → head (⟦ reg ⟧* (zipWith _,_ loads ins)) ≡ false
 proofRegHeadFalse = refl
 
 
@@ -85,33 +81,33 @@ proofRepeatFalse = refl ∷ ♯ proofRepeatFalse'
 -- when ¬load, then tail of output is repeat head of input
 
 -- now with the register: first the tail
-proofRegNeverLoadHardcoded' : tail (⟦ sampleReg ⟧* (repeat (true , false))) ≈ repeat false
+proofRegNeverLoadHardcoded' : tail (⟦ reg ⟧* (repeat (true , false))) ≈ repeat false
 proofRegNeverLoadHardcoded' = refl ∷ ♯ proofRegNeverLoadHardcoded'
 
 -- then the case including the head
-proofRegNeverLoadHardcoded : ⟦ sampleReg ⟧* (repeat (true , false)) ≈ false ∷ ♯ repeat false
+proofRegNeverLoadHardcoded : ⟦ reg ⟧* (repeat (true , false)) ≈ false ∷ ♯ repeat false
 proofRegNeverLoadHardcoded = refl ∷ ♯ proofRegNeverLoadHardcoded'
 
 -- trying to be a bit more general now: first the tail
-proofRegNeverLoad' : ∀ xs → tail (⟦ sampleReg ⟧* $ zipWith _,_ xs (repeat false) ) ≈ repeat false
+proofRegNeverLoad' : ∀ xs → tail (⟦ reg ⟧* $ zipWith _,_ xs (repeat false) ) ≈ repeat false
 proofRegNeverLoad' (x ∷ xs) = refl ∷ ♯ proofRegNeverLoad' (♭ xs)
 
 -- then the case including the head...
-proofRegNeverLoad : ∀ xs → ⟦ sampleReg ⟧* (zipWith _,_ xs (repeat false)) ≈ false ∷ ♯ repeat false
+proofRegNeverLoad : ∀ xs → ⟦ reg ⟧* (zipWith _,_ xs (repeat false)) ≈ false ∷ ♯ repeat false
 proofRegNeverLoad xs = refl ∷ ♯ proofRegNeverLoad' xs
 
 
 -- when load, tail of output is input
 -- first hardcoded
-proofRegAlwaysLoadHardcoded' : tail (⟦ sampleReg ⟧* (repeat (true , true))) ≈ repeat true
+proofRegAlwaysLoadHardcoded' : tail (⟦ reg ⟧* (repeat (true , true))) ≈ repeat true
 proofRegAlwaysLoadHardcoded' = refl ∷ ♯ proofRegAlwaysLoadHardcoded'
 
-proofRegAlwaysLoadHardcoded : ⟦ sampleReg ⟧* (repeat (true , true)) ≈ false ∷ ♯ repeat true
+proofRegAlwaysLoadHardcoded : ⟦ reg ⟧* (repeat (true , true)) ≈ false ∷ ♯ repeat true
 proofRegAlwaysLoadHardcoded = refl ∷ ♯ proofRegAlwaysLoadHardcoded'
 
-proofRegAlwaysLoad' : ∀ xs → tail (⟦ sampleReg ⟧* (zipWith _,_ xs (repeat true))) ≈ xs
+proofRegAlwaysLoad' : ∀ xs → tail (⟦ reg ⟧* (zipWith _,_ xs (repeat true))) ≈ xs
 proofRegAlwaysLoad' (true  ∷ xs) = refl ∷ ♯ {!proofRegAlwaysLoad' (♭ xs)!}
 proofRegAlwaysLoad' (false ∷ xs) = refl ∷ ♯ proofRegAlwaysLoad' (♭ xs)  -- "coincidence"?
 
-proofRegAlwaysLoad : ∀ xs → ⟦ sampleReg ⟧* (zipWith _,_ xs (repeat true)) ≈ false ∷ ♯ xs
+proofRegAlwaysLoad : ∀ xs → ⟦ reg ⟧* (zipWith _,_ xs (repeat true)) ≈ false ∷ ♯ xs
 proofRegAlwaysLoad xs = refl ∷ ♯ proofRegAlwaysLoad' xs
