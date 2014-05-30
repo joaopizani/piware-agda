@@ -1,7 +1,7 @@
 module PiWare.ProofSamples where
 
 open import Function using (_$_)
-open import Data.Product using (_×_; _,_)
+open import Data.Product using (_×_; _,_) renaming (map to pmap)
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to 𝔹)
 
 open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail) renaming (map to smap)
@@ -10,6 +10,10 @@ open import Coinduction
 
 open import PiWare.Samples
 open import PiWare.Simulation
+
+
+proofAnd : ∀ a b → ⟦ ∧ℂ ⟧ (a , b) ≡ a ∧ b
+proofAnd a b = refl
 
 
 proofNand : ∀ a b → ⟦ ¬∧ℂ ⟧ (a , b) ≡ not (a ∧ b)
@@ -25,8 +29,20 @@ proofXor : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ a xor b
 proofXor = xorEquiv
 
 
+-- proof "combinators"
+_⟫≡_ : ∀ {c₁ c₂ f₁ f₂ x y} → (⟦ c₁ ⟧ x ≡ f₁ x) → (⟦ c₂ ⟧ y ≡ f₂ y) → ⟦ c₁ ⟫ c₂ ⟧ x ≡ (f₂ ∘ f₁) x
+p₁ ⟫≡ p₂ = ?
+
+_|≡_ : ∀ {c₁ c₂ f₁ f₂ x y} → (⟦ c₁ ⟧ x ≡ f₁ x) → (⟦ c₂ ⟧ y ≡ f₂ y) → ⟦ c₁ || c₂ ⟧ (x , y) ≡ pmap f₁ f₂ (x , y)
+p₁ |≡ p₂ rewrite p₁ | p₂ = refl
+
+
 haddSpec : 𝔹 → 𝔹 → (𝔹 × 𝔹)
 haddSpec a b = (a ∧ b) , (a xor b)
+
+proofHaddBool' : ∀ {a b} → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
+proofHaddBool' = proofAnd |≡ proofXor
+
 
 -- TODO: better proof here, using proofXor, proofAnd and some "parallel proof combinator"
 proofHaddBool : ∀ a b → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
