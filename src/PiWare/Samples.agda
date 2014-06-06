@@ -74,30 +74,30 @@ reg = delayℂ (pSwap || pid  ⟫  pALR  ⟫  (pid || pSwap)  ⟫  mux2to1  ⟫ 
 
 
 -- (attempt at) generically-sized mux
--- open module ℕ-CS = Alg.CommutativeSemiring ℕ-commSemiring using (+-identity)
+open module ℕ-CS = Alg.CommutativeSemiring ℕ-commSemiring using (+-identity)
 
--- private
---   ⇓𝕎⇑-𝔹×Vec𝔹 : ∀ {n} → ⇓𝕎⇑ (𝔹 × Vec 𝔹 n)
---   ⇓𝕎⇑-Vec𝔹×Vec𝔹2^n : ∀ {n} → ⇓𝕎⇑ (Vec 𝔹 n × Vec 𝔹 (2 ^ n))
---   ⇓𝕎⇑-[𝔹×Vec𝔹]×Vec𝔹2^n : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × Vec 𝔹 n) × Vec 𝔹 (2 ^ n))
---   ⇓𝕎⇑-𝔹×[Vec𝔹×Vec𝔹2^n] : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × Vec 𝔹 (2 ^ n)))
---   ⇓𝕎⇑-[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n] : {n : ℕ} → ⇓𝕎⇑ ((Vec 𝔹 n × Vec 𝔹 n) × (Vec 𝔹 (2 ^ n) × Vec 𝔹 (2 ^ n)))
---   ⇓𝕎⇑-𝔹×[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n] : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × Vec 𝔹 n) × (Vec 𝔹 (2 ^ n) × Vec 𝔹 (2 ^ n)))
+private
+  ⇓𝕎⇑-𝔹×Vec𝔹 : ∀ {n} → ⇓𝕎⇑ (𝔹 × Vec 𝔹 n)
+  ⇓𝕎⇑-Vec𝔹×Vec𝔹2^n : ∀ {n} → ⇓𝕎⇑ (Vec 𝔹 n × Vec 𝔹 (2 ^ n))
+  ⇓𝕎⇑-[𝔹×Vec𝔹]×Vec𝔹2^n : {n : ℕ} → ⇓𝕎⇑ ((𝔹 × Vec 𝔹 n) × Vec 𝔹 (2 ^ n))
+  ⇓𝕎⇑-𝔹×[Vec𝔹×Vec𝔹2^n] : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × Vec 𝔹 (2 ^ n)))
+  ⇓𝕎⇑-[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n] : {n : ℕ} → ⇓𝕎⇑ ((Vec 𝔹 n × Vec 𝔹 n) × (Vec 𝔹 (2 ^ n) × Vec 𝔹 (2 ^ n)))
+  ⇓𝕎⇑-𝔹×[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n] : {n : ℕ} → ⇓𝕎⇑ (𝔹 × (Vec 𝔹 n × Vec 𝔹 n) × (Vec 𝔹 (2 ^ n) × Vec 𝔹 (2 ^ n)))
 
---   ⇓𝕎⇑-𝔹×Vec𝔹 = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹 ⇓𝕎⇑-Vec𝔹
---   ⇓𝕎⇑-Vec𝔹×Vec𝔹2^n = ⇓𝕎⇑-× ⇓𝕎⇑-Vec𝔹 ⇓𝕎⇑-Vec𝔹
---   ⇓𝕎⇑-[𝔹×Vec𝔹]×Vec𝔹2^n = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹×Vec𝔹 ⇓𝕎⇑-Vec𝔹
---   ⇓𝕎⇑-𝔹×[Vec𝔹×Vec𝔹2^n] = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹 ⇓𝕎⇑-Vec𝔹×Vec𝔹2^n
---   ⇓𝕎⇑-[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n] = ⇓𝕎⇑-× (⇓𝕎⇑-× ⇓𝕎⇑-Vec𝔹 ⇓𝕎⇑-Vec𝔹) (⇓𝕎⇑-× ⇓𝕎⇑-Vec𝔹 ⇓𝕎⇑-Vec𝔹)
---   ⇓𝕎⇑-𝔹×[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n] = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹 ⇓𝕎⇑-[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n]
+  ⇓𝕎⇑-𝔹×Vec𝔹 = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹 ⇓𝕎⇑-Vec𝔹
+  ⇓𝕎⇑-Vec𝔹×Vec𝔹2^n = ⇓𝕎⇑-× ⇓𝕎⇑-Vec𝔹 ⇓𝕎⇑-Vec𝔹
+  ⇓𝕎⇑-[𝔹×Vec𝔹]×Vec𝔹2^n = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹×Vec𝔹 ⇓𝕎⇑-Vec𝔹
+  ⇓𝕎⇑-𝔹×[Vec𝔹×Vec𝔹2^n] = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹 ⇓𝕎⇑-Vec𝔹×Vec𝔹2^n
+  ⇓𝕎⇑-[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n] = ⇓𝕎⇑-× (⇓𝕎⇑-× ⇓𝕎⇑-Vec𝔹 ⇓𝕎⇑-Vec𝔹) (⇓𝕎⇑-× ⇓𝕎⇑-Vec𝔹 ⇓𝕎⇑-Vec𝔹)
+  ⇓𝕎⇑-𝔹×[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n] = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹 ⇓𝕎⇑-[Vec𝔹×Vec𝔹]×[Vec𝔹2^n×Vec𝔹2^n]
 
--- mux : (n : ℕ) → let A = Vec 𝔹 n  in  ℂ (A × Vec 𝔹 (2 ^ n)) 𝔹 {2 ^ n} {1}
--- mux zero = pSnd ⟫ pSingletonOut
--- mux (suc n) rewrite (proj₂ +-identity) (2 ^ n) =
---       pUncons || pid
---     ⟫        pALR
---     ⟫ pid ||  pFork× || pVecHalfPow
---     ⟫ pid ||     pIntertwine
---     ⟫ pid ||   mux n || mux n
---     ⟫              mux2to1
+mux : (n : ℕ) → let A = Vec 𝔹 n  in  ℂ (A × Vec 𝔹 (2 ^ n)) 𝔹 {2 ^ n} {1}
+mux zero = pSnd ⟫ pSingletonOut
+mux (suc n) rewrite (proj₂ +-identity) (2 ^ n) =
+      pUncons || pid
+    ⟫        pALR
+    ⟫ pid ||  pFork× || pVecHalfPow
+    ⟫ pid ||     pIntertwine
+    ⟫ pid ||   mux n || mux n
+    ⟫              mux2to1
 

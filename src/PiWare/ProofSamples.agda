@@ -30,8 +30,8 @@ proofXor = xorEquiv
 
 
 -- proof "combinators"
-_⟫≡_ : ∀ {c₁ c₂ f₁ f₂ x y} → (⟦ c₁ ⟧ x ≡ f₁ x) → (⟦ c₂ ⟧ y ≡ f₂ y) → ⟦ c₁ ⟫ c₂ ⟧ x ≡ (f₂ ∘ f₁) x
-p₁ ⟫≡ p₂ = ?
+_⟫≡_ : ∀ {c₁ c₂ f₁ f₂ x} → (⟦ c₁ ⟧ x ≡ f₁ x) → (⟦ c₂ ⟧ (f₁ x) ≡ f₂ (f₁ x)) → ⟦ c₁ ⟫ c₂ ⟧ x ≡ (f₂ ∘ f₁) x
+p₁ ⟫≡ p₂ = refl
 
 _|≡_ : ∀ {c₁ c₂ f₁ f₂ x y} → (⟦ c₁ ⟧ x ≡ f₁ x) → (⟦ c₂ ⟧ y ≡ f₂ y) → ⟦ c₁ || c₂ ⟧ (x , y) ≡ pmap f₁ f₂ (x , y)
 p₁ |≡ p₂ rewrite p₁ | p₂ = refl
