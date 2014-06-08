@@ -5,13 +5,17 @@ module PiWare.Synthesizable (AI : AtomInfo) where
 -- opening with the AtomInfo we just got, for convenience
 open module AI' = AtomInfo AI
 
-open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_])
+open import Function using (_$_)
 open import Data.Product using (_×_; _,_)
+open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_])
 open import Data.Bool using (if_then_else_) renaming (Bool to 𝔹)
-open import Data.Nat using (ℕ; _+_; _*_; suc; _⊔_)
+open import Data.Nat using (ℕ; _+_; _*_; _≟_; _≤?_; suc; _⊔_; decTotalOrder; s≤s; z≤n)
+open import Data.Fin using (Fin; toℕ; #_)
 open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map) renaming (_∷_ to _◁_)
 
-open import Relation.Binary.PropositionalEquality using (refl)
+open import Relation.Binary.PropositionalEquality using (refl; _≢_)
+open import Relation.Nullary.Decidable using (True; fromWitness)
+open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding
 
@@ -50,13 +54,29 @@ open ⇓𝕎⇑ {{...}}
           up atoms with group n i atoms
           up .(concat grps) | grps , refl = map ⇑ grps
 
-⇓𝕎⇑-⊎ : ∀ {α i β j} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α ⊎ β)
-⇓𝕎⇑-⊎ {α} {i} {β} {j} sα sβ = ⇓𝕎⇑[ down , up ]
+-- TODO: guarantee that n₁ and n₂ are different?
+⇓𝕎⇑-⊎' : ∀ {α i β j} → (n₁ n₂ p : Atom#) → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α ⊎ β) {suc (i ⊔ j)}
+⇓𝕎⇑-⊎' {α} {i} {β} {j} n₁ n₂ p sα sβ = ⇓𝕎⇑[ down , up ]
     where down : α ⊎ β → 𝕎 (suc (i ⊔ j))
-          down = [ (λ a → falseA ◁ padFst i j falseA (⇓ a)) , (λ b → trueA ◁ padSnd i j falseA (⇓ b)) ]
+          down = [ (λ a → (n→atom n₁) ◁ padFst i j (n→atom p) (⇓ a))
+                 , (λ b → (n→atom n₂) ◁ padSnd i j (n→atom p) (⇓ b)) ]
           
           up : 𝕎 (suc (i ⊔ j)) → α ⊎ β
-          up (t ◁ ab) = if (atom→𝔹 t) then inj₂ (⇑ (unpadSnd i j ab)) else inj₁ (⇑ (unpadFst i j ab))
+          up (t ◁ ab) with toℕ (atom→n t) ≟ toℕ n₂
+          up (t ◁ ab) | yes p = inj₂ $ ⇑ (unpadSnd i j ab)
+          up (t ◁ ab) | no ¬p = inj₁ $ ⇑ (unpadFst i j ab)
+
+import Relation.Binary as RB
+open module NatDTO = RB.DecTotalOrder decTotalOrder using (trans)
+
+⇓𝕎⇑-⊎ : ∀ {α i β j} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α ⊎ β) {suc (i ⊔ j)}
+⇓𝕎⇑-⊎ {α} {i} {β} {j} sα sβ = ⇓𝕎⇑-⊎' {α} {i} {β} {j} (# 0) (# 1) (# 0) sα sβ
+    where
+        fin0≤?card : True (suc 0 ≤? card)
+        fin0≤?card = fromWitness (trans (s≤s z≤n) card≥2)
+
+        fin1≤?card : True (suc 1 ≤? card)
+        fin1≤?card = fromWitness (trans (s≤s (s≤s z≤n)) card≥2)
 
 
 -- derivable instances (can be resolved recursively from the basic)

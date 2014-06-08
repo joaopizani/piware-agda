@@ -1,6 +1,5 @@
 module PiWare.Atom where
 
-open import Data.Bool using (false; true) renaming (Bool to 𝔹)
 open import Data.Nat using (ℕ; _≤_)
 open import Data.Fin using (Fin)
 
@@ -12,17 +11,13 @@ record AtomInfo : Set₁ where
         -- primitives
         Atom   : Set
         card   : ℕ
-        atom#  : Fin card → Atom
-        𝔹→atom : 𝔹 → Atom
-        atom→𝔹 : Atom → 𝔹
+        n→atom : Fin card → Atom
+        atom→n : Atom → Fin card
 
-        -- axioms
-        inv-atom𝔹 : ∀ b → atom→𝔹 (𝔹→atom b ) ≡ b
+        -- properties
         card≥2 : 2 ≤ card
-        inj-atom# : ∀ a₁ a₂ → atom# a₁ ≡ atom# a₂ → a₁ ≡ a₂
+        inv-left  : ∀ i → atom→n (n→atom i) ≡ i
+        inv-right : ∀ a → n→atom (atom→n a) ≡ a
 
-    trueA : Atom
-    trueA = 𝔹→atom true
-
-    falseA : Atom
-    falseA = 𝔹→atom false
+    Atom# : Set
+    Atom# = Fin card
