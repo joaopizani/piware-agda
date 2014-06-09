@@ -1,11 +1,14 @@
+\begin{code}
 module PiWare.Atom where
 
 open import Data.Nat using (ℕ; _≤_)
 open import Data.Fin using (Fin)
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
+\end{code}
 
 
+\begin{code}
 record AtomInfo : Set₁ where
     field
         -- primitives
@@ -21,3 +24,4 @@ record AtomInfo : Set₁ where
 
     Atom# : Set
     Atom# = Fin card
+\end{code}
