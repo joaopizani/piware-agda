@@ -58,11 +58,11 @@ joinVec* (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 ⟦ c ⟧*'' acc (x ∷ xs) | out , back , _ = out ∷ ♯ ⟦ c ⟧*'' back (♭ xs)
 
 -- sequential eval
-⟦_⟧*' : {i o : ℕ} → ℂ'* Atom𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
+⟦_⟧*' : {i o : ℕ} → ℂ*' Atom𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
 ⟦ Comb c      ⟧*' si = smap ⟦ c ⟧' si
 ⟦ DelayLoop c ⟧*' si = replicate false ∷ ♯ ⟦ c ⟧*'' (replicate false) si
 ⟦ Plug p      ⟧*' si = smap (plugOutputs p) si
-⟦ c₁ ⟫'* c₂   ⟧*' si = ⟦ c₂ ⟧*' (⟦ c₁ ⟧*' si)
-⟦ _|'*_ {i₁} c₁ c₂ ⟧*' si with splitVec* {_} {i₁} si
-⟦ c₁ |'* c₂ ⟧*' si | si₁ , si₂ = joinVec* (⟦ c₁ ⟧*' si₁ , ⟦ c₂ ⟧*' si₂)
-⟦ _|+'*_ {i₁} {i₂} c₁ c₂ ⟧*' ((t ◁ ab) ∷ abs) = {!!}
+⟦ c₁ ⟫*' c₂   ⟧*' si = ⟦ c₂ ⟧*' (⟦ c₁ ⟧*' si)
+⟦ _|*'_ {i₁} c₁ c₂ ⟧*' si with splitVec* {_} {i₁} si
+⟦ c₁ |*' c₂ ⟧*' si | si₁ , si₂ = joinVec* (⟦ c₁ ⟧*' si₁ , ⟦ c₂ ⟧*' si₂)
+⟦ _|+*'_ {i₁} {i₂} c₁ c₂ ⟧*' ((t ◁ ab) ∷ abs) = {!!}
