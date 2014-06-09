@@ -1,26 +1,23 @@
 module PiWare.Simulation.Core where
 
-open import Function using (_$_; _∘_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _≟_)
-open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
-open import Data.Bool using (not; _∧_; _∨_; false; if_then_else_) renaming (Bool to 𝔹)
+open import Data.Fin using (Fin; toℕ)
+open import Data.Bool using (not; _∧_; _∨_; false) renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; <_,_>)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Vec using (Vec; [_]; _++_; splitAt; map; lookup; replicate; allFin) renaming (_∷_ to _◁_; [] to ε)
+open import Data.Sum using (_⊎_)
+open import Data.Vec using (Vec; [_]; _++_; splitAt; map; lookup; replicate; allFin) renaming (_∷_ to _◁_)
+open import Data.Stream using (Stream; _∷_; zipWith; take) renaming (map to smap)
 
 open import Relation.Nullary.Core using (yes; no)
 open import Relation.Binary.PropositionalEquality using (refl)
-open import Data.Stream using (Stream; _∷_; zipWith; take) renaming (map to smap)
-open import Coinduction
-open import PiWare.Atom
-
-open import PiWare.Padding
-open import PiWare.Atom.Bool
-open AtomInfo Atom𝔹
+open import Coinduction using (♯_; ♭)
 
 -- TODO: Now hardcoded to Atom𝔹, generalize later
+open import PiWare.Atom
 open import PiWare.Atom.Bool using (Atom𝔹)
+open import PiWare.Padding using (unpadFst; unpadSnd)
 open import PiWare.Circuit.Core
+open AtomInfo Atom𝔹
 
 
 -- helpers for circuit evaluation (both combinational and sequential)
@@ -48,12 +45,12 @@ joinVec* (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 ⟦ And ⟧'      (x ◁ y ◁ ε) = [ x ∧ y ]
 ⟦ Or  ⟧'      (x ◁ y ◁ ε) = [ x ∨ y ]
 ⟦ Plug p ⟧'   v           = plugOutputs p v
-⟦ c₁ ⟫' c₂ ⟧' v           = (⟦ c₂ ⟧' ∘ ⟦ c₁ ⟧') v
+⟦ c₁ ⟫' c₂ ⟧' v           = ⟦ c₂ ⟧' (⟦ c₁ ⟧' v)
 ⟦ _|'_ {i₁} c₁ c₂ ⟧' v with splitAt i₁ v
 ⟦ c₁ |' c₂ ⟧' .(v₁ ++ v₂) | v₁ , v₂  , refl = ⟦ c₁ ⟧' v₁ ++ ⟦ c₂ ⟧' v₂
 ⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' (t ◁ ab) with toℕ (atom→n t) ≟ 1
-⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' (t ◁ ab) | yes p = ⟦ c₂ ⟧' (unpadSnd i₁ i₂ ab)
-⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' (t ◁ ab) | no ¬p = ⟦ c₁ ⟧' (unpadFst i₁ i₂ ab)
+⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' (t ◁ ab) | yes _ = ⟦ c₂ ⟧' (unpadSnd i₁ i₂ ab)
+⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' (t ◁ ab) | no  _ = ⟦ c₁ ⟧' (unpadFst i₁ i₂ ab)
 
 -- sequential eval (accumulating parameter)
 ⟦_⟧*'' : {i o l : ℕ} → ℂ' Atom𝔹 (i + l) (o + l) → Vec 𝔹 l → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
@@ -65,7 +62,7 @@ joinVec* (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 ⟦ Comb c      ⟧*' si = smap ⟦ c ⟧' si
 ⟦ DelayLoop c ⟧*' si = replicate false ∷ ♯ ⟦ c ⟧*'' (replicate false) si
 ⟦ Plug p      ⟧*' si = smap (plugOutputs p) si
-⟦ c₁ ⟫'* c₂   ⟧*' si = (⟦ c₂ ⟧*' ∘ ⟦ c₁ ⟧*') si
+⟦ c₁ ⟫'* c₂   ⟧*' si = ⟦ c₂ ⟧*' (⟦ c₁ ⟧*' si)
 ⟦ _|'*_ {i₁} c₁ c₂ ⟧*' si with splitVec* {_} {i₁} si
 ⟦ c₁ |'* c₂ ⟧*' si | si₁ , si₂ = joinVec* (⟦ c₁ ⟧*' si₁ , ⟦ c₂ ⟧*' si₂)
 ⟦ _|+'*_ {i₁} {i₂} c₁ c₂ ⟧*' ((t ◁ ab) ∷ abs) = {!!}

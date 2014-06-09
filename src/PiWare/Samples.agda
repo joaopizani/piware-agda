@@ -9,11 +9,10 @@ import Algebra as Alg
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
 open import Algebra.Operations (Alg.CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 
-open import PiWare.Atom.Bool
-open import PiWare.Circuit.Core
-
+open import PiWare.Atom.Bool using (Atom𝔹)
 open import PiWare.Synthesizable.Bool
 open import PiWare.Plugs Atom𝔹
+open import PiWare.Circuit.Core
 open import PiWare.Circuit Atom𝔹
 
 
@@ -70,7 +69,7 @@ toggle = delayℂ (⊻ℂ ⟫ ¬ℂ ⟫ pFork×)
 
 -- input × load → out
 reg : ℂ* (𝔹 × 𝔹) 𝔹
-reg = delayℂ (pSwap || pid  ⟫  pALR  ⟫  (pid || pSwap)  ⟫  mux2to1  ⟫  pFork×)
+reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
 
 
 -- (attempt at) generically-sized mux

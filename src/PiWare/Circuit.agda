@@ -3,7 +3,6 @@ open import PiWare.Atom
 module PiWare.Circuit (AI : AtomInfo) where
 
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
-open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
 

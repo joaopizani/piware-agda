@@ -8,16 +8,15 @@ open module AI' = AtomInfo AI
 open import Function using (_$_)
 open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_])
-open import Data.Bool using (if_then_else_) renaming (Bool to 𝔹)
-open import Data.Nat using (ℕ; _+_; _*_; _≟_; _≤?_; suc; _⊔_; decTotalOrder; s≤s; z≤n)
 open import Data.Fin using (Fin; toℕ; #_)
+open import Data.Nat using (ℕ; _+_; _*_; _≟_; _≤?_; suc; _⊔_; decTotalOrder; s≤s; z≤n)
 open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map) renaming (_∷_ to _◁_)
 
-open import Relation.Binary.PropositionalEquality using (refl; _≢_)
+open import Relation.Binary.PropositionalEquality using (refl)
 open import Relation.Nullary.Decidable using (True; fromWitness)
 open import Relation.Nullary.Core using (yes; no)
 
-open import PiWare.Padding
+open import PiWare.Padding using (padFst; unpadFst; padSnd; unpadSnd)
 
 
 -- Words are sequences of "Atoms"

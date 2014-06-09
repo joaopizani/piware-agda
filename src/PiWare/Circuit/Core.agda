@@ -3,7 +3,7 @@ module PiWare.Circuit.Core where
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
 
-open import PiWare.Atom
+open import PiWare.Atom using (AtomInfo)
 
 
 -- Purely combinational

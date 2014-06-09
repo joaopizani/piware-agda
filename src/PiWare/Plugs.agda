@@ -10,7 +10,6 @@ open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≤_; _≥_; z≤
 open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+) renaming (zero to Fz; suc to Fs)
 open import Data.Nat.DivMod using (_divMod_; DivMod)
 
-open import Data.Empty using (⊥)
 open import Relation.Nullary using (yes; no; ¬_)
 open import Relation.Nullary.Negation using (contradiction)
 open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; refl; cong)
@@ -187,7 +186,7 @@ pVecHalfPow {_} {i} {m} ⦃ sα ⦄ =
         (pVecHalfPow' {m} {i})
 
 
--- forking (TODO: non-empty vectors)
+-- forking (TODO: non-empty vectors?)
 pForkVec : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ α (Vec α n)
 pForkVec {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = m} sα ⦄ (pFork' {m} {i})
 

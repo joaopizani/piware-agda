@@ -3,9 +3,11 @@ module PiWare.Atom.Bool where
 open import Data.Bool using (true; false) renaming (Bool to 𝔹)
 open import Data.Nat using (s≤s; z≤n)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
-open import PiWare.Atom
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
+open import PiWare.Atom using (AtomInfo)
+
 
 private
   n→𝔹 : Fin 2 → 𝔹

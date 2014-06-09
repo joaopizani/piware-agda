@@ -3,14 +3,14 @@ module PiWare.Synthesizable.Bool where
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
 open import Data.Nat using (ℕ; suc; _⊔_)
-open import Data.Fin using (#_)
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Vec using (Vec; head) renaming ([_] to singleton)
 
-open import PiWare.Atom
 open import PiWare.Atom.Bool using (Atom𝔹)
 open import PiWare.Synthesizable Atom𝔹 public
-open AtomInfo Atom𝔹 using (Atom#)
+
+import PiWare.Atom as A
+open A.AtomInfo Atom𝔹 using (Atom#)
 
 
 -- basic instance
