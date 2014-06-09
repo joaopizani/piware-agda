@@ -1,3 +1,4 @@
+\begin{code}
 open import PiWare.Atom
 
 module PiWare.Plugs (AI : AtomInfo) where
@@ -18,187 +19,266 @@ open PropEq.≡-Reasoning
 open import PiWare.Synthesizable AI
 open import PiWare.Circuit.Core
 open import PiWare.Circuit AI
+\end{code}
 
 
+\begin{code}
 private
-    notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
-    notLEQtoGEQ {_}     {zero}  _  = z≤n
-    notLEQtoGEQ {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
-    notLEQtoGEQ {suc n} {suc m} ¬p = s≤s $ notLEQtoGEQ (¬p ∘ s≤s)
+\end{code}
+  \begin{code}
+  notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
+  notLEQtoGEQ {_}     {zero}  _  = z≤n
+  notLEQtoGEQ {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
+  notLEQtoGEQ {suc n} {suc m} ¬p = s≤s $ notLEQtoGEQ (¬p ∘ s≤s)
+  \end{code}
 
-    splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
-    splitFin {n} {_} x with suc (toℕ x) ≤? n
-    splitFin {_} {_} x | yes p  = inj₁ (fromℕ≤ p)
-    splitFin {n} {m} x | no  ¬p = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ ¬p)) 
+  \begin{code}
+  splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
+  splitFin {n} {_} x with suc (toℕ x) ≤? n
+  splitFin {_} {_} x | yes p  = inj₁ (fromℕ≤ p)
+  splitFin {n} {m} x | no  ¬p = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ ¬p)) 
+  \end{code}
 
-    uniteFinSwap : ∀ {n m} → Fin n ⊎ Fin m → Fin (m + n)
-    uniteFinSwap {_} {m} (inj₁ x) = raise   m x
-    uniteFinSwap {n} {_} (inj₂ y) = inject+ n y
+  \begin{code}
+  uniteFinSwap : ∀ {n m} → Fin n ⊎ Fin m → Fin (m + n)
+  uniteFinSwap {_} {m} (inj₁ x) = raise   m x
+  uniteFinSwap {n} {_} (inj₂ y) = inject+ n y
+  \end{code}
 
-    pSwap' : ∀ {n m} → ℂ' AI (n + m) (m + n)
-    pSwap' {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
+  \begin{code}
+  pSwap' : ∀ {n m} → ℂ' AI (n + m) (m + n)
+  pSwap' {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
+  \end{code}
 
-    pid' : ∀ {n} → ℂ' AI n n
-    pid' = Plug id
+  \begin{code}
+  pid' : ∀ {n} → ℂ' AI n n
+  pid' = Plug id
+  \end{code}
 
-    -- associativity plugs
-    import Algebra as Alg
-    import Data.Nat.Properties as NP
-    open import Data.Nat.Properties.Simple using (*-right-zero)
-    open import Algebra.Operations (Alg.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
-    open module CS = Alg.CommutativeSemiring NP.commutativeSemiring
-         using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
+  -- associativity plugs
+  \begin{code}
+  import Algebra as Alg
+  import Data.Nat.Properties as NP
+  open import Data.Nat.Properties.Simple using (*-right-zero)
+  open import Algebra.Operations (Alg.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
+  open module CS = Alg.CommutativeSemiring NP.commutativeSemiring
+       using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
+  \end{code}
 
-    pALR' : ∀ {w v y} → ℂ' AI ((w + v) + y) (w + (v + y))
-    pALR' {w} {v} {y} = Plug p  where p : Fin (w + (v + y)) → Fin ((w + v) + y)
-                                      p x rewrite +-assoc w v y = x
+  \begin{code}
+  pALR' : ∀ {w v y} → ℂ' AI ((w + v) + y) (w + (v + y))
+  pALR' {w} {v} {y} = Plug p  where p : Fin (w + (v + y)) → Fin ((w + v) + y)
+                                    p x rewrite +-assoc w v y = x
+  \end{code}
 
-    pARL' : ∀ {w v y : ℕ} → ℂ' AI (w + (v + y)) ((w + v) + y)
-    pARL' {w} {v} {y} = Plug p  where p : Fin ((w + v) + y) → Fin (w + (v + y))
-                                      p x rewrite sym (+-assoc w v y) = x
+  \begin{code}
+  pARL' : ∀ {w v y : ℕ} → ℂ' AI (w + (v + y)) ((w + v) + y)
+  pARL' {w} {v} {y} = Plug p  where p : Fin ((w + v) + y) → Fin (w + (v + y))
+                                    p x rewrite sym (+-assoc w v y) = x
+  \end{code}
 
-    -- TODO: Substitute seq composition by simple Fin → Fin function
-    pIntertwine' : ∀ {a b c d} → ℂ' AI ((a + b) + (c + d)) ((a + c) + (b + d))
-    pIntertwine' {a} {b} {c} {d} =
-            pALR' {a} {b} {c + d}
-        ⟫'  _|'_ {AI} {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
-        ⟫'  _|'_ {AI} {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
-        ⟫'  _|'_ {AI} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
-        ⟫'  pARL' {a} {c} {b + d}
-
-
-    pHead' : ∀ {n w} → ℂ' AI (suc n * w) w
-    pHead' {n} {w} = Plug (inject+ (n * w))
-
-    open NP.SemiringSolver using (prove; solve; _:=_; con; var; _:+_; _:*_)
-
-    twiceSuc : ∀ n w → w + (n + suc n) * w ≡ w + n * w + (w + n * w)
-    twiceSuc = solve 2 eq refl  -- ring solver creates the equality proof
-        where eq = λ n w →  w :+ (n :+ (con 1 :+ n)) :* w  :=  w :+ n :* w :+ (w :+ n :* w)
-
-    pVecHalf' : ∀ {n w} → ℂ' AI ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
-    pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
-
-
-    eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
-    eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
-
-    pVecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
-    pVecHalfPowEq zero w rewrite (proj₂ +-identity) w = refl
-    pVecHalfPowEq (suc n) w = begin
-        2 ^ suc (suc n) * w                ≡⟨ refl ⟩
-        2 * 2 ^ suc n * w                  ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
-        2 * (2 ^ suc n * w)                ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
-        2 * (2 ^ n * w  +  2 ^ n * w)      ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
-        (2 ^ n * w + 2 ^ n * w) * 2        ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
-        2 ^ n * w * 2   +  2 ^ n * w * 2   ≡⟨ (let p = *-comm (2 ^ n * w) 2       in  eqAdd p p) ⟩
-        2 * (2 ^ n * w) +  2 * (2 ^ n * w) ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
-        2 * 2 ^ n * w   +  2 * 2 ^ n * w   ≡⟨ refl ⟩
-        2 ^ suc n * w   +  2 ^ suc n * w   ∎
-
-    pVecHalfPow' : ∀ {n w} → ℂ' AI ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
-    pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
+  -- TODO: Substitute seq composition by simple Fin → Fin function
+  \begin{code}
+  pIntertwine' : ∀ {a b c d} → ℂ' AI ((a + b) + (c + d)) ((a + c) + (b + d))
+  pIntertwine' {a} {b} {c} {d} =
+          pALR' {a} {b} {c + d}
+      ⟫'  _|'_ {AI} {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
+      ⟫'  _|'_ {AI} {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
+      ⟫'  _|'_ {AI} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
+      ⟫'  pARL' {a} {c} {b + d}
+  \end{code}
 
 
-    pFork' : ∀ {k n} → ℂ' AI n (k * n)
-    pFork' {k} {zero}  rewrite *-right-zero k = pid'
-    pFork' {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
+  \begin{code}
+  pHead' : ∀ {n w} → ℂ' AI (suc n * w) w
+  pHead' {n} {w} = Plug (inject+ (n * w))
+  \end{code}
 
-    pFst' : ∀ {m n} → ℂ' AI (m + n) m
-    pFst' {m} {n} = Plug (inject+ n)
+  \begin{code}
+  open NP.SemiringSolver using (prove; solve; _:=_; con; var; _:+_; _:*_)
+  \end{code}
 
-    pSnd' : ∀ {m n} → ℂ' AI (m + n) n
-    pSnd' {m} {n} = Plug (raise m)
+  \begin{code}
+  twiceSuc : ∀ n w → w + (n + suc n) * w ≡ w + n * w + (w + n * w)
+  twiceSuc = solve 2 eq refl  -- ring solver creates the equality proof
+      where eq = λ n w →  w :+ (n :+ (con 1 :+ n)) :* w  :=  w :+ n :* w :+ (w :+ n :* w)
+  \end{code}
+
+  \begin{code}
+  pVecHalf' : ∀ {n w} → ℂ' AI ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
+  pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
+  \end{code}
+
+
+  \begin{code}
+  eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
+  eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
+  \end{code}
+
+  \begin{code}
+  pVecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
+  pVecHalfPowEq zero w rewrite (proj₂ +-identity) w = refl
+  pVecHalfPowEq (suc n) w = begin
+      2 ^ suc (suc n) * w                ≡⟨ refl ⟩
+      2 * 2 ^ suc n * w                  ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
+      2 * (2 ^ suc n * w)                ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
+      2 * (2 ^ n * w  +  2 ^ n * w)      ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
+      (2 ^ n * w + 2 ^ n * w) * 2        ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
+      2 ^ n * w * 2   +  2 ^ n * w * 2   ≡⟨ (let p = *-comm (2 ^ n * w) 2       in  eqAdd p p) ⟩
+      2 * (2 ^ n * w) +  2 * (2 ^ n * w) ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
+      2 * 2 ^ n * w   +  2 * 2 ^ n * w   ≡⟨ refl ⟩
+      2 ^ suc n * w   +  2 ^ suc n * w   ∎
+  \end{code}
+
+  \begin{code}
+  pVecHalfPow' : ∀ {n w} → ℂ' AI ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
+  pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
+  \end{code}
+
+
+  \begin{code}
+  pFork' : ∀ {k n} → ℂ' AI n (k * n)
+  pFork' {k} {zero}  rewrite *-right-zero k = pid'
+  pFork' {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
+  \end{code}
+
+  \begin{code}
+  pFst' : ∀ {m n} → ℂ' AI (m + n) m
+  pFst' {m} {n} = Plug (inject+ n)
+  \end{code}
+
+  \begin{code}
+  pSnd' : ∀ {m n} → ℂ' AI (m + n) n
+  pSnd' {m} {n} = Plug (raise m)
+  \end{code}
 
 
 
 -- identity
+\begin{code}
 pid : ∀ {α i} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ α α
 pid ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ pid'
+\end{code}
 
 
 -- rearranging wires
+\begin{code}
 pSwap : ∀ {α i β j} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ (α × β) (β × α)
 pSwap {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× sα sβ ⦄ ⦃ ⇓𝕎⇑-× sβ sα ⦄ (pSwap' {i} {j})
+\end{code}
 
 
+\begin{code}
 pIntertwine : ∀ {α i β j γ k δ l} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {k} ⦄ ⦃ sδ : ⇓𝕎⇑ δ {l} ⦄
               → ℂ  ((α × β) × (γ × δ))  ((α × γ) × (β × δ))
 pIntertwine {i = i} {j = j} {k = k} {l = l}  ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ ⦃ sδ ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× (⇓𝕎⇑-× sα sβ) (⇓𝕎⇑-× sγ sδ) ⦄  ⦃ ⇓𝕎⇑-× (⇓𝕎⇑-× sα sγ) (⇓𝕎⇑-× sβ sδ) ⦄
         (pIntertwine' {i} {j} {k} {l})
+\end{code}
 
 
 -- associativity
+\begin{code}
 pALR : ∀ {α i β j γ k} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {k} ⦄
        → ℂ ((α × β) × γ) (α × (β × γ))
 pALR {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× (⇓𝕎⇑-× sα sβ) sγ ⦄ ⦃ ⇓𝕎⇑-× sα (⇓𝕎⇑-× sβ sγ) ⦄ (pALR' {i} {j} {k})
+\end{code}
         
+\begin{code}
 pARL : ∀ {α i β j γ k} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {k} ⦄
        → ℂ (α × (β × γ)) ((α × β) × γ)
 pARL {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-× sα (⇓𝕎⇑-× sβ sγ) ⦄ ⦃ ⇓𝕎⇑-× (⇓𝕎⇑-× sα sβ) sγ ⦄ (pARL' {i} {j} {k})
+\end{code}
  
 
 -- vector plugs
+\begin{code}
 pHead : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ (Vec α (suc n)) α
 pHead {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc m} sα ⦄ ⦃ sα ⦄ (pHead' {m} {i})
+\end{code}
 
 
+\begin{code}
 pUncons : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
 pUncons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = suc m} sα ⦄ ⦃ ⇓𝕎⇑-× sα (⇓𝕎⇑-Vec {n = m} sα) ⦄ pid'
+\end{code}
 
+\begin{code}
 ⇓𝕎⇑-pUncons-in : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ⇓𝕎⇑ (Vec α (suc n))
 ⇓𝕎⇑-pUncons-in {n = m} ⦃ sα ⦄ = ⇓𝕎⇑-Vec {n = suc m} sα
+\end{code}
 
+\begin{code}
 ⇓𝕎⇑-pUncons-out : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ⇓𝕎⇑ (α × Vec α n)
 ⇓𝕎⇑-pUncons-out {n = m} ⦃ sα ⦄ = ⇓𝕎⇑-× sα (⇓𝕎⇑-Vec {n = m} sα)
+\end{code}
 
 
+\begin{code}
 pCons : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ (α × Vec α n) (Vec α (suc n))
 pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× sα (⇓𝕎⇑-Vec {n = m} sα) ⦄ ⦃ ⇓𝕎⇑-Vec {n = suc m} sα ⦄ pid'
+\end{code}
 
 
+\begin{code}
 pSingletonIn : ∀ {α i} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ α (Vec α 1)
 pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} sα ⦄  c'
     where c' : ℂ' AI i (1 * i)
           c' rewrite (proj₂ +-identity) i = pid'
+\end{code}
 
+\begin{code}
 ⇓𝕎⇑-pSingletonIn-out : ∀ {α i} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ⇓𝕎⇑ (Vec α 1)
 ⇓𝕎⇑-pSingletonIn-out ⦃ sα ⦄ = ⇓𝕎⇑-Vec {n = 1} sα
+\end{code}
           
+\begin{code}
 pSingletonOut : ∀ {α i} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ (Vec α 1) α
 pSingletonOut {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} sα ⦄ ⦃ sα ⦄  c'
     where c' : ℂ' AI (1 * i) i
           c' rewrite (proj₂ +-identity) i = pid'
+\end{code}
 
 
+\begin{code}
 pVecHalf : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ (Vec α (2 * suc n)) (Vec α (suc n) × Vec α (suc n))
 pVecHalf {_} {i} {m} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 2 * suc m} sα ⦄ ⦃ ⇓𝕎⇑-× (⇓𝕎⇑-Vec {n = suc m} sα) (⇓𝕎⇑-Vec {n = suc m} sα) ⦄
         (pVecHalf' {m} {i})
+\end{code}
 
 
+\begin{code}
 pVecHalfPow : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ (Vec α (2 ^ suc n)) (Vec α (2 ^ n) × Vec α (2 ^ n))
 pVecHalfPow {_} {i} {m} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 2 ^ suc m} sα ⦄ ⦃ ⇓𝕎⇑-× (⇓𝕎⇑-Vec {n = 2 ^ m} sα) (⇓𝕎⇑-Vec {n = 2 ^ m} sα) ⦄ 
         (pVecHalfPow' {m} {i})
+\end{code}
 
 
 -- forking (TODO: non-empty vectors?)
+\begin{code}
 pForkVec : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ α (Vec α n)
 pForkVec {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = m} sα ⦄ (pFork' {m} {i})
+\end{code}
 
+\begin{code}
 pFork× : ∀ {α i} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ α (α × α)
 pFork× {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× sα sα ⦄  c'
     where c' : ℂ' AI i (i + i)
           c' rewrite sym $ cong (_+_ i) ((proj₂ +-identity) i) = pFork' {2} {i}
+\end{code}
 
 
 -- pairs
+\begin{code}
 pFst : ∀ {α i β j} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ (α × β) α
 pFst {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× sα sβ ⦄ ⦃ sα ⦄ (pFst' {i} {j})
+\end{code}
 
+\begin{code}
 pSnd : ∀ {α i β j} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ (α × β) β
 pSnd {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× sα sβ ⦄ ⦃ sβ ⦄ (pSnd' {i} {j})
+\end{code}

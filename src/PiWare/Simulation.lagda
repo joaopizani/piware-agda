@@ -1,3 +1,4 @@
+\begin{code}
 module PiWare.Simulation where
 
 open import Data.Nat using (ℕ)
@@ -10,10 +11,15 @@ open import PiWare.Synthesizable Atom𝔹
 open import PiWare.Simulation.Core
 
 open ⇓𝕎⇑ {{...}}
+\end{code}
 
 
+\begin{code}
 ⟦_⟧ : ∀ {α i β j} → ℂ α β {i} {j} → (α → β)
 ⟦_⟧ (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c') a = ⇑ (⟦ c' ⟧' (⇓ a))
+\end{code}
 
+\begin{code}
 ⟦_⟧* : ∀ {α i β j} → ℂ* α β {i} {j} → (Stream α → Stream β)
 ⟦_⟧* (Mkℂ* ⦃ sα ⦄ ⦃ sβ ⦄ c') a = smap ⇑ (⟦ c' ⟧*' (smap ⇓ a))
+\end{code}

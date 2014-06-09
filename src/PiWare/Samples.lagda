@@ -1,3 +1,4 @@
+\begin{code}
 module PiWare.Samples where
 
 open import Data.Bool using () renaming (Bool to 𝔹)
@@ -14,62 +15,87 @@ open import PiWare.Synthesizable.Bool
 open import PiWare.Plugs Atom𝔹
 open import PiWare.Circuit.Core
 open import PiWare.Circuit Atom𝔹
+\end{code}
 
 
+\begin{code}
 ¬ℂ : ℂ 𝔹 𝔹
 ¬ℂ = Mkℂ Not
+\end{code}
 
+\begin{code}
 ∧ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ∧ℂ = Mkℂ And 
+\end{code}
 
+\begin{code}
 ∨ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ∨ℂ = Mkℂ Or
+\end{code}
 
 
+\begin{code}
 ¬×3ℂ : ℂ 𝔹 𝔹
 ¬×3ℂ = ¬ℂ ⟫ ¬ℂ ⟫ ¬ℂ
+\end{code}
 
+\begin{code}
 ¬∧ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ¬∧ℂ = ∧ℂ ⟫ ¬ℂ
+\end{code}
 
+\begin{code}
 ⊻ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ⊻ℂ =   pFork×
      ⟫ (¬ℂ || pid ⟫ ∧ℂ) || (pid || ¬ℂ ⟫ ∧ℂ)
      ⟫ ∨ℂ
+\end{code}
 
+\begin{code}
 hadd : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)  -- a × b → c × s
 hadd =   pFork×
        ⟫ ∧ℂ || ⊻ℂ
+\end{code}
 
+\begin{code}
 fadd : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)  -- (a × b) × cin → co × s
 fadd =   hadd || pid
        ⟫    pALR
        ⟫ pid  || hadd
        ⟫    pARL
        ⟫ ∨ℂ   || pid
+\end{code}
 
 
 -- MUXES
+\begin{code}
 ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] : ⇓𝕎⇑ ((𝔹 × (𝔹 × 𝔹)) × (𝔹 × (𝔹 × 𝔹)))
 ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹×[𝔹×𝔹] ⇓𝕎⇑-𝔹×[𝔹×𝔹]
+\end{code}
 
 -- TODO: booleans for now. How to make it generic?
 -- Look at lava: do we need an if-then-else constructor in the BASE CIRCUIT TYPE?
 -- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
+\begin{code}
 mux2to1 : ℂ (𝔹 × (𝔹 × 𝔹)) 𝔹
 mux2to1 =   pFork×
           ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
           ⟫ ∨ℂ
+\end{code}
 
 
 -- Sequential. In: (repeat false)   Out: cycle [false, true]...
+\begin{code}
 toggle : ℂ* 𝔹 𝔹
 toggle = delayℂ (⊻ℂ ⟫ ¬ℂ ⟫ pFork×)
+\end{code}
 
 
 -- input × load → out
+\begin{code}
 reg : ℂ* (𝔹 × 𝔹) 𝔹
 reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
+\end{code}
 
 
 -- (attempt at) generically-sized mux
