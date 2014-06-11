@@ -13,7 +13,7 @@ open import Data.Fin using (Fin; toℕ; #_)
 open import Data.Nat using (ℕ; _+_; _*_; _≟_; _≤?_; suc; _⊔_; decTotalOrder; s≤s; z≤n)
 open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat; map) renaming (_∷_ to _◁_)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; inspect) renaming ([_] to it)
 open import Relation.Nullary.Decidable using (True; fromWitness)
 open import Relation.Nullary.Core using (yes; no)
 
@@ -60,13 +60,14 @@ open ⇓𝕎⇑ {{...}}
           up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = (⇑ ⇓a) , (⇑ ⇓b)
           
           down-up : (a×b : α × β) → up (down a×b) ≡ a×b
-          down-up (a , b) with splitAt i (⇓ a ++ ⇓ b)
-          down-up (a , b) | ⇓a , ⇓b , refl-⇓ rewrite refl-⇓ | ⇑∘⇓≡id a = {!!}
-          
+          down-up (a , b) = {!!}
+
           up-down : (w : 𝕎 (i + j)) → down (up w) ≡ w
-          up-down = {!!}
+          up-down w with splitAt i w
+          up-down .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl rewrite ⇓∘⇑≡id ⇓a | ⇓∘⇑≡id ⇓b = refl
 \end{code}
 %</Synth-Product>
+
 
 %<*Synth-Vec>
 \begin{code}
@@ -80,6 +81,7 @@ open ⇓𝕎⇑ {{...}}
           up .(concat grps) | grps , refl = map ⇑ grps
 \end{code}
 %</Synth-Vec>
+
 
 -- TODO: guarantee that n₁ and n₂ are different?
 %<*Synth-Sum-param>

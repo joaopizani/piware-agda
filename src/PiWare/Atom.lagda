@@ -14,12 +14,10 @@ record AtomInfo : Set₁ where
     field
         -- primitives
         Atom   : Set
-        card   : ℕ
         n→atom : Fin card → Atom
         atom→n : Atom → Fin card
 
         -- properties
-        card≥2 : 2 ≤ card
         inv-left  : ∀ i → atom→n (n→atom i) ≡ i
         inv-right : ∀ a → n→atom (atom→n a) ≡ a
 
