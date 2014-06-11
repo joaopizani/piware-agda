@@ -16,50 +16,65 @@ open A.AtomInfo Atom𝔹 using (Atom#)
 
 
 -- basic instance
+%<*Synth-Bool>
 \begin{code}
 ⇓𝕎⇑-𝔹 : ⇓𝕎⇑ 𝔹
 ⇓𝕎⇑-𝔹 = ⇓𝕎⇑[ singleton , head ]
 \end{code}
+%</Synth-Bool>
 
 
 -- derivable instances (can be resolved recursively from the basics)
+%<*Synth-Bool-Product-types>
 \begin{code}
 ⇓𝕎⇑-𝔹×α : ∀ {α i} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (𝔹 × α)
 ⇓𝕎⇑-α×𝔹 : ∀ {α i} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (α × 𝔹)
 \end{code}
+%</Synth-Bool-Product-types>
 
+%<*Synth-Bool-Product-defs>
 \begin{code}
 ⇓𝕎⇑-𝔹×α sα = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹 sα
 ⇓𝕎⇑-α×𝔹 sα = ⇓𝕎⇑-× sα     ⇓𝕎⇑-𝔹
 \end{code}
+%</Synth-Bool-Product-defs>
 
 
+%<*Synth-Bool-Vec>
 \begin{code}
 ⇓𝕎⇑-Vec𝔹 : ∀ {n} → ⇓𝕎⇑ (Vec 𝔹 n)
 ⇓𝕎⇑-Vec𝔹 = ⇓𝕎⇑-Vec ⇓𝕎⇑-𝔹
 \end{code}
+%</Synth-Bool-Vec>
 
 
+%<*Synth-Bool-Sum-param-types>
 \begin{code}
 ⇓𝕎⇑-𝔹⊎α' : ∀ {α i} → (n₁ n₂ p : Atom#) → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (𝔹 ⊎ α) {suc (1 ⊔ i)}
 ⇓𝕎⇑-α⊎𝔹' : ∀ {α i} → (n₁ n₂ p : Atom#) → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (α ⊎ 𝔹) {suc (i ⊔ 1)}
 \end{code}
+%</Synth-Bool-Sum-param-types>
 
+%<*Synth-Bool-Sum-types>
 \begin{code}
 ⇓𝕎⇑-𝔹⊎α : ∀ {α i} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (𝔹 ⊎ α) {suc (1 ⊔ i)}
 ⇓𝕎⇑-α⊎𝔹 : ∀ {α i} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (α ⊎ 𝔹) {suc (i ⊔ 1)}
 \end{code}
+%</Synth-Bool-Sum-types>
 
+%<*Synth-Bool-Sum-param-defs>
 \begin{code}
 ⇓𝕎⇑-𝔹⊎α' n₁ n₂ p sα = ⇓𝕎⇑-⊎' n₁ n₂ p ⇓𝕎⇑-𝔹 sα
 ⇓𝕎⇑-α⊎𝔹' n₁ n₂ p sα = ⇓𝕎⇑-⊎' n₁ n₂ p sα     ⇓𝕎⇑-𝔹
 \end{code}
+%</Synth-Bool-Sum-param-defs>
 
+%<*Synth-Bool-Sum-defs>
 \begin{code}
 ⇓𝕎⇑-𝔹⊎α sα = ⇓𝕎⇑-⊎ ⇓𝕎⇑-𝔹 sα
 ⇓𝕎⇑-α⊎𝔹 sα = ⇓𝕎⇑-⊎ sα     ⇓𝕎⇑-𝔹
 \end{code}
-
+%</Synth-Bool-Sum-defs>
 
 
 \begin{code}

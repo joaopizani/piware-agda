@@ -22,13 +22,16 @@ open import PiWare.Padding using (padFst; unpadFst; padSnd; unpadSnd)
 
 
 -- Words are sequences of "Atoms"
+%<*Word>
 \begin{code}
 𝕎 : ℕ → Set
 𝕎 = Vec Atom
 \end{code}
+%</Word>
 
 
 -- Provides a mapping between "high-level" metalanguage types and words
+%<*Synth>
 \begin{code}
 record ⇓𝕎⇑ (α : Set) {i : ℕ} : Set where
     constructor ⇓𝕎⇑[_,_][_,_]
@@ -41,9 +44,11 @@ record ⇓𝕎⇑ (α : Set) {i : ℕ} : Set where
 
 open ⇓𝕎⇑ {{...}}
 \end{code}
+%</Synth>
 
 
 -- basic instances
+%<*Synth-Product>
 \begin{code}
 ⇓𝕎⇑-× : ∀ {α i β j} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α × β)
 ⇓𝕎⇑-× {α} {i} {β} {j} sα sβ = ⇓𝕎⇑[ down , up ][ down-up , up-down ]
@@ -61,7 +66,9 @@ open ⇓𝕎⇑ {{...}}
           up-down : (w : 𝕎 (i + j)) → down (up w) ≡ w
           up-down = {!!}
 \end{code}
+%</Synth-Product>
 
+%<*Synth-Vec>
 \begin{code}
 ⇓𝕎⇑-Vec : ∀ {α i n} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (Vec α n)
 ⇓𝕎⇑-Vec {α} {i} {n} sα = ⇓𝕎⇑[ down , up ]
@@ -72,8 +79,10 @@ open ⇓𝕎⇑ {{...}}
           up atoms with group n i atoms
           up .(concat grps) | grps , refl = map ⇑ grps
 \end{code}
+%</Synth-Vec>
 
 -- TODO: guarantee that n₁ and n₂ are different?
+%<*Synth-Sum-param>
 \begin{code}
 ⇓𝕎⇑-⊎' : ∀ {α i β j} → (n₁ n₂ p : Atom#) → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α ⊎ β) {suc (i ⊔ j)}
 ⇓𝕎⇑-⊎' {α} {i} {β} {j} n₁ n₂ p sα sβ = ⇓𝕎⇑[ down , up ]
@@ -86,12 +95,14 @@ open ⇓𝕎⇑ {{...}}
           up (t ◁ ab) | yes p = inj₂ $ ⇑ (unpadSnd i j ab)
           up (t ◁ ab) | no ¬p = inj₁ $ ⇑ (unpadFst i j ab)
 \end{code}
+%</Synth-Sum-param>
 
 \begin{code}
 import Relation.Binary as RB
 open module NatDTO = RB.DecTotalOrder decTotalOrder using (trans)
 \end{code}
 
+%<*Synth-Sum>
 \begin{code}
 ⇓𝕎⇑-⊎ : ∀ {α i β j} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α ⊎ β) {suc (i ⊔ j)}
 ⇓𝕎⇑-⊎ {α} {i} {β} {j} sα sβ = ⇓𝕎⇑-⊎' {α} {i} {β} {j} (# 0) (# 1) (# 0) sα sβ
@@ -102,6 +113,7 @@ open module NatDTO = RB.DecTotalOrder decTotalOrder using (trans)
         fin1≤?card : True (suc 1 ≤? card)
         fin1≤?card = fromWitness (trans (s≤s (s≤s z≤n)) card≥2)
 \end{code}
+%</Synth-Sum>
 
 
 -- derivable instances (can be resolved recursively from the basic)

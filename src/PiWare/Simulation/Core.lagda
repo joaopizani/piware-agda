@@ -23,35 +23,46 @@ open AtomInfo Atom𝔹
 
 
 -- helpers for circuit evaluation (both combinational and sequential)
+%<*plugOutputs>
 \begin{code}
 plugOutputs : {α : Set} {o i : ℕ} → (Fin o → Fin i) → Vec α i → Vec α o
 plugOutputs p ins = map (λ fin → lookup (p fin) ins) (allFin _)
 \end{code}
+%</plugOutputs>
 
+%<*fstVec*>
 \begin{code}
 fstVec* : ∀ {α n m} → Stream (Vec α (n + m)) → Stream (Vec α n)
 fstVec* {n = k} (v ∷ vs) with splitAt k v
 fstVec* (.(w ++ y) ∷ vs) | w , y , refl = w ∷ ♯ fstVec* (♭ vs)
 \end{code}
+%</fstVec*>
 
+%<*sndVec*>
 \begin{code}
 sndVec* : ∀ {α n m} → Stream (Vec α (n + m)) → Stream (Vec α m)
 sndVec* {_} {n} {_} (v ∷ vs) with splitAt n v
 sndVec* {_} {n} {m} (.(w ++ y) ∷ vs) | w , y , refl = y ∷ ♯ sndVec* {_} {n} {m} (♭ vs)
 \end{code}
+%</sndVec*>
 
+%<*splitVec*>
 \begin{code}
 splitVec* : ∀ {α n m} → Stream (Vec α (n + m)) → Stream (Vec α n) × Stream (Vec α m)
 splitVec* {_} {n} {m} = < fstVec* , sndVec* {_} {n} {m} >
 \end{code}
+%</splitVec*>
 
+%<*joinVec*>
 \begin{code}
 joinVec* : {α : Set} {n m : ℕ} → Stream (Vec α n) × Stream (Vec α m) → Stream (Vec α (n + m))
 joinVec* (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 \end{code}
+%</joinVec*>
 
 
 -- combinational eval
+%<*eval'>
 \begin{code}
 ⟦_⟧' : {i o : ℕ} → ℂ' Atom𝔹 i o → (Vec 𝔹 i → Vec 𝔹 o)
 ⟦ Not ⟧'      (x ◁ ε)     = [ not x ]
@@ -65,15 +76,19 @@ joinVec* (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 ⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' (t ◁ ab) | yes _ = ⟦ c₂ ⟧' (unpadSnd i₁ i₂ ab)
 ⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' (t ◁ ab) | no  _ = ⟦ c₁ ⟧' (unpadFst i₁ i₂ ab)
 \end{code}
+%</eval'>
 
 -- sequential eval (accumulating parameter)
+%<*eval*''>
 \begin{code}
 ⟦_⟧*'' : {i o l : ℕ} → ℂ' Atom𝔹 (i + l) (o + l) → Vec 𝔹 l → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
 ⟦ c ⟧*'' acc (x ∷ xs) with splitAt _ (⟦ c ⟧' (x ++ acc))
 ⟦ c ⟧*'' acc (x ∷ xs) | out , back , _ = out ∷ ♯ ⟦ c ⟧*'' back (♭ xs)
 \end{code}
+%</eval*''>
 
 -- sequential eval
+%<*eval*'>
 \begin{code}
 ⟦_⟧*' : {i o : ℕ} → ℂ*' Atom𝔹 i o → Stream (Vec 𝔹 i) → Stream (Vec 𝔹 o)
 ⟦ Comb c      ⟧*' si = smap ⟦ c ⟧' si
@@ -84,3 +99,4 @@ joinVec* (vs₁ , vs₂) = zipWith (_++_) vs₁ vs₂
 ⟦ c₁ |*' c₂ ⟧*' si | si₁ , si₂ = joinVec* (⟦ c₁ ⟧*' si₁ , ⟦ c₂ ⟧*' si₂)
 ⟦ _|+*'_ {i₁} {i₂} c₁ c₂ ⟧*' ((t ◁ ab) ∷ abs) = {!!}
 \end{code}
+%</eval*'>

@@ -8,6 +8,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_)
 \end{code}
 
 
+%<*AtomInfo>
 \begin{code}
 record AtomInfo : Set₁ where
     field
@@ -25,3 +26,4 @@ record AtomInfo : Set₁ where
     Atom# : Set
     Atom# = Fin card
 \end{code}
+%</AtomInfo>
