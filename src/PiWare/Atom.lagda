@@ -14,6 +14,7 @@ record AtomInfo : Set₁ where
     field
         -- primitives
         Atom   : Set
+        card   : ℕ
         n→atom : Fin card → Atom
         atom→n : Atom → Fin card
 
