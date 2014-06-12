@@ -55,11 +55,9 @@ private
 Atom𝔹 : AtomInfo
 Atom𝔹 = record {
       Atom = 𝔹
-    ; card = 2
     ; n→atom = n→𝔹
     ; atom→n = 𝔹→n
    
-    ; card≥2 = s≤s (s≤s z≤n)
     ; inv-left  = inv-left-𝔹
     ; inv-right = inv-right-𝔹
     }

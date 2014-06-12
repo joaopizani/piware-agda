@@ -6,9 +6,12 @@ module PiWare.Circuit (AI : AtomInfo) where
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
+open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Synthesizable AI
 open import PiWare.Circuit.Core
+
+open AtomInfo AI using (Atom#) 
 \end{code}
 
 
@@ -40,9 +43,10 @@ _||_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ c₁) (Mkℂ c₂) =
 \end{code}
 
 \begin{code}
-_|+_ : ∀ {α i β j γ k} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {k} ⦄
+_|+_ : ∀ {α i β j γ k} → (n₁ n₂ p : Atom#) {diff : n₁ ≢ n₂}
+       → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {k} ⦄
        → ℂ α γ {i} {k} → ℂ β γ {j} {k} → ℂ (α ⊎ β) γ {suc (i ⊔ j)} {k}
-_|+_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ ⇓𝕎⇑-⊎ sα sβ ⦄ ⦃ sγ ⦄ (c₁ |+' c₂)
+_|+_ n₁ n₂ p ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ ⇓𝕎⇑-⊎ n₁ n₂ p sα sβ ⦄ ⦃ sγ ⦄ (c₁ |+' c₂)
 \end{code}
 
 \begin{code}
@@ -75,9 +79,10 @@ _|*_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ* c₁) (Mkℂ* c₂)
 \end{code}
 
 \begin{code}
-_|+*_ : ∀ {α i β j γ k} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {k} ⦄
+_|+*_ : ∀ {α i β j γ k} → (n₁ n₂ p : Atom#) {diff : n₁ ≢ n₂}
+        → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ ⦃ sγ : ⇓𝕎⇑ γ {k} ⦄
         → ℂ* α γ {i} {k} → ℂ* β γ {j} {k} → ℂ* (α ⊎ β) γ {suc (i ⊔ j)} {k}
-_|+*_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ* c₁) (Mkℂ* c₂) = Mkℂ* ⦃ ⇓𝕎⇑-⊎ sα sβ ⦄ ⦃ sγ ⦄ (c₁ |+*' c₂)
+_|+*_ n₁ n₂ p ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ* c₁) (Mkℂ* c₂) = Mkℂ* ⦃ ⇓𝕎⇑-⊎ n₁ n₂ p sα sβ ⦄ ⦃ sγ ⦄ (c₁ |+*' c₂)
 \end{code}
 
 \begin{code}

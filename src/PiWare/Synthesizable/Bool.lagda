@@ -6,6 +6,7 @@ open import Data.Sum using (_⊎_)
 open import Data.Nat using (ℕ; suc; _⊔_)
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Vec using (Vec; head) renaming ([_] to singleton)
+open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Atom.Bool using (Atom𝔹)
 open import PiWare.Synthesizable Atom𝔹 public
@@ -48,31 +49,17 @@ open A.AtomInfo Atom𝔹 using (Atom#)
 %</Synth-Bool-Vec>
 
 
-%<*Synth-Bool-Sum-param-types>
-\begin{code}
-⇓𝕎⇑-𝔹⊎α' : ∀ {α i} → (n₁ n₂ p : Atom#) → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (𝔹 ⊎ α) {suc (1 ⊔ i)}
-⇓𝕎⇑-α⊎𝔹' : ∀ {α i} → (n₁ n₂ p : Atom#) → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (α ⊎ 𝔹) {suc (i ⊔ 1)}
-\end{code}
-%</Synth-Bool-Sum-param-types>
-
 %<*Synth-Bool-Sum-types>
 \begin{code}
-⇓𝕎⇑-𝔹⊎α : ∀ {α i} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (𝔹 ⊎ α) {suc (1 ⊔ i)}
-⇓𝕎⇑-α⊎𝔹 : ∀ {α i} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (α ⊎ 𝔹) {suc (i ⊔ 1)}
+⇓𝕎⇑-𝔹⊎α : ∀ {α i} → (n₁ n₂ p : Atom#) {diff : n₁ ≢ n₂} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (𝔹 ⊎ α) {suc (1 ⊔ i)}
+⇓𝕎⇑-α⊎𝔹 : ∀ {α i} → (n₁ n₂ p : Atom#) {diff : n₁ ≢ n₂} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ (α ⊎ 𝔹) {suc (i ⊔ 1)}
 \end{code}
 %</Synth-Bool-Sum-types>
 
-%<*Synth-Bool-Sum-param-defs>
-\begin{code}
-⇓𝕎⇑-𝔹⊎α' n₁ n₂ p sα = ⇓𝕎⇑-⊎' n₁ n₂ p ⇓𝕎⇑-𝔹 sα
-⇓𝕎⇑-α⊎𝔹' n₁ n₂ p sα = ⇓𝕎⇑-⊎' n₁ n₂ p sα     ⇓𝕎⇑-𝔹
-\end{code}
-%</Synth-Bool-Sum-param-defs>
-
 %<*Synth-Bool-Sum-defs>
 \begin{code}
-⇓𝕎⇑-𝔹⊎α sα = ⇓𝕎⇑-⊎ ⇓𝕎⇑-𝔹 sα
-⇓𝕎⇑-α⊎𝔹 sα = ⇓𝕎⇑-⊎ sα     ⇓𝕎⇑-𝔹
+⇓𝕎⇑-𝔹⊎α n₁ n₂ p sα = ⇓𝕎⇑-⊎ n₁ n₂ p ⇓𝕎⇑-𝔹 sα
+⇓𝕎⇑-α⊎𝔹 n₁ n₂ p sα = ⇓𝕎⇑-⊎ n₁ n₂ p sα     ⇓𝕎⇑-𝔹
 \end{code}
 %</Synth-Bool-Sum-defs>
 
