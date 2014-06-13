@@ -107,7 +107,7 @@ mux2to1 =   pFork×
 -- Sequential. In: (repeat false)   Out: cycle [false, true]...
 %<*sample-toggle>
 \begin{code}
-toggle : ℂ* 𝔹 𝔹
+toggle : ℂ 𝔹 𝔹
 toggle = delayℂ (⊻ℂ ⟫ ¬ℂ ⟫ pFork×)
 \end{code}
 %</sample-toggle>
@@ -116,7 +116,7 @@ toggle = delayℂ (⊻ℂ ⟫ ¬ℂ ⟫ pFork×)
 -- input × load → out
 %<*sample-reg>
 \begin{code}
-reg : ℂ* (𝔹 × 𝔹) 𝔹
+reg : ℂ (𝔹 × 𝔹) 𝔹
 reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
 \end{code}
 %</sample-reg>
