@@ -6,18 +6,21 @@ module PiWare.Synthesizable (AI : AtomInfo) where
 -- opening with the AtomInfo we just got, for convenience
 open module AI' = AtomInfo AI
 
-open import Function using (_$_)
+open import Function using (_∘_; _$_)
 open import Data.Product using (_×_; _,_)
-open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_])
+open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (ℕ; _+_; _*_; _≟_; _≤?_; suc; _⊔_; decTotalOrder; s≤s; z≤n)
-open import Data.Vec using (Vec; _++_; splitAt; take; drop; _>>=_; group; concat; map) renaming (_∷_ to _◁_)
+open import Data.List using (List) renaming (map to mapₗ)
+open import Data.Vec using (Vec; _++_; splitAt; take; drop; _>>=_; group; concat)
+                     renaming (_∷_ to _◁_; map to mapᵥ)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; sym)
 open import Relation.Nullary.Decidable using (True; fromWitness)
 open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding using (padFst; unpadFst; padSnd; unpadSnd)
+open import PiWare.Utils using (splitSumList)
 \end{code}
 
 
@@ -38,6 +41,7 @@ record ⇓𝕎⇑ (α : Set) {i : ℕ} : Set where
     field
         ⇓ : α → 𝕎 i
         ⇑ : 𝕎 i → α
+        -- TODO: proofs that ⇑ and ⇓ are inverses
 
 open ⇓𝕎⇑ {{...}}
 \end{code}
@@ -68,10 +72,23 @@ open ⇓𝕎⇑ {{...}}
 
           up : 𝕎 (n * i) → Vec α n
           up atoms with group n i atoms
-          up .(concat grps) | grps , refl = map ⇑ grps
+          up .(concat grps) | grps , refl = mapᵥ ⇑ grps
 \end{code}
 %</Synth-Vec>
 
+
+-- Sum-related tagging helpers
+\begin{code}
+tagToSum : ∀ {i j} → 𝕎 (suc (i ⊔ j)) → 𝕎 i ⊎ 𝕎 j
+tagToSum {i} {j} (t ◁ ab) with toℕ (atom→n t) ≟ 1
+tagToSum {i} {j} (t ◁ ab) | yes _ = inj₂ (unpadSnd i j ab)
+tagToSum {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFst i j ab)
+\end{code}
+
+\begin{code}
+splitListByTag : ∀ {i j} → List (𝕎 (suc (i ⊔ j))) → List (𝕎 i) × List (𝕎 j)
+splitListByTag = splitSumList ∘ mapₗ tagToSum
+\end{code}
 
 -- TODO: guarantee that n₁ and n₂ are different?
 %<*Synth-Sum>
@@ -84,9 +101,7 @@ open ⇓𝕎⇑ {{...}}
                  , (λ b → (n→atom n₂) ◁ padSnd i j (n→atom p) (⇓ b)) ]
           
           up : 𝕎 (suc (i ⊔ j)) → α ⊎ β
-          up (t ◁ ab) with toℕ (atom→n t) ≟ toℕ n₂
-          up (t ◁ ab) | yes p = inj₂ $ ⇑ (unpadSnd i j ab)
-          up (t ◁ ab) | no ¬p = inj₁ $ ⇑ (unpadFst i j ab)
+          up = map⊎ ⇑ ⇑ ∘ tagToSum
 \end{code}
 %</Synth-Sum>
 
