@@ -3,8 +3,6 @@ open import PiWare.Atom
 
 module PiWare.Synthesizable (At : Atomic) where
 
-open module At' = Atomic At
-
 open import Function using (_∘_; _$_)
 open import Data.Product using (_×_; _,_; proj₁)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
@@ -20,6 +18,7 @@ open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding using (padFst; unpadFst; padSnd; unpadSnd)
 open import PiWare.Utils using (splitSumList)
+open Atomic At using (Atom; Atom#; atom→n; n→atom)
 \end{code}
 
 

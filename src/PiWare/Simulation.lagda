@@ -1,15 +1,16 @@
 \begin{code}
-module PiWare.Simulation where
+open import PiWare.Atom using (Atomic)
+open import PiWare.Gates using (Gates)
+
+module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘_)
 open import Data.Nat using (ℕ)
 open import Data.Stream using (Stream) renaming (map to mapₛ)
 
--- TODO: now hardcoded to Atom𝔹, parameterize later
-open import PiWare.Atom.Bool using (Atomic-𝔹)
-open import PiWare.Circuit Atomic-𝔹
-open import PiWare.Synthesizable Atomic-𝔹
-open import PiWare.Simulation.Core
+open import PiWare.Synthesizable At
+open import PiWare.Circuit Gt
+open import PiWare.Simulation.Core Gt
 
 open ⇓𝕎⇑ {{...}}
 \end{code}

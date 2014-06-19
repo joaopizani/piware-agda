@@ -9,7 +9,7 @@ open import Data.Vec using (Vec; head) renaming ([_] to singleton)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Atom.Bool using (Atomic-𝔹)
-open import PiWare.Synthesizable Atomic-𝔹 public
+open import PiWare.Synthesizable Atomic-𝔹
 
 import PiWare.Atom as A
 open A.Atomic Atomic-𝔹 using (Atom#)

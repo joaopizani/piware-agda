@@ -1,10 +1,13 @@
 \begin{code}
-module PiWare.Simulation.Core where
+open import PiWare.Atom
+open import PiWare.Gates
+
+module PiWare.Simulation.Core {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘_; _$_; id)
 open import Data.Nat using (ℕ; zero; suc; _+_; _≟_)
 
-open import Data.Fin using (Fin)
+open import Data.Fin using (Fin) renaming (zero to Fz)
 open import Data.Bool using (not; _∧_; _∨_; false) renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; <_,_>; proj₁) renaming (map to mapₚ)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -20,10 +23,10 @@ open import Data.List.NonEmpty using () renaming (map to map⁺)
 open import Data.CausalStream using (Γᶜ; _⇒ᶜ_; tails⁺)
 open import PiWare.Utils using (unzip)
 
--- TODO: Now hardcoded to Atom𝔹, generalize later (module parameter AtomInfo)
-open import PiWare.Circuit.Core
-open import PiWare.Atom.Bool using (Atomic-𝔹)
-open import PiWare.Synthesizable Atomic-𝔹 using (𝕎; splitListByTag; tagToSum)
+open import PiWare.Synthesizable At using (𝕎; splitListByTag; tagToSum)
+open import PiWare.Circuit.Core Gt
+open Atomic At using (Atom#; n→atom)
+open Gates At Gt using (spec)
 \end{code}
 
 
@@ -44,17 +47,18 @@ splitVecs n = unzip ∘ map (mapₚ id proj₁ ∘ splitAt n)
 -- combinational eval
 %<*eval'>
 \begin{code}
-⟦_⟧' : {i o : ℕ} → (c : ℂ' Atomic-𝔹 i o) {p : comb' c} → (𝕎 i → 𝕎 o)
-⟦ Not ⟧' (x ◁ ε)     = [ not x ]ᵥ
-⟦ And ⟧' (x ◁ y ◁ ε) = [ x ∧ y ]ᵥ
-⟦ Or  ⟧' (x ◁ y ◁ ε) = [ x ∨ y ]ᵥ
-⟦ Plug p   ⟧' w = plugOutputs p w
+⟦_⟧' : {i o : ℕ} → (c : ℂ' i o) {p : comb' c} → (𝕎 i → 𝕎 o)
+⟦ Gate g#  ⟧' = spec g#
+⟦ Plug p   ⟧' = plugOutputs p
 ⟦ c₁ ⟫' c₂ ⟧' {p = (p₁ , p₂)} = ⟦ c₂ ⟧' {p = p₂} ∘ ⟦ c₁ ⟧' {p = p₁}
+
 ⟦ _|'_ {i₁} c₁ c₂  ⟧' {p = (p₁ , p₂)} w with splitAt i₁ w
-⟦ _|'_ {i₁} c₁ c₂  ⟧' {p = (p₁ , p₂)} .(w₁ ++ w₂) | w₁ , w₂ , refl = ⟦ c₁ ⟧' {p = p₁} w₁ ++ ⟦ c₂ ⟧' {p = p₂} w₂
+⟦ _|'_ {i₁} c₁ c₂  ⟧' {p = (p₁ , p₂)} w | w₁ , w₂ , _ = ⟦ c₁ ⟧' {p = p₁} w₁ ++ ⟦ c₂ ⟧' {p = p₂} w₂
+
 ⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' {p = (p₁ , p₂)} w with tagToSum {i₁} w
 ⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' {p = (p₁ , p₂)} w | inj₁ w₁ = ⟦ c₁ ⟧' {p = p₁} w₁
 ⟦ _|+'_ {i₁} {i₂} c₁ c₂ ⟧' {p = (p₁ , p₂)} w | inj₂ w₂ = ⟦ c₂ ⟧' {p = p₂} w₂
+
 ⟦ DelayLoop c ⟧' {()} v
 \end{code}
 %</eval'>
@@ -62,23 +66,23 @@ splitVecs n = unzip ∘ map (mapₚ id proj₁ ∘ splitAt n)
 
 -- sequential eval as "causal stream function"
 \begin{code}
-delay : {i o l : ℕ} (c : ℂ' Atomic-𝔹 (i + l) (o + l)) {p : comb' c} → 𝕎 i → List (𝕎 i) → 𝕎 (o + l)
-delay {_} {_} c {p} w⁰ []                       = ⟦ c ⟧' {p} (w⁰ ++ replicate false)
+delay : {i o l : ℕ} (c : ℂ' (i + l) (o + l)) {p : comb' c} → 𝕎 i → List (𝕎 i) → 𝕎 (o + l)
+delay {_} {_} c {p} w⁰ []                       = ⟦ c ⟧' {p} (w⁰ ++ replicate (n→atom Fz))
 delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) with splitAt o (delay {_} {o} c {p} w⁻¹ w⁻)
 delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) | _ , b⁻¹ , _ = ⟦ c ⟧' {p} (w⁰ ++ b⁻¹)
 -- HERE, (⟦ c ⟧' {p} (v⁰ ++ b⁻¹)), in the time difference between i⁰ and l⁻¹, resides the delay!
 \end{code}
 
 \begin{code}
-⟦_⟧ᶜ : {i o : ℕ} → ℂ' Atomic-𝔹 i o → (𝕎 i ⇒ᶜ 𝕎 o)
-⟦ Not         ⟧ᶜ (w⁰ , _) = ⟦ Not ⟧' w⁰
-⟦ And         ⟧ᶜ (w⁰ , _) = ⟦ And ⟧' w⁰
-⟦ Or          ⟧ᶜ (w⁰ , _) = ⟦ Or  ⟧' w⁰
-⟦ Plug p      ⟧ᶜ (w⁰ , _) = plugOutputs p w⁰
+⟦_⟧ᶜ : {i o : ℕ} → ℂ' i o → (𝕎 i ⇒ᶜ 𝕎 o)
+⟦ Gate g#                 ⟧ᶜ (w⁰ , _)  = ⟦ Gate g# ⟧' w⁰
+⟦ Plug p                  ⟧ᶜ (w⁰ , _)  = plugOutputs p w⁰
 ⟦ DelayLoop {o = o} c {p} ⟧ᶜ (w⁰ , w⁻) = takeᵥ o (delay {o = o} c {p} w⁰ w⁻)
-⟦ c₁ ⟫' c₂ ⟧ᶜ ws = ⟦ c₂ ⟧ᶜ (map⁺ ⟦ c₁ ⟧ᶜ (tails⁺ ws))
+⟦ c₁ ⟫' c₂                 ⟧ᶜ ws       = ⟦ c₂ ⟧ᶜ (map⁺ ⟦ c₁ ⟧ᶜ (tails⁺ ws))
+
 ⟦ _|'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) with splitAt i₁ w⁰ | splitVecs i₁ w⁻
-⟦ _|'_ {i₁} c₁ c₂ ⟧ᶜ (.(w⁰₁ ++ w⁰₂) , w⁻) | w⁰₁ , w⁰₂ , refl | w⁻₁ , w⁻₂ = ⟦ c₁ ⟧ᶜ (w⁰₁ , w⁻₁) ++ ⟦ c₂ ⟧ᶜ (w⁰₂ , w⁻₂)
+⟦ _|'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) | w⁰₁ , w⁰₂ , _ | w⁻₁ , w⁻₂ = ⟦ c₁ ⟧ᶜ (w⁰₁ , w⁻₁) ++ ⟦ c₂ ⟧ᶜ (w⁰₂ , w⁻₂)
+
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) with splitListByTag {i₁} w⁻ | tagToSum {i₁} w⁰
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) | w⁻₁ , _   | inj₁ w⁰₁ = ⟦ c₁ ⟧ᶜ (w⁰₁ , w⁻₁)
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) | _   , w⁻₂ | inj₂ w⁰₂ = ⟦ c₂ ⟧ᶜ (w⁰₂ , w⁻₂)
@@ -92,6 +96,6 @@ runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺)
 \end{code}
 
 \begin{code}
-⟦_⟧*' : {i o : ℕ} → ℂ' Atomic-𝔹 i o → (Stream (𝕎 i) → Stream (𝕎 o))
+⟦_⟧*' : {i o : ℕ} → ℂ' i o → (Stream (𝕎 i) → Stream (𝕎 o))
 ⟦ c ⟧*' = runᶜ (⟦ c ⟧ᶜ)
 \end{code}

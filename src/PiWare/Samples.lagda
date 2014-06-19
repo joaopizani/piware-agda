@@ -4,6 +4,7 @@ module PiWare.Samples where
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Fin using (#_) renaming (zero to Fz; suc to Fs)
 open import Data.Vec using (Vec)
 
 import Algebra as Alg
@@ -11,33 +12,28 @@ open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-co
 open import Algebra.Operations (Alg.CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 
 open import PiWare.Atom.Bool using (Atomic-𝔹)
+open import PiWare.Synthesizable Atomic-𝔹
 open import PiWare.Synthesizable.Bool
-open import PiWare.Plugs Atomic-𝔹
-open import PiWare.Circuit.Core
-open import PiWare.Circuit Atomic-𝔹
+
+open import PiWare.Gates.BoolTrio using (BoolTrio)
+open import PiWare.Plugs BoolTrio
+open import PiWare.Circuit.Core BoolTrio
+open import PiWare.Circuit BoolTrio
 \end{code}
 
 
-%<*sample-not>
+%<*sample-fundamentals>
 \begin{code}
 ¬ℂ : ℂ 𝔹 𝔹
-¬ℂ = Mkℂ Not
-\end{code}
-%</sample-not>
+¬ℂ = Mkℂ (Gate (# 0))
 
-%<*sample-and>
-\begin{code}
 ∧ℂ : ℂ (𝔹 × 𝔹) 𝔹
-∧ℂ = Mkℂ And 
-\end{code}
-%</sample-and>
+∧ℂ = Mkℂ (Gate (# 1)) 
 
-%<*sample-or>
-\begin{code}
 ∨ℂ : ℂ (𝔹 × 𝔹) 𝔹
-∨ℂ = Mkℂ Or
+∨ℂ = Mkℂ (Gate (# 2))
 \end{code}
-%</sample-or>
+%</sample-fundamentals>
 
 
 %<*sample-not3x>
