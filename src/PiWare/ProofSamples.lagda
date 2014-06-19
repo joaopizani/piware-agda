@@ -10,8 +10,8 @@ open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Coinduction
 
-open import PiWare.Atom.Bool using (Atom𝔹)
-open import PiWare.Circuit Atom𝔹
+open import PiWare.Atom.Bool using (Atomic-𝔹)
+open import PiWare.Circuit Atomic-𝔹
 open import PiWare.Samples
 open import PiWare.Simulation
 \end{code}

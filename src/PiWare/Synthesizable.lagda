@@ -1,13 +1,12 @@
 \begin{code}
 open import PiWare.Atom
 
-module PiWare.Synthesizable (AI : AtomInfo) where
+module PiWare.Synthesizable (At : Atomic) where
 
--- opening with the AtomInfo we just got, for convenience
-open module AI' = AtomInfo AI
+open module At' = Atomic At
 
 open import Function using (_∘_; _$_)
-open import Data.Product using (_×_; _,_)
+open import Data.Product using (_×_; _,_; proj₁)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (ℕ; _+_; _*_; _≟_; _≤?_; suc; _⊔_; decTotalOrder; s≤s; z≤n)
@@ -71,8 +70,7 @@ open ⇓𝕎⇑ {{...}}
           down v = v >>= ⇓
 
           up : 𝕎 (n * i) → Vec α n
-          up atoms with group n i atoms
-          up .(concat grps) | grps , refl = mapᵥ ⇑ grps
+          up w = mapᵥ ⇑ (proj₁ $ group n i w)
 \end{code}
 %</Synth-Vec>
 

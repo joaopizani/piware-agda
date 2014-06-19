@@ -10,11 +10,11 @@ import Algebra as Alg
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
 open import Algebra.Operations (Alg.CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 
-open import PiWare.Atom.Bool using (Atom𝔹)
+open import PiWare.Atom.Bool using (Atomic-𝔹)
 open import PiWare.Synthesizable.Bool
-open import PiWare.Plugs Atom𝔹
+open import PiWare.Plugs Atomic-𝔹
 open import PiWare.Circuit.Core
-open import PiWare.Circuit Atom𝔹
+open import PiWare.Circuit Atomic-𝔹
 \end{code}
 
 
@@ -91,8 +91,7 @@ fadd =   hadd || pid
 \end{code}
 %</sample-mux2to1-Synth>
 
--- TODO: booleans for now. How to make it generic?
--- Look at lava: do we need an if-then-else constructor in the BASE CIRCUIT TYPE?
+-- TODO: booleans for now. How to make it generic?  Maybe using the sum constructor.
 -- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
 %<*sample-mux2to1>
 \begin{code}
@@ -104,7 +103,7 @@ mux2to1 =   pFork×
 %</sample-mux2to1>
 
 
--- Sequential. In: (repeat false)   Out: cycle [false, true]...
+-- Sequential. In: (repeat false)   Out: cycle [true, false]...
 %<*sample-toggle>
 \begin{code}
 toggle : ℂ 𝔹 𝔹

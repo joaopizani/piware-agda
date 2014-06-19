@@ -6,9 +6,9 @@ open import Data.Nat using (ℕ)
 open import Data.Stream using (Stream) renaming (map to mapₛ)
 
 -- TODO: now hardcoded to Atom𝔹, parameterize later
-open import PiWare.Atom.Bool using (Atom𝔹)
-open import PiWare.Circuit Atom𝔹
-open import PiWare.Synthesizable Atom𝔹
+open import PiWare.Atom.Bool using (Atomic-𝔹)
+open import PiWare.Circuit Atomic-𝔹
+open import PiWare.Synthesizable Atomic-𝔹
 open import PiWare.Simulation.Core
 
 open ⇓𝕎⇑ {{...}}

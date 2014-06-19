@@ -1,7 +1,7 @@
 \begin{code}
 open import PiWare.Atom
 
-module PiWare.Plugs (AI : AtomInfo) where
+module PiWare.Plugs (At : Atomic) where
 
 open import Data.Vec using (Vec)
 open import Function using (_∘_; _$_; id)
@@ -11,29 +11,20 @@ open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≤_; _≥_; z≤
 open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+) renaming (zero to Fz; suc to Fs)
 open import Data.Nat.DivMod using (_divMod_; DivMod)
 
-open import Relation.Nullary using (yes; no; ¬_)
-open import Relation.Nullary.Negation using (contradiction)
+open import Relation.Nullary using (yes; no)
 open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; refl; cong)
 open PropEq.≡-Reasoning
 
-open import PiWare.Synthesizable AI
+open import PiWare.Utils using (notLEQtoGEQ)
+open import PiWare.Synthesizable At
 open import PiWare.Circuit.Core
-open import PiWare.Circuit AI
+open import PiWare.Circuit At
 \end{code}
 
 
 \begin{code}
 private
 \end{code}
-  %<*notLEQtoGEQ>
-  \begin{code}
-  notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
-  notLEQtoGEQ {_}     {zero}  _  = z≤n
-  notLEQtoGEQ {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
-  notLEQtoGEQ {suc n} {suc m} ¬p = s≤s $ notLEQtoGEQ (¬p ∘ s≤s)
-  \end{code}
-  %</notLEQtoGEQ>
-
   %<*splitFin>
   \begin{code}
   splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
@@ -53,14 +44,14 @@ private
 
   %<*pSwap'>
   \begin{code}
-  pSwap' : ∀ {n m} → ℂ' AI (n + m) (m + n)
+  pSwap' : ∀ {n m} → ℂ' At (n + m) (m + n)
   pSwap' {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
   \end{code}
   %</pSwap'>
 
   %<*pid'>
   \begin{code}
-  pid' : ∀ {n} → ℂ' AI n n
+  pid' : ∀ {n} → ℂ' At n n
   pid' = Plug id
   \end{code}
   %</pid'>
@@ -77,7 +68,7 @@ private
 
   %<*pALR'>
   \begin{code}
-  pALR' : ∀ {w v y} → ℂ' AI ((w + v) + y) (w + (v + y))
+  pALR' : ∀ {w v y} → ℂ' At ((w + v) + y) (w + (v + y))
   pALR' {w} {v} {y} = Plug p  where p : Fin (w + (v + y)) → Fin ((w + v) + y)
                                     p x rewrite +-assoc w v y = x
   \end{code}
@@ -85,7 +76,7 @@ private
 
   %<*pARL'>
   \begin{code}
-  pARL' : ∀ {w v y : ℕ} → ℂ' AI (w + (v + y)) ((w + v) + y)
+  pARL' : ∀ {w v y : ℕ} → ℂ' At (w + (v + y)) ((w + v) + y)
   pARL' {w} {v} {y} = Plug p  where p : Fin ((w + v) + y) → Fin (w + (v + y))
                                     p x rewrite sym (+-assoc w v y) = x
   \end{code}
@@ -94,25 +85,25 @@ private
   -- TODO: Substitute seq composition by simple Fin → Fin function
   %<*pIntertwine'>
   \begin{code}
-  pIntertwine' : ∀ {a b c d} → ℂ' AI ((a + b) + (c + d)) ((a + c) + (b + d))
+  pIntertwine' : ∀ {a b c d} → ℂ' At ((a + b) + (c + d)) ((a + c) + (b + d))
   pIntertwine' {a} {b} {c} {d} =
           pALR' {a} {b} {c + d}
-      ⟫'  _|'_ {AI} {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
-      ⟫'  _|'_ {AI} {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
-      ⟫'  _|'_ {AI} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
+      ⟫'  _|'_ {At} {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
+      ⟫'  _|'_ {At} {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
+      ⟫'  _|'_ {At} {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
       ⟫'  pARL' {a} {c} {b + d}
   \end{code}
   %</pIntertwine'>
 
   %<*pHead'>
   \begin{code}
-  pHead' : ∀ {n w} → ℂ' AI (suc n * w) w
+  pHead' : ∀ {n w} → ℂ' At (suc n * w) w
   pHead' {n} {w} = Plug (inject+ (n * w))
   \end{code}
   %</pHead'>
 
   \begin{code}
-  open NP.SemiringSolver using (prove; solve; _:=_; con; var; _:+_; _:*_)
+  open NP.SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
   \end{code}
 
   %<*twiceSuc>
@@ -125,7 +116,7 @@ private
 
   %<*pVecHalf'>
   \begin{code}
-  pVecHalf' : ∀ {n w} → ℂ' AI ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
+  pVecHalf' : ∀ {n w} → ℂ' At ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
   pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
   \end{code}
   %</pVecHalf'>
@@ -156,14 +147,14 @@ private
 
   %<*pVecHalfPow'>
   \begin{code}
-  pVecHalfPow' : ∀ {n w} → ℂ' AI ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
+  pVecHalfPow' : ∀ {n w} → ℂ' At ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
   pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
   \end{code}
   %</pVecHalfPow'>
 
   %<*pFork'>
   \begin{code}
-  pFork' : ∀ {k n} → ℂ' AI n (k * n)
+  pFork' : ∀ {k n} → ℂ' At n (k * n)
   pFork' {k} {zero}  rewrite *-right-zero k = pid'
   pFork' {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
   \end{code}
@@ -171,14 +162,14 @@ private
 
   %<*pFst'>
   \begin{code}
-  pFst' : ∀ {m n} → ℂ' AI (m + n) m
+  pFst' : ∀ {m n} → ℂ' At (m + n) m
   pFst' {m} {n} = Plug (inject+ n)
   \end{code}
   %</pFst'>
 
   %<*pSnd'>
   \begin{code}
-  pSnd' : ∀ {m n} → ℂ' AI (m + n) n
+  pSnd' : ∀ {m n} → ℂ' At (m + n) n
   pSnd' {m} {n} = Plug (raise m)
   \end{code}
   %</pSnd'>
@@ -275,7 +266,7 @@ pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-× sα (⇓𝕎⇑-Vec {n = m} 
 \begin{code}
 pSingletonIn : ∀ {α i} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ α (Vec α 1)
 pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} sα ⦄  c'
-    where c' : ℂ' AI i (1 * i)
+    where c' : ℂ' At i (1 * i)
           c' rewrite (proj₂ +-identity) i = pid'
 \end{code}
 %</pSingletonIn>
@@ -291,7 +282,7 @@ pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = 1} 
 \begin{code}
 pSingletonOut : ∀ {α i} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ (Vec α 1) α
 pSingletonOut {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ ⇓𝕎⇑-Vec {n = 1} sα ⦄ ⦃ sα ⦄  c'
-    where c' : ℂ' AI (1 * i) i
+    where c' : ℂ' At (1 * i) i
           c' rewrite (proj₂ +-identity) i = pid'
 \end{code}
 %</pSingletonOut>
@@ -317,7 +308,6 @@ pVecHalfPow {_} {i} {m} ⦃ sα ⦄ =
 %</pVecHalfPow>
 
 
--- forking (TODO: non-empty vectors?)
 %<*pForkVec>
 \begin{code}
 pForkVec : ∀ {α i n} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ α (Vec α n)
@@ -329,7 +319,7 @@ pForkVec {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-Vec {n = m} 
 \begin{code}
 pFork× : ∀ {α i} → ⦃ sα : ⇓𝕎⇑ α {i} ⦄ → ℂ α (α × α)
 pFork× {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓𝕎⇑-× sα sα ⦄  c'
-    where c' : ℂ' AI i (i + i)
+    where c' : ℂ' At i (i + i)
           c' rewrite sym $ cong (_+_ i) ((proj₂ +-identity) i) = pFork' {2} {i}
 \end{code}
 %</pFork-product>

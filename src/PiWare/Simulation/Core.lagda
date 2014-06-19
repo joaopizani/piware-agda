@@ -4,15 +4,14 @@ module PiWare.Simulation.Core where
 open import Function using (_∘_; _$_; id)
 open import Data.Nat using (ℕ; zero; suc; _+_; _≟_)
 
-open import Data.Fin using (Fin; toℕ)
+open import Data.Fin using (Fin)
 open import Data.Bool using (not; _∧_; _∨_; false) renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; <_,_>; proj₁) renaming (map to mapₚ)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Stream using (Stream; _∷_; zipWith) renaming (map to mapₛ)
+open import Data.Stream using (Stream; _∷_) renaming (map to mapₛ)
 open import Data.Vec using (Vec; _++_; splitAt; lookup; replicate; allFin)
                      renaming (_∷_ to _◁_; take to takeᵥ; map to mapᵥ; [_] to [_]ᵥ)
 
-open import Relation.Nullary.Core using (yes; no)
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Coinduction using (♯_; ♭)
 
@@ -23,10 +22,8 @@ open import PiWare.Utils using (unzip)
 
 -- TODO: Now hardcoded to Atom𝔹, generalize later (module parameter AtomInfo)
 open import PiWare.Circuit.Core
-open import PiWare.Atom
-open import PiWare.Atom.Bool using (Atom𝔹)
-open import PiWare.Synthesizable Atom𝔹 using (𝕎; splitListByTag; tagToSum)
-open AtomInfo Atom𝔹
+open import PiWare.Atom.Bool using (Atomic-𝔹)
+open import PiWare.Synthesizable Atomic-𝔹 using (𝕎; splitListByTag; tagToSum)
 \end{code}
 
 
@@ -47,7 +44,7 @@ splitVecs n = unzip ∘ map (mapₚ id proj₁ ∘ splitAt n)
 -- combinational eval
 %<*eval'>
 \begin{code}
-⟦_⟧' : {i o : ℕ} → (c : ℂ' Atom𝔹 i o) {p : comb' c} → (𝕎 i → 𝕎 o)
+⟦_⟧' : {i o : ℕ} → (c : ℂ' Atomic-𝔹 i o) {p : comb' c} → (𝕎 i → 𝕎 o)
 ⟦ Not ⟧' (x ◁ ε)     = [ not x ]ᵥ
 ⟦ And ⟧' (x ◁ y ◁ ε) = [ x ∧ y ]ᵥ
 ⟦ Or  ⟧' (x ◁ y ◁ ε) = [ x ∨ y ]ᵥ
@@ -65,7 +62,7 @@ splitVecs n = unzip ∘ map (mapₚ id proj₁ ∘ splitAt n)
 
 -- sequential eval as "causal stream function"
 \begin{code}
-delay : {i o l : ℕ} (c : ℂ' Atom𝔹 (i + l) (o + l)) {p : comb' c} → 𝕎 i → List (𝕎 i) → 𝕎 (o + l)
+delay : {i o l : ℕ} (c : ℂ' Atomic-𝔹 (i + l) (o + l)) {p : comb' c} → 𝕎 i → List (𝕎 i) → 𝕎 (o + l)
 delay {_} {_} c {p} w⁰ []                       = ⟦ c ⟧' {p} (w⁰ ++ replicate false)
 delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) with splitAt o (delay {_} {o} c {p} w⁻¹ w⁻)
 delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) | _ , b⁻¹ , _ = ⟦ c ⟧' {p} (w⁰ ++ b⁻¹)
@@ -73,7 +70,7 @@ delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) | _ , b⁻¹ , _ = ⟦ c ⟧' {p} (w�
 \end{code}
 
 \begin{code}
-⟦_⟧ᶜ : {i o : ℕ} → ℂ' Atom𝔹 i o → (𝕎 i ⇒ᶜ 𝕎 o)
+⟦_⟧ᶜ : {i o : ℕ} → ℂ' Atomic-𝔹 i o → (𝕎 i ⇒ᶜ 𝕎 o)
 ⟦ Not         ⟧ᶜ (w⁰ , _) = ⟦ Not ⟧' w⁰
 ⟦ And         ⟧ᶜ (w⁰ , _) = ⟦ And ⟧' w⁰
 ⟦ Or          ⟧ᶜ (w⁰ , _) = ⟦ Or  ⟧' w⁰
@@ -95,6 +92,6 @@ runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺)
 \end{code}
 
 \begin{code}
-⟦_⟧*' : {i o : ℕ} → ℂ' Atom𝔹 i o → (Stream (𝕎 i) → Stream (𝕎 o))
+⟦_⟧*' : {i o : ℕ} → ℂ' Atomic-𝔹 i o → (Stream (𝕎 i) → Stream (𝕎 o))
 ⟦ c ⟧*' = runᶜ (⟦ c ⟧ᶜ)
 \end{code}

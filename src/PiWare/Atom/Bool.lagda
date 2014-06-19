@@ -7,7 +7,7 @@ open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import PiWare.Atom using (AtomInfo)
+open import PiWare.Atom using (Atomic)
 \end{code}
 
 
@@ -31,7 +31,6 @@ private
   \end{code}
   %</boolToN>
   
-  
   %<*inv-left-bool>
   \begin{code}
   inv-left-𝔹 : ∀ i → 𝔹→n (n→𝔹 i) ≡ i
@@ -50,11 +49,12 @@ private
   %</inv-right-bool>
 
 
-%<*AtomBool>
+%<*Atomic-Bool>
 \begin{code}
-Atom𝔹 : AtomInfo
-Atom𝔹 = record {
+Atomic-𝔹 : Atomic
+Atomic-𝔹 = record {
       Atom = 𝔹
+    ; |Atom| = 2
     ; n→atom = n→𝔹
     ; atom→n = 𝔹→n
    
@@ -62,4 +62,4 @@ Atom𝔹 = record {
     ; inv-right = inv-right-𝔹
     }
 \end{code}
-%</AtomBool>
+%</Atomic-Bool>

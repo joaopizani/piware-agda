@@ -1,24 +1,24 @@
 \begin{code}
 open import PiWare.Atom
 
-module PiWare.Circuit (AI : AtomInfo) where
+module PiWare.Circuit (At : Atomic) where
 
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
-open import PiWare.Synthesizable AI
+open import PiWare.Synthesizable At
 open import PiWare.Circuit.Core
 
-open AtomInfo AI using (Atom#) 
+open Atomic At using (Atom#) 
 \end{code}
 
 
 -- "High-level" circuit types, packing the synthesizable instances
 \begin{code}
 data ℂ (α β : Set) {i j : ℕ} : Set where
-    Mkℂ : ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ' AI i j → ℂ α β {i} {j}
+    Mkℂ : ⦃ sα : ⇓𝕎⇑ α {i} ⦄ ⦃ sβ : ⇓𝕎⇑ β {j} ⦄ → ℂ' At i j → ℂ α β {i} {j}
 \end{code}
 
 \begin{code}

@@ -1,28 +1,28 @@
 \begin{code}
 module PiWare.Atom where
 
-open import Data.Nat using (ℕ; _≤_)
+open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin)
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
 \end{code}
 
 
-%<*AtomInfo>
+%<*Atomic>
 \begin{code}
-record AtomInfo : Set₁ where
+record Atomic : Set₁ where
     field
         -- primitives
         Atom   : Set
-        card   : ℕ
-        n→atom : Fin card → Atom
-        atom→n : Atom → Fin card
+        |Atom| : ℕ
+        n→atom : Fin |Atom| → Atom
+        atom→n : Atom → Fin |Atom|
 
         -- properties
         inv-left  : ∀ i → atom→n (n→atom i) ≡ i
         inv-right : ∀ a → n→atom (atom→n a) ≡ a
 
     Atom# : Set
-    Atom# = Fin card
+    Atom# = Fin |Atom|
 \end{code}
-%</AtomInfo>
+%</Atomic>

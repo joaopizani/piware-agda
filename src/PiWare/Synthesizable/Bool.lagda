@@ -8,11 +8,11 @@ open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Vec using (Vec; head) renaming ([_] to singleton)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
-open import PiWare.Atom.Bool using (Atom𝔹)
-open import PiWare.Synthesizable Atom𝔹 public
+open import PiWare.Atom.Bool using (Atomic-𝔹)
+open import PiWare.Synthesizable Atomic-𝔹 public
 
 import PiWare.Atom as A
-open A.AtomInfo Atom𝔹 using (Atom#)
+open A.Atomic Atomic-𝔹 using (Atom#)
 \end{code}
 
 
