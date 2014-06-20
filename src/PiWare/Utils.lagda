@@ -19,7 +19,7 @@ unzip ((a , b) ∷ xs) = let (as , bs) = unzip xs in (a ∷ as , b ∷ bs)
 
 %<*splitSumList>
 \begin{code}
-splitSumList : ∀ {α β} → List (α ⊎ β) → List α × List β
+splitSumList : {α β : Set} → List (α ⊎ β) → List α × List β
 splitSumList = < gfilter isInj₁ , gfilter isInj₂ >
 \end{code}
 %</splitSumList>
