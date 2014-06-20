@@ -12,33 +12,10 @@ open import Coinduction using (♯_; ♭)
 
 open import PiWare.Atom.Bool using (Atomic-𝔹)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Simulation BoolTrio
+open import PiWare.Simulation BoolTrio using (⟦_⟧; ⟦_⟧*)
 
-open import PiWare.Samples.BoolTrio
+open import PiWare.Samples.BoolTrio using (¬ℂ; ∧ℂ; ∨ℂ; ⊻ℂ; ¬∧ℂ; hadd; fadd; toggle; reg)
 \end{code}
-
-
-%<*proofNot>
-\begin{code}
-proofNot : ∀ b → ⟦ ¬ℂ ⟧ b ≡ not b
-proofNot a = refl
-\end{code}
-%</proofNot>
-
-%<*proofAnd>
-\begin{code}
-proofAnd : ∀ a b → ⟦ ∧ℂ ⟧ (a , b) ≡ a ∧ b
-proofAnd a b = refl
-\end{code}
-%</proofAnd>
-
--- TODO: use sequential proof combinator
-%<*proofNand>
-\begin{code}
-proofNand : ∀ a b → ⟦ ¬∧ℂ ⟧ (a , b) ≡ not (a ∧ b)
-proofNand a b = refl
-\end{code}
-%</proofNand>
 
 
 %<*xorEquiv>
@@ -96,6 +73,7 @@ faddSpec true  true  true  = true  , true
 \end{code}
 %</faddSpec>
 
+-- TODO: use eng. proof by reflection to complete the proof "table"
 %<*proofFaddBool>
 \begin{code}
 proofFaddBool : ∀ a b c → ⟦ fadd ⟧ ((a , b) , c) ≡ faddSpec a b c
@@ -119,13 +97,21 @@ proofToggle = ⟦ toggle ⟧* (repeat false)
 %</proofToggle>
 
 
-reg seems to be working (input × load → out)
 %<*rhold>
 \begin{code}
-rhold = take 7 (⟦ reg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (true ∷ ♯ repeat false) )
-rload = take 7 (⟦ reg ⟧* $ zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false)) (false ∷ ♯ (true ∷ ♯ repeat false)) )
+rhold = take 7 (⟦ reg ⟧* $
+                  zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))
+                              (true ∷ ♯ repeat false))
 \end{code}
 %</rhold>
+
+%<*rload>
+\begin{code}
+rload = take 7 (⟦ reg ⟧* $
+                  zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))
+                              (false ∷ ♯ (true ∷ ♯ repeat false)) )
+\end{code}
+%</rload>
 
 
 -- -- head is always false

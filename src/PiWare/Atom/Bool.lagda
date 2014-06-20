@@ -21,11 +21,13 @@ private
   |𝔹| = suc |𝔹|-1
   \end{code}
 
+  %<*pattern-synonyms>
   \begin{code}
   pattern F0 = Fz
   pattern F1 = Fs F0
   pattern F2 n = Fs (Fs n)
   \end{code}
+  %</pattern-synonyms>
 
   %<*nToBool>
   \begin{code}
@@ -41,19 +43,19 @@ private
   \end{code}
   %</boolToN>
   
-  %<*inv-left-bool>
+  %<*inv-left-Bool>
   \begin{code}
   inv-left-𝔹 : ∀ i → 𝔹→n (n→𝔹 i) ≡ i
   inv-left-𝔹 = λ { F0 → refl;  F1 → refl;  (F2 ()) }
   \end{code}
-  %</inv-left-bool>
+  %</inv-left-Bool>
 
-  %<*inv-right-bool>
+  %<*inv-right-Bool>
   \begin{code}
   inv-right-𝔹 : ∀ b → n→𝔹 (𝔹→n b) ≡ b
   inv-right-𝔹 = λ { false → refl;  true → refl }
   \end{code}
-  %</inv-right-bool>
+  %</inv-right-Bool>
 
 
 %<*Atomic-Bool>

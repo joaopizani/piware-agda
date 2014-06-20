@@ -35,14 +35,16 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 \end{code}
 %</plugOutputs>
 
+%<*splitVecs>
 \begin{code}
 splitVecs : {α : Set} (n : ℕ) {m : ℕ} → List (Vec α (n + m)) → List (Vec α n) × List (Vec α m)
 splitVecs n = unzip ∘ map (mapₚ id proj₁ ∘ splitAt n)
 \end{code}
+%</splitVecs>
 
 
 -- combinational eval
-%<*eval'>
+%<*eval-core>
 \begin{code}
 ⟦_⟧' : {i o : ℕ} → (c : ℂ' i o) {p : comb' c} → (𝕎 i → 𝕎 o)
 ⟦ Gate g#  ⟧' = spec g#
@@ -58,10 +60,11 @@ splitVecs n = unzip ∘ map (mapₚ id proj₁ ∘ splitAt n)
 
 ⟦ DelayLoop c ⟧' {()} v
 \end{code}
-%</eval'>
+%</eval-core>
 
 
 -- sequential eval as "causal stream function"
+%<*delay>
 \begin{code}
 delay : {i o l : ℕ} (c : ℂ' (i + l) (o + l)) {p : comb' c} → 𝕎 i → List (𝕎 i) → 𝕎 (o + l)
 delay {_} {_} c {p} w⁰ []                       = ⟦ c ⟧' {p} (w⁰ ++ replicate (n→atom Fz))
@@ -69,7 +72,9 @@ delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) with splitAt o (delay {_} {o} c {p} w
 delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) | _ , b⁻¹ , _ = ⟦ c ⟧' {p} (w⁰ ++ b⁻¹)
 -- HERE, (⟦ c ⟧' {p} (v⁰ ++ b⁻¹)), in the time difference between i⁰ and l⁻¹, resides the delay!
 \end{code}
+%</delay>
 
+%<*eval-causal>
 \begin{code}
 ⟦_⟧ᶜ : {i o : ℕ} → ℂ' i o → (𝕎 i ⇒ᶜ 𝕎 o)
 ⟦ Gate g#                 ⟧ᶜ (w⁰ , _)  = ⟦ Gate g# ⟧' w⁰
@@ -84,15 +89,20 @@ delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) | _ , b⁻¹ , _ = ⟦ c ⟧' {p} (w�
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) | w⁻₁ , _   | inj₁ w⁰₁ = ⟦ c₁ ⟧ᶜ (w⁰₁ , w⁻₁)
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) | _   , w⁻₂ | inj₂ w⁰₂ = ⟦ c₂ ⟧ᶜ (w⁰₂ , w⁻₂)
 \end{code}
+%</eval-causal>
 
+%<*run-causal>
 \begin{code}
 runᶜ : ∀ {α β} → (α ⇒ᶜ β) → (Stream α → Stream β)
 runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺)
     where runᶜ' : ∀ {α β} → (α ⇒ᶜ β) → (Γᶜ α × Stream α) → Stream β
           runᶜ' f ((x⁰ , x⁻) , (x¹ ∷ x⁺)) = f (x⁰ , x⁻) ∷ ♯ runᶜ' f ((x¹ , x⁰ ∷ x⁻) , ♭ x⁺)
 \end{code}
+%</run-causal>
 
+%<*eval-seq-core>
 \begin{code}
 ⟦_⟧*' : {i o : ℕ} → ℂ' i o → (Stream (𝕎 i) → Stream (𝕎 o))
 ⟦ c ⟧*' = runᶜ (⟦ c ⟧ᶜ)
 \end{code}
+%</eval-seq-core>

@@ -17,9 +17,9 @@ open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; r
 open PropEq.≡-Reasoning
 
 open import PiWare.Utils using (notLEQtoGEQ)
-open import PiWare.Synthesizable At
-open import PiWare.Circuit.Core Gt
-open import PiWare.Circuit Gt
+open import PiWare.Synthesizable At using (⇓𝕎⇑; ⇓𝕎⇑-×; ⇓𝕎⇑-Vec)
+open import PiWare.Circuit.Core Gt using (ℂ'; Plug; _⟫'_; _|'_)
+open import PiWare.Circuit Gt using (ℂ; Mkℂ)
 \end{code}
 
 

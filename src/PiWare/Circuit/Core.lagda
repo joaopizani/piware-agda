@@ -14,11 +14,14 @@ open Gates At Gt using (Gates#; ins; outs)
 \end{code}
 
 
+%<*pre-decls>
 \begin{code}
 data ℂ' : ℕ → ℕ → Set
 comb' : {i o : ℕ} → ℂ' i o → Set
 \end{code}
+%</pre-decls>
 
+%<*Circuit-core>
 \begin{code}
 data ℂ' where
     Gate : (g# : Gates#) → ℂ' (ins g#) (outs g#)
@@ -30,7 +33,8 @@ data ℂ' where
     _|'_ : {i₁ o₁ i₂ o₂ : ℕ} → ℂ' i₁ o₁ → ℂ' i₂ o₂ → ℂ' (i₁ + i₂) (o₁ + o₂)
     _|+'_ : {i₁ i₂ o : ℕ} → ℂ' i₁ o → ℂ' i₂ o → ℂ' (suc (i₁ ⊔ i₂)) o
 \end{code}
-    
+%</Circuit-core>
+
 \begin{code}
 infixr 5 _|'_
 infixr 5 _|+'_
@@ -38,6 +42,7 @@ infixl 4 _⟫'_
 \end{code}
 
 
+%<*comb-core>
 \begin{code}
 comb' (Gate _)      = ⊤
 comb' (Plug _)      = ⊤
@@ -46,3 +51,4 @@ comb' (c₁ ⟫' c₂)    = comb' c₁ × comb' c₂
 comb' (c₁ |' c₂)    = comb' c₁ × comb' c₂
 comb' (c₁ |+' c₂)   = comb' c₁ × comb' c₂
 \end{code}
+%</comb-core>

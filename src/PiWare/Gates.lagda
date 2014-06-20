@@ -10,6 +10,7 @@ open import PiWare.Synthesizable At using (𝕎)
 \end{code}
 
 
+%<*Gates>
 \begin{code}
 record Gates : Set where
     field
@@ -20,3 +21,4 @@ record Gates : Set where
     |Gates| = suc |Gates|-1
     Gates#  = Fin |Gates|
 \end{code}
+%</Gates>

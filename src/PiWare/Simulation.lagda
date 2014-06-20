@@ -23,9 +23,9 @@ open ⇓𝕎⇑ {{...}} using (⇓; ⇑)
 \end{code}
 %</eval>
 
-%<*eval*>
+%<*eval-seq>
 \begin{code}
 ⟦_⟧* : ∀ {α i β j} → ℂ α β {i} {j} → (Stream α → Stream β)
 ⟦_⟧* (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c') = mapₛ ⇑ ∘ ⟦ c' ⟧*' ∘ mapₛ ⇓
 \end{code}
-%</eval*>
+%</eval-seq>

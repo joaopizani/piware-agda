@@ -30,6 +30,7 @@ open Atomic At using (Atom; Atom#; atom→n; n→atom)
 
 
 -- Provides a mapping between "high-level" metalanguage types and words
+-- TODO: proofs that ⇑ and ⇓ are inverses
 %<*Synth>
 \begin{code}
 record ⇓𝕎⇑ (α : Set) {i : ℕ} : Set where
@@ -37,11 +38,12 @@ record ⇓𝕎⇑ (α : Set) {i : ℕ} : Set where
     field
         ⇓ : α → 𝕎 i
         ⇑ : 𝕎 i → α
-        -- TODO: proofs that ⇑ and ⇓ are inverses
-
-open ⇓𝕎⇑ {{...}}
 \end{code}
 %</Synth>
+
+\begin{code}
+open ⇓𝕎⇑ {{...}}
+\end{code}
 
 
 -- basic instances
@@ -73,27 +75,30 @@ open ⇓𝕎⇑ {{...}}
 
 
 -- Sum-related tagging helpers
+%<*tagToSum>
 \begin{code}
 tagToSum : ∀ {i j} → 𝕎 (suc (i ⊔ j)) → 𝕎 i ⊎ 𝕎 j
 tagToSum {i} {j} (t ◁ ab) with toℕ (atom→n t) ≟ 1
 tagToSum {i} {j} (t ◁ ab) | yes _ = inj₂ (unpadSnd i j ab)
 tagToSum {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFst i j ab)
 \end{code}
+%</tagToSum>
 
+%<*splitListByTag>
 \begin{code}
 splitListByTag : ∀ {i j} → List (𝕎 (suc (i ⊔ j))) → List (𝕎 i) × List (𝕎 j)
 splitListByTag = splitSumList ∘ mapₗ tagToSum
 \end{code}
+%</splitListByTag>
 
 -- TODO: guarantee that n₁ and n₂ are different?
 %<*Synth-Sum>
 \begin{code}
-⇓𝕎⇑-⊎ : ∀ {α i β j} → (n₁ n₂ p : Atom#) {diff : n₁ ≢ n₂}
-         → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α ⊎ β) {suc (i ⊔ j)}
-⇓𝕎⇑-⊎ {α} {i} {β} {j} n₁ n₂ p sα sβ = ⇓𝕎⇑[ down , up ]
+⇓𝕎⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α ⊎ β) {suc (i ⊔ j)}
+⇓𝕎⇑-⊎ {α} {i} {β} {j} n m p sα sβ = ⇓𝕎⇑[ down , up ]
     where down : α ⊎ β → 𝕎 (suc (i ⊔ j))
-          down = [ (λ a → (n→atom n₁) ◁ padFst i j (n→atom p) (⇓ a))
-                 , (λ b → (n→atom n₂) ◁ padSnd i j (n→atom p) (⇓ b)) ]
+          down = [ (λ a → (n→atom n) ◁ padFst i j (n→atom p) (⇓ a))
+                 , (λ b → (n→atom m) ◁ padSnd i j (n→atom p) (⇓ b)) ]
           
           up : 𝕎 (suc (i ⊔ j)) → α ⊎ β
           up = map⊎ ⇑ ⇑ ∘ tagToSum

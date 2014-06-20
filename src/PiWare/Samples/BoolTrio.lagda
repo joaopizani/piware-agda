@@ -22,52 +22,50 @@ open import PiWare.Circuit BoolTrio
 \end{code}
 
 
-%<*sample-fundamentals>
+%<*fundamentals>
 \begin{code}
 ¬ℂ : ℂ 𝔹 𝔹
 ¬ℂ = Mkℂ (Gate (# 0))
 
-∧ℂ : ℂ (𝔹 × 𝔹) 𝔹
+∧ℂ ∨ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ∧ℂ = Mkℂ (Gate (# 1)) 
-
-∨ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ∨ℂ = Mkℂ (Gate (# 2))
 \end{code}
-%</sample-fundamentals>
+%</fundamentals>
 
 
-%<*sample-not3x>
+%<*not3x>
 \begin{code}
 ¬×3ℂ : ℂ 𝔹 𝔹
 ¬×3ℂ = ¬ℂ ⟫ ¬ℂ ⟫ ¬ℂ
 \end{code}
-%</sample-not3x>
+%</not3x>
 
-%<*sample-nand>
+%<*nand>
 \begin{code}
 ¬∧ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ¬∧ℂ = ∧ℂ ⟫ ¬ℂ
 \end{code}
-%</sample-nand>
+%</nand>
 
-%<*sample-xor>
+%<*xor>
 \begin{code}
 ⊻ℂ : ℂ (𝔹 × 𝔹) 𝔹
 ⊻ℂ =   pFork×
      ⟫ (¬ℂ || pid ⟫ ∧ℂ) || (pid || ¬ℂ ⟫ ∧ℂ)
      ⟫ ∨ℂ
 \end{code}
-%</sample-xor>
+%</xor>
 
-%<*sample-hadd>
+%<*hadd>
 \begin{code}
 hadd : ℂ (𝔹 × 𝔹) (𝔹 × 𝔹)  -- a × b → c × s
 hadd =   pFork×
        ⟫ ∧ℂ || ⊻ℂ
 \end{code}
-%</sample-hadd>
+%</hadd>
 
-%<*sample-fadd>
+%<*fadd>
 \begin{code}
 fadd : ℂ ((𝔹 × 𝔹) × 𝔹) (𝔹 × 𝔹)  -- (a × b) × cin → co × s
 fadd =   hadd || pid
@@ -76,45 +74,44 @@ fadd =   hadd || pid
        ⟫    pARL
        ⟫ ∨ℂ   || pid
 \end{code}
-%</sample-fadd>
+%</fadd>
 
 
--- MUXES
-%<*sample-mux2to1-Synth>
+%<*mux2to1-Synth>
 \begin{code}
 ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] : ⇓𝕎⇑ ((𝔹 × (𝔹 × 𝔹)) × (𝔹 × (𝔹 × 𝔹)))
 ⇓𝕎⇑-[𝔹×[𝔹×𝔹]]×[𝔹×[𝔹×𝔹]] = ⇓𝕎⇑-× ⇓𝕎⇑-𝔹×[𝔹×𝔹] ⇓𝕎⇑-𝔹×[𝔹×𝔹]
 \end{code}
-%</sample-mux2to1-Synth>
+%</mux2to1-Synth>
 
 -- TODO: booleans for now. How to make it generic?  Maybe using the sum constructor.
 -- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
-%<*sample-mux2to1>
+%<*mux2to1>
 \begin{code}
 mux2to1 : ℂ (𝔹 × (𝔹 × 𝔹)) 𝔹
 mux2to1 =   pFork×
           ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
           ⟫ ∨ℂ
 \end{code}
-%</sample-mux2to1>
+%</mux2to1>
 
 
 -- Sequential. In: (repeat false)   Out: cycle [true, false]...
-%<*sample-toggle>
+%<*toggle>
 \begin{code}
 toggle : ℂ 𝔹 𝔹
 toggle = delayℂ (⊻ℂ ⟫ ¬ℂ ⟫ pFork×)
 \end{code}
-%</sample-toggle>
+%</toggle>
 
 
 -- input × load → out
-%<*sample-reg>
+%<*reg>
 \begin{code}
 reg : ℂ (𝔹 × 𝔹) 𝔹
 reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
 \end{code}
-%</sample-reg>
+%</reg>
 
 
 -- (attempt at) generically-sized mux
