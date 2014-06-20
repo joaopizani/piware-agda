@@ -1,5 +1,5 @@
 \begin{code}
-module PiWare.Samples where
+module PiWare.Samples.BoolTrio where
 
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; proj₂)
