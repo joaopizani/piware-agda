@@ -9,8 +9,8 @@ open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
-open import PiWare.Synthesizable At
-open import PiWare.Circuit.Core Gt
+open import PiWare.Synthesizable At using (⇓𝕎⇑; ⇓𝕎⇑-×; ⇓𝕎⇑-⊎)
+open import PiWare.Circuit.Core Gt using (ℂ'; comb'; DelayLoop; _⟫'_; _|'_; _|+'_)
 
 open Atomic At using (Atom#) 
 \end{code}

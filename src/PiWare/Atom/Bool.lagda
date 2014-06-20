@@ -2,8 +2,8 @@
 module PiWare.Atom.Bool where
 
 open import Data.Bool using (true; false) renaming (Bool to 𝔹)
-open import Data.Nat using (ℕ; suc; s≤s; z≤n)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
+open import Data.Nat using (ℕ; suc)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 

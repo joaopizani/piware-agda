@@ -4,27 +4,24 @@ open import PiWare.Gates
 
 module PiWare.Simulation.Core {At : Atomic} (Gt : Gates At) where
 
-open import Function using (_∘_; _$_; id)
-open import Data.Nat using (ℕ; zero; suc; _+_; _≟_)
-
+open import Function using (_∘_; id)
+open import Data.Nat using (ℕ; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz)
-open import Data.Bool using (not; _∧_; _∨_; false) renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; <_,_>; proj₁) renaming (map to mapₚ)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Stream using (Stream; _∷_) renaming (map to mapₛ)
-open import Data.Vec using (Vec; _++_; splitAt; lookup; replicate; allFin)
-                     renaming (_∷_ to _◁_; take to takeᵥ; map to mapᵥ; [_] to [_]ᵥ)
-
-open import Relation.Binary.PropositionalEquality using (refl)
-open import Coinduction using (♯_; ♭)
-
+open import Data.Stream using (Stream; _∷_)
 open import Data.List using (List; []; _∷_; map)
 open import Data.List.NonEmpty using () renaming (map to map⁺)
 open import Data.CausalStream using (Γᶜ; _⇒ᶜ_; tails⁺)
 open import PiWare.Utils using (unzip)
+open import Data.Vec using (Vec; _++_; splitAt; lookup; replicate; allFin)
+                     renaming (_∷_ to _◁_; take to takeᵥ; map to mapᵥ)
+
+open import Relation.Binary.PropositionalEquality using (refl)
+open import Coinduction using (♯_; ♭)
 
 open import PiWare.Synthesizable At using (𝕎; splitListByTag; tagToSum)
-open import PiWare.Circuit.Core Gt
+open import PiWare.Circuit.Core Gt using (ℂ'; comb'; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_)
 open Atomic At using (Atom#; n→atom)
 open Gates At Gt using (spec)
 \end{code}

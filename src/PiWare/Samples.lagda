@@ -4,12 +4,12 @@ module PiWare.Samples where
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Fin using (#_) renaming (zero to Fz; suc to Fs)
+open import Data.Fin using (#_)
 open import Data.Vec using (Vec)
 
-import Algebra as Alg
+import Algebra as A
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
-open import Algebra.Operations (Alg.CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
+open import Algebra.Operations (A.CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 
 open import PiWare.Atom.Bool using (Atomic-𝔹)
 open import PiWare.Synthesizable Atomic-𝔹

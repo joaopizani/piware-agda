@@ -8,7 +8,7 @@ open import Data.Vec using (Vec)
 open import Function using (_∘_; _$_; id)
 open import Data.Product using (_×_; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≤_; _≥_; z≤n; s≤s)
+open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_)
 open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+) renaming (zero to Fz; suc to Fs)
 open import Data.Nat.DivMod using (_divMod_; DivMod)
 
@@ -59,11 +59,11 @@ private
 
   -- associativity plugs
   \begin{code}
-  import Algebra as Alg
+  import Algebra as A
   import Data.Nat.Properties as NP
   open import Data.Nat.Properties.Simple using (*-right-zero)
-  open import Algebra.Operations (Alg.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
-  open module CS = Alg.CommutativeSemiring NP.commutativeSemiring
+  open import Algebra.Operations (A.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
+  open module CS = A.CommutativeSemiring NP.commutativeSemiring
        using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
   \end{code}
 

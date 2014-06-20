@@ -9,10 +9,10 @@ open import Data.Nat using (ℕ)
 open import Data.Stream using (Stream) renaming (map to mapₛ)
 
 open import PiWare.Synthesizable At
-open import PiWare.Circuit Gt
-open import PiWare.Simulation.Core Gt
+open import PiWare.Circuit Gt using (ℂ; comb; Mkℂ)
+open import PiWare.Simulation.Core Gt using (⟦_⟧'; ⟦_⟧*')
 
-open ⇓𝕎⇑ {{...}}
+open ⇓𝕎⇑ {{...}} using (⇓; ⇑)
 \end{code}
 
 
