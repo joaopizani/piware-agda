@@ -27,17 +27,17 @@ private
 
   %<*pattern-synonyms>
   \begin{code}
-  pattern F0 = Fz
-  pattern F1 = Fs F0
-  pattern F2 = Fs F1
-  pattern F3 n = Fs (Fs (Fs n))
+  pattern Not# = Fz
+  pattern And# = Fs Fz
+  pattern Or#  = Fs (Fs Fz)
+  pattern Absurd# n = Fs (Fs (Fs n))
   \end{code}
   %</pattern-synonyms>
 
   %<*ins-outs>
   \begin{code}
   ins outs : Fin |BoolTrio| → ℕ
-  ins    = λ { F0 → 1;  F1 → 2;  F2 → 2;  (F3 ()) }
+  ins    = λ { Not# → 1;  And# → 2;  Or# → 2;  (Absurd# ()) }
   outs _ = 1
   \end{code}
   %</ins-outs>
@@ -45,10 +45,10 @@ private
   %<*spec>
   \begin{code}
   spec : (g : Fin |BoolTrio|) → (𝕎 (ins g) → 𝕎 (outs g))
-  spec F0 = λ { (x ◁ ε) → [ not x ] }
-  spec F1 = λ { (x ◁ y ◁ ε) → [ x ∧ y ] }
-  spec F2 = λ { (x ◁ y ◁ ε) → [ x ∨ y ] }
-  spec (F3 ())
+  spec Not# = λ { (x ◁ ε) → [ not x ] }
+  spec And# = λ { (x ◁ y ◁ ε) → [ x ∧ y ] }
+  spec Or#  = λ { (x ◁ y ◁ ε) → [ x ∨ y ] }
+  spec (Absurd# ())
   \end{code}
   %</spec>
 
