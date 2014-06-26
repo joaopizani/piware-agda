@@ -3,10 +3,11 @@ module PiWare.ProofSamples.BoolTrio where
 
 open import Function using (_$_; _∘_)
 open import Data.Nat using (ℕ)
+open import Data.Vec using () renaming ([] to ε; _∷_ to _◁_)
 open import Data.Product using (_×_; _,_) renaming (map to mapₚ)
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to 𝔹)
 
-open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail)
+open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail; iterate)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Coinduction using (♯_; ♭)
 
@@ -91,8 +92,8 @@ proofFaddBool false false false = refl
 
 %<*proofToggle>
 \begin{code}
-proofToggle : Stream 𝔹
-proofToggle = ⟦ toggle ⟧* (repeat false)
+sampleToggle : Stream 𝔹
+sampleToggle = ⟦ toggle ⟧* (repeat false)
 \end{code}
 %</proofToggle>
 
@@ -114,35 +115,28 @@ rload = take 7 (⟦ reg ⟧* $
 %</rload>
 
 
--- -- head is always false
--- %<*proofRegHeadFalse>
--- \begin{code}
--- proofRegHeadFalse : ∀ {loads ins} → head (⟦ reg ⟧* (zipWith _,_ loads ins)) ≡ false
--- proofRegHeadFalse = refl
--- \end{code}
--- %</proofRegHeadFalse>
+-- this works...
+%<*proofRepeatFalse'>
+\begin{code}
+proofRepeatFalse' : tail (repeat false) ≈ repeat false
+proofRepeatFalse' = refl ∷ ♯ proofRepeatFalse'
+\end{code}
+%</proofRepeatFalse'>
 
+-- only by using the tail proof
+%<*proofRepeatFalse>
+\begin{code}
+proofRepeatFalse : repeat false ≈ false ∷ ♯ repeat false
+proofRepeatFalse = refl ∷ ♯ proofRepeatFalse'
+\end{code}
+%</proofRepeatFalse>
 
--- -- this works...
--- %<*proofRepeatFalse'>
--- \begin{code}
--- proofRepeatFalse' : tail (repeat false) ≈ repeat false
--- proofRepeatFalse' = refl ∷ ♯ proofRepeatFalse'
--- \end{code}
--- %</proofRepeatFalse'>
+\begin{code}
+proofToggle : sampleToggle ≈ iterate not true
+proofToggle = {!!}
+\end{code}
 
--- -- only by using the tail proof
--- %<*proofRepeatFalse>
--- \begin{code}
--- proofRepeatFalse : repeat false ≈ false ∷ ♯ repeat false
--- proofRepeatFalse = refl ∷ ♯ proofRepeatFalse'
--- \end{code}
--- %</proofRepeatFalse>
-
-
--- -- when ¬load, then tail of output is repeat head of input
-
--- -- now with the register: first the tail
+-- now with the register: first the tail
 -- %<*proofRegNeverLoadHardcoded'>
 -- \begin{code}
 -- proofRegNeverLoadHardcoded' : tail (⟦ reg ⟧* (repeat (true , false))) ≈ repeat false
