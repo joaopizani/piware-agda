@@ -1,10 +1,11 @@
 \begin{code}
 module PiWare.Gates.BoolTrio where
 
+open import Function using (const)
 open import Data.Nat using (ℕ; suc)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Vec using ([_]) renaming (_∷_ to _◁_)
-open import Data.Bool using (not; _∧_; _∨_)
+open import Data.Bool using (false; true; not; _∧_; _∨_)
 
 open import PiWare.Atom.Bool using (Atomic-𝔹)
 open import PiWare.Synthesizable Atomic-𝔹 using (𝕎)
@@ -18,7 +19,7 @@ private
   %<*size>
   \begin{code}
   |BoolTrio|-1 : ℕ
-  |BoolTrio|-1 = 2
+  |BoolTrio|-1 = 4
   
   |BoolTrio| = suc |BoolTrio|-1
   \end{code}
@@ -26,17 +27,19 @@ private
 
   %<*pattern-synonyms>
   \begin{code}
-  pattern Not# = Fz
-  pattern And# = Fs Fz
-  pattern Or#  = Fs (Fs Fz)
-  pattern Absurd# n = Fs (Fs (Fs n))
+  pattern FalseConst# = Fz
+  pattern TrueConst#  = Fs Fz
+  pattern Not#        = Fs (Fs Fz)
+  pattern And#        = Fs (Fs (Fs Fz))
+  pattern Or#         = Fs (Fs (Fs (Fs Fz)))
+  pattern Absurd# n   = Fs (Fs (Fs (Fs (Fs n))))
   \end{code}
   %</pattern-synonyms>
 
   %<*ins-outs>
   \begin{code}
   ins outs : Fin |BoolTrio| → ℕ
-  ins    = λ { Not# → 1;  And# → 2;  Or# → 2;  (Absurd# ()) }
+  ins    = λ { FalseConst# → 0; TrueConst# → 0; Not# → 1; And# → 2; Or# → 2; (Absurd# ()) }
   outs _ = 1
   \end{code}
   %</ins-outs>
@@ -44,9 +47,11 @@ private
   %<*spec>
   \begin{code}
   spec : (g : Fin |BoolTrio|) → (𝕎 (ins g) → 𝕎 (outs g))
-  spec Not# = λ { (x ◁ ε) → [ not x ] }
-  spec And# = λ { (x ◁ y ◁ ε) → [ x ∧ y ] }
-  spec Or#  = λ { (x ◁ y ◁ ε) → [ x ∨ y ] }
+  spec FalseConst# = const [ false ]
+  spec TrueConst#  = const [ true  ]
+  spec Not#        = λ { (x ◁ ε) → [ not x ] }
+  spec And#        = λ { (x ◁ y ◁ ε) → [ x ∧ y ] }
+  spec Or#         = λ { (x ◁ y ◁ ε) → [ x ∨ y ] }
   spec (Absurd# ())
   \end{code}
   %</spec>

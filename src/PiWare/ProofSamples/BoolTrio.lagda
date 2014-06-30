@@ -3,6 +3,7 @@ module PiWare.ProofSamples.BoolTrio where
 
 open import Function using (_$_; _∘_)
 open import Data.Nat using (ℕ)
+open import Data.Unit using (tt)
 open import Data.Vec using () renaming ([] to ε; _∷_ to _◁_)
 open import Data.Product using (_×_; _,_) renaming (map to mapₚ)
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to 𝔹)
@@ -90,13 +91,11 @@ proofFaddBool false false false = refl
 %</proofFaddBool>
 
 
-%<*proofToggle>
+%<*toggle7>
 \begin{code}
-sampleToggle : Stream 𝔹
-sampleToggle = ⟦ toggle ⟧* (repeat false)
+toggle7 = take 7 $ ⟦ toggle ⟧* (repeat tt)
 \end{code}
-%</proofToggle>
-
+%</toggle7>
 
 %<*rhold>
 \begin{code}
@@ -132,8 +131,8 @@ proofRepeatFalse = refl ∷ ♯ proofRepeatFalse'
 %</proofRepeatFalse>
 
 \begin{code}
-proofToggle : sampleToggle ≈ iterate not true
-proofToggle = ?
+proofToggle  : ⟦ toggle ⟧* (repeat tt) ≈ iterate not true
+proofToggle = refl ∷ ♯ {!!}
 \end{code}
 
 -- now with the register: first the tail

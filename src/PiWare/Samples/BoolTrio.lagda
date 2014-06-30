@@ -5,6 +5,7 @@ open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec)
+open import Data.Unit using (⊤)
 
 import Algebra as A
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
@@ -14,7 +15,7 @@ open import PiWare.Atom.Bool using (Atomic-𝔹)
 open import PiWare.Synthesizable Atomic-𝔹
 open import PiWare.Synthesizable.Bool
 
-open import PiWare.Gates.BoolTrio using (BoolTrio; Not#; And#; Or#)
+open import PiWare.Gates.BoolTrio using (BoolTrio; FalseConst#; TrueConst#; Not#; And#; Or#)
 open import PiWare.Plugs BoolTrio
 open import PiWare.Circuit.Core BoolTrio
 open import PiWare.Circuit BoolTrio
@@ -23,6 +24,10 @@ open import PiWare.Circuit BoolTrio
 
 %<*fundamentals>
 \begin{code}
+⊥ℂ ⊤ℂ : ℂ ⊤ 𝔹
+⊥ℂ = Mkℂ (Gate FalseConst#)
+⊤ℂ = Mkℂ (Gate TrueConst#)
+
 ¬ℂ : ℂ 𝔹 𝔹
 ¬ℂ = Mkℂ (Gate Not#)
 
@@ -87,11 +92,11 @@ mux2to1 =   pFork×
 %</mux2to1>
 
 
--- Sequential. In: (repeat false)   Out: cycle [true, false]...
+-- Sequential.  Out: cycle [true, false]...
 %<*toggle>
 \begin{code}
-toggle : ℂ 𝔹 𝔹
-toggle = delayℂ (⊻ℂ ⟫ ¬ℂ ⟫ pFork×)
+toggle : ℂ ⊤ 𝔹
+toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
 \end{code}
 %</toggle>
 
