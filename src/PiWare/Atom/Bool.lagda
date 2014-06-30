@@ -23,30 +23,30 @@ private
 
   %<*pattern-synonyms>
   \begin{code}
-  pattern F0 = Fz
-  pattern F1 = Fs F0
-  pattern F2 n = Fs (Fs n)
+  pattern False#    = Fz
+  pattern True#     = Fs Fz
+  pattern Absurd# n = Fs (Fs n)
   \end{code}
   %</pattern-synonyms>
 
   %<*nToBool>
   \begin{code}
   n→𝔹 : Fin |𝔹| → 𝔹
-  n→𝔹 = λ { F0 → false;  F1 → true;  (F2 ()) }
+  n→𝔹 = λ { False# → false;  True# → true;  (Absurd# ()) }
   \end{code}
   %</nToBool>
   
   %<*boolToN>
   \begin{code}
   𝔹→n : 𝔹 → Fin |𝔹|
-  𝔹→n = λ { false → F0;  true → F1 }
+  𝔹→n = λ { false → False#;  true → True# }
   \end{code}
   %</boolToN>
   
   %<*inv-left-Bool>
   \begin{code}
   inv-left-𝔹 : ∀ i → 𝔹→n (n→𝔹 i) ≡ i
-  inv-left-𝔹 = λ { F0 → refl;  F1 → refl;  (F2 ()) }
+  inv-left-𝔹 = λ { False# → refl;  True# → refl;  (Absurd# ()) }
   \end{code}
   %</inv-left-Bool>
 

@@ -133,7 +133,7 @@ proofRepeatFalse = refl ∷ ♯ proofRepeatFalse'
 
 \begin{code}
 proofToggle : sampleToggle ≈ iterate not true
-proofToggle = {!!}
+proofToggle = ?
 \end{code}
 
 -- now with the register: first the tail

@@ -63,10 +63,14 @@ private
 \begin{code}
 ripple : (n : ℕ) →  let W = Vec 𝔹 n  in  ℂ (𝔹 × W × W) (W × 𝔹)
 ripple zero    = pid || pFst ⟫ pSwap
-ripple (suc m) =   pid || (pUncons || pUncons ⟫ pIntertwine)
-                 ⟫ middle
-                 ⟫ pCons || pid
-  where pAssoc = pARL ⟫ pARL || pid
-        middle = pAssoc ⟫ (fadd || pid) ⟫ pALR ⟫ (pid || ripple m) ⟫ pARL
+ripple (suc m) =
+      pid   || (pUncons || pUncons ⟫ pIntertwine)
+    ⟫     pAssoc
+    ⟫ fadd  || pid
+    ⟫      pALR
+    ⟫ pid   || ripple m
+    ⟫      pARL
+    ⟫ pCons || pid
+    where pAssoc = pARL ⟫ pARL || pid
 \end{code}
 %</ripple>

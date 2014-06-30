@@ -3,12 +3,13 @@ open import PiWare.Atom
 
 module PiWare.Synthesizable (At : Atomic) where
 
-open import Function using (_∘_; _$_)
+open import Function using (_∘_; _$_; const)
 open import Data.Product using (_×_; _,_; proj₁)
+open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (ℕ; suc; _+_; _*_; _≟_; _⊔_)
-open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group) renaming (_∷_ to _◁_; map to mapᵥ)
+open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
 open import Data.List using (List) renaming (map to mapₗ)
 
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)
@@ -42,11 +43,19 @@ record ⇓𝕎⇑ (α : Set) {i : ℕ} : Set where
 %</Synth>
 
 \begin{code}
-open ⇓𝕎⇑ {{...}}
+open ⇓𝕎⇑ ⦃ ... ⦄
 \end{code}
 
 
 -- basic instances
+%<*Synth-Unit>
+\begin{code}
+⇓𝕎⇑-⊤ : ⇓𝕎⇑ ⊤ {0}
+⇓𝕎⇑-⊤ = ⇓𝕎⇑[ const ε , const tt ]
+\end{code}
+%</Synth-Unit>
+
+
 %<*Synth-Product>
 \begin{code}
 ⇓𝕎⇑-× : ∀ {α i β j} → ⇓𝕎⇑ α {i} → ⇓𝕎⇑ β {j} → ⇓𝕎⇑ (α × β)

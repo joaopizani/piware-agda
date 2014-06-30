@@ -4,7 +4,6 @@ module PiWare.Samples.BoolTrio where
 open import Data.Bool using () renaming (Bool to 𝔹)
 open import Data.Product using (_×_; _,_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Fin using (#_)
 open import Data.Vec using (Vec)
 
 import Algebra as A
@@ -15,7 +14,7 @@ open import PiWare.Atom.Bool using (Atomic-𝔹)
 open import PiWare.Synthesizable Atomic-𝔹
 open import PiWare.Synthesizable.Bool
 
-open import PiWare.Gates.BoolTrio using (BoolTrio)
+open import PiWare.Gates.BoolTrio using (BoolTrio; Not#; And#; Or#)
 open import PiWare.Plugs BoolTrio
 open import PiWare.Circuit.Core BoolTrio
 open import PiWare.Circuit BoolTrio
@@ -25,21 +24,13 @@ open import PiWare.Circuit BoolTrio
 %<*fundamentals>
 \begin{code}
 ¬ℂ : ℂ 𝔹 𝔹
-¬ℂ = Mkℂ (Gate (# 0))
+¬ℂ = Mkℂ (Gate Not#)
 
 ∧ℂ ∨ℂ : ℂ (𝔹 × 𝔹) 𝔹
-∧ℂ = Mkℂ (Gate (# 1)) 
-∨ℂ = Mkℂ (Gate (# 2))
+∧ℂ = Mkℂ (Gate And#) 
+∨ℂ = Mkℂ (Gate Or#)
 \end{code}
 %</fundamentals>
-
-
-%<*not3x>
-\begin{code}
-¬×3ℂ : ℂ 𝔹 𝔹
-¬×3ℂ = ¬ℂ ⟫ ¬ℂ ⟫ ¬ℂ
-\end{code}
-%</not3x>
 
 %<*nand>
 \begin{code}

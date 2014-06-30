@@ -15,7 +15,6 @@ open import PiWare.Gates Atomic-𝔹
 \begin{code}
 private
 \end{code}
-  -- 0 → NOT,  1 → AND,  2 → OR
   %<*size>
   \begin{code}
   |BoolTrio|-1 : ℕ
