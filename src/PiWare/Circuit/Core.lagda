@@ -4,7 +4,7 @@ open import PiWare.Gates
 
 module PiWare.Circuit.Core {At : Atomic} (Gt : Gates At) where
 
-open import Data.Nat using (ℕ; suc; _+_; _⊔_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
 open import Data.Product using (_×_)
 open import Data.Empty using (⊥)
@@ -24,6 +24,7 @@ comb' : {i o : ℕ} → ℂ' i o → Set
 %<*Circuit-core>
 \begin{code}
 data ℂ' where
+    Nil  : ℂ' zero zero
     Gate : (g# : Gates#) → ℂ' (ins g#) (outs g#)
     DelayLoop : {i o l : ℕ} (c : ℂ' (i + l) (o + l)) {p : comb' c} → ℂ' i o
 
@@ -44,6 +45,7 @@ infixl 4 _⟫'_
 
 %<*comb-core>
 \begin{code}
+comb' Nil           = ⊤
 comb' (Gate _)      = ⊤
 comb' (Plug _)      = ⊤
 comb' (DelayLoop _) = ⊥

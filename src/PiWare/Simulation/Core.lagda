@@ -4,7 +4,7 @@ open import PiWare.Gates
 
 module PiWare.Simulation.Core {At : Atomic} (Gt : Gates At) where
 
-open import Function using (_∘_; id)
+open import Function using (_∘_; id; const)
 open import Data.Nat using (ℕ; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz)
 open import Data.Product using (_×_; _,_; <_,_>; proj₁) renaming (map to mapₚ)
@@ -15,13 +15,13 @@ open import Data.List.NonEmpty using () renaming (map to map⁺)
 open import Data.CausalStream using (Γᶜ; _⇒ᶜ_; tails⁺)
 open import PiWare.Utils using (unzip)
 open import Data.Vec using (Vec; _++_; splitAt; lookup; replicate; allFin)
-                     renaming (_∷_ to _◁_; take to takeᵥ; map to mapᵥ)
+                     renaming ([] to ε; _∷_ to _◁_; take to takeᵥ; map to mapᵥ)
 
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Coinduction using (♯_; ♭)
 
 open import PiWare.Synthesizable At using (𝕎; splitListByTag; tagToSum)
-open import PiWare.Circuit.Core Gt using (ℂ'; comb'; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_)
+open import PiWare.Circuit.Core Gt using (ℂ'; comb'; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_)
 open Atomic At using (Atom#; n→atom)
 open Gates At Gt using (spec)
 \end{code}
@@ -47,6 +47,7 @@ splitVecs n = unzip ∘ map (mapₚ id proj₁ ∘ splitAt n)
 %<*eval-core>
 \begin{code}
 ⟦_⟧' : {i o : ℕ} → (c : ℂ' i o) {p : comb' c} → (𝕎 i → 𝕎 o)
+⟦ Nil ⟧' = const ε
 ⟦ Gate g#  ⟧' = spec g#
 ⟦ Plug p   ⟧' = plugOutputs p
 ⟦ c₁ ⟫' c₂ ⟧' {p₁ , p₂} = ⟦ c₂ ⟧' {p₂} ∘ ⟦ c₁ ⟧' {p₁}
@@ -77,6 +78,7 @@ delay {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) | _ , b⁻¹ , _ = ⟦ c ⟧' {p} (w�
 %<*eval-causal>
 \begin{code}
 ⟦_⟧ᶜ : {i o : ℕ} → ℂ' i o → (𝕎 i ⇒ᶜ 𝕎 o)
+⟦ Nil                     ⟧ᶜ (w⁰ , _)  = ⟦ Nil ⟧' w⁰
 ⟦ Gate g#                 ⟧ᶜ (w⁰ , _)  = ⟦ Gate g# ⟧' w⁰
 ⟦ Plug p                  ⟧ᶜ (w⁰ , _)  = plugOutputs p w⁰
 ⟦ DelayLoop {o = o} c {p} ⟧ᶜ (w⁰ , w⁻) = takeᵥ o (delay {o = o} c {p} w⁰ w⁻)
