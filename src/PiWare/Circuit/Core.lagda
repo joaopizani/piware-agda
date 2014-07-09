@@ -6,7 +6,7 @@ module PiWare.Circuit.Core {At : Atomic} (Gt : Gates At) where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
-open import Data.Product using (_×_)
+open import Data.Product using (_×_; _,_)
 open import Data.Empty using (⊥)
 open import Data.Unit using (⊤)
 
@@ -54,3 +54,24 @@ comb' (c₁ |' c₂)    = comb' c₁ × comb' c₂
 comb' (c₁ |+' c₂)   = comb' c₁ × comb' c₂
 \end{code}
 %</comb-core>
+
+%<*lemma-comb-seq'>
+\begin{code}
+_comb⟫'_ : {i m o : ℕ} {c₁' : ℂ' i m} {c₂' : ℂ' m o} → comb' c₁' → comb' c₂' → comb' (c₁' ⟫' c₂')
+_comb⟫'_ = _,_
+\end{code}
+%</lemma-comb-seq'>
+
+%<*lemma-comb-par'>
+\begin{code}
+_comb|'_ : {i₁ o₁ i₂ o₂ : ℕ} {c₁' : ℂ' i₁ o₁} {c₂' : ℂ' i₂ o₂} → comb' c₁' → comb' c₂' → comb' (c₁' |' c₂')
+_comb|'_ = _,_
+\end{code}
+%</lemma-comb-par'>
+
+%<*lemma-comb-sum'>
+\begin{code}
+_comb|+'_ : {i₁ i₂ o : ℕ} {c₁' : ℂ' i₁ o} {c₂' : ℂ' i₂ o} → comb' c₁' → comb' c₂' → comb' (c₁' |+' c₂')
+_comb|+'_ = _,_
+\end{code}
+%</lemma-comb-sum'>
