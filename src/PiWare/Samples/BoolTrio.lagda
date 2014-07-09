@@ -93,6 +93,13 @@ mux2to1 =   pFork×
 
 
 -- Sequential.  Out: cycle [true, false]...
+%<*shift>
+\begin{code}
+shift : ℂ 𝔹 𝔹
+shift = delayℂ pSwap
+\end{code}
+%</shift>
+
 %<*toggle>
 \begin{code}
 toggle : ℂ ⊤ 𝔹

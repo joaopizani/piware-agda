@@ -16,7 +16,8 @@ open import PiWare.Atom.Bool using (Atomic-𝔹)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Simulation BoolTrio using (⟦_⟧; ⟦_⟧*)
 
-open import PiWare.Samples.BoolTrio using (¬ℂ; ∧ℂ; ∨ℂ; ⊻ℂ; ¬∧ℂ; hadd; fadd; toggle; reg)
+open import PiWare.Samples.BoolTrio
+     using (¬ℂ; ∧ℂ; ∨ℂ; ⊻ℂ; ¬∧ℂ; hadd; fadd; shift; toggle; reg)
 \end{code}
 
 
@@ -97,6 +98,12 @@ toggle7 = take 7 $ ⟦ toggle ⟧* (repeat tt)
 \end{code}
 %</toggle7>
 
+%<*shift7>
+\begin{code}
+shift7 = take 7 $ ⟦ shift ⟧* (iterate not false)
+\end{code}
+%</shift7>
+
 %<*rhold>
 \begin{code}
 rhold = take 7 (⟦ reg ⟧* $
@@ -114,27 +121,30 @@ rload = take 7 (⟦ reg ⟧* $
 %</rload>
 
 
--- this works...
-%<*proofRepeatFalse'>
-\begin{code}
-proofRepeatFalse' : tail (repeat false) ≈ repeat false
-proofRepeatFalse' = refl ∷ ♯ proofRepeatFalse'
-\end{code}
-%</proofRepeatFalse'>
 
--- only by using the tail proof
-%<*proofRepeatFalse>
+%<*proofShiftHead>
 \begin{code}
-proofRepeatFalse : repeat false ≈ false ∷ ♯ repeat false
-proofRepeatFalse = refl ∷ ♯ proofRepeatFalse'
+proofShiftHead : ∀ {x y zs} → head (⟦ shift ⟧* (x ∷ ♯ (y ∷ ♯ zs)) ) ≡ false
+proofShiftHead = refl
 \end{code}
-%</proofRepeatFalse>
+%</proofShiftHead>
 
+EASTER EGG: Klinkt net als proefschrift :)
+%<*proofShiftTail>
 \begin{code}
-proofToggle  : ⟦ toggle ⟧* (repeat tt) ≈ iterate not true
-proofToggle = refl ∷ ♯ {!!}
+proofShiftTail : ∀ {ins} → tail (⟦ shift ⟧* ins) ≈ ins
+proofShiftTail {true ∷ xs} with (♭ xs)
+proofShiftTail {true ∷ xs} | true ∷ xs₁ = {!!}
+proofShiftTail {true ∷ xs} | false ∷ xs₁ = {!!}
+proofShiftTail {false ∷ xs} = {!!}
 \end{code}
+%</proofShiftTail>
 
+-- \begin{code}
+-- proofToggle  : ⟦ toggle ⟧* (repeat tt) ≈ iterate not true
+-- proofToggle = refl ∷ ♯ {!!}
+-- \end{code}
+ 
 -- now with the register: first the tail
 -- %<*proofRegNeverLoadHardcoded'>
 -- \begin{code}
