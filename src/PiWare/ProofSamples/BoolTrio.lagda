@@ -129,16 +129,13 @@ proofShiftHead = refl
 \end{code}
 %</proofShiftHead>
 
-EASTER EGG: Klinkt net als proefschrift :)
 %<*proofShiftTail>
 \begin{code}
 proofShiftTail : ∀ {ins} → tail (⟦ shift ⟧* ins) ≈ ins
-proofShiftTail {true ∷ xs} with (♭ xs)
-proofShiftTail {true ∷ xs} | true ∷ xs₁ = {!!}
-proofShiftTail {true ∷ xs} | false ∷ xs₁ = {!!}
-proofShiftTail {false ∷ xs} = {!!}
+proofShiftTail = {!!}
 \end{code}
 %</proofShiftTail>
+
 
 -- \begin{code}
 -- proofToggle  : ⟦ toggle ⟧* (repeat tt) ≈ iterate not true
