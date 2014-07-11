@@ -39,7 +39,7 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 -- combinational eval
 %<*eval-core>
 \begin{code}
-⟦_⟧' : {i o : ℕ} → (c : ℂ' i o) {p : comb' c} → (𝕎 i → 𝕎 o)
+⟦_⟧' : {i o : ℕ} → (c : ℂ' i o) {p : comb' c} → (W i → W o)
 ⟦ Nil ⟧' = const ε
 ⟦ Gate g#  ⟧' = spec g#
 ⟦ Plug p   ⟧' = plugOutputs p
@@ -55,7 +55,7 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 -- again the "uncurrying trick" to convince the termination checker
 %<*delay>
 \begin{code}
-delay : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → 𝕎 i ⇒ᶜ 𝕎 (o + l)
+delay : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i ⇒ᶜ W (o + l)
 delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
   where
     delay' : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i → List (W i) → W (o + l)
@@ -68,7 +68,7 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 
 %<*eval-causal>
 \begin{code}
-⟦_⟧ᶜ : {i o : ℕ} → ℂ' i o → (𝕎 i ⇒ᶜ 𝕎 o)
+⟦_⟧ᶜ : {i o : ℕ} → ℂ' i o → (W i ⇒ᶜ W o)
 ⟦ Nil     ⟧ᶜ (w⁰ , _) = ⟦ Nil ⟧' w⁰
 ⟦ Gate g# ⟧ᶜ (w⁰ , _) = ⟦ Gate g# ⟧' w⁰
 ⟦ Plug p  ⟧ᶜ (w⁰ , _) = plugOutputs p w⁰
@@ -92,7 +92,7 @@ runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺)
 
 %<*eval-seq-core>
 \begin{code}
-⟦_⟧*' : {i o : ℕ} → ℂ' i o → (Stream (𝕎 i) → Stream (𝕎 o))
+⟦_⟧*' : {i o : ℕ} → ℂ' i o → (Stream (W i) → Stream (W o))
 ⟦_⟧*' = runᶜ ∘ ⟦_⟧ᶜ
 \end{code}
 %</eval-seq-core>

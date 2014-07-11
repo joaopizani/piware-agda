@@ -6,13 +6,13 @@ open import Data.Nat using (ℕ)
 open import Data.Unit using (tt)
 open import Data.Vec using () renaming ([] to ε; _∷_ to _◁_)
 open import Data.Product using (_×_; _,_) renaming (map to mapₚ)
-open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to 𝔹)
+open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to B)
 
 open import Data.Stream using (Stream; repeat; _≈_; zipWith; _∷_; take; head; tail; iterate)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 open import Coinduction using (♯_; ♭)
 
-open import PiWare.Atom.Bool using (Atomic-𝔹)
+open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Simulation BoolTrio using (⟦_⟧; ⟦_⟧*)
 
@@ -40,7 +40,7 @@ proofXor = xorEquiv
 
 %<*haddSpec>
 \begin{code}
-haddSpec : 𝔹 → 𝔹 → (𝔹 × 𝔹)
+haddSpec : B → B → (B × B)
 haddSpec a b = (a ∧ b) , (a xor b)
 \end{code}
 %</haddSpec>
@@ -64,7 +64,7 @@ proofHaddBool a b = cong (_,_ (a ∧ b)) (xorEquiv a b)
 -- TODO: make fullAddSpec in terms of halfAddSpec?
 %<*faddSpec>
 \begin{code}
-faddSpec : 𝔹 → 𝔹 → 𝔹 → (𝔹 × 𝔹)
+faddSpec : B → B → B → (B × B)
 faddSpec false false false = false , false
 faddSpec false false true  = false , true
 faddSpec false true  false = false , true

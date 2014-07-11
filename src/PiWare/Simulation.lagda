@@ -12,7 +12,7 @@ open import PiWare.Synthesizable At
 open import PiWare.Circuit Gt using (ℂ; comb; Mkℂ)
 open import PiWare.Simulation.Core Gt using (⟦_⟧'; ⟦_⟧*')
 
-open ⇓𝕎⇑ ⦃ ... ⦄ using (⇓; ⇑)
+open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 \end{code}
 
 

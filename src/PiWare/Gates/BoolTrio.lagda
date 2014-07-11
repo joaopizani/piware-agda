@@ -7,9 +7,9 @@ open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Vec using ([_]) renaming (_∷_ to _◁_)
 open import Data.Bool using (false; true; not; _∧_; _∨_)
 
-open import PiWare.Atom.Bool using (Atomic-𝔹)
-open import PiWare.Synthesizable Atomic-𝔹 using (𝕎)
-open import PiWare.Gates Atomic-𝔹
+open import PiWare.Atom.Bool using (Atomic-B)
+open import PiWare.Synthesizable Atomic-B using (W)
+open import PiWare.Gates Atomic-B
 \end{code}
 
 
@@ -46,7 +46,7 @@ private
 
   %<*spec>
   \begin{code}
-  spec : (g : Fin |BoolTrio|) → (𝕎 (ins g) → 𝕎 (outs g))
+  spec : (g : Fin |BoolTrio|) → (W (ins g) → W (outs g))
   spec FalseConst# = const [ false ]
   spec TrueConst#  = const [ true  ]
   spec Not#        = λ { (x ◁ ε) → [ not x ] }
