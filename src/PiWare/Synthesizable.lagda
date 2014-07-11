@@ -16,7 +16,7 @@ open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding using (padFst; unpadFst; padSnd; unpadSnd)
-open import PiWare.Utils using (splitSumList)
+open import PiWare.Utils using (segregateSums)
 open Atomic At using (Atom; Atom#; atom→n; n→atom)
 \end{code}
 
@@ -84,21 +84,22 @@ open ⇓𝕎⇑ ⦃ ... ⦄
 
 
 -- Sum-related tagging helpers
-%<*tagToSum>
+%<*untag>
 \begin{code}
-tagToSum : ∀ {i j} → 𝕎 (suc (i ⊔ j)) → 𝕎 i ⊎ 𝕎 j
-tagToSum {i} {j} (t ◁ ab) with toℕ (atom→n t) ≟ 1
-tagToSum {i} {j} (t ◁ ab) | yes _ = inj₂ (unpadSnd i j ab)
-tagToSum {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFst i j ab)
+untag : ∀ {i j} → 𝕎 (suc (i ⊔ j)) → 𝕎 i ⊎ 𝕎 j
+untag {i} {j} (t ◁ ab) with toℕ (atom→n t) ≟ 1
+untag {i} {j} (t ◁ ab) | yes _ = inj₂ (unpadSnd i j ab)
+untag {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFst i j ab)
 \end{code}
-%</tagToSum>
+%</untag>
 
-%<*splitListByTag>
+%<*untagList>
 \begin{code}
-splitListByTag : ∀ {i j} → List (𝕎 (suc (i ⊔ j))) → List (𝕎 i) × List (𝕎 j)
-splitListByTag = splitSumList ∘ mapₗ tagToSum
+untagList : ∀ {i j} → List (𝕎 (suc (i ⊔ j))) → List (𝕎 i) × List (𝕎 j)
+untagList = segregateSums ∘ mapₗ untag
 \end{code}
-%</splitListByTag>
+%</untagList>
+
 
 -- TODO: guarantee that n₁ and n₂ are different?
 %<*Synth-Sum>
@@ -110,7 +111,7 @@ splitListByTag = splitSumList ∘ mapₗ tagToSum
                  , (λ b → (n→atom m) ◁ padSnd i j (n→atom p) (⇓ b)) ]
           
           up : 𝕎 (suc (i ⊔ j)) → α ⊎ β
-          up = map⊎ ⇑ ⇑ ∘ tagToSum
+          up = map⊎ ⇑ ⇑ ∘ untag
 \end{code}
 %</Synth-Sum>
 

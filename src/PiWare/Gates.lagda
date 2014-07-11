@@ -14,7 +14,7 @@ open import PiWare.Synthesizable At using (𝕎)
 \begin{code}
 record Gates : Set where
     field
-        |Gates|-1 : ℕ  -- needs to have at least one gate
+        |Gates|-1 : ℕ
         ins outs  : Fin (suc |Gates|-1) → ℕ
         spec      : (g : Fin (suc |Gates|-1)) → (𝕎 (ins g) → 𝕎 (outs g))
 

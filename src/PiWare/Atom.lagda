@@ -14,7 +14,7 @@ record Atomic : Set₁ where
     field
         -- primitives
         Atom     : Set
-        |Atom|-1 : ℕ  -- needs to have at least 1 atom
+        |Atom|-1 : ℕ
         n→atom   : Fin (suc |Atom|-1) → Atom
         atom→n   : Atom → Fin (suc |Atom|-1)
 
