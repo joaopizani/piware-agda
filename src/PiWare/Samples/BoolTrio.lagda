@@ -4,7 +4,7 @@ module PiWare.Samples.BoolTrio where
 open import Data.Bool using () renaming (Bool to B)
 open import Data.Product using (_×_; _,_; proj₂)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Vec using (Vec)
+open import Data.Vec using (Vec) renaming ([] to ε)
 open import Data.Unit using (⊤)
 
 import Algebra as A
@@ -14,13 +14,11 @@ open import Algebra.Operations (A.CommutativeSemiring.semiring ℕ-commSemiring)
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
-
 open import PiWare.Gates.BoolTrio using (BoolTrio; FalseConst#; TrueConst#; Not#; And#; Or#)
 open import PiWare.Plugs BoolTrio
 open import PiWare.Circuit.Core BoolTrio
 open import PiWare.Circuit BoolTrio
 \end{code}
-
 
 %<*fundamentals>
 \begin{code}
@@ -82,39 +80,39 @@ fadd =   hadd || pid
 
 -- TODO: booleans for now. How to make it generic?  Maybe using the sum constructor.
 -- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
-%<*mux2to1>
-\begin{code}
-mux2to1 : ℂ (B × (B × B)) B
-mux2to1 =   pFork×
-          ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
-          ⟫ ∨ℂ
-\end{code}
-%</mux2to1>
+-- %<*mux2to1>
+-- \begin{code}
+-- mux2to1 : ℂ (B × (B × B)) B
+-- mux2to1 =   pFork×
+--           ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
+--           ⟫ ∨ℂ
+-- \end{code}
+-- %</mux2to1>
 
 
 -- Sequential.  Out: cycle [true, false]...
-%<*shift>
-\begin{code}
-shift : ℂ B B
-shift = delayℂ pSwap
-\end{code}
-%</shift>
+-- %<*shift>
+-- \begin{code}
+-- shift : ℂ B B
+-- shift = delayℂ pSwap
+-- \end{code}
+-- %</shift>
 
-%<*toggle>
-\begin{code}
-toggle : ℂ ⊤ B
-toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
-\end{code}
-%</toggle>
+-- %<*toggle>
+-- \begin{code}
+-- toggle : ℂ ⊤ B
+-- toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
+-- \end{code}
+-- %</toggle>
 
 
 -- input × load → out
-%<*reg>
-\begin{code}
-reg : ℂ (B × B) B
-reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
-\end{code}
-%</reg>
+-- %<*reg>
+-- \begin{code}
+-- reg : ℂ (B × B) B
+-- reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
+-- \end{code}
+-- %</reg>
 
 
 -- (attempt at) generically-sized mux

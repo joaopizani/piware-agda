@@ -78,8 +78,8 @@ instance
 
 %<*Synth-Product>
 \begin{code}
-  ⇓W⇑-× : ∀ {α i β j} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (α × β)
-  ⇓W⇑-× {α} {i} {β} {j} sα sβ = ⇓W⇑[ down , up ]
+  ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
+  ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : (α × β) → W (i + j)
             down (a , b) = (⇓ a) ++ (⇓ b)
   
@@ -91,8 +91,8 @@ instance
 
 %<*Synth-Vec>
 \begin{code}
-  ⇓W⇑-Vec : ∀ {α i n} → ⇓W⇑ α {i} → ⇓W⇑ (Vec α n)
-  ⇓W⇑-Vec {α} {i} {n} sα = ⇓W⇑[ down , up ]
+  ⇓W⇑-Vec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
+  ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
       where down : Vec α n → W (n * i)
             down v = v >>= ⇓
   
@@ -104,8 +104,8 @@ instance
 -- TODO: guarantee that n₁ and n₂ are different?
 %<*Synth-Sum>
 \begin{code}
-  ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
-  ⇓W⇑-⊎ {α} {i} {β} {j} n m p sα sβ = ⇓W⇑[ down , up ]
+  ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
+  ⇓W⇑-⊎ {α} {i} {β} {j} n m p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : α ⊎ β → W (suc (i ⊔ j))
             down = [ (λ a → (n→atom n) ◁ padFst i j (n→atom p) (⇓ a))
                    , (λ b → (n→atom m) ◁ padSnd i j (n→atom p) (⇓ b)) ]

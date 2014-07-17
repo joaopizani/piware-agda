@@ -194,7 +194,8 @@ pid ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ pid'
 %<*pSwap>
 \begin{code}
 pSwap : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ (α × β) (β × α)
-pSwap {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× sα sβ ⦄ ⦃ ⇓W⇑-× sβ sα ⦄ (pSwap' {i} {j})
+pSwap {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄
+    = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sα ⦄ ⦄ (pSwap' {i} {j})
 \end{code}
 %</pSwap>
 
@@ -204,7 +205,8 @@ pSwap {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× sα sβ ⦄
 pIntertwine : ∀ {α i β j γ k δ l} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
               → ℂ  ((α × β) × (γ × δ))  ((α × γ) × (β × δ))
 pIntertwine {i = i} {j = j} {k = k} {l = l}  ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ ⦃ sδ ⦄ =
-    Mkℂ ⦃ ⇓W⇑-× (⇓W⇑-× sα sβ) (⇓W⇑-× sγ sδ) ⦄  ⦃ ⇓W⇑-× (⇓W⇑-× sα sγ) (⇓W⇑-× sβ sδ) ⦄
+    Mkℂ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sγ ⦄ ⦃ sδ ⦄ ⦄ ⦄
+        ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sγ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sδ ⦄ ⦄ ⦄
         (pIntertwine' {i} {j} {k} {l})
 \end{code}
 %</pIntertwine>
@@ -216,7 +218,8 @@ pIntertwine {i = i} {j = j} {k = k} {l = l}  ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄
 pALR : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
        → ℂ ((α × β) × γ) (α × (β × γ))
 pALR {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
-    Mkℂ ⦃ ⇓W⇑-× (⇓W⇑-× sα sβ) sγ ⦄ ⦃ ⇓W⇑-× sα (⇓W⇑-× sβ sγ) ⦄ (pALR' {i} {j} {k})
+    Mkℂ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sγ ⦄ ⦄ ⦄
+        (pALR' {i} {j} {k})
 \end{code}
 %</pALR>
 
@@ -225,7 +228,8 @@ pALR {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
 pARL : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
        → ℂ (α × (β × γ)) ((α × β) × γ)
 pARL {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
-    Mkℂ ⦃ ⇓W⇑-× sα (⇓W⇑-× sβ sγ) ⦄ ⦃ ⇓W⇑-× (⇓W⇑-× sα sβ) sγ ⦄ (pARL' {i} {j} {k})
+    Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sγ ⦄ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ ⦄
+        (pARL' {i} {j} {k})
 \end{code}
 %</pARL>
  
@@ -234,7 +238,7 @@ pARL {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
 %<*pHead>
 \begin{code}
 pHead : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (suc n)) α
-pHead {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} sα ⦄ ⦃ sα ⦄ (pHead' {m} {i})
+pHead {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ sα ⦄ (pHead' {m} {i})
 \end{code}
 %</pHead>
 
@@ -242,21 +246,21 @@ pHead {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} sα ⦄ ⦃ s�
 %<*pUncons>
 \begin{code}
 pUncons : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
-pUncons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} sα ⦄ ⦃ ⇓W⇑-× sα (⇓W⇑-Vec {n = m} sα) ⦄ pid'
+pUncons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ pid'
 \end{code}
 %</pUncons>
 
 %<*Synth-pUncons-in>
 \begin{code}
 ⇓W⇑-pUncons-in : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α (suc n))
-⇓W⇑-pUncons-in {n = m} ⦃ sα ⦄ = ⇓W⇑-Vec {n = suc m} sα
+⇓W⇑-pUncons-in {n = m} ⦃ sα ⦄ = ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄
 \end{code}
 %</Synth-pUncons-in>
 
 %<*Synth-pUncons-out>
 \begin{code}
 ⇓W⇑-pUncons-out : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (α × Vec α n)
-⇓W⇑-pUncons-out {n = m} ⦃ sα ⦄ = ⇓W⇑-× sα (⇓W⇑-Vec {n = m} sα)
+⇓W⇑-pUncons-out {n = m} ⦃ sα ⦄ = ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄
 \end{code}
 %</Synth-pUncons-out>
 
@@ -264,7 +268,7 @@ pUncons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} sα ⦄ ⦃ ⇓W
 %<*pCons>
 \begin{code}
 pCons : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (α × Vec α n) (Vec α (suc n))
-pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× sα (⇓W⇑-Vec {n = m} sα) ⦄ ⦃ ⇓W⇑-Vec {n = suc m} sα ⦄ pid'
+pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ pid'
 \end{code}
 %</pCons>
 
@@ -272,7 +276,7 @@ pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× sα (⇓W⇑-Vec {n = m} sα) �
 %<*pSingletonIn>
 \begin{code}
 pSingletonIn : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α (Vec α 1)
-pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} sα ⦄  c'
+pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  c'
     where c' : ℂ' i (1 * i)
           c' rewrite (proj₂ +-identity) i = pid'
 \end{code}
@@ -281,14 +285,14 @@ pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} sα
 %<*Synth-pSingletonIn-out>
 \begin{code}
 ⇓W⇑-pSingletonIn-out : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α 1)
-⇓W⇑-pSingletonIn-out ⦃ sα ⦄ = ⇓W⇑-Vec {n = 1} sα
+⇓W⇑-pSingletonIn-out ⦃ sα ⦄ = ⇓W⇑-Vec {n = 1} ⦃ sα ⦄
 \end{code}
 %</Synth-pSingletonIn-out>
 
 %<*pSingletonOut>
 \begin{code}
 pSingletonOut : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α 1) α
-pSingletonOut {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = 1} sα ⦄ ⦃ sα ⦄  c'
+pSingletonOut {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  c'
     where c' : ℂ' (1 * i) i
           c' rewrite (proj₂ +-identity) i = pid'
 \end{code}
@@ -299,7 +303,8 @@ pSingletonOut {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = 1} sα ⦄ ⦃ s�
 \begin{code}
 pVecHalf : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (2 * suc n)) (Vec α (suc n) × Vec α (suc n))
 pVecHalf {_} {i} {m} ⦃ sα ⦄ =
-    Mkℂ ⦃ ⇓W⇑-Vec {n = 2 * suc m} sα ⦄ ⦃ ⇓W⇑-× (⇓W⇑-Vec {n = suc m} sα) (⇓W⇑-Vec {n = suc m} sα) ⦄
+    Mkℂ ⦃ ⇓W⇑-Vec {n = 2 * suc m} ⦃ sα ⦄ ⦄
+        ⦃ ⇓W⇑-× ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦄
         (pVecHalf' {m} {i})
 \end{code}
 %</pVecHalf>
@@ -309,7 +314,8 @@ pVecHalf {_} {i} {m} ⦃ sα ⦄ =
 \begin{code}
 pVecHalfPow : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (2 ^ suc n)) (Vec α (2 ^ n) × Vec α (2 ^ n))
 pVecHalfPow {_} {i} {m} ⦃ sα ⦄ =
-    Mkℂ ⦃ ⇓W⇑-Vec {n = 2 ^ suc m} sα ⦄ ⦃ ⇓W⇑-× (⇓W⇑-Vec {n = 2 ^ m} sα) (⇓W⇑-Vec {n = 2 ^ m} sα) ⦄ 
+    Mkℂ ⦃ ⇓W⇑-Vec {n = 2 ^ suc m} ⦃ sα ⦄ ⦄
+        ⦃ ⇓W⇑-× ⦃ ⇓W⇑-Vec {n = 2 ^ m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = 2 ^ m} ⦃ sα ⦄ ⦄ ⦄ 
         (pVecHalfPow' {m} {i})
 \end{code}
 %</pVecHalfPow>
@@ -318,14 +324,14 @@ pVecHalfPow {_} {i} {m} ⦃ sα ⦄ =
 %<*pForkVec>
 \begin{code}
 pForkVec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α (Vec α n)
-pForkVec {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} sα ⦄ (pFork' {m} {i})
+pForkVec {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ (pFork' {m} {i})
 \end{code}
 %</pForkVec>
 
 %<*pFork-product>
 \begin{code}
 pFork× : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α (α × α)
-pFork× {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× sα sα ⦄  c'
+pFork× {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  c'
     where c' : ℂ' i (i + i)
           c' rewrite sym $ cong (_+_ i) ((proj₂ +-identity) i) = pFork' {2} {i}
 \end{code}
@@ -336,13 +342,13 @@ pFork× {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× sα sα ⦄  c'
 %<*pFst>
 \begin{code}
 pFst : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ (α × β) α
-pFst {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× sα sβ ⦄ ⦃ sα ⦄ (pFst' {i} {j})
+pFst {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sα ⦄ (pFst' {i} {j})
 \end{code}
 %</pFst>
 
 %<*pSnd>
 \begin{code}
 pSnd : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ (α × β) β
-pSnd {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× sα sβ ⦄ ⦃ sβ ⦄ (pSnd' {i} {j})
+pSnd {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sβ ⦄ (pSnd' {i} {j})
 \end{code}
 %</pSnd>

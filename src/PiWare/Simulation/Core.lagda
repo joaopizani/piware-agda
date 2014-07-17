@@ -72,7 +72,7 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 ⟦ Nil     ⟧ᶜ (w⁰ , _) = ⟦ Nil ⟧' w⁰
 ⟦ Gate g# ⟧ᶜ (w⁰ , _) = ⟦ Gate g# ⟧' w⁰
 ⟦ Plug p  ⟧ᶜ (w⁰ , _) = plugOutputs p w⁰
-⟦ DelayLoop {o = j} c ⟧ᶜ = takeᵥ j ∘ delay {o = j} c
+⟦ DelayLoop {o = j} c {p} ⟧ᶜ = takeᵥ j ∘ delay {o = j} c {p}
 ⟦ c₁ ⟫' c₂ ⟧ᶜ = ⟦ c₂ ⟧ᶜ ∘ map⁺ ⟦ c₁ ⟧ᶜ ∘ tails⁺
 ⟦ _|'_ {i₁} c₁ c₂ ⟧ᶜ = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘ unzip⁺ ∘ splitAt⁺ i₁
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) with untag {i₁} w⁰ | untagList {i₁} w⁻
