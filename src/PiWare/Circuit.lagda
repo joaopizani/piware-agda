@@ -21,8 +21,7 @@ open Atomic At using (Atom#)
 %<*Circuit>
 \begin{code}
 data ℂ (α β : Set) {i j : ℕ} : Set where
-    Mkℂ : ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄
-            → ℂ' i j → ℂ α β {i} {j}
+    Mkℂ : ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ' i j → ℂ α β {i} {j}
 \end{code}
 %</Circuit>
 
@@ -66,7 +65,7 @@ _||_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ c₁) (Mkℂ c₂) =
        → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
        → (n₁ n₂ p : Atom#) {diff : n₁ ≢ n₂}
        → ℂ α γ {i} {k} → ℂ β γ {j} {k} → ℂ (α ⊎ β) γ {suc (i ⊔ j)} {k}
-|+ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ n₁ n₂ p (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ ⇓W⇑-⊎ n₁ n₂ p sα sβ ⦄ ⦃ sγ ⦄ (c₁ |+' c₂)
+|+ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ n₁ n₂ p {d} (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ ⇓W⇑-⊎ n₁ n₂ p {d} sα sβ ⦄ ⦃ sγ ⦄ (c₁ |+' c₂)
 \end{code}
 %</sum>
 

@@ -73,12 +73,12 @@ fadd =   hadd || pid
 %</fadd>
 
 
-%<*mux2to1-Synth>
-\begin{code}
-⇓W⇑-[B×[B×B]]×[B×[B×B]] : ⇓W⇑ ((B × (B × B)) × (B × (B × B)))
-⇓W⇑-[B×[B×B]]×[B×[B×B]] = ⇓W⇑-× ⇓W⇑-B×[B×B] ⇓W⇑-B×[B×B]
-\end{code}
-%</mux2to1-Synth>
+-- %<*mux2to1-Synth>
+-- \begin{code}
+-- ⇓W⇑-[B×[B×B]]×[B×[B×B]] : ⇓W⇑ ((B × (B × B)) × (B × (B × B)))
+-- ⇓W⇑-[B×[B×B]]×[B×[B×B]] = ⇓W⇑-× ⇓W⇑-B×[B×B] ⇓W⇑-B×[B×B]
+-- \end{code}
+-- %</mux2to1-Synth>
 
 -- TODO: booleans for now. How to make it generic?  Maybe using the sum constructor.
 -- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)

@@ -47,42 +47,6 @@ open ⇓W⇑ ⦃ ... ⦄
 \end{code}
 
 
--- basic instances
-%<*Synth-Unit>
-\begin{code}
-⇓W⇑-⊤ : ⇓W⇑ ⊤ {0}
-⇓W⇑-⊤ = ⇓W⇑[ const ε , const tt ]
-\end{code}
-%</Synth-Unit>
-
-
-%<*Synth-Product>
-\begin{code}
-⇓W⇑-× : ∀ {α i β j} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (α × β)
-⇓W⇑-× {α} {i} {β} {j} sα sβ = ⇓W⇑[ down , up ]
-    where down : (α × β) → W (i + j)
-          down (a , b) = (⇓ a) ++ (⇓ b)
-
-          up : W (i + j) → (α × β)
-          up w with splitAt i w
-          up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
-\end{code}
-%</Synth-Product>
-
-
-%<*Synth-Vec>
-\begin{code}
-⇓W⇑-Vec : ∀ {α i n} → ⇓W⇑ α {i} → ⇓W⇑ (Vec α n)
-⇓W⇑-Vec {α} {i} {n} sα = ⇓W⇑[ down , up ]
-    where down : Vec α n → W (n * i)
-          down v = v >>= ⇓
-
-          up : W (n * i) → Vec α n
-          up w = mapᵥ ⇑ (proj₁ $ group n i w)
-\end{code}
-%</Synth-Vec>
-
-
 -- Sum-related tagging helpers
 %<*untag>
 \begin{code}
@@ -101,58 +65,95 @@ untagList = segregateSums ∘ mapₗ untag
 %</untagList>
 
 
+-- basic instances
+\begin{code}
+instance
+\end{code}
+%<*Synth-Unit>
+\begin{code}
+  ⇓W⇑-⊤ : ⇓W⇑ ⊤ {0}
+  ⇓W⇑-⊤ = ⇓W⇑[ const ε , const tt ]
+\end{code}
+%</Synth-Unit>
+
+%<*Synth-Product>
+\begin{code}
+  ⇓W⇑-× : ∀ {α i β j} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (α × β)
+  ⇓W⇑-× {α} {i} {β} {j} sα sβ = ⇓W⇑[ down , up ]
+      where down : (α × β) → W (i + j)
+            down (a , b) = (⇓ a) ++ (⇓ b)
+  
+            up : W (i + j) → (α × β)
+            up w with splitAt i w
+            up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
+\end{code}
+%</Synth-Product>
+
+%<*Synth-Vec>
+\begin{code}
+  ⇓W⇑-Vec : ∀ {α i n} → ⇓W⇑ α {i} → ⇓W⇑ (Vec α n)
+  ⇓W⇑-Vec {α} {i} {n} sα = ⇓W⇑[ down , up ]
+      where down : Vec α n → W (n * i)
+            down v = v >>= ⇓
+  
+            up : W (n * i) → Vec α n
+            up w = mapᵥ ⇑ (proj₁ $ group n i w)
+\end{code}
+%</Synth-Vec>
+
 -- TODO: guarantee that n₁ and n₂ are different?
 %<*Synth-Sum>
 \begin{code}
-⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
-⇓W⇑-⊎ {α} {i} {β} {j} n m p sα sβ = ⇓W⇑[ down , up ]
-    where down : α ⊎ β → W (suc (i ⊔ j))
-          down = [ (λ a → (n→atom n) ◁ padFst i j (n→atom p) (⇓ a))
-                 , (λ b → (n→atom m) ◁ padSnd i j (n→atom p) (⇓ b)) ]
-          
-          up : W (suc (i ⊔ j)) → α ⊎ β
-          up = map⊎ ⇑ ⇑ ∘ untag
+  ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
+  ⇓W⇑-⊎ {α} {i} {β} {j} n m p sα sβ = ⇓W⇑[ down , up ]
+      where down : α ⊎ β → W (suc (i ⊔ j))
+            down = [ (λ a → (n→atom n) ◁ padFst i j (n→atom p) (⇓ a))
+                   , (λ b → (n→atom m) ◁ padSnd i j (n→atom p) (⇓ b)) ]
+            
+            up : W (suc (i ⊔ j)) → α ⊎ β
+            up = map⊎ ⇑ ⇑ ∘ untag
 \end{code}
 %</Synth-Sum>
 
 
+
 -- derivable instances (can be resolved recursively from the basic)
-\begin{code}
-⇓W⇑-[a×b]×c : ∀ {α i β j γ k} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ ((α × β) × γ)
-⇓W⇑-a×[b×c] : ∀ {α i β j γ k} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ (α × (β × γ))
-\end{code}
+-- \begin{code}
+-- ⇓W⇑-[a×b]×c : ∀ {α i β j γ k} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ ((α × β) × γ)
+-- ⇓W⇑-a×[b×c] : ∀ {α i β j γ k} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ (α × (β × γ))
+-- \end{code}
 
-\begin{code}
-⇓W⇑-a×[b×c] sα sβ sγ = ⇓W⇑-× sα            (⇓W⇑-× sβ sγ)
-⇓W⇑-[a×b]×c sα sβ sγ = ⇓W⇑-× (⇓W⇑-× sα sβ) sγ
-\end{code}
-
-
-\begin{code}
-⇓W⇑-a×[b×[c×d]] : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ (α × (β × (γ × δ)))
-⇓W⇑-a×[[b×c]×d] : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ (α × ((β × γ) × δ))
-⇓W⇑-[a×b]×[c×d] : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ ((α × β) × (γ × δ))
-⇓W⇑-[a×[b×c]]×d : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ ((α × (β × γ)) × δ)
-⇓W⇑-[[a×b]×c]×d : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ (((α × β) × γ) × δ)
-\end{code}
-
-\begin{code}
-⇓W⇑-a×[b×[c×d]] sα sβ sγ sδ = ⇓W⇑-× sα                     (⇓W⇑-a×[b×c] sβ sγ sδ)
-⇓W⇑-a×[[b×c]×d] sα sβ sγ sδ = ⇓W⇑-× sα                     (⇓W⇑-[a×b]×c sβ sγ sδ)
-⇓W⇑-[a×[b×c]]×d sα sβ sγ sδ = ⇓W⇑-× (⇓W⇑-a×[b×c] sα sβ sγ) sδ
-⇓W⇑-[[a×b]×c]×d sα sβ sγ sδ = ⇓W⇑-× (⇓W⇑-[a×b]×c sα sβ sγ) sδ
-⇓W⇑-[a×b]×[c×d] sα sβ sγ sδ = ⇓W⇑-× (⇓W⇑-× sα sβ) (⇓W⇑-× sγ sδ)
-\end{code}
+-- \begin{code}
+-- ⇓W⇑-a×[b×c] sα sβ sγ = ⇓W⇑-× sα            (⇓W⇑-× sβ sγ)
+-- ⇓W⇑-[a×b]×c sα sβ sγ = ⇓W⇑-× (⇓W⇑-× sα sβ) sγ
+-- \end{code}
 
 
-\begin{code}
-⇓W⇑-a×[Vec[b]] : ∀ {α i β j} → {n : ℕ} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (α × Vec β n)
-⇓W⇑-Vec[a]×b   : ∀ {α i β j} → {n : ℕ} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (Vec α n × β)
-⇓W⇑-Vec[a×b]   : ∀ {α i β j} → {n : ℕ} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (Vec (α × β) n)
-\end{code}
+-- \begin{code}
+-- ⇓W⇑-a×[b×[c×d]] : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ (α × (β × (γ × δ)))
+-- ⇓W⇑-a×[[b×c]×d] : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ (α × ((β × γ) × δ))
+-- ⇓W⇑-[a×b]×[c×d] : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ ((α × β) × (γ × δ))
+-- ⇓W⇑-[a×[b×c]]×d : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ ((α × (β × γ)) × δ)
+-- ⇓W⇑-[[a×b]×c]×d : ∀ {α i β j γ k δ l} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ γ {k} → ⇓W⇑ δ {l} → ⇓W⇑ (((α × β) × γ) × δ)
+-- \end{code}
 
-\begin{code}
-⇓W⇑-a×[Vec[b]] {n = m} sα sβ = ⇓W⇑-× sα           (⇓W⇑-Vec sβ)
-⇓W⇑-Vec[a]×b   {n = m} sα sβ = ⇓W⇑-× (⇓W⇑-Vec sα) sβ
-⇓W⇑-Vec[a×b]   {n = m} sα sβ = ⇓W⇑-Vec {n = m} (⇓W⇑-× sα sβ)
-\end{code}
+-- \begin{code}
+-- ⇓W⇑-a×[b×[c×d]] sα sβ sγ sδ = ⇓W⇑-× sα                     (⇓W⇑-a×[b×c] sβ sγ sδ)
+-- ⇓W⇑-a×[[b×c]×d] sα sβ sγ sδ = ⇓W⇑-× sα                     (⇓W⇑-[a×b]×c sβ sγ sδ)
+-- ⇓W⇑-[a×[b×c]]×d sα sβ sγ sδ = ⇓W⇑-× (⇓W⇑-a×[b×c] sα sβ sγ) sδ
+-- ⇓W⇑-[[a×b]×c]×d sα sβ sγ sδ = ⇓W⇑-× (⇓W⇑-[a×b]×c sα sβ sγ) sδ
+-- ⇓W⇑-[a×b]×[c×d] sα sβ sγ sδ = ⇓W⇑-× (⇓W⇑-× sα sβ) (⇓W⇑-× sγ sδ)
+-- \end{code}
+
+
+-- \begin{code}
+-- ⇓W⇑-a×[Vec[b]] : ∀ {α i β j} → {n : ℕ} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (α × Vec β n)
+-- ⇓W⇑-Vec[a]×b   : ∀ {α i β j} → {n : ℕ} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (Vec α n × β)
+-- ⇓W⇑-Vec[a×b]   : ∀ {α i β j} → {n : ℕ} → ⇓W⇑ α {i} → ⇓W⇑ β {j} → ⇓W⇑ (Vec (α × β) n)
+-- \end{code}
+
+-- \begin{code}
+-- ⇓W⇑-a×[Vec[b]] {n = m} sα sβ = ⇓W⇑-× sα           (⇓W⇑-Vec sβ)
+-- ⇓W⇑-Vec[a]×b   {n = m} sα sβ = ⇓W⇑-× (⇓W⇑-Vec sα) sβ
+-- ⇓W⇑-Vec[a×b]   {n = m} sα sβ = ⇓W⇑-Vec {n = m} (⇓W⇑-× sα sβ)
+-- \end{code}
