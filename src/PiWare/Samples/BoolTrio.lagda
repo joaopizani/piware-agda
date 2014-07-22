@@ -71,48 +71,41 @@ fadd =   hadd || pid
 %</fadd>
 
 
--- %<*mux2to1-Synth>
--- \begin{code}
--- ⇓W⇑-[B×[B×B]]×[B×[B×B]] : ⇓W⇑ ((B × (B × B)) × (B × (B × B)))
--- ⇓W⇑-[B×[B×B]]×[B×[B×B]] = ⇓W⇑-× ⇓W⇑-B×[B×B] ⇓W⇑-B×[B×B]
--- \end{code}
--- %</mux2to1-Synth>
-
--- TODO: booleans for now. How to make it generic?  Maybe using the sum constructor.
--- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
--- %<*mux2to1>
--- \begin{code}
--- mux2to1 : ℂ (B × (B × B)) B
--- mux2to1 =   pFork×
---           ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
---           ⟫ ∨ℂ
--- \end{code}
--- %</mux2to1>
+TODO: booleans for now. How to make it generic?  Maybe using the sum constructor.
+(s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
+%<*mux2to1>
+\begin{code}
+mux2to1 : ℂ (B × (B × B)) B
+mux2to1 =   pFork×
+          ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
+          ⟫ ∨ℂ
+\end{code}
+%</mux2to1>
 
 
--- Sequential.  Out: cycle [true, false]...
--- %<*shift>
--- \begin{code}
--- shift : ℂ B B
--- shift = delayℂ pSwap
--- \end{code}
--- %</shift>
 
--- %<*toggle>
--- \begin{code}
--- toggle : ℂ ⊤ B
--- toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
--- \end{code}
--- %</toggle>
+Sequential.  Out: cycle [true, false]...
+%<*shift>
+\begin{code}
+shift : ℂ B B
+shift = delayℂ pSwap
+\end{code}
+%</shift>
 
+%<*toggle>
+\begin{code}
+toggle : ℂ ⊤ B
+toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
+\end{code}
+%</toggle>
 
--- input × load → out
--- %<*reg>
--- \begin{code}
--- reg : ℂ (B × B) B
--- reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
--- \end{code}
--- %</reg>
+input × load → out
+%<*reg>
+\begin{code}
+reg : ℂ (B × B) B
+reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
+\end{code}
+%</reg>
 
 
 -- (attempt at) generically-sized mux

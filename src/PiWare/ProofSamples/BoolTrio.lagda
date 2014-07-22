@@ -132,7 +132,8 @@ proofShiftHead = refl
 %<*proofShiftTail>
 \begin{code}
 proofShiftTail : ∀ {ins} → tail (⟦ shift ⟧* ins) ≈ ins
-proofShiftTail = {!!}
+proofShiftTail {true ∷ xs} = {!!}
+proofShiftTail {false ∷ xs} = {!!}
 \end{code}
 %</proofShiftTail>
 

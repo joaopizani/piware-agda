@@ -19,13 +19,13 @@ open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 %<*eval>
 \begin{code}
 ⟦_⟧ : ∀ {α i β j} → (c : ℂ α β {i} {j}) {p : comb c} → (α → β)
-⟦_⟧ (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c') = ⇑ ∘ ⟦ c' ⟧' ∘ ⇓
+⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧ {p} = ⇑ ∘ ⟦ c' ⟧' {p} ∘ ⇓
 \end{code}
 %</eval>
 
 %<*eval-seq>
 \begin{code}
 ⟦_⟧* : ∀ {α i β j} → ℂ α β {i} {j} → (Stream α → Stream β)
-⟦_⟧* (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c') = mapₛ ⇑ ∘ ⟦ c' ⟧*' ∘ mapₛ ⇓
+⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧* = mapₛ ⇑ ∘ ⟦ c' ⟧*' ∘ mapₛ ⇓
 \end{code}
 %</eval-seq>
