@@ -8,11 +8,12 @@ open import Data.Vec using (Vec)
 open import Function using (_∘_; _$_; id)
 open import Data.Product using (_×_; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_)
+open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≟_)
 open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+) renaming (zero to Fz; suc to Fs)
-open import Data.Nat.DivMod using (_divMod_; DivMod)
+open import Data.Nat.DivMod using (_divMod_; _mod_; DivMod)
 
 open import Relation.Nullary using (yes; no)
+open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; refl; cong)
 open PropEq.≡-Reasoning
 
@@ -31,7 +32,7 @@ private
   splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
   splitFin {n} {_} x with suc (toℕ x) ≤? n
   splitFin {_} {_} x | yes p  = inj₁ (fromℕ≤ p)
-  splitFin {n} {m} x | no  ¬p = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ ¬p)) 
+  splitFin {n} {m} x | no  ¬p = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ ¬p))
   \end{code}
   %</splitFin>
 
@@ -43,10 +44,26 @@ private
   \end{code}
   %</uniteFinSwap>
 
+  \begin{code}
+  import Algebra as A
+  import Data.Nat.Properties as NP
+  open import Data.Nat.Properties.Simple using (*-right-zero)
+  open import Algebra.Operations (A.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
+  open module CS = A.CommutativeSemiring NP.commutativeSemiring
+       using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
+  \end{code}
+
   %<*pSwap'>
   \begin{code}
+  pSwap'' : ∀ {n m} → ℂ' (n + m) (m + n)
+  pSwap'' {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
+  
   pSwap' : ∀ {n m} → ℂ' (n + m) (m + n)
-  pSwap' {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
+  pSwap' {n} {m} with n + m ≟ 0
+  pSwap' {n} {m} | yes _ rewrite +-comm n m = Plug id
+  pSwap' {n} {m} | no ¬p = Plug (finSwap {fromWitnessFalse ¬p})
+      where finSwap : {¬ze : False (n + m ≟ 0) } → Fin (m + n) → Fin (n + m)
+            finSwap {¬ze} x = _mod_ (toℕ x + m) (n + m) {¬ze}
   \end{code}
   %</pSwap'>
 
@@ -58,15 +75,6 @@ private
   %</pid'>
 
   -- associativity plugs
-  \begin{code}
-  import Algebra as A
-  import Data.Nat.Properties as NP
-  open import Data.Nat.Properties.Simple using (*-right-zero)
-  open import Algebra.Operations (A.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
-  open module CS = A.CommutativeSemiring NP.commutativeSemiring
-       using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
-  \end{code}
-
   %<*pALR'>
   \begin{code}
   pALR' : ∀ {w v y} → ℂ' ((w + v) + y) (w + (v + y))

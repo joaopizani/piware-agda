@@ -14,7 +14,7 @@ open import Data.List using (List; []; _∷_; map)
 open import Data.List.NonEmpty using (List⁺) renaming (map to map⁺)
 open import Data.CausalStream using (Γᶜ; _⇒ᶜ_; tails⁺)
 open import PiWare.Utils using (unzip⁺; splitAt'; splitAt⁺)
-open import Data.Vec using (Vec; _++_; splitAt; lookup; replicate; allFin)
+open import Data.Vec using (Vec; _++_; lookup; replicate; allFin; drop)
                      renaming ([] to ε; _∷_ to _◁_; take to takeᵥ; map to mapᵥ)
 
 open import Relation.Binary.PropositionalEquality using (refl)
@@ -60,8 +60,7 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
   where
     delay' : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i → List (W i) → W (o + l)
     delay' {_} {_} c {p} w⁰ [] = ⟦ c ⟧' {p} (w⁰ ++ replicate (n→atom Fz))
-    delay' {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) with splitAt o (delay' {_} {o} c {p} w⁻¹ w⁻)
-    delay' {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) | _ , b⁻¹ , _ = ⟦ c ⟧' {p} (w⁰ ++ b⁻¹)
+    delay' {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) = ⟦ c ⟧' {p} (w⁰ ++ drop o (delay' {_} {o} c {p} w⁻¹ w⁻))
 \end{code}
 %</delay>
 -- HERE, (⟦ c ⟧' {p} (w⁰ ++ b⁻¹)), in the time difference between w⁰ and b⁻¹, resides the delay!
