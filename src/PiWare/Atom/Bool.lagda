@@ -15,9 +15,7 @@ open import PiWare.Atom using (Atomic)
 private
 \end{code}
   \begin{code}
-  |B|-1 : ℕ
   |B|-1 = 1
-  
   |B| = suc |B|-1
   \end{code}
 

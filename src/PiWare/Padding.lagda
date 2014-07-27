@@ -26,18 +26,18 @@ zero     ⊔' zero    = max₁ refl z≤n
 zero     ⊔' (suc _) = max₂ refl z≤n
 (suc _)  ⊔' zero    = max₁ refl z≤n
 (suc a') ⊔' (suc b') with a' ⊔' b'
-(suc a') ⊔' (suc b') | max₁ m le = max₁ (cong suc m) (s≤s le)
-(suc a') ⊔' (suc b') | max₂ m le = max₂ (cong suc m) (s≤s le)
+(suc a') ⊔' (suc b') | max₁ a⊔b≡a b≤a = max₁ (cong suc a⊔b≡a) (s≤s b≤a)
+(suc a') ⊔' (suc b') | max₂ a⊔b≡b a≤b = max₂ (cong suc a⊔b≡b) (s≤s a≤b)
 \end{code}
 %</maxView>
 
--- Given an less-than-or-equal proof between two naturals, give the equality proof for the difference (δ)
+-- Given a ≤ relation between two naturals, return the (proven) difference (δ)
 %<*getDelta>
 \begin{code}
-getδ : ∀ {x y} → x ≤ y → ∃ (λ δ → y ≡ x + δ)
-getδ z≤n = _ , refl
-getδ (s≤s le) with getδ le
-... | δ , eq = δ , cong suc eq
+getδ : ∀ {x y} → x ≤ y → ∃ λ δ → y ≡ x + δ
+getδ z≤n                   = _ , refl
+getδ (s≤s z≤w) with getδ z≤w
+getδ (s≤s z≤w) | δ , w≡z+δ = δ , cong suc w≡z+δ
 \end{code}
 %</getDelta>
 
@@ -46,9 +46,9 @@ getδ (s≤s le) with getδ le
 \begin{code}
 padFst : {α : Set} (x y : ℕ) → α → Vec α x → Vec α (x ⊔ y)
 padFst x y e v with x ⊔' y
-... | max₁ m le rewrite m = v
-... | max₂ m le rewrite m with getδ le
-...                       | δ , eq rewrite eq = v ++ replicate e
+... | max₁ x⊔y≡x y≤x rewrite x⊔y≡x = v
+... | max₂ x⊔y≡y x≤y rewrite x⊔y≡y with getδ x≤y
+...     | δ , y≡x+δ rewrite y≡x+δ = v ++ replicate e
 \end{code}
 %</padFst>
 
@@ -56,9 +56,9 @@ padFst x y e v with x ⊔' y
 \begin{code}
 padSnd : {α : Set} (x y : ℕ) → α → Vec α y → Vec α (x ⊔ y)
 padSnd x y e v with x ⊔' y
-... | max₂ m le rewrite m = v
-... | max₁ m le rewrite m with getδ le
-...                       | δ , eq rewrite eq = v ++ replicate e
+... | max₂ x⊔y≡y x≤y rewrite x⊔y≡y = v
+... | max₁ x⊔y≡x y≤x rewrite x⊔y≡x with getδ y≤x
+...     | δ , x≡y+δ rewrite x≡y+δ = v ++ replicate e
 \end{code}
 %</padSnd>
 
@@ -66,9 +66,9 @@ padSnd x y e v with x ⊔' y
 \begin{code}
 unpadFst : {α : Set} (x y : ℕ) → Vec α (x ⊔ y) → Vec α x
 unpadFst x y v with x ⊔' y
-unpadFst x y v | max₁ m le rewrite m = v
-unpadFst x y v | max₂ m le rewrite m with getδ le
-...                                  | _ , eq rewrite eq = take x v
+unpadFst x y v | max₁ x⊔y≡x y≤x rewrite x⊔y≡x = v
+unpadFst x y v | max₂ x⊔y≡y x≤y rewrite x⊔y≡y with getδ x≤y
+...                | _ , y≡x+δ rewrite y≡x+δ = take x v
 \end{code}
 %</unpadFst>
 
@@ -76,8 +76,8 @@ unpadFst x y v | max₂ m le rewrite m with getδ le
 \begin{code}
 unpadSnd : {α : Set} (x y : ℕ) → Vec α (x ⊔ y) → Vec α y
 unpadSnd x y v with x ⊔' y
-unpadSnd x y v | max₂ m le rewrite m = v
-unpadSnd x y v | max₁ m le rewrite m with getδ le
-...                                  | _ , eq rewrite eq = take y v
+unpadSnd x y v | max₂ x⊔y≡y x≤y rewrite x⊔y≡y = v
+unpadSnd x y v | max₁ x⊔y≡x y≤x rewrite x⊔y≡x with getδ y≤x
+...                | _ , x≡y+δ rewrite x≡y+δ = take y v
 \end{code}
 %</unpadSnd>

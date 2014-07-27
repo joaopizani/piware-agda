@@ -18,14 +18,14 @@ open import Relation.Nullary.Negation using (contradiction)
 \begin{code}
 unzip : ∀ {ℓ₁ ℓ₂} → {α : Set ℓ₁} {β : Set ℓ₂} → List (α × β) → List α × List β
 unzip []             = [] , []
-unzip ((a , b) ∷ xs) = let (as , bs) = unzip xs in (a ∷ as , b ∷ bs)
+unzip ((x , y) ∷ zs) = let (xs , ys) = unzip zs in (x ∷ xs , y ∷ ys)
 \end{code}
 %</unzip>
 
 %<*unzip-nonempty>
 \begin{code}
 unzip⁺ : ∀ {ℓ₁ ℓ₂} → {α : Set ℓ₁} {β : Set ℓ₂} → List⁺ (α × β) → List⁺ α × List⁺ β
-unzip⁺ ((a , b) ∷ xs) = let (as , bs) = unzip xs in (a ∷ as , b ∷ bs)
+unzip⁺ ((x , y) ∷ zs) = let (xs , ys) = unzip zs in (x ∷ xs , y ∷ ys)
 \end{code}
 %</unzip-nonempty>
 
@@ -51,11 +51,11 @@ segregateSums = < gfilter isInj₁ , gfilter isInj₂ >
 \end{code}
 %</segregateSums>
 
-%<*notLEQtoGEQ>
+%<*notLTtoGEQ>
 \begin{code}
-notLEQtoGEQ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
-notLEQtoGEQ {_}     {zero}  _  = z≤n
-notLEQtoGEQ {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
-notLEQtoGEQ {suc n} {suc m} ¬p = s≤s $ notLEQtoGEQ (¬p ∘ s≤s)
+¬<→≥ : {n m : ℕ} → ¬ (suc n ≤ m) → (n ≥ m)
+¬<→≥ {_}     {zero}  _  = z≤n
+¬<→≥ {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
+¬<→≥ {suc n} {suc m} ¬p = s≤s $ ¬<→≥ (¬p ∘ s≤s)
 \end{code}
-%</notLEQtoGEQ>
+%</notLTtoGEQ>

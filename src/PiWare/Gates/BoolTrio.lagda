@@ -9,7 +9,7 @@ open import Data.Bool using (false; true; not; _∧_; _∨_)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B using (W)
-open import PiWare.Gates Atomic-B
+open import PiWare.Gates Atomic-B using (Gates)
 \end{code}
 
 

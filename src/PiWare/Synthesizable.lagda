@@ -101,7 +101,6 @@ instance
 \end{code}
 %</Synth-Vec>
 
--- TODO: guarantee that n₁ and n₂ are different?
 %<*Synth-Sum>
 \begin{code}
   ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}

@@ -28,7 +28,6 @@ data ℂ' where
     Gate : (g# : Gates#) → ℂ' (ins g#) (outs g#)
     DelayLoop : {i o l : ℕ} (c : ℂ' (i + l) (o + l)) {p : comb' c} → ℂ' i o
 
-    -- Structure-related
     Plug : {i o : ℕ} → (f : Fin o → Fin i) → ℂ' i o
     _⟫'_ : {i m o : ℕ} → ℂ' i m → ℂ' m o → ℂ' i o
     _|'_ : {i₁ o₁ i₂ o₂ : ℕ} → ℂ' i₁ o₁ → ℂ' i₂ o₂ → ℂ' (i₁ + i₂) (o₁ + o₂)
