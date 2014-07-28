@@ -12,13 +12,11 @@ open import Relation.Binary.PropositionalEquality using (_≡_)
 \begin{code}
 record Atomic : Set₁ where
     field
-        -- primitives
         Atom     : Set
         |Atom|-1 : ℕ
         n→atom   : Fin (suc |Atom|-1) → Atom
         atom→n   : Atom → Fin (suc |Atom|-1)
 
-        -- bijective enumeration proofs
         inv-left  : ∀ i → atom→n (n→atom i) ≡ i
         inv-right : ∀ a → n→atom (atom→n a) ≡ a
 

@@ -51,17 +51,19 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; delayℂ; _⟫_; _||_)
 \end{code}
 %</xor>
 
+-- a × b → c × s
 %<*hadd>
 \begin{code}
-hadd : ℂ (B × B) (B × B)  -- a × b → c × s
+hadd : ℂ (B × B) (B × B)
 hadd =   pFork×
        ⟫ ∧ℂ || ⊻ℂ
 \end{code}
 %</hadd>
 
+-- (a × b) × cin → co × s
 %<*fadd>
 \begin{code}
-fadd : ℂ ((B × B) × B) (B × B)  -- (a × b) × cin → co × s
+fadd : ℂ ((B × B) × B) (B × B)
 fadd =   hadd || pid
        ⟫    pALR
        ⟫ pid  || hadd

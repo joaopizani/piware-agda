@@ -16,14 +16,12 @@ open import PiWare.Gates Atomic-B using (Gates)
 \begin{code}
 private
 \end{code}
-  %<*size>
+  %<*cardinality>
   \begin{code}
-  |BoolTrio|-1 : ℕ
   |BoolTrio|-1 = 4
-  
   |BoolTrio| = suc |BoolTrio|-1
   \end{code}
-  %</size>
+  %</cardinality>
 
   %<*pattern-synonyms>
   \begin{code}

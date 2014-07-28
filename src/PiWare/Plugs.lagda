@@ -97,7 +97,7 @@ private
   %<*twiceSuc>
   \begin{code}
   twiceSuc : ∀ n w → w + (n + suc n) * w ≡ w + n * w + (w + n * w)
-  twiceSuc = solve 2 eq refl  -- ring solver creates the equality proof
+  twiceSuc = solve 2 eq refl
       where eq = λ n w →  w :+ (n :+ (con 1 :+ n)) :* w  :=  w :+ n :* w :+ (w :+ n :* w)
   \end{code}
   %</twiceSuc>
