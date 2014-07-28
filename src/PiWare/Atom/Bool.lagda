@@ -14,10 +14,12 @@ open import PiWare.Atom using (Atomic)
 \begin{code}
 private
 \end{code}
+  %<*cardinality>
   \begin{code}
   |B|-1 = 1
   |B| = suc |B|-1
   \end{code}
+  %</cardinality>
 
   %<*pattern-synonyms>
   \begin{code}
