@@ -9,7 +9,7 @@ open import Function using (_∘_; _$_; id)
 open import Data.Product using (_×_; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≟_)
-open import Data.Fin using (Fin; toℕ; fromℕ≤; reduce≥; raise; inject+) renaming (zero to Fz; suc to Fs)
+open import Data.Fin using (Fin; toℕ; raise; inject+) renaming (zero to Fz; suc to Fs)
 open import Data.Nat.DivMod using (_divMod_; _mod_; DivMod)
 
 open import Relation.Nullary using (yes; no)
@@ -17,7 +17,6 @@ open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; refl; cong)
 open PropEq.≡-Reasoning
 
-open import PiWare.Utils using (notLEQtoGEQ)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
 open import PiWare.Circuit.Core Gt using (ℂ'; Plug; Nil; _⟫'_; _|'_)
 open import PiWare.Circuit Gt using (ℂ; Mkℂ)
@@ -27,23 +26,6 @@ open import PiWare.Circuit Gt using (ℂ; Mkℂ)
 \begin{code}
 private
 \end{code}
-  %<*splitFin>
-  \begin{code}
-  splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
-  splitFin {n} {_} x with suc (toℕ x) ≤? n
-  splitFin {_} {_} x | yes p  = inj₁ (fromℕ≤ p)
-  splitFin {n} {m} x | no  ¬p = inj₂ (reduce≥ {n} {m} x (notLEQtoGEQ ¬p))
-  \end{code}
-  %</splitFin>
-
-  %<*uniteFinSwap>
-  \begin{code}
-  uniteFinSwap : ∀ {n m} → Fin n ⊎ Fin m → Fin (m + n)
-  uniteFinSwap {_} {m} (inj₁ x) = raise   m x
-  uniteFinSwap {n} {_} (inj₂ y) = inject+ n y
-  \end{code}
-  %</uniteFinSwap>
-
   \begin{code}
   import Algebra as A
   import Data.Nat.Properties as NP
@@ -55,9 +37,6 @@ private
 
   %<*pSwap'>
   \begin{code}
-  pSwap'' : ∀ {n m} → ℂ' (n + m) (m + n)
-  pSwap'' {n} {m} = Plug (uniteFinSwap ∘ splitFin {m} {n})
-  
   pSwap' : ∀ {n m} → ℂ' (n + m) (m + n)
   pSwap' {n} {m} with n + m ≟ 0
   pSwap' {n} {m} | yes _ rewrite +-comm n m = Plug id

@@ -15,9 +15,9 @@ open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio; FalseConst#; TrueConst#; Not#; And#; Or#)
-open import PiWare.Plugs BoolTrio
-open import PiWare.Circuit.Core BoolTrio
-open import PiWare.Circuit BoolTrio
+open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL; pFst; pSnd; pSwap)
+open import PiWare.Circuit.Core BoolTrio using (Gate)
+open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; delayℂ; _⟫_; _||_)
 \end{code}
 
 %<*fundamentals>
