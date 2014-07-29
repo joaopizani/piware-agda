@@ -103,7 +103,8 @@ instance
 
 %<*Synth-Sum>
 \begin{code}
-  ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
+  ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m}
+        → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
   ⇓W⇑-⊎ {α} {i} {β} {j} n m p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : α ⊎ β → W (suc (i ⊔ j))
             down = [ (λ a → (n→atom n) ◁ padFst i j (n→atom p) (⇓ a))

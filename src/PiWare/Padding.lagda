@@ -26,8 +26,8 @@ zero     ⊔' zero    = max₁ refl z≤n
 zero     ⊔' (suc _) = max₂ refl z≤n
 (suc _)  ⊔' zero    = max₁ refl z≤n
 (suc a') ⊔' (suc b') with a' ⊔' b'
-(suc a') ⊔' (suc b') | max₁ a⊔b≡a b≤a = max₁ (cong suc a⊔b≡a) (s≤s b≤a)
-(suc a') ⊔' (suc b') | max₂ a⊔b≡b a≤b = max₂ (cong suc a⊔b≡b) (s≤s a≤b)
+... | max₁ a⊔b≡a b≤a = max₁ (cong suc a⊔b≡a) (s≤s b≤a)
+... | max₂ a⊔b≡b a≤b = max₂ (cong suc a⊔b≡b) (s≤s a≤b)
 \end{code}
 %</maxView>
 
@@ -35,9 +35,9 @@ zero     ⊔' (suc _) = max₂ refl z≤n
 %<*getDelta>
 \begin{code}
 getδ : ∀ {x y} → x ≤ y → ∃ λ δ → y ≡ x + δ
-getδ z≤n                   = _ , refl
+getδ z≤n                    = _ , refl
 getδ (s≤s z≤w) with getδ z≤w
-getδ (s≤s z≤w) | δ , w≡z+δ = δ , cong suc w≡z+δ
+getδ (s≤s z≤w) | δ , w≡z+δ  = δ , cong suc w≡z+δ
 \end{code}
 %</getDelta>
 

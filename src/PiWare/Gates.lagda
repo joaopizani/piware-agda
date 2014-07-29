@@ -14,11 +14,11 @@ open import PiWare.Synthesizable At using (W)
 \begin{code}
 record Gates : Set where
     field
-        |Gates|-1 : ℕ
-        ins outs  : Fin (suc |Gates|-1) → ℕ
-        spec      : (g : Fin (suc |Gates|-1)) → (W (ins g) → W (outs g))
+        |Gates|-1  : ℕ
+        ins outs   : Fin (suc |Gates|-1) → ℕ
+        spec       : (g : Fin (suc |Gates|-1)) → (W (ins g) → W (outs g))
 
-    |Gates| = suc |Gates|-1
-    Gates#  = Fin |Gates|
+    |Gates|  = suc |Gates|-1
+    Gates#   = Fin |Gates|
 \end{code}
 %</Gates>

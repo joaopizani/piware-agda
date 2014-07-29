@@ -29,7 +29,9 @@ _⇒ᶜ_ : (α β : Set) → Set
 tails⁺ : ∀ {α} → Γᶜ α → List⁺ (List⁺ α)
 tails⁺ {α} = uncurry′ tails⁺'
     where tails⁺' : α → List α → List⁺ (List⁺ α)
-          tails⁺' x₀ []        = [ x₀ , [] ]⁺
-          tails⁺' x₀ (x₁ ∷ xs) = let (t₁ , ts) = tails⁺' x₁ xs  in  (x₀ , x₁ ∷ xs) , (t₁ ∷ ts)
+          tails⁺' x₀ [] = [ x₀ , [] ]⁺
+          tails⁺' x₀ (x₁ ∷ xs) =
+              let (t₁ , ts) = tails⁺' x₁ xs
+              in (x₀ , x₁ ∷ xs) , (t₁ ∷ ts)
 \end{code}
 %</tails-nonempty>
