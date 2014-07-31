@@ -21,7 +21,7 @@ open import PiWare.Samples.BoolTrio using (fadd)
 cin × a × b → s × cout
 %<*ripple>
 \begin{code}
-ripple : (n : ℕ) →  let W = Vec B n  in  ℂ (B × W × W) (W × B)
+ripple : (n : ℕ) → let W = Vec B n in ℂ (B × W × W) (W × B)
 ripple zero    = pid || pFst ⟫ pSwap
 ripple (suc m) =
       pid   || (pUncons || pUncons ⟫ pIntertwine)

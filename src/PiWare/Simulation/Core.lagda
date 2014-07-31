@@ -40,13 +40,19 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 %<*eval-core>
 \begin{code}
 ⟦_⟧' : {i o : ℕ} → (c : ℂ' i o) {p : comb' c} → (W i → W o)
-⟦ Nil ⟧' = const ε
-⟦ Gate g#  ⟧' = spec g#
-⟦ Plug p   ⟧' = plugOutputs p
-⟦ c₁ ⟫' c₂ ⟧' {p₁ , p₂} = ⟦ c₂ ⟧' {p₂} ∘ ⟦ c₁ ⟧' {p₁}
-⟦ _|'_  {i₁} c₁ c₂ ⟧' {p₁ , p₂} = uncurry′ _++_ ∘ mapₚ (⟦ c₁ ⟧' {p₁}) (⟦ c₂ ⟧' {p₂}) ∘ splitAt' i₁
-⟦ _|+'_ {i₁} c₁ c₂ ⟧' {p₁ , p₂} = [ ⟦ c₁ ⟧' {p₁} , ⟦ c₂ ⟧' {p₂} ]′ ∘ untag {i₁}
+⟦ Nil      ⟧'  = const ε
+⟦ Gate g#  ⟧'  = spec g#
+⟦ Plug p   ⟧'  = plugOutputs p
+
 ⟦ DelayLoop c ⟧' {()} v
+
+⟦ c₁ ⟫' c₂ ⟧' {p₁ , p₂} = ⟦ c₂ ⟧' {p₂} ∘ ⟦ c₁ ⟧' {p₁}
+
+⟦ _|'_  {i₁} c₁ c₂ ⟧' {p₁ , p₂} =
+    uncurry′ _++_ ∘ mapₚ (⟦ c₁ ⟧' {p₁}) (⟦ c₂ ⟧' {p₂}) ∘ splitAt' i₁
+
+⟦ _|+'_ {i₁} c₁ c₂ ⟧' {p₁ , p₂} =
+    [ ⟦ c₁ ⟧' {p₁} , ⟦ c₂ ⟧' {p₂} ]′ ∘ untag {i₁}
 \end{code}
 %</eval-core>
 
@@ -58,9 +64,11 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 delay : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i ⇒ᶜ W (o + l)
 delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
   where
-    delay' : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i → List (W i) → W (o + l)
+    delay' : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c}
+           → W i → List (W i) → W (o + l)
     delay' {_} {_} c {p} w⁰ [] = ⟦ c ⟧' {p} (w⁰ ++ replicate (n→atom Fz))
-    delay' {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) = ⟦ c ⟧' {p} (w⁰ ++ drop o (delay' {_} {o} c {p} w⁻¹ w⁻))
+    delay' {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) =
+        ⟦ c ⟧' {p} (w⁰ ++ drop o (delay' {_} {o} c {p} w⁻¹ w⁻))
 \end{code}
 %</delay>
 -- HERE, (⟦ c ⟧' {p} (w⁰ ++ b⁻¹)), in the time difference between w⁰ and b⁻¹, resides the delay!
@@ -68,15 +76,19 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 %<*eval-causal>
 \begin{code}
 ⟦_⟧ᶜ : {i o : ℕ} → ℂ' i o → (W i ⇒ᶜ W o)
-⟦ Nil     ⟧ᶜ (w⁰ , _) = ⟦ Nil ⟧' w⁰
-⟦ Gate g# ⟧ᶜ (w⁰ , _) = ⟦ Gate g# ⟧' w⁰
-⟦ Plug p  ⟧ᶜ (w⁰ , _) = plugOutputs p w⁰
-⟦ DelayLoop {o = j} c {p} ⟧ᶜ = takeᵥ j ∘ delay {o = j} c {p}
+⟦ Nil                      ⟧ᶜ  (w⁰ , _) = ⟦ Nil ⟧' w⁰
+⟦ Gate g#                  ⟧ᶜ  (w⁰ , _) = ⟦ Gate g# ⟧' w⁰
+⟦ Plug p                   ⟧ᶜ  (w⁰ , _) = plugOutputs p w⁰
+⟦ DelayLoop {o = j} c {p}  ⟧ᶜ = takeᵥ j ∘ delay {o = j} c {p}
+
 ⟦ c₁ ⟫' c₂ ⟧ᶜ = ⟦ c₂ ⟧ᶜ ∘ map⁺ ⟦ c₁ ⟧ᶜ ∘ tails⁺
-⟦ _|'_ {i₁} c₁ c₂ ⟧ᶜ = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘ unzip⁺ ∘ splitAt⁺ i₁
+
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) with untag {i₁} w⁰ | untagList {i₁} w⁻
 ... | inj₁ w⁰₁ | w⁻₁ , _   = ⟦ c₁ ⟧ᶜ (w⁰₁ , w⁻₁)
 ... | inj₂ w⁰₂ | _   , w⁻₂ = ⟦ c₂ ⟧ᶜ (w⁰₂ , w⁻₂)
+
+⟦ _|'_ {i₁} c₁ c₂ ⟧ᶜ =
+    uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘ unzip⁺ ∘ splitAt⁺ i₁
 \end{code}
 %</eval-causal>
 
@@ -85,7 +97,8 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 runᶜ : ∀ {α β} → (α ⇒ᶜ β) → (Stream α → Stream β)
 runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺)
     where runᶜ' : ∀ {α β} → (α ⇒ᶜ β) → (Γᶜ α × Stream α) → Stream β
-          runᶜ' f ((x⁰ , x⁻) , (x¹ ∷ x⁺)) = f (x⁰ , x⁻) ∷ ♯ runᶜ' f ((x¹ , x⁰ ∷ x⁻) , ♭ x⁺)
+          runᶜ' f ((x⁰ , x⁻) , (x¹ ∷ x⁺)) =
+              f (x⁰ , x⁻) ∷ ♯ runᶜ' f ((x¹ , x⁰ ∷ x⁻) , ♭ x⁺)
 \end{code}
 %</run-causal>
 
