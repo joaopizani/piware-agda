@@ -7,6 +7,7 @@ all: bytecode tex
 
 bytecode: \
     $(TRGBYTECODE)/Data/CausalStream.agdai \
+	$(TRGBYTECODE)/PiWare/Utils.agdai \
 	$(TRGBYTECODE)/PiWare/Atom.agdai \
 	$(TRGBYTECODE)/PiWare/Atom/Bool.agdai \
 	$(TRGBYTECODE)/PiWare/Padding.agdai \
@@ -26,6 +27,7 @@ tex: \
 	$(TRGLATEX)/Report/ChapterIntroduction.tex \
 	$(TRGLATEX)/Report/ChapterBackground.tex \
 	$(TRGLATEX)/Data/CausalStream.tex \
+	$(TRGLATEX)/PiWare/Utils.tex \
 	$(TRGLATEX)/PiWare/Atom.tex \
 	$(TRGLATEX)/PiWare/Atom/Bool.tex \
 	$(TRGLATEX)/PiWare/Padding.tex \
