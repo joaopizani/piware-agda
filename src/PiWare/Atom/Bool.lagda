@@ -33,29 +33,21 @@ private
   \begin{code}
   n→B : Fin |B| → B
   n→B = λ { False# → false;  True# → true;  (Absurd# ()) }
-  \end{code}
-  %</nToBool>
   
-  %<*boolToN>
-  \begin{code}
   B→n : B → Fin |B|
   B→n = λ { false → False#;  true → True# }
   \end{code}
-  %</boolToN>
+  %</nToBool>
   
-  %<*inv-left-Bool>
+  %<*inv-Bool>
   \begin{code}
   inv-left-B : ∀ i → B→n (n→B i) ≡ i
   inv-left-B = λ { False# → refl;  True# → refl;  (Absurd# ()) }
-  \end{code}
-  %</inv-left-Bool>
 
-  %<*inv-right-Bool>
-  \begin{code}
   inv-right-B : ∀ b → n→B (B→n b) ≡ b
   inv-right-B = λ { false → refl;  true → refl }
   \end{code}
-  %</inv-right-Bool>
+  %</inv-Bool>
 
 
 %<*Atomic-Bool>
