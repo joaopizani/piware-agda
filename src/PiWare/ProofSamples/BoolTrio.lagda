@@ -4,7 +4,7 @@ module PiWare.ProofSamples.BoolTrio where
 open import Function using (_$_; _∘_)
 open import Data.Nat using (ℕ)
 open import Data.Unit using (tt)
-open import Data.Vec using () renaming ([] to ε; _∷_ to _◁_)
+open import Data.Vec using () renaming ([] to ε)
 open import Data.Product using (_×_; _,_) renaming (map to mapₚ)
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to B)
 

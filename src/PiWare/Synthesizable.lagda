@@ -9,7 +9,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (ℕ; suc; _+_; _*_; _≟_; _⊔_)
-open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
+open import Data.Vec using (Vec; _∷_; _++_; splitAt; _>>=_; group) renaming ([] to ε; map to mapᵥ)
 open import Data.List using (List) renaming (map to mapₗ)
 
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)
@@ -51,9 +51,9 @@ open ⇓W⇑ ⦃ ... ⦄
 %<*untag>
 \begin{code}
 untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
-untag {i} {j} (t ◁ ab) with toℕ (atom→n t) ≟ 1
-untag {i} {j} (t ◁ ab) | yes _ = inj₂ (unpadSnd i j ab)
-untag {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFst i j ab)
+untag {i} {j} (t ∷ ab) with toℕ (atom→n t) ≟ 1
+untag {i} {j} (t ∷ ab) | yes _ = inj₂ (unpadSnd i j ab)
+untag {i} {j} (t ∷ ab) | no  _ = inj₁ (unpadFst i j ab)
 \end{code}
 %</untag>
 
@@ -107,8 +107,8 @@ instance
         → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
   ⇓W⇑-⊎ {α} {i} {β} {j} n m p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : α ⊎ β → W (suc (i ⊔ j))
-            down = [ (λ a → (n→atom n) ◁ padFst i j (n→atom p) (⇓ a))
-                   , (λ b → (n→atom m) ◁ padSnd i j (n→atom p) (⇓ b)) ]
+            down = [ (λ a → (n→atom n) ∷ padFst i j (n→atom p) (⇓ a))
+                   , (λ b → (n→atom m) ∷ padSnd i j (n→atom p) (⇓ b)) ]
             
             up : W (suc (i ⊔ j)) → α ⊎ β
             up = map⊎ ⇑ ⇑ ∘ untag

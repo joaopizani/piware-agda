@@ -15,7 +15,7 @@ open import Data.List.NonEmpty using (List⁺) renaming (map to map⁺)
 open import Data.CausalStream using (Γᶜ; _⇒ᶜ_; tails⁺)
 open import PiWare.Utils using (unzip⁺; splitAt'; splitAt⁺)
 open import Data.Vec using (Vec; _++_; lookup; replicate; allFin; drop)
-                     renaming ([] to ε; _∷_ to _◁_; take to takeᵥ; map to mapᵥ)
+                     renaming ([] to ε; take to takeᵥ; map to mapᵥ)
 
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Coinduction using (♯_; ♭)
