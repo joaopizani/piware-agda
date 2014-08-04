@@ -39,12 +39,10 @@ record ⇓W⇑ (α : Set) {i : ℕ} : Set where
     field
         ⇓ : α → W i
         ⇑ : W i → α
-\end{code}
-%</Synth>
 
-\begin{code}
 open ⇓W⇑ ⦃ ... ⦄
 \end{code}
+%</Synth>
 
 
 -- Sum-related tagging helpers
