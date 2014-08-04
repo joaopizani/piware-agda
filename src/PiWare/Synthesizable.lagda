@@ -78,12 +78,12 @@ instance
 \begin{code}
   ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
   ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
-      where down : (α × β) → W (i + j)
-            down (a , b) = (⇓ a) ++ (⇓ b)
-  
-            up : W (i + j) → (α × β)
-            up w with splitAt i w
-            up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
+      where  down : (α × β) → W (i + j)
+             down (a , b) = (⇓ a) ++ (⇓ b)
+             
+             up : W (i + j) → (α × β)
+             up w with splitAt i w
+             up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
 \end{code}
 %</Synth-Product>
 
@@ -91,11 +91,11 @@ instance
 \begin{code}
   ⇓W⇑-Vec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
   ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
-      where down : Vec α n → W (n * i)
-            down v = v >>= ⇓
-  
-            up : W (n * i) → Vec α n
-            up w = mapᵥ ⇑ (proj₁ $ group n i w)
+      where  down : Vec α n → W (n * i)
+             down v = v >>= ⇓
+             
+             up : W (n * i) → Vec α n
+             up w = mapᵥ ⇑ (proj₁ $ group n i w)
 \end{code}
 %</Synth-Vec>
 
@@ -104,11 +104,11 @@ instance
   ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m}
         → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
   ⇓W⇑-⊎ {α} {i} {β} {j} n m p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
-      where down : α ⊎ β → W (suc (i ⊔ j))
-            down = [ (λ a → (n→atom n) ∷ padFst i j (n→atom p) (⇓ a))
-                   , (λ b → (n→atom m) ∷ padSnd i j (n→atom p) (⇓ b)) ]
-            
-            up : W (suc (i ⊔ j)) → α ⊎ β
-            up = map⊎ ⇑ ⇑ ∘ untag
+      where  down : α ⊎ β → W (suc (i ⊔ j))
+             down =  [ (λ a → (n→atom n) ∷ padFst i j (n→atom p) (⇓ a))
+                     , (λ b → (n→atom m) ∷ padSnd i j (n→atom p) (⇓ b)) ]
+             
+             up : W (suc (i ⊔ j)) → α ⊎ β
+             up = map⊎ ⇑ ⇑ ∘ untag
 \end{code}
 %</Synth-Sum>
