@@ -19,8 +19,10 @@ bytecode: \
 	$(TRGBYTECODE)/PiWare/Circuit.agdai \
 	$(TRGBYTECODE)/PiWare/Simulation/Core.agdai \
 	$(TRGBYTECODE)/PiWare/Simulation.agdai \
-	$(TRGBYTECODE)/PiWare/Samples/BoolTrio.agdai
-#$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrio.agdai \
+	$(TRGBYTECODE)/PiWare/Samples/BoolTrioComb.agdai \
+	$(TRGBYTECODE)/PiWare/Samples/BoolTrioSeq.agdai
+#$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioComb.agdai \
+#$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai \
 #$(TRGBYTECODE)/PiWare/Correctness.agdai
 
 tex: \
@@ -39,7 +41,8 @@ tex: \
 	$(TRGLATEX)/PiWare/Circuit.tex \
 	$(TRGLATEX)/PiWare/Simulation/Core.tex \
 	$(TRGLATEX)/PiWare/Simulation.tex \
-	$(TRGLATEX)/PiWare/Samples/BoolTrio.tex
+	$(TRGLATEX)/PiWare/Samples/BoolTrioComb.tex \
+	$(TRGLATEX)/PiWare/Samples/BoolTrioSeq.tex
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
