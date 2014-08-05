@@ -1,23 +1,10 @@
 \begin{code}
 module Report.ChapterBackground where
 
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Vec using (Vec; []; _∷_)
 \end{code}
 
-%<*Fin>
-\begin{code}
-data Fin : ℕ → Set where
-    zero : ∀ {n} → Fin (suc n)
-    suc  : ∀ {n} → Fin n → Fin (suc n)
-\end{code}
-%</Fin>
-
-\begin{code}
-toℕ : ∀ {n} → Fin n → ℕ
-toℕ zero    = 0
-toℕ (suc i) = suc (toℕ i)
-\end{code}
 
 %<*tail-decl>
 \begin{code}
@@ -42,14 +29,13 @@ record Σ (α : Set) (β : α → Set) : Set where
 
 %<*take-decl>
 \begin{code}
-take : {α : Set} {n : ℕ} (k : Fin (suc n)) → Vec α n → Vec α (toℕ k)
+take : {α : Set} {n : ℕ} (k : ℕ) → Vec α (k + n) → Vec α k
 \end{code}
 %</take-decl>
 %<*take-def>
 \begin{code}
-take zero     v = []
-take (suc ()) []
-take (suc k') (x ∷ xs) = x ∷ take k' xs
+take zero    _        = []
+take (suc k) (x ∷ xs) = x ∷ take k xs
 \end{code}
 %</take-def>
 
@@ -60,6 +46,13 @@ data _≤_ : ℕ → ℕ → Set where
     s≤s : {m n : ℕ} → m ≤ n → suc m ≤ suc n
 \end{code}
 %</nat-le>
+
+%<*le-two-four>
+\begin{code}
+twoLEQFour : 2 ≤ 4
+twoLEQFour = s≤s (s≤s z≤n)
+\end{code}
+%</le-two-four>
 
 %<*le-trans>
 \begin{code}
