@@ -14,12 +14,16 @@ open Gates At Gt using (Gates#; ins; outs)
 \end{code}
 
 
-%<*pre-decls>
+%<*Circuit-core-decl>
 \begin{code}
 data ℂ' : ℕ → ℕ → Set
+\end{code}
+%</Circuit-core-decl>
+%<*comb-core-decl>
+\begin{code}
 comb' : {i o : ℕ} → ℂ' i o → Set
 \end{code}
-%</pre-decls>
+%</comb-core-decl>
 
 %<*Circuit-core>
 \begin{code}
