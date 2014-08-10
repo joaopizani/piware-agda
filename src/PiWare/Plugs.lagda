@@ -18,7 +18,7 @@ open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; r
 open PropEq.≡-Reasoning
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
-open import PiWare.Circuit.Core Gt using (ℂ'; Plug; Nil; _⟫'_; _|'_)
+open import PiWare.Circuit.Core Gt using (ℂ'; Plug; _⟫'_; _|'_)
 open import PiWare.Circuit Gt using (ℂ; Mkℂ)
 \end{code}
 
@@ -167,12 +167,6 @@ private
   \end{code}
   %</pSnd'>
   
-  \begin{code}
-  pars' : ∀ {k m n} → ℂ' m n → ℂ' (k * m) (k * n)
-  pars' {zero}  c' = Nil
-  pars' {suc k} c' = c' |' pars' {k} c'
-  \end{code}
-
 
 -- identity
 %<*pid>
