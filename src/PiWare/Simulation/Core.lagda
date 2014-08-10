@@ -102,9 +102,13 @@ runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺)
 \end{code}
 %</run-causal>
 
-%<*eval-seq-core>
+%<*eval-seq-core-decl>
 \begin{code}
 ⟦_⟧*' : {i o : ℕ} → ℂ' i o → (Stream (W i) → Stream (W o))
+\end{code}
+%</eval-seq-core-decl>
+%<*eval-seq-core-def>
+\begin{code}
 ⟦_⟧*' = runᶜ ∘ ⟦_⟧ᶜ
 \end{code}
-%</eval-seq-core>
+%</eval-seq-core-def>
