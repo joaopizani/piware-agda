@@ -64,11 +64,9 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 delay : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i ⇒c W (o + l)
 delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
   where
-    delay' : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c}
-           → W i → List (W i) → W (o + l)
-    delay' {_} {_} c {p} w⁰ [] = ⟦ c ⟧' {p} (w⁰ ++ replicate (n→atom Fz))
-    delay' {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) =
-        ⟦ c ⟧' {p} (w⁰ ++ drop o (delay' {_} {o} c {p} w⁻¹ w⁻))
+    delay' : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i → List (W i) → W (o + l)
+    delay' {_} {_} c {p} w⁰ []          = ⟦ c ⟧' {p} (w⁰ ++ replicate (n→atom Fz))
+    delay' {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻)  = ⟦ c ⟧' {p} (w⁰ ++ drop o (delay' {_} {o} c {p} w⁻¹ w⁻))
 \end{code}
 %</delay>
 -- HERE, (⟦ c ⟧' {p} (w⁰ ++ b⁻¹)), in the time difference between w⁰ and b⁻¹, resides the delay!
