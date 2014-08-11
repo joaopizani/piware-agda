@@ -55,12 +55,16 @@ untag {i} {j} (t ∷ ab) | no  _ = inj₁ (unpadFst i j ab)
 \end{code}
 %</untag>
 
-%<*untagList>
+%<*untagList-decl>
 \begin{code}
 untagList : ∀ {i j} → List (W (suc (i ⊔ j))) → List (W i) × List (W j)
+\end{code}
+%</untagList-decl>
+%<*untagList-def>
+\begin{code}
 untagList = segregateSums ∘ mapₗ untag
 \end{code}
-%</untagList>
+%</untagList-def>
 
 
 -- basic instances
