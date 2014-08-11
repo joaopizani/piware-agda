@@ -43,6 +43,7 @@ tex: \
 	$(TRGLATEX)/PiWare/Simulation.tex \
 	$(TRGLATEX)/PiWare/Samples/BoolTrioComb.tex \
 	$(TRGLATEX)/PiWare/Samples/BoolTrioSeq.tex
+	patch -p0 < patches/PiWare.Simulation.Core.delay.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
