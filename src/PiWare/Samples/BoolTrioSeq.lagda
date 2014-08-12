@@ -14,7 +14,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; delayℂ; _⟫_; _||_)
 open import PiWare.Samples.BoolTrioComb using (⊥ℂ; ¬ℂ; ∨ℂ; mux2to1)
 \end{code}
 
-Sequential.  Out: cycle [true, false]...
+
 %<*shift>
 \begin{code}
 shift : ℂ B B
