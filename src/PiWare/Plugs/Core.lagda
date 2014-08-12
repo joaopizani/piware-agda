@@ -27,7 +27,7 @@ open module CS = A.CommutativeSemiring NP.commutativeSemiring
      using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
 \end{code}
 
-%<*pSwap'>
+%<*pSwap-core>
 \begin{code}
 pSwap' : ∀ {n m} → ℂ' (n + m) (m + n)
 pSwap' {n} {m} with n + m ≟ 0
@@ -36,35 +36,35 @@ pSwap' {n} {m} | no ¬p = Plug (finSwap {fromWitnessFalse ¬p})
   where finSwap : {¬ze : False (n + m ≟ 0) } → Fin (m + n) → Fin (n + m)
         finSwap {¬ze} x = _mod_ (toℕ x + m) (n + m) {¬ze}
 \end{code}
-%</pSwap'>
+%</pSwap-core>
 
-%<*pid'>
+%<*pid-core>
 \begin{code}
 pid' : ∀ {n} → ℂ' n n
 pid' = Plug id
 \end{code}
-%</pid'>
+%</pid-core>
 
 -- associativity plugs
-%<*pALR'>
+%<*pALR-core>
 \begin{code}
 pALR' : ∀ {w v y} → ℂ' ((w + v) + y) (w + (v + y))
 pALR' {w} {v} {y} = Plug p  where p : Fin (w + (v + y)) → Fin ((w + v) + y)
                                   p x rewrite +-assoc w v y = x
 \end{code}
-%</pALR'>
+%</pALR-core>
 
-%<*pARL'>
+%<*pARL-core>
 \begin{code}
 pARL' : ∀ {w v y : ℕ} → ℂ' (w + (v + y)) ((w + v) + y)
 pARL' {w} {v} {y} = Plug p
   where p : Fin ((w + v) + y) → Fin (w + (v + y))
         p x rewrite sym (+-assoc w v y) = x
 \end{code}
-%</pARL'>
+%</pARL-core>
 
 -- TODO: Substitute seq composition by simple Fin → Fin function
-%<*pIntertwine'>
+%<*pIntertwine-core>
 \begin{code}
 pIntertwine' : ∀ {a b c d} → ℂ' ((a + b) + (c + d)) ((a + c) + (b + d))
 pIntertwine' {a} {b} {c} {d} =
@@ -74,14 +74,14 @@ pIntertwine' {a} {b} {c} {d} =
     ⟫'  _|'_ {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
     ⟫'  pARL' {a} {c} {b + d}
 \end{code}
-%</pIntertwine'>
+%</pIntertwine-core>
 
-%<*pHead'>
+%<*pHead-core>
 \begin{code}
 pHead' : ∀ {n w} → ℂ' (suc n * w) w
 pHead' {n} {w} = Plug (inject+ (n * w))
 \end{code}
-%</pHead'>
+%</pHead-core>
 
 \begin{code}
 open NP.SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
@@ -95,12 +95,12 @@ twiceSuc = solve 2 eq refl where
 \end{code}
 %</twiceSuc>
 
-%<*pVecHalf'>
+%<*pVecHalf-core>
 \begin{code}
 pVecHalf' : ∀ {n w} → ℂ' ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
 pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
 \end{code}
-%</pVecHalf'>
+%</pVecHalf-core>
 
 %<*eqAdd>
 \begin{code}
@@ -130,31 +130,31 @@ pVecHalfPowEq (suc n) w = begin
 \end{code}
 %</pVecHalfPowEq>
 
-%<*pVecHalfPow'>
+%<*pVecHalfPow-core>
 \begin{code}
 pVecHalfPow' : ∀ {n w} → ℂ' ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
 pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
 \end{code}
-%</pVecHalfPow'>
+%</pVecHalfPow-core>
 
-%<*pFork'>
+%<*pFork-core>
 \begin{code}
 pFork' : ∀ {k n} → ℂ' n (k * n)
 pFork' {k} {zero}  rewrite *-right-zero k = pid'
 pFork' {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
 \end{code}
-%</pFork'>
+%</pFork-core>
 
-%<*pFst'>
+%<*pFst-core>
 \begin{code}
 pFst' : ∀ {m n} → ℂ' (m + n) m
 pFst' {m} {n} = Plug (inject+ n)
 \end{code}
-%</pFst'>
+%</pFst-core>
 
-%<*pSnd'>
+%<*pSnd-core>
 \begin{code}
 pSnd' : ∀ {m n} → ℂ' (m + n) n
 pSnd' {m} {n} = Plug (raise m)
 \end{code}
-%</pSnd'>
+%</pSnd-core>

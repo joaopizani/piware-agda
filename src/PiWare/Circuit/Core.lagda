@@ -54,23 +54,23 @@ comb' (c₁ |+' c₂)   = comb' c₁ × comb' c₂
 \end{code}
 %</comb-core>
 
-%<*lemma-comb-seq'>
+%<*lemma-comb-seq-core>
 \begin{code}
 _comb⟫'_ : {i m o : ℕ} {c₁' : ℂ' i m} {c₂' : ℂ' m o} → comb' c₁' → comb' c₂' → comb' (c₁' ⟫' c₂')
 _comb⟫'_ = _,_
 \end{code}
-%</lemma-comb-seq'>
+%</lemma-comb-seq-core>
 
-%<*lemma-comb-par'>
+%<*lemma-comb-par-core>
 \begin{code}
 _comb|'_ : {i₁ o₁ i₂ o₂ : ℕ} {c₁' : ℂ' i₁ o₁} {c₂' : ℂ' i₂ o₂} → comb' c₁' → comb' c₂' → comb' (c₁' |' c₂')
 _comb|'_ = _,_
 \end{code}
-%</lemma-comb-par'>
+%</lemma-comb-par-core>
 
-%<*lemma-comb-sum'>
+%<*lemma-comb-sum-core>
 \begin{code}
 _comb|+'_ : {i₁ i₂ o : ℕ} {c₁' : ℂ' i₁ o} {c₂' : ℂ' i₂ o} → comb' c₁' → comb' c₂' → comb' (c₁' |+' c₂')
 _comb|+'_ = _,_
 \end{code}
-%</lemma-comb-sum'>
+%</lemma-comb-sum-core>
