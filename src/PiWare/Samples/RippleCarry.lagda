@@ -11,10 +11,9 @@ open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio
-open import PiWare.Plugs BoolTrio
-
-open import PiWare.Samples.BoolTrio using (fadd)
+open import PiWare.Circuit BoolTrio using (ℂ; _⟫_; _||_)
+open import PiWare.Plugs BoolTrio using (pid; pFst; pSwap; pCons; pUncons; pIntertwine; pALR; pARL)
+open import PiWare.Samples.BoolTrioComb using (fadd)
 \end{code}
 
 
