@@ -22,12 +22,12 @@ bytecode: \
 	$(TRGBYTECODE)/PiWare/Simulation/Core.agdai \
 	$(TRGBYTECODE)/PiWare/Simulation.agdai \
 	$(TRGBYTECODE)/PiWare/Samples/BoolTrioComb.agdai \
-	$(TRGBYTECODE)/PiWare/Samples/BoolTrioSeq.agdai
+	$(TRGBYTECODE)/PiWare/Samples/BoolTrioSeq.agdai \
+	$(TRGBYTECODE)/PiWare/Patterns/Core.agdai \
+	$(TRGBYTECODE)/PiWare/Patterns.agdai
 #$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioComb.agdai \
 #$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai \
 #$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai \
-#$(TRGBYTECODE)/PiWare/Patterns/Core.agdai
-#$(TRGBYTECODE)/PiWare/Patterns.agdai
 
 tex: \
 	$(TRGLATEX)/Report/ChapterIntroduction.tex \
@@ -48,7 +48,9 @@ tex: \
 	$(TRGLATEX)/PiWare/Simulation/Core.tex \
 	$(TRGLATEX)/PiWare/Simulation.tex \
 	$(TRGLATEX)/PiWare/Samples/BoolTrioComb.tex \
-	$(TRGLATEX)/PiWare/Samples/BoolTrioSeq.tex
+	$(TRGLATEX)/PiWare/Samples/BoolTrioSeq.tex \
+	$(TRGLATEX)/PiWare/Patterns/Core.tex \
+	$(TRGLATEX)/PiWare/Patterns.tex
 	patch -p0 < patches/PiWare.Simulation.Core.delay.patch
 
 
