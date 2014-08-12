@@ -17,6 +17,8 @@ bytecode: \
 	$(TRGBYTECODE)/PiWare/Gates/BoolTrio.agdai \
 	$(TRGBYTECODE)/PiWare/Circuit/Core.agdai \
 	$(TRGBYTECODE)/PiWare/Circuit.agdai \
+	$(TRGBYTECODE)/PiWare/Plugs/Core.agdai \
+	$(TRGBYTECODE)/PiWare/Plugs.agdai \
 	$(TRGBYTECODE)/PiWare/Simulation/Core.agdai \
 	$(TRGBYTECODE)/PiWare/Simulation.agdai \
 	$(TRGBYTECODE)/PiWare/Samples/BoolTrioComb.agdai \
@@ -39,6 +41,8 @@ tex: \
 	$(TRGLATEX)/PiWare/Gates/BoolTrio.tex \
 	$(TRGLATEX)/PiWare/Circuit/Core.tex \
 	$(TRGLATEX)/PiWare/Circuit.tex \
+	$(TRGLATEX)/PiWare/Plugs/Core.tex \
+	$(TRGLATEX)/PiWare/Plugs.tex \
 	$(TRGLATEX)/PiWare/Simulation/Core.tex \
 	$(TRGLATEX)/PiWare/Simulation.tex \
 	$(TRGLATEX)/PiWare/Samples/BoolTrioComb.tex \

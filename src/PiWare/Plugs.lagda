@@ -4,164 +4,24 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Plugs {At : Atomic} (Gt : Gates At) where
 
+open import Function using (_$_)
+open import Data.Nat using (suc; _+_; _*_)
 open import Data.Vec using (Vec)
-open import Function using (_∘_; _$_; id)
 open import Data.Product using (_×_; proj₂)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Data.Nat using (ℕ; _+_; _*_; suc; zero; _≤?_; _≟_)
-open import Data.Fin using (Fin; toℕ; raise; inject+) renaming (zero to Fz; suc to Fs)
-open import Data.Nat.DivMod using (_divMod_; _mod_; DivMod)
 
-open import Relation.Nullary using (yes; no)
-open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
-open import Relation.Binary.PropositionalEquality as PropEq using (_≡_; sym; refl; cong)
-open PropEq.≡-Reasoning
+open import Algebra as A
+open import Data.Nat.Properties as NP
+open module CS = A.CommutativeSemiring NP.commutativeSemiring using (+-identity)
+open import Algebra.Operations (A.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
+open import Relation.Binary.PropositionalEquality using (cong; sym)
 
+open import PiWare.Circuit.Core Gt using (ℂ')
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
-open import PiWare.Circuit.Core Gt using (ℂ'; Plug; _⟫'_; _|'_)
 open import PiWare.Circuit Gt using (ℂ; Mkℂ)
+open import PiWare.Plugs.Core Gt
+    using (pid'; pSwap'; pIntertwine'; pALR'; pARL'; pHead'; pVecHalf'; pVecHalfPow'; pFork'; pFst'; pSnd')
 \end{code}
 
-
-\begin{code}
-private
-\end{code}
-  \begin{code}
-  import Algebra as A
-  import Data.Nat.Properties as NP
-  open import Data.Nat.Properties.Simple using (*-right-zero)
-  open import Algebra.Operations (A.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
-  open module CS = A.CommutativeSemiring NP.commutativeSemiring
-       using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
-  \end{code}
-
-  %<*pSwap'>
-  \begin{code}
-  pSwap' : ∀ {n m} → ℂ' (n + m) (m + n)
-  pSwap' {n} {m} with n + m ≟ 0
-  pSwap' {n} {m} | yes _ rewrite +-comm n m = Plug id
-  pSwap' {n} {m} | no ¬p = Plug (finSwap {fromWitnessFalse ¬p})
-      where finSwap : {¬ze : False (n + m ≟ 0) } → Fin (m + n) → Fin (n + m)
-            finSwap {¬ze} x = _mod_ (toℕ x + m) (n + m) {¬ze}
-  \end{code}
-  %</pSwap'>
-
-  %<*pid'>
-  \begin{code}
-  pid' : ∀ {n} → ℂ' n n
-  pid' = Plug id
-  \end{code}
-  %</pid'>
-
-  -- associativity plugs
-  %<*pALR'>
-  \begin{code}
-  pALR' : ∀ {w v y} → ℂ' ((w + v) + y) (w + (v + y))
-  pALR' {w} {v} {y} = Plug p  where p : Fin (w + (v + y)) → Fin ((w + v) + y)
-                                    p x rewrite +-assoc w v y = x
-  \end{code}
-  %</pALR'>
-
-  %<*pARL'>
-  \begin{code}
-  pARL' : ∀ {w v y : ℕ} → ℂ' (w + (v + y)) ((w + v) + y)
-  pARL' {w} {v} {y} = Plug p  where p : Fin ((w + v) + y) → Fin (w + (v + y))
-                                    p x rewrite sym (+-assoc w v y) = x
-  \end{code}
-  %</pARL'>
-
-  -- TODO: Substitute seq composition by simple Fin → Fin function
-  %<*pIntertwine'>
-  \begin{code}
-  pIntertwine' : ∀ {a b c d} → ℂ' ((a + b) + (c + d)) ((a + c) + (b + d))
-  pIntertwine' {a} {b} {c} {d} =
-          pALR' {a} {b} {c + d}
-      ⟫'  _|'_ {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
-      ⟫'  _|'_ {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
-      ⟫'  _|'_ {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
-      ⟫'  pARL' {a} {c} {b + d}
-  \end{code}
-  %</pIntertwine'>
-
-  %<*pHead'>
-  \begin{code}
-  pHead' : ∀ {n w} → ℂ' (suc n * w) w
-  pHead' {n} {w} = Plug (inject+ (n * w))
-  \end{code}
-  %</pHead'>
-
-  \begin{code}
-  open NP.SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
-  \end{code}
-
-  %<*twiceSuc>
-  \begin{code}
-  twiceSuc : ∀ n w → w + (n + suc n) * w ≡ w + n * w + (w + n * w)
-  twiceSuc = solve 2 eq refl
-      where eq = λ n w →  w :+ (n :+ (con 1 :+ n)) :* w  :=  w :+ n :* w :+ (w :+ n :* w)
-  \end{code}
-  %</twiceSuc>
-
-  %<*pVecHalf'>
-  \begin{code}
-  pVecHalf' : ∀ {n w} → ℂ' ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
-  pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
-  \end{code}
-  %</pVecHalf'>
-
-  %<*eqAdd>
-  \begin{code}
-  eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
-  eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
-  \end{code}
-  %</eqAdd>
-
-  %<*pVecHalfPowEq>
-  \begin{code}
-  pVecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
-  pVecHalfPowEq zero w rewrite (proj₂ +-identity) w = refl
-  pVecHalfPowEq (suc n) w = begin
-      2 ^ suc (suc n) * w                ≡⟨ refl ⟩
-      2 * 2 ^ suc n * w                  ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
-      2 * (2 ^ suc n * w)                ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
-      2 * (2 ^ n * w  +  2 ^ n * w)      ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
-      (2 ^ n * w + 2 ^ n * w) * 2        ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
-      2 ^ n * w * 2   +  2 ^ n * w * 2   ≡⟨ (let p = *-comm (2 ^ n * w) 2       in  eqAdd p p) ⟩
-      2 * (2 ^ n * w) +  2 * (2 ^ n * w) ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
-      2 * 2 ^ n * w   +  2 * 2 ^ n * w   ≡⟨ refl ⟩
-      2 ^ suc n * w   +  2 ^ suc n * w   ∎
-  \end{code}
-  %</pVecHalfPowEq>
-
-  %<*pVecHalfPow'>
-  \begin{code}
-  pVecHalfPow' : ∀ {n w} → ℂ' ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
-  pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
-  \end{code}
-  %</pVecHalfPow'>
-
-  %<*pFork'>
-  \begin{code}
-  pFork' : ∀ {k n} → ℂ' n (k * n)
-  pFork' {k} {zero}  rewrite *-right-zero k = pid'
-  pFork' {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
-  \end{code}
-  %</pFork'>
-
-  %<*pFst'>
-  \begin{code}
-  pFst' : ∀ {m n} → ℂ' (m + n) m
-  pFst' {m} {n} = Plug (inject+ n)
-  \end{code}
-  %</pFst'>
-
-  %<*pSnd'>
-  \begin{code}
-  pSnd' : ∀ {m n} → ℂ' (m + n) n
-  pSnd' {m} {n} = Plug (raise m)
-  \end{code}
-  %</pSnd'>
-  
 
 -- identity
 %<*pid>
@@ -223,7 +83,6 @@ pHead {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ �
 \end{code}
 %</pHead>
 
-
 %<*pUncons>
 \begin{code}
 pUncons : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
@@ -231,28 +90,12 @@ pUncons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ 
 \end{code}
 %</pUncons>
 
-%<*Synth-pUncons-in>
-\begin{code}
-⇓W⇑-pUncons-in : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α (suc n))
-⇓W⇑-pUncons-in {n = m} ⦃ sα ⦄ = ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄
-\end{code}
-%</Synth-pUncons-in>
-
-%<*Synth-pUncons-out>
-\begin{code}
-⇓W⇑-pUncons-out : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (α × Vec α n)
-⇓W⇑-pUncons-out {n = m} ⦃ sα ⦄ = ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄
-\end{code}
-%</Synth-pUncons-out>
-
-
 %<*pCons>
 \begin{code}
 pCons : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (α × Vec α n) (Vec α (suc n))
 pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ pid'
 \end{code}
 %</pCons>
-
 
 %<*pSingletonIn>
 \begin{code}
@@ -262,13 +105,6 @@ pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} ⦃
           c' rewrite (proj₂ +-identity) i = pid'
 \end{code}
 %</pSingletonIn>
-
-%<*Synth-pSingletonIn-out>
-\begin{code}
-⇓W⇑-pSingletonIn-out : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α 1)
-⇓W⇑-pSingletonIn-out ⦃ sα ⦄ = ⇓W⇑-Vec {n = 1} ⦃ sα ⦄
-\end{code}
-%</Synth-pSingletonIn-out>
 
 %<*pSingletonOut>
 \begin{code}
@@ -289,7 +125,6 @@ pVecHalf {_} {i} {m} ⦃ sα ⦄ =
         (pVecHalf' {m} {i})
 \end{code}
 %</pVecHalf>
-
 
 %<*pVecHalfPow>
 \begin{code}
