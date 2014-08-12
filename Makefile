@@ -25,7 +25,9 @@ bytecode: \
 	$(TRGBYTECODE)/PiWare/Samples/BoolTrioSeq.agdai
 #$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioComb.agdai \
 #$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai \
-#$(TRGBYTECODE)/PiWare/Correctness.agdai
+#$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai \
+#$(TRGBYTECODE)/PiWare/Patterns/Core.agdai
+#$(TRGBYTECODE)/PiWare/Patterns.agdai
 
 tex: \
 	$(TRGLATEX)/Report/ChapterIntroduction.tex \
