@@ -4,7 +4,9 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Patterns.Core {At : Atomic} (Gt : Gates At) where
 
+open import Function using (const; _∘_; _$_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Vec using (Vec; []; _∷_; replicate; foldr)
 import Algebra as A
 import Data.Nat.Properties as NP
 open module CS = A.CommutativeSemiring NP.commutativeSemiring using (+-comm)
@@ -15,25 +17,37 @@ open import PiWare.Plugs.Core Gt using (pid')
 
 
 Base case relies on the identity of _|'_:
-∀ c' : Nil |' c' ≡⟦⟧  c'  (where _≡⟦⟧_ means "have the same simulation semantics")
+∀ c' : Nil |' c' ≡⟦⟧  c'  (where _≡⟦⟧_ means "have same simulation semantics")
 %<*pars'>
 \begin{code}
-pars' : ∀ {k i o} → ℂ' i o → ℂ' (k * i) (k * o)
-pars' {zero}  _  = Nil
-pars' {suc k} c' = c' |' pars' {k} c'
+pars' : ∀ {k i o} → Vec (ℂ' i o) k → ℂ' (k * i) (k * o)
+pars' {_} {i} {o} = foldr (λ k → ℂ' (k * i) (k * o)) _|'_ Nil
 \end{code}
 %</pars'>
 
+%<*parsN'>
+\begin{code}
+parsN' : ∀ {k i o} → ℂ' i o → ℂ' (k * i) (k * o)
+parsN' {k} = pars' ∘ replicate {n = k}
+\end{code}
+%</parsN'>
+
 
 Base case relies on the identity of _⟫'_:
-∀ c' : pid' ⟫' c' ≡⟦⟧ c'  (where _≡⟦⟧_ means "have the same simulation semantics")
+∀ c' : pid' ⟫' c' ≡⟦⟧ c'  (where _≡⟦⟧_ means "have same simulation semantics")
 %<*seqs'>
 \begin{code}
-seqs' : (k : ℕ) {io : ℕ} → ℂ' io io → ℂ' io io
-seqs' zero     _  = pid'
-seqs' (suc k') c' = c' ⟫' seqs' k' c'
+seqs' : ∀ {k io} → Vec (ℂ' io io) k → ℂ' io io
+seqs' {_} {io} = foldr (const $ ℂ' io io) _⟫'_ pid'
 \end{code}
 %</seqs'>
+
+%<*seqsN'>
+\begin{code}
+seqsN' : (k : ℕ) {io : ℕ} → ℂ' io io → ℂ' io io
+seqsN' k = seqs' ∘ replicate {n = k}
+\end{code}
+%</seqsN'>
 
 
 %<*row'>
