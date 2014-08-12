@@ -24,9 +24,9 @@ bytecode: \
 	$(TRGBYTECODE)/PiWare/Samples/BoolTrioComb.agdai \
 	$(TRGBYTECODE)/PiWare/Samples/BoolTrioSeq.agdai \
 	$(TRGBYTECODE)/PiWare/Patterns/Core.agdai \
-	$(TRGBYTECODE)/PiWare/Patterns.agdai
+	$(TRGBYTECODE)/PiWare/Patterns.agdai \
+	$(TRGBYTECODE)/PiWare/Samples/RippleCarry.agdai
 #$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioComb.agdai \
-#$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai \
 #$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai \
 
 tex: \
@@ -50,7 +50,8 @@ tex: \
 	$(TRGLATEX)/PiWare/Samples/BoolTrioComb.tex \
 	$(TRGLATEX)/PiWare/Samples/BoolTrioSeq.tex \
 	$(TRGLATEX)/PiWare/Patterns/Core.tex \
-	$(TRGLATEX)/PiWare/Patterns.tex
+	$(TRGLATEX)/PiWare/Patterns.tex \
+	$(TRGLATEX)/PiWare/Samples/RippleCarry.tex
 	patch -p0 < patches/PiWare.Simulation.Core.delay.patch
 
 
