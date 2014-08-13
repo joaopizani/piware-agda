@@ -3,7 +3,8 @@ module PiWare.ProofSamples.BoolTrioComb where
 
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to B)
 open import Data.Product using (_×_; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Data.Vec using (Vec; _∷_) renaming ([] to ε)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
