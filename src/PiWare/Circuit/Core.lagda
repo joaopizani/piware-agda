@@ -10,7 +10,7 @@ open import Data.Product using (_×_; _,_)
 open import Data.Empty using (⊥)
 open import Data.Unit using (⊤)
 
-open Gates At Gt using (Gates#; ins; outs)
+open Gates At Gt using (Gates#; |in|; |out|)
 \end{code}
 
 
@@ -29,7 +29,7 @@ comb' : {i o : ℕ} → ℂ' i o → Set
 \begin{code}
 data ℂ' where
     Nil   : ℂ' zero zero
-    Gate  : (g# : Gates#)  → ℂ' (ins g#) (outs g#)
+    Gate  : (g# : Gates#)  → ℂ' (|in| g#) (|out| g#)
     Plug  : ∀ {i o}        → (f : Fin o → Fin i) → ℂ' i o
 
     DelayLoop : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → ℂ' i o
