@@ -36,20 +36,20 @@ private
 
   %<*ins-outs>
   \begin{code}
-  ins outs : Fin |BoolTrio| → ℕ
-  ins    = λ { FalseConst# → 0; TrueConst# → 0; Not# → 1; And# → 2; Or# → 2; (Absurd# ()) }
-  outs _ = 1
+  |in| |out| : Fin |BoolTrio| → ℕ
+  |in| = λ { FalseConst# → 0; TrueConst# → 0; Not# → 1; And# → 2; Or# → 2; (Absurd# ()) }
+  |out| _ = 1
   \end{code}
   %</ins-outs>
 
   %<*spec>
   \begin{code}
-  spec : (g : Fin |BoolTrio|) → (W (ins g) → W (outs g))
+  spec : (g : Fin |BoolTrio|) → (W (|in| g) → W (|out| g))
   spec FalseConst# = const [ false ]
   spec TrueConst#  = const [ true  ]
-  spec Not#        = λ { (x ◁ ε) → [ not x ] }
-  spec And#        = λ { (x ◁ y ◁ ε) → [ x ∧ y ] }
-  spec Or#         = λ { (x ◁ y ◁ ε) → [ x ∨ y ] }
+  spec Not#        = λ { (x ∷ ε)      → [ not x ] }
+  spec And#        = λ { (x ∷ y ∷ ε)  → [ x ∧ y ] }
+  spec Or#         = λ { (x ∷ y ∷ ε)  → [ x ∨ y ] }
   spec (Absurd# ())
   \end{code}
   %</spec>
@@ -59,8 +59,8 @@ private
 BoolTrio : Gates
 BoolTrio = record {
       |Gates|-1 = |BoolTrio|-1
-    ; ins       = ins
-    ; outs      = outs
+    ; |in|      = |in|
+    ; |out|     = |out|
     ; spec      = spec
     }
 \end{code}
