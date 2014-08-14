@@ -2,7 +2,7 @@
 module PiWare.Gates.BoolTrio where
 
 open import Function using (const)
-open import Data.Nat using (ℕ; suc)
+open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Vec using ([_]) renaming (_∷_ to _◁_)
 open import Data.Bool using (false; true; not; _∧_; _∨_)
@@ -18,8 +18,7 @@ private
 \end{code}
   %<*cardinality>
   \begin{code}
-  |BoolTrio|-1 = 4
-  |BoolTrio| = suc |BoolTrio|-1
+  |BoolTrio| = 5
   \end{code}
   %</cardinality>
 
@@ -58,10 +57,10 @@ private
 \begin{code}
 BoolTrio : Gates
 BoolTrio = record {
-      |Gates|-1 = |BoolTrio|-1
-    ; |in|      = |in|
-    ; |out|     = |out|
-    ; spec      = spec
+      |Gates| = |BoolTrio|
+    ; |in|    = |in|
+    ; |out|   = |out|
+    ; spec    = spec
     }
 \end{code}
 %</BoolTrio>
