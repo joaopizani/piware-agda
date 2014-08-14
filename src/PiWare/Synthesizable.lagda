@@ -9,7 +9,7 @@ open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (ℕ; suc; _+_; _*_; _≟_; _⊔_)
-open import Data.Vec using (Vec; _∷_; _++_; splitAt; _>>=_; group) renaming ([] to ε; map to mapᵥ)
+open import Data.Vec using (Vec; _∷_; _++_; splitAt; _>>=_; group; concat) renaming ([] to ε; map to mapᵥ)
 open import Data.List using (List) renaming (map to mapₗ)
 
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)
@@ -95,11 +95,14 @@ instance
 \begin{code}
   ⇓W⇑-Vec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
   ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
-      where  down : Vec α n → W (n * i)
-             down v = v >>= ⇓
+      where  group' : {α : Set} (n k : ℕ) → Vec α (n * k) → Vec (Vec α k) n
+             group' n k = proj₁ ∘ group n k
+
+             down : Vec α n → W (n * i)
+             down = concat ∘ mapᵥ ⇓
              
              up : W (n * i) → Vec α n
-             up w = mapᵥ ⇑ (proj₁ $ group n i w)
+             up = mapᵥ ⇑ ∘ group' n i
 \end{code}
 %</Synth-Vec>
 
