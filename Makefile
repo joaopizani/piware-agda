@@ -54,6 +54,7 @@ tex: \
 	$(TRGLATEX)/PiWare/Samples/RippleCarry.tex
 	patch -p0 < patches/PiWare.Simulation.Core.delay.patch
 	patch -p0 < patches/PiWare.Samples.RippleCarry.ripple.patch
+	patch -p0 < patches/PiWare.Circuit.par.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
