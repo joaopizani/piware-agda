@@ -12,21 +12,41 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 \end{code}
 
 
-%<*xorEquiv>
+%<*xor-spec-table>
 \begin{code}
-xorEquiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
-xorEquiv true  b     = refl
-xorEquiv false true  = refl
-xorEquiv false false = refl
+⊻ℂ-spec-table : (B × B) → B
+⊻ℂ-spec-table (false , false) = false
+⊻ℂ-spec-table (false , true ) = true
+⊻ℂ-spec-table (true  , false) = true
+⊻ℂ-spec-table (true  , true ) = false
 \end{code}
-%</xorEquiv>
+%</xor-spec-table>
 
-%<*proofXor>
+%<*xor-proof-table>
 \begin{code}
-proofXor : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ a xor b
-proofXor = xorEquiv
+⊻ℂ-proof-table : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ ⊻ℂ-spec-table (a , b)
+⊻ℂ-proof-table false false = refl
+⊻ℂ-proof-table false true  = refl
+⊻ℂ-proof-table true  false = refl
+⊻ℂ-proof-table true  true  = refl
 \end{code}
-%</proofXor>
+%</xor-proof-table>
+
+%<*xor-equiv>
+\begin{code}
+⊻ℂ-equiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
+⊻ℂ-equiv true  b     = refl
+⊻ℂ-equiv false true  = refl
+⊻ℂ-equiv false false = refl
+\end{code}
+%</xor-equiv>
+
+%<*xor-proof-subfunc>
+\begin{code}
+⊻ℂ-proof-subfunc : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ a xor b
+⊻ℂ-proof-subfunc = ⊻ℂ-equiv
+\end{code}
+%</xor-proof-subfunc>
 
 
 %<*haddSpec>
@@ -47,7 +67,7 @@ haddSpec a b = (a ∧ b) , (a xor b)
 %<*proofHaddBool>
 \begin{code}
 proofHaddBool : ∀ a b → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
-proofHaddBool a b = cong (_,_ (a ∧ b)) (xorEquiv a b)
+proofHaddBool a b = cong (_,_ (a ∧ b)) (⊻ℂ-equiv a b)
 \end{code}
 %</proofHaddBool>
 
