@@ -16,20 +16,20 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 %<*xor-spec-table>
 \begin{code}
 ⊻ℂ-spec-table : (B × B) → B
-⊻ℂ-spec-table (false , false) = false
-⊻ℂ-spec-table (false , true ) = true
-⊻ℂ-spec-table (true  , false) = true
-⊻ℂ-spec-table (true  , true ) = false
+⊻ℂ-spec-table  (false  ,  false)  = false
+⊻ℂ-spec-table  (false  ,  true )  = true
+⊻ℂ-spec-table  (true   ,  false)  = true
+⊻ℂ-spec-table  (true   ,  true )  = false
 \end{code}
 %</xor-spec-table>
 
 %<*xor-proof-table>
 \begin{code}
 ⊻ℂ-proof-table : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ ⊻ℂ-spec-table (a , b)
-⊻ℂ-proof-table false false = refl
-⊻ℂ-proof-table false true  = refl
-⊻ℂ-proof-table true  false = refl
-⊻ℂ-proof-table true  true  = refl
+⊻ℂ-proof-table  false  false  = refl
+⊻ℂ-proof-table  false  true   = refl
+⊻ℂ-proof-table  true   false  = refl
+⊻ℂ-proof-table  true   true   = refl
 \end{code}
 %</xor-proof-table>
 
