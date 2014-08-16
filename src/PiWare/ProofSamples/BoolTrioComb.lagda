@@ -2,7 +2,8 @@
 module PiWare.ProofSamples.BoolTrioComb where
 
 open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to B)
-open import Data.Product using (_×_; _,_)
+open import Data.Product using (_×_; _,_; uncurry′)
+open import Data.Vec using (Vec; _∷_) renaming ([] to ε)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open import PiWare.Atom.Bool using (Atomic-B)
@@ -32,19 +33,26 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 \end{code}
 %</xor-proof-table>
 
+%<*xor-spec-subfunc>
+\begin{code}
+⊻ℂ-spec-subfunc : (B × B) → B
+⊻ℂ-spec-subfunc = uncurry′ _xor_
+\end{code}
+%</xor-spec-subfunc>
+
 %<*xor-equiv>
 \begin{code}
-⊻ℂ-equiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
-⊻ℂ-equiv true  b     = refl
-⊻ℂ-equiv false true  = refl
-⊻ℂ-equiv false false = refl
+⊻ℂ-xor-equiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
+⊻ℂ-xor-equiv true  b     = refl
+⊻ℂ-xor-equiv false true  = refl
+⊻ℂ-xor-equiv false false = refl
 \end{code}
 %</xor-equiv>
 
 %<*xor-proof-subfunc>
 \begin{code}
-⊻ℂ-proof-subfunc : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ a xor b
-⊻ℂ-proof-subfunc = ⊻ℂ-equiv
+⊻ℂ-proof-subfunc : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ ⊻ℂ-spec-subfunc (a , b)
+⊻ℂ-proof-subfunc = ⊻ℂ-xor-equiv
 \end{code}
 %</xor-proof-subfunc>
 
@@ -67,7 +75,7 @@ haddSpec a b = (a ∧ b) , (a xor b)
 %<*proofHaddBool>
 \begin{code}
 proofHaddBool : ∀ a b → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
-proofHaddBool a b = cong (_,_ (a ∧ b)) (⊻ℂ-equiv a b)
+proofHaddBool a b = cong (_,_ (a ∧ b)) (⊻ℂ-xor-equiv a b)
 \end{code}
 %</proofHaddBool>
 
