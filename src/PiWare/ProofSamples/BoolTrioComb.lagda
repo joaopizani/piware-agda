@@ -40,14 +40,18 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 \end{code}
 %</xor-spec-subfunc>
 
-%<*xor-equiv>
+%<*xor-equiv-decl>
 \begin{code}
 ⊻ℂ-xor-equiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
+\end{code}
+%</xor-eqiuv-decl>
+%<*xor-equiv-def>
+\begin{code}
 ⊻ℂ-xor-equiv true  b     = refl
 ⊻ℂ-xor-equiv false true  = refl
 ⊻ℂ-xor-equiv false false = refl
 \end{code}
-%</xor-equiv>
+%</xor-equiv-def>
 
 %<*xor-proof-subfunc>
 \begin{code}
