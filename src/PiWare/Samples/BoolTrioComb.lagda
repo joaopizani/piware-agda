@@ -69,8 +69,8 @@ fadd =   hadd || pid
 %</fadd>
 
 
-TODO: Make it generic using the sum constructor.
-(s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
+-- TODO: Make it generic using the sum constructor.
+-- (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
 %<*mux2to1>
 \begin{code}
 mux2to1 : ℂ (B × (B × B)) B

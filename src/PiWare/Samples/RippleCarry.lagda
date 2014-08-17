@@ -17,10 +17,9 @@ open import PiWare.Samples.BoolTrioComb using (fadd)
 \end{code}
 
 
-cin × a × b → s × cout
-%<*ripple>
-\begin{code}
-ripple : (n : ℕ) →  let W = Vec B n  in  ℂ (B × W × W) (W × B)
+-- cin × a × b → s × cout
+%<*ripple-commented>
+ripple : (n : ℕ) → let W = Vec B n in ℂ (B × W × W) (W × B)
 ripple zero    = pid || pFst ⟫ pSwap
 ripple (suc m) =
       pid   || (pUncons || pUncons ⟫ pIntertwine)
@@ -32,4 +31,4 @@ ripple (suc m) =
     ⟫ pCons || pid
     where pAssoc = pARL ⟫ pARL || pid
 \end{code}
-%</ripple>
+%</ripple-commented>

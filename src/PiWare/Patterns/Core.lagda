@@ -16,8 +16,8 @@ open import PiWare.Plugs.Core Gt using (pid')
 \end{code}
 
 
-Base case relies on the identity of _|'_:
-∀ c' : Nil |' c' ≡⟦⟧  c'  (where _≡⟦⟧_ means "have same simulation semantics")
+-- Base case relies on the identity of _|'_:
+-- ∀ c' : Nil |' c' ≡⟦⟧  c'  (where _≡⟦⟧_ means "have same simulation semantics")
 %<*pars-core>
 \begin{code}
 pars' : ∀ {k i o} → Vec (ℂ' i o) k → ℂ' (k * i) (k * o)
@@ -33,8 +33,8 @@ parsN' {k} = pars' ∘ replicate {n = k}
 %</parsN-core>
 
 
-Base case relies on the identity of _⟫'_:
-∀ c' : pid' ⟫' c' ≡⟦⟧ c'  (where _≡⟦⟧_ means "have same simulation semantics")
+-- Base case relies on the identity of _⟫'_:
+-- ∀ c' : pid' ⟫' c' ≡⟦⟧ c'  (where _≡⟦⟧_ means "have same simulation semantics")
 %<*seqs-core>
 \begin{code}
 seqs' : ∀ {k io} → Vec (ℂ' io io) k → ℂ' io io
