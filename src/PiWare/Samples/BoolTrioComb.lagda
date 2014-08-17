@@ -69,7 +69,7 @@ fadd =   hadd || pid
 %</fadd>
 
 
-TODO: booleans for now. How to make it generic?  Maybe using the sum constructor.
+TODO: Make it generic using the sum constructor.
 (s × (a × b)) → z:   z = (a ∧ ¬ s) ∨ (b ∧ s)
 %<*mux2to1>
 \begin{code}

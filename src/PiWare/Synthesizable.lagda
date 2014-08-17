@@ -31,7 +31,6 @@ W = Vec Atom
 
 
 -- Provides a mapping between "high-level" metalanguage types and words
--- TODO: proofs that ⇑ and ⇓ are inverses
 %<*Synth>
 \begin{code}
 record ⇓W⇑ (α : Set) {i : ℕ} : Set where
