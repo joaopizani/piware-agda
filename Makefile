@@ -32,6 +32,7 @@ bytecode: \
 tex: \
 	$(TRGLATEX)/Report/ChapterIntroduction.tex \
 	$(TRGLATEX)/Report/ChapterBackground.tex \
+	$(TRGLATEX)/Report/ChapterPiWare.tex \
 	$(TRGLATEX)/Data/CausalStream.tex \
 	$(TRGLATEX)/PiWare/Utils.tex \
 	$(TRGLATEX)/PiWare/Atom.tex \
