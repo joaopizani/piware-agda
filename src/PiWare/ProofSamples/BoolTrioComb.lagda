@@ -44,7 +44,7 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 \begin{code}
 ⊻ℂ-xor-equiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
 \end{code}
-%</xor-eqiuv-decl>
+%</xor-equiv-decl>
 %<*xor-equiv-def>
 \begin{code}
 ⊻ℂ-xor-equiv true  b     = refl
