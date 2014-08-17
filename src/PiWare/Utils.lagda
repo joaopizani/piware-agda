@@ -41,9 +41,9 @@ splitAt⁺ m = map⁺ (splitAt' m)
 \end{code}
 %</splitAt-nonempty>
 
-%<*segregateSums>
+%<*seggregateSums>
 \begin{code}
-segregateSums : {α β : Set} → List (α ⊎ β) → List α × List β
-segregateSums = < gfilter isInj₁ , gfilter isInj₂ >
+seggregateSums : {α β : Set} → List (α ⊎ β) → List α × List β
+seggregateSums = < gfilter isInj₁ , gfilter isInj₂ >
 \end{code}
-%</segregateSums>
+%</seggregateSums>

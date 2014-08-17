@@ -16,7 +16,7 @@ open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding using (padFst; unpadFst; padSnd; unpadSnd)
-open import PiWare.Utils using (segregateSums)
+open import PiWare.Utils using (seggregateSums)
 open Atomic At using (Atom; Atom#; atom→n; n→atom)
 \end{code}
 
@@ -60,7 +60,11 @@ untag {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFst i j ab)
 %<*untagList>
 \begin{code}
 untagList : ∀ {i j} → List (W (suc (i ⊔ j))) → List (W i) × List (W j)
-untagList = segregateSums ∘ mapₗ untag
+\end{code}
+%</untagList-decl>
+%<*untagList-def>
+\begin{code}
+untagList = seggregateSums ∘ mapₗ untag
 \end{code}
 %</untagList>
 
