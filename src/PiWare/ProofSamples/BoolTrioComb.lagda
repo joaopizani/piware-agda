@@ -68,14 +68,6 @@ haddSpec a b = (a ∧ b) , (a xor b)
 \end{code}
 %</haddSpec>
 
--- %<*proofHaddBool'>
--- \begin{code}
--- proofHaddBool' : ∀ {a b} → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
--- proofHaddBool' = proofAnd |≡ proofXor
--- \end{code}
--- %</proofHaddBool'>
-
--- TODO: better proof here, using proofXor, proofAnd and the "parallel proof combinator"
 %<*proofHaddBool>
 \begin{code}
 proofHaddBool : ∀ a b → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
@@ -83,8 +75,6 @@ proofHaddBool a b = cong (_,_ (a ∧ b)) (⊻ℂ-xor-equiv a b)
 \end{code}
 %</proofHaddBool>
 
-
--- TODO: make fullAddSpec in terms of halfAddSpec?
 %<*faddSpec>
 \begin{code}
 faddSpec : B → B → B → (B × B)
@@ -99,7 +89,6 @@ faddSpec true  true  true  = true  , true
 \end{code}
 %</faddSpec>
 
--- TODO: use eng. proof by reflection to complete the proof "table"
 %<*proofFaddBool>
 \begin{code}
 proofFaddBool : ∀ a b c → ⟦ fadd ⟧ ((a , b) , c) ≡ faddSpec a b c
