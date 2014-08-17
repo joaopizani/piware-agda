@@ -1,7 +1,6 @@
 \begin{code}
 module Report.ChapterPiWare where
 
-open import Data.List using (List)
 open import Data.Sum using (_⊎_)
 open import Data.Product using (_×_)
 
@@ -19,12 +18,12 @@ tail (x ∷ xs) = ♭ xs
 
 
 \begin{code}
-postulate seggregateStream-bogus : {α β : Set} → Stream (α ⊎ β) → List α × List β
+postulate seggregateStream-bogus : {α β : Set} → Stream (α ⊎ β) → Stream α × Stream β
 \end{code}
 
 %<*seggregateStream-decl>
 \begin{code}
-seggregateStream : ∀ {α β} → Stream (α ⊎ β) → List α × List β
+seggregateStream : ∀ {α β} → Stream (α ⊎ β) → Stream α × Stream β
 \end{code}
 %</seggregateStream-decl>
 %<*seggregateStream-def>
