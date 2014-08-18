@@ -34,8 +34,8 @@ toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
 \begin{code}
 reg : ℂ (B × B) B
 reg = delayℂ comb
-    where rearrange = pSwap || pid  ⟫  pALR  ⟫  pid || pSwap
-          comb      = rearrange  ⟫  mux2to1  ⟫  pFork×
+    where  rearrange  = pSwap || pid  ⟫  pALR  ⟫  pid || pSwap
+           comb       = rearrange  ⟫  mux2to1  ⟫  pFork×
 \end{code}
 %</reg>
 
