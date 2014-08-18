@@ -29,11 +29,13 @@ toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
 \end{code}
 %</toggle>
 
-input × load → out
+-- input × load → out
 %<*reg>
 \begin{code}
 reg : ℂ (B × B) B
-reg = delayℂ (pSwap || pid ⟫ pALR ⟫ (pid || pSwap) ⟫ mux2to1 ⟫ pFork×)
+reg = delayℂ comb
+    where rearrange = pSwap || pid  ⟫  pALR  ⟫  pid || pSwap
+          comb      = rearrange  ⟫  mux2to1  ⟫  pFork×
 \end{code}
 %</reg>
 
