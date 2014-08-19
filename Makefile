@@ -28,8 +28,8 @@ bytecode: \
 	$(TRGBYTECODE)/PiWare/Samples/RippleCarry.agdai \
 	$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioComb.agdai \
 	$(TRGBYTECODE)/PiWare/Samples/AndN.agdai \
-	$(TRGBYTECODE)/PiWare/ProofSamples/AndN.agdai
-#$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai \
+	$(TRGBYTECODE)/PiWare/ProofSamples/AndN.agdai \
+	$(TRGBYTECODE)/PiWare/ProofSamples/BoolTrioSeq.agdai
 
 tex: \
 	$(TRGLATEX)/Report/ChapterIntroduction.tex \
@@ -57,7 +57,8 @@ tex: \
 	$(TRGLATEX)/PiWare/Samples/RippleCarry.tex \
 	$(TRGLATEX)/PiWare/ProofSamples/BoolTrioComb.tex \
 	$(TRGLATEX)/PiWare/Samples/AndN.tex \
-	$(TRGLATEX)/PiWare/ProofSamples/AndN.tex
+	$(TRGLATEX)/PiWare/ProofSamples/AndN.tex \
+	$(TRGLATEX)/PiWare/ProofSamples/BoolTrioSeq.tex
 	patch -p0 < patches/PiWare.Simulation.Core.delay.patch
 	patch -p0 < patches/PiWare.Samples.RippleCarry.ripple.patch
 	patch -p0 < patches/PiWare.Circuit.par.patch
