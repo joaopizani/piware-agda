@@ -3,12 +3,13 @@ module PiWare.ProofSamples.BoolTrioSeq where
 
 open import Function using (_$_)
 open import Data.Unit using (tt)
-open import Data.Bool using (not; false; true)
+open import Data.Bool using (Bool; not; false; true)
 open import Data.Product using (_,_)
+open import Data.Vec using (replicate) renaming (_∷_ to _◁_)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Coinduction using (♯_; ♭)
-open import Data.Stream using (_∷_; head; tail; take; repeat; iterate; zipWith; _≈_)
+open import Data.Stream using (Stream; _∷_; head; tail; take; repeat; iterate; zipWith; _≈_)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Simulation BoolTrio using (⟦_⟧*)
@@ -28,13 +29,15 @@ shift7 = take 7 $ ⟦ shift ⟧* (iterate not false)
 \end{code}
 %</shift7>
 
-%<*rhold>
+%<*load2>
 \begin{code}
-rhold = take 7 (⟦ reg ⟧* $
-                  zipWith _,_ (true ∷ ♯ (false ∷ ♯ (true ∷ ♯ repeat false)))
-                              (true ∷ ♯ (true ∷ ♯ repeat false))  )
+loads inputs : Stream Bool
+loads   = true ∷ ♯ (true  ∷ ♯ (false ∷ ♯ repeat false))
+inputs  = true ∷ ♯ (false ∷ ♯ (true  ∷ ♯ repeat false))
+
+load2 = take 7 (⟦ reg ⟧* $ zipWith _,_ inputs loads) ≡ true ◁ replicate false
 \end{code}
-%</rhold>
+%</load2>
 
 %<*rload>
 \begin{code}
