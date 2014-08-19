@@ -13,10 +13,10 @@ open import PiWare.Simulation.Core BoolTrio using (⟦_⟧')
 \end{code}
 
 
-<*proof-andN-core-alltrue>
+%<*proof-andN-core-alltrue>
 \begin{code}
 proof-andN-core-alltrue : ∀ n → ⟦ andN' n ⟧' {andN'-comb n} (replicate true) ≡ [ true ]
 proof-andN-core-alltrue zero    = refl
 proof-andN-core-alltrue (suc n) = cong (spec-and ∘ (_∷_ true)) (proof-andN-core-alltrue n)
 \end{code}
-</proof-andN-core-alltrue>
+%</proof-andN-core-alltrue>
