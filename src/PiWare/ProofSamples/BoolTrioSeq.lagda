@@ -31,8 +31,8 @@ shift7 = take 7 $ ⟦ shift ⟧* (iterate not false)
 %<*rhold>
 \begin{code}
 rhold = take 7 (⟦ reg ⟧* $
-                  zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))
-                              (true ∷ ♯ repeat false))
+                  zipWith _,_ (true ∷ ♯ (false ∷ ♯ (true ∷ ♯ repeat false)))
+                              (true ∷ ♯ (true ∷ ♯ repeat false))  )
 \end{code}
 %</rhold>
 
@@ -46,20 +46,20 @@ rload = take 7 (⟦ reg ⟧* $
 
 
 
-%<*proofShiftHead>
-\begin{code}
-proofShiftHead : ∀ {x y zs} → head (⟦ shift ⟧* (x ∷ ♯ (y ∷ ♯ zs)) ) ≡ false
-proofShiftHead = refl
-\end{code}
-%</proofShiftHead>
+-- %<*proofShiftHead>
+-- \begin{code}
+-- proofShiftHead : ∀ {x y zs} → head (⟦ shift ⟧* (x ∷ ♯ (y ∷ ♯ zs)) ) ≡ false
+-- proofShiftHead = refl
+-- \end{code}
+-- %</proofShiftHead>
 
-%<*proofShiftTail>
-\begin{code}
-proofShiftTail : ∀ {ins} → tail (⟦ shift ⟧* ins) ≈ ins
-proofShiftTail {true ∷ xs} = {!!}
-proofShiftTail {false ∷ xs} = {!!}
-\end{code}
-%</proofShiftTail>
+-- %<*proofShiftTail>
+-- \begin{code}
+-- proofShiftTail : ∀ {ins} → tail (⟦ shift ⟧* ins) ≈ ins
+-- proofShiftTail {true ∷ xs} = {!!}
+-- proofShiftTail {false ∷ xs} = {!!}
+-- \end{code}
+-- %</proofShiftTail>
 
 
 -- \begin{code}
@@ -67,45 +67,13 @@ proofShiftTail {false ∷ xs} = {!!}
 -- proofToggle = refl ∷ ♯ {!!}
 -- \end{code}
  
--- now with the register: first the tail
--- %<*proofRegNeverLoadHardcoded'>
--- \begin{code}
--- proofRegNeverLoadHardcoded' : tail (⟦ reg ⟧* (repeat (true , false))) ≈ repeat false
--- proofRegNeverLoadHardcoded' = refl ∷ ♯ proofRegNeverLoadHardcoded'
--- \end{code}
--- %</proofRegNeverLoadHardcoded'>
 
--- -- then the case including the head
--- %<*proofRegNeverLoadHardcoded>
--- \begin{code}
--- proofRegNeverLoadHardcoded : ⟦ reg ⟧* (repeat (true , false)) ≈ false ∷ ♯ repeat false
--- proofRegNeverLoadHardcoded = refl ∷ ♯ proofRegNeverLoadHardcoded'
--- \end{code}
--- %</proofRegNeverLoadHardcoded>
-
--- -- trying to be a bit more general now: first the tail
--- %<*proofRegNeverLoad'>
--- \begin{code}
--- proofRegNeverLoad' : ∀ xs → tail (⟦ reg ⟧* $ zipWith _,_ xs (repeat false) ) ≈ repeat false
--- proofRegNeverLoad' (x ∷ xs) = refl ∷ ♯ proofRegNeverLoad' (♭ xs)
--- \end{code}
--- %</proofRegNeverLoad'>
-
--- -- then the case including the head...
--- %<*proofRegNeverLoad>
--- \begin{code}
--- proofRegNeverLoad : ∀ xs → ⟦ reg ⟧* (zipWith _,_ xs (repeat false)) ≈ false ∷ ♯ repeat false
--- proofRegNeverLoad xs = refl ∷ ♯ proofRegNeverLoad' xs
--- \end{code}
--- %</proofRegNeverLoad>
-
-
--- -- when load, tail of output is input
--- -- first hardcoded
+-- when load, tail of output is input
+-- first hardcoded
 -- %<*proofRegAlwaysLoadHardcoded'>
 -- \begin{code}
 -- proofRegAlwaysLoadHardcoded' : tail (⟦ reg ⟧* (repeat (true , true))) ≈ repeat true
--- proofRegAlwaysLoadHardcoded' = refl ∷ ♯ proofRegAlwaysLoadHardcoded'
+-- proofRegAlwaysLoadHardcoded' = refl ∷ ♯ ?
 -- \end{code}
 -- %</proofRegAlwaysLoadHardcoded'>
 
