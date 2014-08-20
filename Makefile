@@ -62,6 +62,7 @@ tex: \
 	patch -p0 < patches/PiWare.Simulation.Core.delay.patch
 	patch -p0 < patches/PiWare.Samples.RippleCarry.ripple.patch
 	patch -p0 < patches/PiWare.Circuit.par.patch
+	patch -p0 < patches/Report.ChapterBackground.Pair.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
