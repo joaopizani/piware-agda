@@ -44,7 +44,8 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 ⟦ Gate g#  ⟧' = spec g#
 ⟦ Plug p   ⟧' = plugOutputs p
 ⟦ c₁ ⟫' c₂ ⟧' {p₁ , p₂} = ⟦ c₂ ⟧' {p₂} ∘ ⟦ c₁ ⟧' {p₁}
-⟦ _|'_  {i₁} c₁ c₂ ⟧' {p₁ , p₂} = uncurry′ _++_ ∘ mapₚ (⟦ c₁ ⟧' {p₁}) (⟦ c₂ ⟧' {p₂}) ∘ splitAt' i₁
+⟦ _|'_  {i₁} c₁ c₂ ⟧' {p₁ , p₂} =
+    uncurry′ _++_ ∘ mapₚ (⟦ c₁ ⟧' {p₁}) (⟦ c₂ ⟧' {p₂}) ∘ splitAt' i₁
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧' {p₁ , p₂} = [ ⟦ c₁ ⟧' {p₁} , ⟦ c₂ ⟧' {p₂} ]′ ∘ untag {i₁}
 ⟦ DelayLoop c ⟧' {()} v
 \end{code}
@@ -84,9 +85,10 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 %<*run-causal>
 \begin{code}
 runᶜ : ∀ {α β} → (α ⇒ᶜ β) → (Stream α → Stream β)
-runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺)
-    where runᶜ' : ∀ {α β} → (α ⇒ᶜ β) → (Γᶜ α × Stream α) → Stream β
-          runᶜ' f ((x⁰ , x⁻) , (x¹ ∷ x⁺)) = f (x⁰ , x⁻) ∷ ♯ runᶜ' f ((x¹ , x⁰ ∷ x⁻) , ♭ x⁺)
+runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺) where
+  runᶜ' : ∀ {α β} → (α ⇒ᶜ β) → (Γᶜ α × Stream α) → Stream β
+  runᶜ' f ((x⁰ , x⁻) , (x¹ ∷ x⁺)) =
+            f (x⁰ , x⁻) ∷ ♯ runᶜ' f ((x¹ , x⁰ ∷ x⁻) , ♭ x⁺)
 \end{code}
 %</run-causal>
 

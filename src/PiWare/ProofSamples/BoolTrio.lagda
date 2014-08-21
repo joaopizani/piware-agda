@@ -77,19 +77,23 @@ faddSpec true  true  true  = true  , true
 %</faddSpec>
 
 -- TODO: use eng. proof by reflection to complete the proof "table"
-%<*proofFaddBool>
+%<*proofFaddBool-gist>
 \begin{code}
 proofFaddBool : ∀ a b c → ⟦ fadd ⟧ ((a , b) , c) ≡ faddSpec a b c
 proofFaddBool true  true  true  = refl
 proofFaddBool true  true  false = refl
 proofFaddBool true  false true  = refl
 proofFaddBool true  false false = refl
+\end{code}
+%</proofFaddBool-gist>
+%<*proofFaddBool-rest>
+\begin{code}
 proofFaddBool false true  true  = refl
 proofFaddBool false true  false = refl
 proofFaddBool false false true  = refl
 proofFaddBool false false false = refl
 \end{code}
-%</proofFaddBool>
+%</proofFaddBool-rest>
 
 
 %<*toggle7>
@@ -129,10 +133,15 @@ proofShiftHead = refl
 \end{code}
 %</proofShiftHead>
 
+-- One-liner to break it
+\begin{code}
+postulate undefined : ∀ {α : Set} → α
+\end{code}
+
 %<*proofShiftTail>
 \begin{code}
 proofShiftTail : ∀ {ins} → tail (⟦ shift ⟧* ins) ≈ ins
-proofShiftTail = {!!}
+proofShiftTail = undefined
 \end{code}
 %</proofShiftTail>
 
