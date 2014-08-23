@@ -61,6 +61,7 @@ tex: \
 	$(TRGLATEX)/PiWare/Samples/AndN.tex \
 	$(TRGLATEX)/PiWare/ProofSamples/AndN.tex
 	patch -p0 < patches/Defense.SectionDTPAgda.head.patch
+	patch -p0 < patches/PiWare.Circuit.Core.Circuit-core.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
