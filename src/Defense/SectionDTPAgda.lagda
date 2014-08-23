@@ -15,7 +15,6 @@ add (suc x′)  y  = suc (add x′ y)
 \end{code}
 %</add>
 
-
 \begin{code}
 {-# NO_TERMINATION_CHECK #-}
 \end{code}
@@ -35,7 +34,6 @@ head (x ∷ xs) = x
 \end{code}
 %</head>
 
-
 %<*take-decl>
 \begin{code}
 take : {α : Set} {n : ℕ} (k : ℕ) → Vec α (k + n) → Vec α k
@@ -47,3 +45,23 @@ take zero    _        = []
 take (suc k) (x ∷ xs) = x ∷ take k xs
 \end{code}
 %</take-def>
+
+
+%<*leq>
+\begin{code}
+data _≤_ : ℕ → ℕ → Set where
+    z≤n : ∀ {n}             → zero   ≤ n
+    s≤s : ∀ {m n}  → m ≤ n  → suc m  ≤ suc n
+\end{code}
+%</leq>
+
+%<*twoLEQFour-decl>
+\begin{code}
+twoLEQFour : 2 ≤ 4
+\end{code}
+%</twoLEQFour-decl>
+%<*twoLEQFour-def>
+\begin{code}
+twoLEQFour = s≤s (s≤s z≤n)
+\end{code}
+%</twoLEQFour-def>
