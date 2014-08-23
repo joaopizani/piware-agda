@@ -60,6 +60,7 @@ tex: \
 	$(TRGLATEX)/PiWare/ProofSamples/BoolTrioSeq.tex \
 	$(TRGLATEX)/PiWare/Samples/AndN.tex \
 	$(TRGLATEX)/PiWare/ProofSamples/AndN.tex
+	patch -p0 < patches/Defense.SectionDTPAgda.head.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
