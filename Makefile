@@ -62,6 +62,8 @@ tex: \
 	$(TRGLATEX)/PiWare/ProofSamples/AndN.tex
 	patch -p0 < patches/Defense.SectionDTPAgda.head.patch
 	patch -p0 < patches/PiWare.Circuit.Core.Circuit-core.patch
+	patch -p0 < patches/PiWare.Atom.Bool.Absurd.patch
+	patch -p0 < patched/PiWare.Gates.BoolTrio.Absurd.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
