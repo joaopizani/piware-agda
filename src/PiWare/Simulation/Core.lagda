@@ -37,9 +37,9 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 
 
 -- combinational eval
-%<*eval-core>
+%<*eval-core-almost>
 \begin{code}
-⟦_⟧' : {i o : ℕ} → (c : ℂ' i o) {p : comb' c} → (W i → W o)
+⟦_⟧' : ∀ {i o} → (c : ℂ' i o) {p : comb' c} → (W i → W o)
 ⟦ Nil      ⟧'  = const ε
 ⟦ Gate g#  ⟧'  = spec g#
 ⟦ Plug p   ⟧'  = plugOutputs p
@@ -48,13 +48,16 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 
 ⟦ c₁ ⟫' c₂ ⟧' {p₁ , p₂} = ⟦ c₂ ⟧' {p₂} ∘ ⟦ c₁ ⟧' {p₁}
 
-⟦ _|'_  {i₁} c₁ c₂ ⟧' {p₁ , p₂} =
-    uncurry′ _++_ ∘ mapₚ (⟦ c₁ ⟧' {p₁}) (⟦ c₂ ⟧' {p₂}) ∘ splitAt' i₁
-
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧' {p₁ , p₂} =
     [ ⟦ c₁ ⟧' {p₁} , ⟦ c₂ ⟧' {p₂} ]′ ∘ untag {i₁}
 \end{code}
-%</eval-core>
+%</eval-core-almost>
+%<*eval-core-rest>
+\begin{code}
+⟦ _|'_  {i₁} c₁ c₂ ⟧' {p₁ , p₂} =
+    uncurry′ _++_ ∘ mapₚ (⟦ c₁ ⟧' {p₁}) (⟦ c₂ ⟧' {p₂}) ∘ splitAt' i₁
+\end{code}
+%</eval-core-rest>
 
 
 -- sequential eval as "causal stream function"
