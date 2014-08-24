@@ -14,53 +14,56 @@ open import PiWare.Atom using (Atomic)
 \begin{code}
 private
 \end{code}
-  %<*cardinality>
-  \begin{code}
-  |B|-1 = 1
-  |B| = suc |B|-1
-  \end{code}
-  %</cardinality>
+ %<*cardinality>
+ \begin{code}
+ |B|-1 = 1
+ |B| = suc |B|-1
+ \end{code}
+ %</cardinality>
 
-  %<*pattern-synonyms>
-  \begin{code}
-  pattern False#    = Fz
-  pattern True#     = Fs Fz
-  pattern Absurd# n = Fs (Fs n)
-  \end{code}
-  %</pattern-synonyms>
+ %<*pattern-synonyms>
+ \begin{code}
+ pattern False#    = Fz
+ pattern True#     = Fs Fz
+ pattern Absurd# n = Fs (Fs n)
+ \end{code}
+ %</pattern-synonyms>
 
-  %<*nToBool>
-  \begin{code}
-  n→B : Fin |B| → B
-  n→B = λ { False# → false;  True# → true;  (Absurd# ()) }
-  
-  B→n : B → Fin |B|
-  B→n = λ { false → False#;  true → True# }
-  \end{code}
-  %</nToBool>
-  
-  %<*inv-Bool>
-  \begin{code}
-  inv-left-B : ∀ i → B→n (n→B i) ≡ i
-  inv-left-B = λ { False# → refl;  True# → refl;  (Absurd# ()) }
-
-  inv-right-B : ∀ b → n→B (B→n b) ≡ b
-  inv-right-B = λ { false → refl;  true → refl }
-  \end{code}
-  %</inv-Bool>
+ %<*nToBool-decl>
+ \begin{code}
+ n→B : Fin |B| → B
+ B→n : B → Fin |B|
+ \end{code}
+ %</nToBool-decl>
+ %<*nToBool-def>
+ \begin{code}
+ n→B = λ { False# → false;   True#  → true;  (Absurd# ()) }
+ B→n = λ { false  → False#;  true   → True# }
+ \end{code}
+ %</nToBool-def>
+ 
+ %<*inv-Bool-decl>
+ \begin{code}
+ inv-left-B : ∀ i → B→n (n→B i) ≡ i
+ inv-right-B : ∀ b → n→B (B→n b) ≡ b
+ \end{code}
+ %</inv-Bool-decl>
+ %<*inv-Bool-def>
+ \begin{code}
+ inv-left-B   = λ { False#  → refl;  True#  → refl;  (Absurd# ()) }
+ inv-right-B  = λ { false   → refl;  true   → refl }
+ \end{code}
+ %</inv-Bool-def>
 
 
 %<*Atomic-Bool>
 \begin{code}
 Atomic-B : Atomic
-Atomic-B = record {
-      Atom     = B
-    ; |Atom|-1 = |B|-1
-    ; n→atom   = n→B
-    ; atom→n   = B→n
-   
-    ; inv-left  = inv-left-B
-    ; inv-right = inv-right-B
-    }
+Atomic-B = record { Atom       = B
+                  ; |Atom|-1   = |B|-1
+                  ; n→atom     = n→B
+                  ; atom→n     = B→n
+                  ; inv-left   = inv-left-B
+                  ; inv-right  = inv-right-B }
 \end{code}
 %</Atomic-Bool>
