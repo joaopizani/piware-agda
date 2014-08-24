@@ -28,45 +28,66 @@ pattern And#         = Fs (Fs (Fs Fz))
 pattern Or#          = Fs (Fs (Fs (Fs Fz)))
 pattern Absurd# n    = Fs (Fs (Fs (Fs (Fs n))))
 \end{code}
+
 %</pattern-synonyms>
 
-%<*ins-outs>
+%<*ins-outs-decl>
 \begin{code}
 |in| |out| : Fin |BoolTrio| → ℕ
-|in| = λ { FalseConst# → 0; TrueConst# → 0; Not# → 1; And# → 2; Or# → 2; (Absurd# ()) }
+\end{code}
+%</ins-outs-decl>
+%<*ins-outs-def>
+\begin{code}
+|in| FalseConst#  = 0
+|in| TrueConst#   = 0
+|in| Not#         = 1
+|in| And#         = 2
+|in| Or#          = 2
+|in| (Absurd# ())
+
 |out| _ = 1
 \end{code}
-%</ins-outs>
+%</ins-outs-def>
 
+%<*spec-gates-decl>
 \begin{code}
-spec-not : Vec B 1 → Vec B 1
-spec-and spec-or : Vec B 2 → Vec B 1
-
-spec-not (x ∷ ε)     = [ not x ]
-spec-and (x ∷ y ∷ ε) = [ x ∧ y ]
-spec-or  (x ∷ y ∷ ε) = [ x ∨ y ]
+spec-false spec-true  : W 0 → W 1
+spec-not              : W 1 → W 1
+spec-and spec-or      : W 2 → W 1
 \end{code}
-
-%<*spec>
+%</spec-gates-decl>
+%<*spec-gates-def>
 \begin{code}
-spec : (g : Fin |BoolTrio|) → (W (|in| g) → W (|out| g))
-spec FalseConst#  = const [ false ]
-spec TrueConst#   = const [ true  ]
-spec Not#         = spec-not
-spec And#         = spec-and
-spec Or#          = spec-or
-spec (Absurd# ())
+spec-false  _            = [ false  ]
+spec-true   _            = [ true   ]
+spec-not    (x ∷ ε)      = [ not x  ]
+spec-and    (x ∷ y ∷ ε)  = [ x ∧ y  ]
+spec-or     (x ∷ y ∷ ε)  = [ x ∨ y  ]
 \end{code}
-%</spec>
+%</spec-gates-def>
+
+%<*specs-BoolTrio-decl>
+\begin{code}
+specs-BoolTrio : (g : Fin |BoolTrio|) → (W (|in| g) → W (|out| g))
+\end{code}
+%</specs-BoolTrio-decl>
+%<*specs-BoolTrio-def>
+\begin{code}
+specs-BoolTrio FalseConst#  = spec-false
+specs-BoolTrio TrueConst#   = spec-true
+specs-BoolTrio Not#         = spec-not
+specs-BoolTrio And#         = spec-and
+specs-BoolTrio Or#          = spec-or
+specs-BoolTrio (Absurd# ())
+\end{code}
+%</specs-BoolTrio-def>
 
 %<*BoolTrio>
 \begin{code}
 BoolTrio : Gates
-BoolTrio = record {
-      |Gates|  = |BoolTrio|
-    ; |in|     = |in|
-    ; |out|    = |out|
-    ; spec     = spec
-    }
+BoolTrio = record  { |Gates|  = |BoolTrio|
+                   ; |in|     = |in|
+                   ; |out|    = |out|
+                   ; spec     = specs-BoolTrio }
 \end{code}
 %</BoolTrio>
