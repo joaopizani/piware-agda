@@ -38,10 +38,12 @@ record ⇓W⇑ (α : Set) {i : ℕ} : Set where
     field
         ⇓ : α → W i
         ⇑ : W i → α
-
-open ⇓W⇑ ⦃ ... ⦄
 \end{code}
 %</Synth>
+
+\begin{code}
+open ⇓W⇑ ⦃ ... ⦄
+\end{code}
 
 
 -- Sum-related tagging helpers
@@ -79,14 +81,14 @@ instance
 
 %<*Synth-Product>
 \begin{code}
-  ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
-  ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
-      where  down : (α × β) → W (i + j)
-             down (a , b) = (⇓ a) ++ (⇓ b)
-             
-             up : W (i + j) → (α × β)
-             up w with splitAt i w
-             up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
+ ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
+ ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
+     where  down : (α × β) → W (i + j)
+            down (a , b) = (⇓ a) ++ (⇓ b)
+            
+            up : W (i + j) → (α × β)
+            up w with splitAt i w
+            up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
 \end{code}
 %</Synth-Product>
 
