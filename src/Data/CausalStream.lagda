@@ -1,7 +1,7 @@
 \begin{code}
 module Data.CausalStream where
 
-open import Data.Product using (_,_; uncurry′)
+open import Data.Product using (_×_; _,_; uncurry′)
 open import Data.List using (List; []; _∷_)
 open import Data.List.NonEmpty using (List⁺) renaming ([_] to [_]⁺)
 \end{code}
@@ -11,7 +11,7 @@ open import Data.List.NonEmpty using (List⁺) renaming ([_] to [_]⁺)
 %<*causal-context>
 \begin{code}
 Γc : (α : Set) → Set
-Γc = List⁺
+Γc α = α × List α
 \end{code}
 %</causal-context>
 
