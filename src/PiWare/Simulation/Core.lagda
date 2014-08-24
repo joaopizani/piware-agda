@@ -97,17 +97,18 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 
 %<*run-causal>
 \begin{code}
+runc' : ∀ {α β} → (α ⇒c β) → (Γc α × Stream α) → Stream β
+runc' f ((x⁰ , x⁻) , (x¹ ∷ x⁺)) =
+  f (x⁰ , x⁻) ∷ ♯ runc' f ((x¹ , x⁰ ∷ x⁻) , ♭ x⁺)
+
 runc : ∀ {α β} → (α ⇒c β) → (Stream α → Stream β)
 runc f (x⁰ ∷ x⁺) = runc' f ((x⁰ , []) , ♭ x⁺)
-    where  runc' : ∀ {α β} → (α ⇒c β) → (Γc α × Stream α) → Stream β
-           runc' f ((x⁰ , x⁻) , (x¹ ∷ x⁺)) =
-               f (x⁰ , x⁻) ∷ ♯ runc' f ((x¹ , x⁰ ∷ x⁻) , ♭ x⁺)
 \end{code}
 %</run-causal>
 
 %<*eval-seq-core-decl>
 \begin{code}
-⟦_⟧*' : {i o : ℕ} → ℂ' i o → (Stream (W i) → Stream (W o))
+⟦_⟧*' : ∀ {i o} → ℂ' i o → (Stream (W i) → Stream (W o))
 \end{code}
 %</eval-seq-core-decl>
 %<*eval-seq-core-def>
