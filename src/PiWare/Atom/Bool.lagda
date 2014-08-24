@@ -58,12 +58,11 @@ private
 
 %<*Atomic-Bool>
 \begin{code}
-Atomic-B : Atomic
-Atomic-B = record { Atom       = B
-                  ; |Atom|-1   = |B|-1
-                  ; n→atom     = n→B
-                  ; atom→n     = B→n
-                  ; inv-left   = inv-left-B
-                  ; inv-right  = inv-right-B }
+Atomic-B = record  { Atom       = B
+                   ; |Atom|-1   = |B|-1
+                   ; n→atom     = n→B
+                   ; atom→n     = B→n
+                   ; inv-left   = inv-left-B
+                   ; inv-right  = inv-right-B }
 \end{code}
 %</Atomic-Bool>
