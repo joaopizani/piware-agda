@@ -74,7 +74,7 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 %</delay>
 -- HERE, (⟦ c ⟧' {p} (w⁰ ++ b⁻¹)), in the time difference between w⁰ and b⁻¹, resides the delay!
 
-%<*eval-causal>
+%<*eval-causal-almost>
 \begin{code}
 ⟦_⟧c : {i o : ℕ} → ℂ' i o → (W i ⇒c W o)
 ⟦ Nil                      ⟧c  (w⁰ , _)  = ⟦ Nil ⟧' w⁰
@@ -82,14 +82,18 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 ⟦ Plug p                   ⟧c  (w⁰ , _)  = plugOutputs p w⁰
 ⟦ DelayLoop {o = j} c {p}  ⟧c            = takeᵥ j ∘ delay {o = j} c {p}
 
-⟦ c₁ ⟫' c₂        ⟧c  = ⟦ c₂ ⟧c ∘ map⁺ ⟦ c₁ ⟧c ∘ tails⁺
+⟦ c₁ ⟫' c₂ ⟧c  = ⟦ c₂ ⟧c ∘ map⁺ ⟦ c₁ ⟧c ∘ tails⁺
+\end{code}
+%</eval-causal-almost>
+%<*eval-causal-rest>
+\begin{code}
 ⟦ _|'_ {i₁} c₁ c₂ ⟧c  = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧c ⟦ c₂ ⟧c ∘ unzip⁺ ∘ splitAt⁺ i₁
 
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧c (w⁰ , w⁻) with untag {i₁} w⁰ | untagList {i₁} w⁻
 ... | inj₁ w⁰₁ | w⁻₁ , _    = ⟦ c₁ ⟧c (w⁰₁ , w⁻₁)
 ... | inj₂ w⁰₂ | _   , w⁻₂  = ⟦ c₂ ⟧c (w⁰₂ , w⁻₂)
 \end{code}
-%</eval-causal>
+%</eval-causal-rest>
 
 %<*run-causal>
 \begin{code}
