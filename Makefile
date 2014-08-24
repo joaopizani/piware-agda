@@ -64,6 +64,7 @@ tex: \
 	patch -p0 < patches/PiWare.Circuit.Core.Circuit-core.patch
 	patch -p0 < patches/PiWare.Atom.Bool.Absurd.patch
 	patch -p0 < patches/PiWare.Gates.BoolTrio.Absurd.patch
+	patch -p0 < patches/PiWare.Synthesizable.Synth-Product.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
