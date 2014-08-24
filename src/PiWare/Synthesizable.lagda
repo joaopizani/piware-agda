@@ -81,7 +81,8 @@ instance
 
 %<*Synth-Product>
 \begin{code}
-  ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
+  ⇓W⇑-× : ∀ {α i β j}  → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄
+                       → ⇓W⇑ (α × β)
   ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where  down : (α × β) → W (i + j)
              down (a , b) = (⇓ a) ++ (⇓ b)
