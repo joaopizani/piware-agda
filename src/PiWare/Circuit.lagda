@@ -21,7 +21,8 @@ open Atomic At using (Atom#)
 %<*Circuit>
 \begin{code}
 data ℂ (α β : Set) {i j : ℕ} : Set where
-    Mkℂ : ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ' i j → ℂ α β {i} {j}
+    Mkℂ :  ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄
+           → ℂ' i j → ℂ α β {i} {j}
 \end{code}
 %</Circuit>
 
