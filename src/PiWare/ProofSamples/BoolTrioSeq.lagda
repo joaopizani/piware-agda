@@ -29,15 +29,17 @@ shift7 = take 7 $ ⟦ shift ⟧* (iterate not false)
 \end{code}
 %</shift7>
 
-%<*load2>
+%<*test-reg>
 \begin{code}
 loads inputs : Stream Bool
 loads   = true ∷ ♯ (true  ∷ ♯ (false ∷ ♯ repeat false))
 inputs  = true ∷ ♯ (false ∷ ♯ (true  ∷ ♯ repeat false))
 
-load2 = take 7 (⟦ reg ⟧* $ zipWith _,_ inputs loads) ≡ true ◁ replicate false
+actual = take 42 (⟦ reg ⟧* $ zipWith _,_ inputs loads)
+
+test-reg = actual ≡ true ◁ false ◁ replicate false
 \end{code}
-%</load2>
+%</test-reg>
 
 %<*rload>
 \begin{code}
