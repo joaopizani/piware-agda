@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.ProofSamples.BoolTrioComb where
 
-open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to B)
+open import Data.Bool using (not; _∧_; _∨_; true; false) renaming (Bool to B)
 open import Data.Product using (_×_; _,_; uncurry′)
 open import Data.Vec using (Vec; _∷_) renaming ([] to ε)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; sym)
@@ -32,6 +32,15 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 ⊻ℂ-proof-table  true   true   = refl
 \end{code}
 %</xor-proof-table>
+
+
+%<*xor-stdlib>
+\begin{code}
+_xor_ : B → B → B
+true  xor b = not b
+false xor b = b
+\end{code}
+%</xor-stdlib>
 
 %<*xor-spec-subfunc>
 \begin{code}
