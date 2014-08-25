@@ -59,10 +59,10 @@ tex: \
 	$(TRGLATEX)/PiWare/Samples/AndN.tex \
 	$(TRGLATEX)/PiWare/ProofSamples/AndN.tex \
 	$(TRGLATEX)/PiWare/ProofSamples/BoolTrioSeq.tex
-	patch -N -p0 < patches/PiWare.Simulation.Core.delay.patch
-	patch -N -p0 < patches/PiWare.Samples.RippleCarry.ripple.patch
-	patch -N -p0 < patches/PiWare.Circuit.par.patch
-	patch -N -p0 < patches/Report.ChapterBackground.Pair.patch
+	-patch -N -r - -p0 < patches/PiWare.Simulation.Core.delay.patch
+	-patch -N -r - -p0 < patches/PiWare.Samples.RippleCarry.ripple.patch
+	-patch -N -r - -p0 < patches/PiWare.Circuit.par.patch
+	-patch -N -r - -p0 < patches/Report.ChapterBackground.Pair.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
