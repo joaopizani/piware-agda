@@ -11,11 +11,18 @@ open import PiWare.Plugs.Core BoolTrio using (pid')
 \end{code}
 
 
+<*andN-core-aux>
+\begin{code}
+⊤ℂ'   = Gate TrueConst#
+∧ℂ'   = Gate And#
+idℂ'  = pid' {1}
+\end{code}
+</andN-core-aux>
 %<*andN-core>
 \begin{code}
 andN' : ∀ n → ℂ' n 1
-andN' zero    = Gate TrueConst#
-andN' (suc n) = pid' {1} |' andN' n  ⟫'  Gate And#
+andN' zero    = ⊤ℂ'
+andN' (suc n) = idℂ' |' andN' n  ⟫'  ∧ℂ'
 \end{code}
 %</andN-core>
 
