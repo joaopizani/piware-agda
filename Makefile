@@ -58,7 +58,7 @@ tex: \
 	$(TRGLATEX)/PiWare/ProofSamples/BoolTrioComb.tex \
 	$(TRGLATEX)/PiWare/Samples/AndN.tex \
 	$(TRGLATEX)/PiWare/ProofSamples/AndN.tex
-	patch -N -p0 < patches/PiWare.Simulation.Core.delay.patch
+	patch -N -r - -p0 < patches/PiWare.Simulation.Core.delay.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
