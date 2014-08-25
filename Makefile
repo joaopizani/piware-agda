@@ -68,6 +68,7 @@ tex: \
 	patch -p0 < patches/PiWare.Simulation.eval.patch
 	patch -p0 < patches/PiWare.Simulation.Core.eval-causal.patch
 	patch -p0 < patches/PiWare.Simulation.Core.run-causal.patch
+	patch -p0 < patches/PiWare.ProofSamples.BoolTrioComb.xor-proof-table.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
