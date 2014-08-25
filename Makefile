@@ -60,15 +60,15 @@ tex: \
 	$(TRGLATEX)/PiWare/ProofSamples/BoolTrioSeq.tex \
 	$(TRGLATEX)/PiWare/Samples/AndN.tex \
 	$(TRGLATEX)/PiWare/ProofSamples/AndN.tex
-	patch -N -p0 < patches/Defense.SectionDTPAgda.head.patch
-	patch -N -p0 < patches/PiWare.Circuit.Core.Circuit-core.patch
-	patch -N -p0 < patches/PiWare.Atom.Bool.Absurd.patch
-	patch -N -p0 < patches/PiWare.Gates.BoolTrio.Absurd.patch
-	patch -N -p0 < patches/PiWare.Synthesizable.Synth-Product.patch
-	patch -N -p0 < patches/PiWare.Simulation.eval.patch
-	patch -N -p0 < patches/PiWare.Simulation.Core.eval-causal.patch
-	patch -N -p0 < patches/PiWare.Simulation.Core.run-causal.patch
-	patch -N -p0 < patches/PiWare.ProofSamples.BoolTrioComb.xor-proof-table.patch
+	-patch -N -r - -p0 < patches/Defense.SectionDTPAgda.head.patch
+	-patch -N -r - -p0 < patches/PiWare.Circuit.Core.Circuit-core.patch
+	-patch -N -r - -p0 < patches/PiWare.Atom.Bool.Absurd.patch
+	-patch -N -r - -p0 < patches/PiWare.Gates.BoolTrio.Absurd.patch
+	-patch -N -r - -p0 < patches/PiWare.Synthesizable.Synth-Product.patch
+	-patch -N -r - -p0 < patches/PiWare.Simulation.eval.patch
+	-patch -N -r - -p0 < patches/PiWare.Simulation.Core.eval-causal.patch
+	-patch -N -r - -p0 < patches/PiWare.Simulation.Core.run-causal.patch
+	-patch -N -r - -p0 < patches/PiWare.ProofSamples.BoolTrioComb.xor-proof-table.patch
 
 
 $(TRGBYTECODE)/%.agdai: $(SRC)/%.lagda
