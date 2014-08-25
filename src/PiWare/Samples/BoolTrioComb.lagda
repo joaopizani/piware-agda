@@ -18,20 +18,24 @@ open import PiWare.Patterns BoolTrio using (seqsN)
 \end{code}
 
 
-%<*fundamentals>
+%<*constants>
 \begin{code}
 ⊥ℂ ⊤ℂ : ℂ ⊤ B
 ⊥ℂ = Mkℂ (Gate FalseConst#)
 ⊤ℂ = Mkℂ (Gate TrueConst#)
+\end{code}
+%</constants>
 
+%<*booltrio>
+\begin{code}
 ¬ℂ : ℂ B B
-¬ℂ = Mkℂ (Gate Not#)
-
 ∧ℂ ∨ℂ : ℂ (B × B) B
+
+¬ℂ = Mkℂ (Gate Not#)
 ∧ℂ = Mkℂ (Gate And#) 
 ∨ℂ = Mkℂ (Gate Or#)
 \end{code}
-%</fundamentals>
+%</booltrio>
 
 
 %<*idN>
@@ -49,12 +53,15 @@ idNℂ n = seqsN n pid
 \end{code}
 %</nand>
 
+\begin{code}
+idℂ = pid
+\end{code}
 %<*xor>
 \begin{code}
 ⊻ℂ : ℂ (B × B) B
-⊻ℂ =   pFork×
-     ⟫ (¬ℂ || pid ⟫ ∧ℂ) || (pid || ¬ℂ ⟫ ∧ℂ)
-     ⟫ ∨ℂ
+⊻ℂ =  pFork×
+      ⟫ (¬ℂ || idℂ ⟫ ∧ℂ) || (idℂ || ¬ℂ ⟫ ∧ℂ)
+      ⟫ ∨ℂ
 \end{code}
 %</xor>
 
