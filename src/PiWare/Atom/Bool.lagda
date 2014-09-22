@@ -4,10 +4,14 @@ module PiWare.Atom.Bool where
 open import Data.Bool using (true; false) renaming (Bool to B)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (ℕ; suc)
+open import Data.List using (_∷_) renaming ([] to ε)
+open import Data.String using ()
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import PiWare.Atom using (Atomic)
+
+open import VHDL.AST as VHDL using (TypeDecl; Expr; BasicIdent; TDE; PrimName; NSimple)
 \end{code}
 
 
@@ -57,6 +61,26 @@ private
   \end{code}
   %</inv-right-Bool>
 
+  %<*BoolSyn>
+  \begin{code}
+  BoolSyn : VHDL.TypeDecl
+  BoolSyn = record { ident = BasicIdent "Boolean"
+                   ; def   = TDE (record { idents = identFalse ∷ identTrue ∷ ε }) }
+      where
+          identFalse = BasicIdent "false"
+          identTrue  = BasicIdent "true"
+  \end{code}
+  %</BoolSyn>
+
+  %<*nToBoolSyn>
+  \begin{code}
+  n→BoolSyn : Fin |B| → VHDL.Expr
+  n→BoolSyn False#       = PrimName (NSimple (BasicIdent "false"))
+  n→BoolSyn True#        = PrimName (NSimple (BasicIdent "true"))
+  n→BoolSyn (Absurd# ())
+  \end{code}
+  %</nToBoolSyn>
+
 
 %<*Atomic-Bool>
 \begin{code}
@@ -69,6 +93,9 @@ Atomic-B = record {
    
     ; inv-left  = inv-left-B
     ; inv-right = inv-right-B
+
+    ; AtomSyn   = BoolSyn
+    ; n→atomSyn = n→BoolSyn
     }
 \end{code}
 %</Atomic-Bool>
