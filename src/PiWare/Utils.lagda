@@ -27,6 +27,14 @@ unzip⁺ ((x , y) ∷ zs) = let (xs , ys) = unzip zs in (x ∷ xs , y ∷ ys)
 %</unzip-nonempty>
 
 
+%<*uncurry-nonempty>
+\begin{code}
+uncurry⁺ : {α γ : Set} → (α → List α → γ) → List⁺ α → γ
+uncurry⁺ f (x ∷ xs) = f x xs
+\end{code}
+%</uncurry-nonempty>
+
+
 %<*splitAt-noproof>
 \begin{code}
 splitAt' : {α : Set} (m : ℕ) {n : ℕ} → Vec α (m + n) → Vec α m × Vec α n
@@ -40,6 +48,7 @@ splitAt⁺ : {α : Set} (m : ℕ) {n : ℕ} → List⁺ (Vec α (m + n)) → Lis
 splitAt⁺ m = map⁺ (splitAt' m)
 \end{code}
 %</splitAt-nonempty>
+
 
 %<*seggregateSums>
 \begin{code}

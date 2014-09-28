@@ -3,7 +3,9 @@ module Data.CausalStream where
 
 open import Data.Product using (_,_; uncurry′)
 open import Data.List using (List; []; _∷_)
-open import Data.List.NonEmpty using (List⁺) renaming ([_] to [_]⁺)
+open import Data.List.NonEmpty using (List⁺; _∷_) renaming ([_] to [_]⁺)
+
+open import PiWare.Utils using (uncurry⁺)
 \end{code}
 
 
@@ -23,13 +25,13 @@ _⇒ᶜ_ : (α β : Set) → Set
 \end{code}
 %</causal-step>
 
--- Needs to use the trick with tails' and uncurry to "convince" the termination checker
+-- Needs to use the trick with tails⁺' and uncurry⁺ to "convince" the termination checker
 %<*tails-nonempty>
 \begin{code}
 tails⁺ : ∀ {α} → Γᶜ α → List⁺ (List⁺ α)
-tails⁺ {α} = uncurry′ tails⁺'
+tails⁺ {α} = uncurry⁺ tails⁺'
     where tails⁺' : α → List α → List⁺ (List⁺ α)
-          tails⁺' x₀ []        = [ x₀ , [] ]⁺
-          tails⁺' x₀ (x₁ ∷ xs) = let (t₁ , ts) = tails⁺' x₁ xs  in  (x₀ , x₁ ∷ xs) , (t₁ ∷ ts)
+          tails⁺' x₀ []        = [ x₀ ∷ [] ]⁺
+          tails⁺' x₀ (x₁ ∷ xs) = let (t₁ ∷ ts) = tails⁺' x₁ xs  in  (x₀ ∷ x₁ ∷ xs) ∷ (t₁ ∷ ts)
 \end{code}
 %</tails-nonempty>

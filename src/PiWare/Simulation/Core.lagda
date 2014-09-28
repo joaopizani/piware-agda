@@ -11,9 +11,9 @@ open import Data.Product using (_×_; _,_; proj₁; uncurry′) renaming (map to
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Stream using (Stream; _∷_)
 open import Data.List using (List; []; _∷_; map)
-open import Data.List.NonEmpty using (List⁺) renaming (map to map⁺)
+open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺)
 open import Data.CausalStream using (Γᶜ; _⇒ᶜ_; tails⁺)
-open import PiWare.Utils using (unzip⁺; splitAt'; splitAt⁺)
+open import PiWare.Utils using (unzip⁺; splitAt'; splitAt⁺; uncurry⁺)
 open import Data.Vec using (Vec; _++_; lookup; replicate; allFin; drop)
                      renaming ([] to ε; _∷_ to _◁_; take to takeᵥ; map to mapᵥ)
 
@@ -56,7 +56,7 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 %<*delay>
 \begin{code}
 delay : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i ⇒ᶜ W (o + l)
-delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
+delay {i} {o} {l} c {p} = uncurry⁺ (delay' {i} {o} {l} c {p})
   where
     delay' : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i → List (W i) → W (o + l)
     delay' {_} {_} c {p} w⁰ [] = ⟦ c ⟧' {p} (w⁰ ++ replicate (n→atom Fz))
@@ -68,24 +68,24 @@ delay {i} {o} {l} c {p} = uncurry′ (delay' {i} {o} {l} c {p})
 %<*eval-causal>
 \begin{code}
 ⟦_⟧ᶜ : {i o : ℕ} → ℂ' i o → (W i ⇒ᶜ W o)
-⟦ Nil     ⟧ᶜ (w⁰ , _) = ⟦ Nil ⟧' w⁰
-⟦ Gate g# ⟧ᶜ (w⁰ , _) = ⟦ Gate g# ⟧' w⁰
-⟦ Plug p  ⟧ᶜ (w⁰ , _) = plugOutputs p w⁰
+⟦ Nil     ⟧ᶜ (w⁰ ∷ _) = ⟦ Nil ⟧' w⁰
+⟦ Gate g# ⟧ᶜ (w⁰ ∷ _) = ⟦ Gate g# ⟧' w⁰
+⟦ Plug p  ⟧ᶜ (w⁰ ∷ _) = plugOutputs p w⁰
 ⟦ DelayLoop {o = j} c {p} ⟧ᶜ = takeᵥ j ∘ delay {o = j} c {p}
 ⟦ c₁ ⟫' c₂ ⟧ᶜ = ⟦ c₂ ⟧ᶜ ∘ map⁺ ⟦ c₁ ⟧ᶜ ∘ tails⁺
 ⟦ _|'_ {i₁} c₁ c₂ ⟧ᶜ = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘ unzip⁺ ∘ splitAt⁺ i₁
-⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ , w⁻) with untag {i₁} w⁰ | untagList {i₁} w⁻
-... | inj₁ w⁰₁ | w⁻₁ , _   = ⟦ c₁ ⟧ᶜ (w⁰₁ , w⁻₁)
-... | inj₂ w⁰₂ | _   , w⁻₂ = ⟦ c₂ ⟧ᶜ (w⁰₂ , w⁻₂)
+⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ ∷ w⁻) with untag {i₁} w⁰ | untagList {i₁} w⁻
+... | inj₁ w⁰₁ | w⁻₁ , _   = ⟦ c₁ ⟧ᶜ (w⁰₁ ∷ w⁻₁)
+... | inj₂ w⁰₂ | _   , w⁻₂ = ⟦ c₂ ⟧ᶜ (w⁰₂ ∷ w⁻₂)
 \end{code}
 %</eval-causal>
 
 %<*run-causal>
 \begin{code}
 runᶜ : ∀ {α β} → (α ⇒ᶜ β) → (Stream α → Stream β)
-runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ , []) , ♭ x⁺)
+runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ ∷ []) , ♭ x⁺)
     where runᶜ' : ∀ {α β} → (α ⇒ᶜ β) → (Γᶜ α × Stream α) → Stream β
-          runᶜ' f ((x⁰ , x⁻) , (x¹ ∷ x⁺)) = f (x⁰ , x⁻) ∷ ♯ runᶜ' f ((x¹ , x⁰ ∷ x⁻) , ♭ x⁺)
+          runᶜ' f ((x⁰ ∷ x⁻) , (x¹ ∷ x⁺)) = f (x⁰ ∷ x⁻) ∷ ♯ runᶜ' f ((x¹ ∷ x⁰ ∷ x⁻) , ♭ x⁺)
 \end{code}
 %</run-causal>
 
