@@ -20,8 +20,13 @@ open Atomic At using (Atom#)
 -- "High-level" circuit types, packing the synthesizable instances
 %<*Circuit>
 \begin{code}
-data ℂ (α β : Set) {i j : ℕ} : Set where
-    Mkℂ : ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ' i j → ℂ α β {i} {j}
+record ℂ (α β : Set) {i j : ℕ} : Set where
+    constructor Mkℂ
+    field
+        ⦃ sα ⦄ : ⇓W⇑ α {i}
+        ⦃ sβ ⦄ : ⇓W⇑ β {j}
+        base   : ℂ' i j
+
 \end{code}
 %</Circuit>
 
