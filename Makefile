@@ -6,7 +6,7 @@ TRGLATEX=latex
 all: bytecode tex
 
 bytecode: \
-    $(TRGBYTECODE)/Data/CausalStream.agdai \
+	$(TRGBYTECODE)/Data/CausalStream.agdai \
 	$(TRGBYTECODE)/PiWare/Utils.agdai \
 	$(TRGBYTECODE)/PiWare/Atom.agdai \
 	$(TRGBYTECODE)/PiWare/Atom/Bool.agdai \
