@@ -1,14 +1,20 @@
 \begin{code}
 module PiWare.Samples.AndN where
 
+open import Function using (id)
 open import Data.Nat using (zero; suc; _*_)
 open import Data.Bool using () renaming (Bool to B)
 open import Data.Unit using (tt)
 open import Data.Product using (_,_; proj₂)
 open import Data.Vec using (Vec)
 
+import Algebra as A
+import Data.Nat.Properties as NP
+open import Relation.Binary.PropositionalEquality using (sym)
+open module CS = A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
+
 open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Synthesizable Atomic-B using (⇓W⇑-Vec)
+open import PiWare.Synthesizable Atomic-B using (⇓W⇑[_,_])
 open import PiWare.Synthesizable.Bool using (⇓W⇑-B)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio; TrueConst#; And#)
@@ -36,14 +42,14 @@ andN'-comb (suc n) = (tt , andN'-comb n) , tt
 
 %<*andN>
 \begin{code}
-andN : ∀ n → ℂ (Vec B n) B
-andN n = Mkℂ (andN' (n * 1))
+andN : ∀ n → ℂ (Vec B n) B {n} {1}
+andN k = Mkℂ ⦃ sα = ⇓W⇑[ id , id ] ⦄ (andN' k)
 \end{code}
 %</andN>
 
 %<*andN-comb>
 \begin{code}
 andN-comb : ∀ n → comb (andN n)
-andN-comb n = andN'-comb (n * 1)
+andN-comb = andN'-comb
 \end{code}
 %</andN-comb>

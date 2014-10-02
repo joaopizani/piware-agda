@@ -4,7 +4,7 @@ open import PiWare.Atom
 module PiWare.Synthesizable (At : Atomic) where
 
 open import Function using (_∘_; _$_; const)
-open import Data.Product using (_×_; _,_; proj₁)
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Unit using (⊤; tt)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
@@ -12,7 +12,10 @@ open import Data.Nat using (ℕ; suc; _+_; _*_; _≟_; _⊔_)
 open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
 open import Data.List using (List) renaming (map to mapₗ)
 
-open import Relation.Binary.PropositionalEquality using (_≢_; refl)
+import Algebra as A
+import Data.Nat.Properties as NP
+open module CS = A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
+open import Relation.Binary.PropositionalEquality using (_≢_; refl; sym)
 open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding using (padFst; unpadFst; padSnd; unpadSnd)
