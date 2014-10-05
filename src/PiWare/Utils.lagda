@@ -2,34 +2,34 @@
 module PiWare.Utils where
 
 open import Function using (id)
-open import Data.Product using (_×_; _,_; proj₁; <_,_>) renaming (map to mapₚ)
+open import Data.Nat using (ℕ; _+_)
+open import Data.Product using (_×_; _,_; proj₁; <_,_>; map)
 open import Data.Sum using (_⊎_; isInj₁; isInj₂)
 open import Data.Vec using (Vec; splitAt)
 open import Data.List using (List; gfilter; _∷_; [])
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺)
-open import Data.Nat using (ℕ; zero; suc; _+_)
 \end{code}
 
 
 %<*unzip>
 \begin{code}
-unzip : ∀ {ℓ₁ ℓ₂} → {α : Set ℓ₁} {β : Set ℓ₂} → List (α × β) → List α × List β
+unzip : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} → List (α × β) → List α × List β
 unzip []             = [] , []
-unzip ((x , y) ∷ zs) = let (xs , ys) = unzip zs in (x ∷ xs , y ∷ ys)
+unzip ((x , y) ∷ zs) = map (_∷_ x) (_∷_ y) (unzip zs)
 \end{code}
 %</unzip>
 
 %<*unzip-nonempty>
 \begin{code}
-unzip⁺ : ∀ {ℓ₁ ℓ₂} → {α : Set ℓ₁} {β : Set ℓ₂} → List⁺ (α × β) → List⁺ α × List⁺ β
-unzip⁺ ((x , y) ∷ zs) = let (xs , ys) = unzip zs in (x ∷ xs , y ∷ ys)
+unzip⁺ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} → List⁺ (α × β) → List⁺ α × List⁺ β
+unzip⁺ ((x , y) ∷ zs) = map (_∷_ x) (_∷_ y) (unzip zs)
 \end{code}
 %</unzip-nonempty>
 
 
 %<*uncurry-nonempty>
 \begin{code}
-uncurry⁺ : {α γ : Set} → (α → List α → γ) → List⁺ α → γ
+uncurry⁺ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {γ : Set ℓ₂} → (α → List α → γ) → List⁺ α → γ
 uncurry⁺ f (x ∷ xs) = f x xs
 \end{code}
 %</uncurry-nonempty>
@@ -37,14 +37,14 @@ uncurry⁺ f (x ∷ xs) = f x xs
 
 %<*splitAt-noproof>
 \begin{code}
-splitAt' : {α : Set} (m : ℕ) {n : ℕ} → Vec α (m + n) → Vec α m × Vec α n
-splitAt' m v = mapₚ id proj₁ (splitAt m v)
+splitAt' : ∀ {ℓ} {α : Set ℓ} (m : ℕ) {n : ℕ} → Vec α (m + n) → Vec α m × Vec α n
+splitAt' m v = map id proj₁ (splitAt m v)
 \end{code}
 %</splitAt-noproof>
 
 %<*splitAt-nonempty>
 \begin{code}
-splitAt⁺ : {α : Set} (m : ℕ) {n : ℕ} → List⁺ (Vec α (m + n)) → List⁺ (Vec α m × Vec α n)
+splitAt⁺ : ∀ {ℓ} {α : Set ℓ} (m : ℕ) {n : ℕ} → List⁺ (Vec α (m + n)) → List⁺ (Vec α m × Vec α n)
 splitAt⁺ m = map⁺ (splitAt' m)
 \end{code}
 %</splitAt-nonempty>
@@ -52,7 +52,7 @@ splitAt⁺ m = map⁺ (splitAt' m)
 
 %<*seggregateSums>
 \begin{code}
-seggregateSums : {α β : Set} → List (α ⊎ β) → List α × List β
+seggregateSums : ∀ {ℓ} {α β : Set ℓ} → List (α ⊎ β) → List α × List β
 seggregateSums = < gfilter isInj₁ , gfilter isInj₂ >
 \end{code}
 %</seggregateSums>

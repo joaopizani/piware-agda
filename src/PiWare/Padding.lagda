@@ -2,7 +2,7 @@
 module PiWare.Padding where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_; _≤_; z≤n; s≤s)
-open import Data.Product using (∃; _,_)
+open import Data.Product using (_,_; Σ; Σ-syntax)
 open import Data.Vec using (Vec; _++_; replicate; take)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
@@ -23,8 +23,8 @@ data _⊔''_ : ℕ → ℕ → Set where
 \begin{code}
 _⊔'_ : (a b : ℕ) → a ⊔'' b
 zero     ⊔' zero    = max₁ refl z≤n
-zero     ⊔' (suc _) = max₂ refl z≤n
 (suc _)  ⊔' zero    = max₁ refl z≤n
+zero     ⊔' (suc _) = max₂ refl z≤n
 (suc a') ⊔' (suc b') with a' ⊔' b'
 (suc a') ⊔' (suc b') | max₁ a⊔b≡a b≤a = max₁ (cong suc a⊔b≡a) (s≤s b≤a)
 (suc a') ⊔' (suc b') | max₂ a⊔b≡b a≤b = max₂ (cong suc a⊔b≡b) (s≤s a≤b)
@@ -34,8 +34,8 @@ zero     ⊔' (suc _) = max₂ refl z≤n
 -- Given a ≤ relation between two naturals, return the (proven) difference (δ)
 %<*getDelta>
 \begin{code}
-getδ : ∀ {x y} → x ≤ y → ∃ λ δ → y ≡ x + δ
-getδ z≤n                   = _ , refl
+getδ : ∀ {x y} → x ≤ y → Σ[ δ ∈ ℕ ] y ≡ x + δ
+getδ z≤n = _ , refl
 getδ (s≤s z≤w) with getδ z≤w
 getδ (s≤s z≤w) | δ , w≡z+δ = δ , cong suc w≡z+δ
 \end{code}
