@@ -14,7 +14,7 @@ open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; _≡_; refl)
 open Relation.Binary.PropositionalEquality.≡-Reasoning
 
-open import PiWare.Circuit.Core Gt using (ℂ'; Plug; _⟫'_; _|'_)
+open import PiWare.Circuit.Core Gt using (ℂ'; Plug; _⟫'_; _|'_; _Named_)
 \end{code}
 
 

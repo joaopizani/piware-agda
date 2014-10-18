@@ -10,7 +10,8 @@ open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio; FalseConst#; TrueConst#; Not#; And#; Or#)
 open import PiWare.Circuit.Core BoolTrio using (Gate)
-open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL; pFst; pSnd)
+open import PiWare.Plugs BoolTrio
+    using (pFork×; pFork×^; pid; pid^; pALR; pALR^; pARL; pARL^; pFst; pFst^; pSnd; pSnd^)
 open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; _named_)
 \end{code}
 
@@ -53,8 +54,8 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; _named_)
      ⟫ ∨ℂ
 
 ⊻ℂ^ = c named "xor" where
-  c =   pFork×
-      ⟫ (¬ℂ^ || pid ⟫ ∧ℂ^) || (pid || ¬ℂ^ ⟫ ∧ℂ^)
+  c =   pFork×^
+      ⟫ (¬ℂ^ || pid^ ⟫ ∧ℂ^) || (pid^ || ¬ℂ^ ⟫ ∧ℂ^)
       ⟫ ∨ℂ^
 \end{code}
 %</xor>
@@ -68,7 +69,7 @@ hadd =   pFork×
        ⟫ ∧ℂ || ⊻ℂ
 
 hadd^ = c named "hadd" where
-  c =   pFork×
+  c =   pFork×^
       ⟫ ∧ℂ^ || ⊻ℂ^
 \end{code}
 %</hadd>
@@ -84,11 +85,11 @@ fadd =   hadd || pid
        ⟫ ∨ℂ   || pid
 
 fadd^ = c named "fadd" where
-  c =   hadd^ || pid
-      ⟫      pALR
-      ⟫ pid   || hadd^
-      ⟫      pARL
-      ⟫ ∨ℂ^   || pid
+  c =   hadd^ || pid^
+      ⟫      pALR^
+      ⟫ pid^  || hadd^
+      ⟫      pARL^
+      ⟫ ∨ℂ^   || pid^
 \end{code}
 %</fadd>
 
@@ -103,8 +104,8 @@ mux2to1 =   pFork×
           ⟫ ∨ℂ
 
 mux2to1^ = c named "mux2to1" where
-  c =   pFork×
-      ⟫ (¬ℂ^ || pFst ⟫ ∧ℂ^) || (pid || pSnd ⟫ ∧ℂ^)
+  c =   pFork×^
+      ⟫ (¬ℂ^ || pFst^ ⟫ ∧ℂ^) || (pid^ || pSnd^ ⟫ ∧ℂ^)
       ⟫ ∨ℂ^
 \end{code}
 %</mux2to1>
