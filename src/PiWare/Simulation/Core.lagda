@@ -21,7 +21,8 @@ open import Relation.Binary.PropositionalEquality using (refl)
 open import Coinduction using (♯_; ♭)
 
 open import PiWare.Synthesizable At using (W; untag; untagList)
-open import PiWare.Circuit.Core Gt using (ℂ'; comb'; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_)
+open import PiWare.Circuit.Core Gt
+    using (ℂ'; comb'; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
 open Atomic At using (Atom#; n→atom)
 open Gates At Gt using (spec)
 \end{code}
@@ -43,6 +44,7 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 ⟦ Nil ⟧' = const ε
 ⟦ Gate g#  ⟧' = spec g#
 ⟦ Plug p   ⟧' = plugOutputs p
+⟦ c Named _ ⟧' {p} = ⟦ c ⟧' {p}
 ⟦ c₁ ⟫' c₂ ⟧' {p₁ , p₂} = ⟦ c₂ ⟧' {p₂} ∘ ⟦ c₁ ⟧' {p₁}
 ⟦ _|'_  {i₁} c₁ c₂ ⟧' {p₁ , p₂} = uncurry′ _++_ ∘ mapₚ (⟦ c₁ ⟧' {p₁}) (⟦ c₂ ⟧' {p₂}) ∘ splitAt' i₁
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧' {p₁ , p₂} = [ ⟦ c₁ ⟧' {p₁} , ⟦ c₂ ⟧' {p₂} ]′ ∘ untag {i₁}
@@ -71,6 +73,7 @@ delay {i} {o} {l} c {p} = uncurry⁺ (delay' {i} {o} {l} c {p})
 ⟦ Nil     ⟧ᶜ (w⁰ ∷ _) = ⟦ Nil ⟧' w⁰
 ⟦ Gate g# ⟧ᶜ (w⁰ ∷ _) = ⟦ Gate g# ⟧' w⁰
 ⟦ Plug p  ⟧ᶜ (w⁰ ∷ _) = plugOutputs p w⁰
+⟦ c Named _ ⟧ᶜ = ⟦ c ⟧ᶜ
 ⟦ DelayLoop {o = j} c {p} ⟧ᶜ = takeᵥ j ∘ delay {o = j} c {p}
 ⟦ c₁ ⟫' c₂ ⟧ᶜ = ⟦ c₂ ⟧ᶜ ∘ map⁺ ⟦ c₁ ⟧ᶜ ∘ tails⁺
 ⟦ _|'_ {i₁} c₁ c₂ ⟧ᶜ = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘ unzip⁺ ∘ splitAt⁺ i₁

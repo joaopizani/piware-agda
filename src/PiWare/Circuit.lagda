@@ -7,11 +7,12 @@ module PiWare.Circuit {At : Atomic} (Gt : Gates At) where
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
+open import Data.String using (String)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 open import PiWare.Circuit.Core Gt
-     using (ℂ'; comb'; DelayLoop; _⟫'_; _|'_; _|+'_; _comb⟫'_; _comb|'_; _comb|+'_)
+     using (ℂ'; comb'; DelayLoop; _⟫'_; _|'_; _|+'_; _comb⟫'_; _comb|'_; _comb|+'_; _Named_)
 
 open Atomic At using (Atom#) 
 \end{code}
@@ -40,6 +41,13 @@ comb (Mkℂ c') = comb' c'
 
 
 -- "Smart constructors"
+%<*named>
+\begin{code}
+_named_ : ∀ {α i β j} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ α β {i} {j} → String → ℂ α β {i} {j}
+_named_ ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') s = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (c' Named s)
+\end{code}
+$</named>
+
 %<*delayC>
 \begin{code}
 delayℂ : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
