@@ -17,16 +17,14 @@ open import PiWare.Samples.BoolTrioComb using (⊥ℂ; ¬ℂ; ∨ℂ; mux2to1)
 
 %<*shift>
 \begin{code}
-shift shift^ : ℂ B B
-shift^ = shift named "shift"
+shift : ℂ B B
 shift = delayℂ pSwap
 \end{code}
 %</shift>
 
 %<*toggle>
 \begin{code}
-toggle toggle^ : ℂ ⊤ B
-toggle^ = toggle named "toggle"
+toggle : ℂ ⊤ B
 toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
 \end{code}
 %</toggle>
@@ -34,8 +32,7 @@ toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
 -- input × load → out
 %<*reg>
 \begin{code}
-reg reg^ : ℂ (B × B) B
-reg^ = reg named "reg"
+reg : ℂ (B × B) B
 reg = delayℂ comb
     where rearrange = pSwap || pid  ⟫  pALR  ⟫  pid || pSwap
           comb      = rearrange  ⟫  mux2to1  ⟫  pFork×
@@ -43,7 +40,7 @@ reg = delayℂ comb
 %</reg>
 
 
--- (attempt at) generically-sized mux (to use the |+ constructor)
+-- (attempt at) generically-sized mux
 -- \begin{code}
 -- mux : (n : ℕ) → let A = Vec B n  in  ℂ (A × Vec B (2 ^ n)) B {2 ^ n} {1}
 -- mux zero = pSnd ⟫ pSingletonOut

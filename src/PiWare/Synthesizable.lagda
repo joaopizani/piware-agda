@@ -84,6 +84,7 @@ instance
 
 %<*Synth-Product>
 \begin{code}
+instance
   ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
   ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : (α × β) → W (i + j)
@@ -97,6 +98,7 @@ instance
 
 %<*Synth-Vec>
 \begin{code}
+instance
   ⇓W⇑-Vec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
   ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
       where group' : {α : Set} (n k : ℕ) → Vec α (n * k) → Vec (Vec α k) n
@@ -112,6 +114,7 @@ instance
 
 %<*Synth-Sum>
 \begin{code}
+instance
   ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
   ⇓W⇑-⊎ {α} {i} {β} {j} n m p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : α ⊎ β → W (suc (i ⊔ j))

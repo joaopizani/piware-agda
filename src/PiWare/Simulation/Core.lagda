@@ -65,7 +65,6 @@ delay {i} {o} {l} c {p} = uncurry⁺ (delay' {i} {o} {l} c {p})
     delay' {_} {o} c {p} w⁰ (w⁻¹ ∷ w⁻) = ⟦ c ⟧' {p} (w⁰ ++ drop o (delay' {_} {o} c {p} w⁻¹ w⁻))
 \end{code}
 %</delay>
--- HERE, (⟦ c ⟧' {p} (w⁰ ++ b⁻¹)), in the time difference between w⁰ and b⁻¹, resides the delay!
 
 %<*eval-causal>
 \begin{code}

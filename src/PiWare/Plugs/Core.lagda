@@ -30,18 +30,20 @@ open module CS = A.CommutativeSemiring NP.commutativeSemiring
 %<*pSwap-core>
 \begin{code}
 pSwap' : ∀ {n m} → ℂ' (n + m) (m + n)
-pSwap' {n} {m} with n + m ≟ 0
-pSwap' {n} {m} | yes _ rewrite +-comm n m = Plug id
-pSwap' {n} {m} | no ¬p = Plug (finSwap {fromWitnessFalse ¬p})
-  where finSwap : {¬ze : False (n + m ≟ 0) } → Fin (m + n) → Fin (n + m)
-        finSwap {¬ze} x = _mod_ (toℕ x + m) (n + m) {¬ze}
+pSwap' {n} {m} = p n m Named "pSwap"
+  where p : ∀ n m → ℂ' (n + m) (m + n)
+        p n m with n + m ≟ 0
+        p n m | yes _ rewrite +-comm n m = Plug id
+        p n m | no ¬z = Plug $ finSwap (fromWitnessFalse ¬z)
+           where finSwap : False (n + m ≟ 0) → Fin (m + n) → Fin (n + m)
+                 finSwap ¬z x = _mod_ (toℕ x + m) (n + m) {¬z}
 \end{code}
 %</pSwap-core>
 
 %<*pid-core>
 \begin{code}
 pid' : ∀ {n} → ℂ' n n
-pid' = Plug id
+pid' = Plug id Named "pid"
 \end{code}
 %</pid-core>
 
@@ -49,15 +51,16 @@ pid' = Plug id
 %<*pALR-core>
 \begin{code}
 pALR' : ∀ {w v y} → ℂ' ((w + v) + y) (w + (v + y))
-pALR' {w} {v} {y} = Plug p  where p : Fin (w + (v + y)) → Fin ((w + v) + y)
-                                  p x rewrite +-assoc w v y = x
+pALR' {w} {v} {y} = Plug p Named "pALR"
+  where p : Fin (w + (v + y)) → Fin ((w + v) + y)
+        p x rewrite +-assoc w v y = x
 \end{code}
 %</pALR-core>
 
 %<*pARL-core>
 \begin{code}
 pARL' : ∀ {w v y : ℕ} → ℂ' (w + (v + y)) ((w + v) + y)
-pARL' {w} {v} {y} = Plug p
+pARL' {w} {v} {y} = Plug p Named "pARL"
   where p : Fin ((w + v) + y) → Fin (w + (v + y))
         p x rewrite sym (+-assoc w v y) = x
 \end{code}
@@ -67,19 +70,19 @@ pARL' {w} {v} {y} = Plug p
 %<*pIntertwine-core>
 \begin{code}
 pIntertwine' : ∀ {a b c d} → ℂ' ((a + b) + (c + d)) ((a + c) + (b + d))
-pIntertwine' {a} {b} {c} {d} =
-        pALR' {a} {b} {c + d}
-    ⟫'  _|'_ {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
-    ⟫'  _|'_ {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
-    ⟫'  _|'_ {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
-    ⟫'  pARL' {a} {c} {b + d}
+pIntertwine' {a} {b} {c} {d} = p Named "pIntertwine"
+  where p =    pALR' {a} {b} {c + d}
+            ⟫' _|'_ {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
+            ⟫' _|'_ {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
+            ⟫' _|'_ {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
+            ⟫'  pARL' {a} {c} {b + d}
 \end{code}
 %</pIntertwine-core>
 
 %<*pHead-core>
 \begin{code}
 pHead' : ∀ {n w} → ℂ' (suc n * w) w
-pHead' {n} {w} = Plug (inject+ (n * w))
+pHead' {n} {w} = Plug (inject+ (n * w)) Named "pHead"
 \end{code}
 %</pHead-core>
 
@@ -98,7 +101,7 @@ twiceSuc = solve 2 eq refl where
 %<*pVecHalf-core>
 \begin{code}
 pVecHalf' : ∀ {n w} → ℂ' ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
-pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
+pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id Named "pVecHalf"
 \end{code}
 %</pVecHalf-core>
 
@@ -133,7 +136,7 @@ pVecHalfPowEq (suc n) w = begin
 %<*pVecHalfPow-core>
 \begin{code}
 pVecHalfPow' : ∀ {n w} → ℂ' ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
-pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
+pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id Named "pVecHalfPow"
 \end{code}
 %</pVecHalfPow-core>
 
@@ -141,20 +144,21 @@ pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
 \begin{code}
 pFork' : ∀ {k n} → ℂ' n (k * n)
 pFork' {k} {zero}  rewrite *-right-zero k = pid'
-pFork' {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
+pFork' {k} {suc m} = p Named "pFork"
+  where p = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
 \end{code}
 %</pFork-core>
 
 %<*pFst-core>
 \begin{code}
 pFst' : ∀ {m n} → ℂ' (m + n) m
-pFst' {m} {n} = Plug (inject+ n)
+pFst' {m} {n} = Plug (inject+ n) Named "pFst"
 \end{code}
 %</pFst-core>
 
 %<*pSnd-core>
 \begin{code}
 pSnd' : ∀ {m n} → ℂ' (m + n) n
-pSnd' {m} {n} = Plug (raise m)
+pSnd' {m} {n} = Plug (raise m) Named "pSnd"
 \end{code}
 %</pSnd-core>
