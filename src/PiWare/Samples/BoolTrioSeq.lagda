@@ -39,17 +39,3 @@ reg = delayℂ comb
 \end{code}
 %</reg>
 
-
--- (attempt at) generically-sized mux
--- \begin{code}
--- mux : (n : ℕ) → let A = Vec B n  in  ℂ (A × Vec B (2 ^ n)) B {2 ^ n} {1}
--- mux zero = pSnd ⟫ pSingletonOut
--- mux (suc n) rewrite (proj₂ +-identity) (2 ^ n) =
---       pUncons || pid
---     ⟫        pALR
---     ⟫ pid ||  pFork× || pVecHalfPow
---     ⟫ pid ||     pIntertwine
---     ⟫ pid ||   mux n || mux n
---     ⟫              mux2to1
--- \end{code}
--- %</sample-mux>
