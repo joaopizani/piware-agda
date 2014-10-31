@@ -20,7 +20,7 @@ open import PiWare.Simulation Gt using (⟦_⟧)
 \end{code}
 
 
-%<*seqproof'>
+%<*seqproof-eq-core>
 \begin{code}
 _⟫≡'_ :
     {i m o : ℕ} {f₁ : W i → W m} {f₂ : W m → W o}
@@ -30,9 +30,9 @@ _⟫≡'_ :
     → ((v : W i) → ⟦_⟧' {i} {o} (c₁ ⟫' c₂) {_comb⟫'_ {i} {m} {o} {c₁} {c₂} p₁ p₂} v ≡ (f₂ ∘ f₁) v)
 _⟫≡'_ {f₁ = f₁} pc₁ pc₂ v rewrite sym (pc₂ (f₁ v)) | sym (pc₁ v) = refl
 \end{code}
-%</seqproof'>
+%</seqproof-eq-core>
 
-%<*parproof'>
+%<*parproof-eq-core>
 \begin{code}
 _|≡'_ :
     {i₁ o₁ i₂ o₂ : ℕ} {f₁ : W i₁ → W o₁} {f₂ : W i₂ → W o₂}
@@ -43,13 +43,13 @@ _|≡'_ :
         ≡ f₁ v₁ ++ f₂ v₂
       )
 _|≡'_ {i₁ = i₁} {f₁ = f₁} pc₁ pc₂ v₁ v₂ with splitAt i₁ (v₁ ++ v₂)
-_|≡'_ {i₁ = i₁} {f₁ = f₁} pc₁ pc₂ v₁ v₂ | w₁ , w₂ , r = {!!}
+_|≡'_ {i₁ = i₁} {f₁ = f₁} pc₁ pc₂ v₁ v₂ | w₁ , w₂ , r rewrite pc₁ w₁ | pc₂ w₂ = {!!}
 \end{code}
-%</parproof'>
+%</parproof-eq-core>
 
 
 
-%<*spec-down>
+%<*eq-down>
 \begin{code}
 spec⇓ :
     ∀ {α i β j} → {c' : ℂ' i j} {f : W i → W j} {p : comb' c'} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄
@@ -57,10 +57,10 @@ spec⇓ :
     → ((v : W i) → ⟦_⟧' {i} {j} c' {p} v ≡ f v)
 spec⇓ ⦃ sα = sα ⦄ p⇑ v = {!!}
 \end{code}
-%</spec-down>
+%</eq-down>
 
 
-%<*seqproof>
+%<*seqproof-eq>
 \begin{code}
 _⟫≡_ :
     ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
@@ -74,10 +74,10 @@ _⟫≡_ :
       )
 _⟫≡_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ {f₁ = f₁} {f₂ = f₂} {c₁ = Mkℂ c₁'} {c₂ = Mkℂ c₂'} pc₁ pc₂ x = {!!}
 \end{code}
-%</seqproof>
+%</seqproof-eq>
 
 
-%<*parproof>
+%<*parproof-eq>
 \begin{code}
 _|≡_ :
     ∀ {α i β j γ k δ l} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
@@ -89,4 +89,4 @@ _|≡_ :
       ≡ mapₚ f₁ f₂ (x₁ , x₂)
 pc₁ |≡ pc₂ = {!!}
 \end{code}
-%</parproof>
+%</parproof-eq>
