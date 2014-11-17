@@ -51,13 +51,23 @@ _|≡'_ {i₁ = i₁} {f₁ = f₁} pc₁ pc₂ v₁ v₂ | w₁ , w₂ , r rewr
 
 %<*eq-down>
 \begin{code}
-spec⇓ :
+eq⇓ :
     ∀ {α i β j} → {c' : ℂ' i j} {f : W i → W j} {p : comb' c'} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄
     → ((x : α) → ⟦_⟧ {α} {i} {β} {j} (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c') {p} x ≡ ⇑ ⦃ sβ ⦄ (f (⇓ ⦃ sα ⦄ x)) )
     → ((v : W i) → ⟦_⟧' {i} {j} c' {p} v ≡ f v)
-spec⇓ ⦃ sα = sα ⦄ p⇑ v = {!!}
+eq⇓ ⦃ sα = sα ⦄ p⇑ v = {!!}
 \end{code}
 %</eq-down>
+
+%<*eq-up>
+\begin{code}
+eq⇑ :
+    ∀ {α i β j} → {c' : ℂ' i j} {f : W i → W j} {p : comb' c'} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄
+    → ((v : W i) → ⟦_⟧' {i} {j} c' {p} v ≡ f v)
+    → ((x : α) → ⟦_⟧ {α} {i} {β} {j} (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c') {p} x ≡ ⇑ ⦃ sβ ⦄ (f (⇓ ⦃ sα ⦄ x)) )
+eq⇑ ⦃ sα ⦄ ⦃ sβ ⦄ p⇓ x = {!!}
+\end{code}
+%</eq-up>
 
 
 %<*seqproof-eq>
