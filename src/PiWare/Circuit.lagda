@@ -22,6 +22,7 @@ open Atomic At using (Atom#)
 %<*Circuit>
 \begin{code}
 record ℂ (α β : Set) {i j : ℕ} : Set where
+    inductive
     constructor Mkℂ
     field
         ⦃ sα ⦄ : ⇓W⇑ α {i}
