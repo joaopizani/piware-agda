@@ -20,10 +20,10 @@ AGDA_MODULES=Data/CausalStream \
              PiWare/Samples/BoolTrioSeq \
              PiWare/Patterns/Core \
              PiWare/Patterns \
-             PiWare/Samples/RippleCarry \
              PiWare/ProofSamples/BoolTrioComb \
              PiWare/Samples/AndN \
-             PiWare/ProofSamples/AndN
+             PiWare/ProofSamples/AndN \
+             PiWare/Samples/RippleCarry
 
 
 all: $(AGDA_MODULES:%=$(SRC)/%.agdai)
