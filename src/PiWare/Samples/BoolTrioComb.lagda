@@ -81,10 +81,5 @@ mux2to1 =   pFork×
           ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
           ⟫ ∨ℂ
           named "mux2to1"
-
-muxGeneric2to1 : ∀ {α i} ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (α ⊎ α) α
-muxGeneric2to1 ⦃ sα ⦄ = |+ ⦃ sα ⦄ False# True# False# {nonEq} pid pid
-    where nonEq : False# ≢ True#
-          nonEq ()
 \end{code}
 %</mux2to1>
