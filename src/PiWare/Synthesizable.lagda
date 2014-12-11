@@ -3,19 +3,19 @@ open import PiWare.Atom
 
 module PiWare.Synthesizable (At : Atomic) where
 
-open import Function using (_∘_; _$_; const)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Function using (_∘_; const)
 open import Data.Unit using (⊤; tt)
+open import Data.Bool using (if_then_else_)
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
-open import Data.Fin using (Fin; toℕ) renaming (zero to Fz; suc to Fs)
-open import Data.Nat using (ℕ; suc; _+_; _*_; _≟_; _⊔_)
+open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
+open import Data.Fin.Properties using (_≟_)
+open import Data.Nat using (ℕ; suc; _+_; _*_; _⊔_)
 open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
 open import Data.List using (List) renaming (map to mapₗ)
 
-import Algebra as A
-import Data.Nat.Properties as NP
-open module CS = A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
 open import Relation.Binary.PropositionalEquality using (_≢_; refl; sym)
+open import Relation.Nullary.Decidable using (⌊_⌋)
 open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
@@ -33,7 +33,7 @@ W = Vec Atom
 %</Word>
 
 
--- Provides a mapping between "high-level" metalanguage types and words
+-- Provides a mapping between metalanguage types and words
 %<*Synth>
 \begin{code}
 record ⇓W⇑ (α : Set) {i : ℕ} : Set where
@@ -49,24 +49,18 @@ open ⇓W⇑ ⦃ ... ⦄
 \end{code}
 
 
--- Deduce Left or Right from tag. CONVENTION: smalles
+-- Deduce Left or Right from tag. CONVENTION: Right by default
 %<*untag>
 \begin{code}
-untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
-untag {i} {j} (t ◁ ab) with toℕ (atom→n t) ≟ 1
-untag {i} {j} (t ◁ ab) | yes _ = inj₂ (unpadFrom₂ i ab)
-untag {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFrom₁ j ab)
+untag : ∀ {i j} (l : Atom#) → W (suc (i ⊔ j)) → W i ⊎ W j
+untag {i} {j} l (t ◁ ab) = (if ⌊ atom→n t ≟ l ⌋ then inj₁ ∘ unpadFrom₁ j else inj₂ ∘ unpadFrom₂ i) ab
 \end{code}
 %</untag>
 
 %<*untagList>
 \begin{code}
-untagList : ∀ {i j} → List (W (suc (i ⊔ j))) → List (W i) × List (W j)
-\end{code}
-%</untagList-decl>
-%<*untagList-def>
-\begin{code}
-untagList = seggregateSums ∘ mapₗ untag
+untagList : ∀ {i j} (l : Atom#) → List (W (suc (i ⊔ j))) → List (W i) × List (W j)
+untagList l = seggregateSums ∘ mapₗ (untag l)
 \end{code}
 %</untagList>
 
@@ -88,7 +82,7 @@ instance
   ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
   ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : (α × β) → W (i + j)
-            down (a , b) = (⇓ {i = i} a) ++ (⇓ b)
+            down (a , b) = (⇓ a) ++ (⇓ b)
   
             up : W (i + j) → (α × β)
             up w with splitAt i w
@@ -115,13 +109,13 @@ instance
 %<*Synth-Sum>
 \begin{code}
 instance
-  ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
-  ⇓W⇑-⊎ {α} {i} {β} {j} n m p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
+  ⇓W⇑-⊎ : ∀ {α i β j} (l r p : Atom#) {d : l ≢ r} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
+  ⇓W⇑-⊎ {α} {i} {β} {j} l r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : α ⊎ β → W (suc (i ⊔ j))
-            down = [ (λ a → (n→atom n) ◁ (padTo₁ j withA n→atom p) (⇓ a))
-                   , (λ b → (n→atom m) ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
+            down = [ (λ a → (n→atom l) ◁ (padTo₁ j withA n→atom p) (⇓ a))
+                   , (λ b → (n→atom r) ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
             
             up : W (suc (i ⊔ j)) → α ⊎ β
-            up = map⊎ ⇑ ⇑ ∘ untag
+            up = map⊎ ⇑ ⇑ ∘ (untag l)
 \end{code}
 %</Synth-Sum>
