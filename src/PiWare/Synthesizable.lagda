@@ -49,7 +49,7 @@ open ⇓W⇑ ⦃ ... ⦄
 \end{code}
 
 
--- Sum-related tagging helpers
+-- Deduce Left or Right from tag. CONVENTION: smalles
 %<*untag>
 \begin{code}
 untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
@@ -122,6 +122,6 @@ instance
                    , (λ b → (n→atom m) ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
             
             up : W (suc (i ⊔ j)) → α ⊎ β
-            up = map⊎ (⇑ {i = i}) (⇑) ∘ untag
+            up = map⊎ ⇑ ⇑ ∘ untag
 \end{code}
 %</Synth-Sum>
