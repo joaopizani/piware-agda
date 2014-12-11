@@ -18,7 +18,7 @@ open module CS = A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
 open import Relation.Binary.PropositionalEquality using (_≢_; refl; sym)
 open import Relation.Nullary.Core using (yes; no)
 
-open import PiWare.Padding using (padFst; unpadFst; padSnd; unpadSnd)
+open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
 open import PiWare.Utils using (seggregateSums)
 open Atomic At using (Atom; Atom#; atom→n; n→atom)
 \end{code}
@@ -54,8 +54,8 @@ open ⇓W⇑ ⦃ ... ⦄
 \begin{code}
 untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
 untag {i} {j} (t ◁ ab) with toℕ (atom→n t) ≟ 1
-untag {i} {j} (t ◁ ab) | yes _ = inj₂ (unpadSnd i j ab)
-untag {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFst i j ab)
+untag {i} {j} (t ◁ ab) | yes _ = inj₂ (unpadFrom₂ i ab)
+untag {i} {j} (t ◁ ab) | no  _ = inj₁ (unpadFrom₁ j ab)
 \end{code}
 %</untag>
 
@@ -118,8 +118,8 @@ instance
   ⇓W⇑-⊎ : ∀ {α i β j} → (n m p : Atom#) {d : n ≢ m} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
   ⇓W⇑-⊎ {α} {i} {β} {j} n m p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : α ⊎ β → W (suc (i ⊔ j))
-            down = [ (λ a → (n→atom n) ◁ padFst i j (n→atom p) (⇓ a))
-                   , (λ b → (n→atom m) ◁ padSnd i j (n→atom p) (⇓ b)) ]
+            down = [ (λ a → (n→atom n) ◁ (padTo₁ j withA n→atom p) (⇓ a))
+                   , (λ b → (n→atom m) ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
             
             up : W (suc (i ⊔ j)) → α ⊎ β
             up = map⊎ (⇑ {i = i}) (⇑) ∘ untag

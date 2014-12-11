@@ -42,20 +42,20 @@ getδ (s≤s z≤w) | δ , w≡z+δ = δ , cong suc w≡z+δ
 %</getDelta>
 
 
-%<*padFst>
+%<*padToWithA>
 \begin{code}
-padFst : {α : Set} (x y : ℕ) → α → Vec α x → Vec α (x ⊔ y)
-padFst x y e v with x ⊔' y
+padTo₁_withA_ : ∀ {ℓ} {α : Set ℓ} {x} y → α → Vec α x → Vec α (x ⊔ y)
+padTo₁_withA_ {x = x} y e v with x ⊔' y
 ... | max₁ x⊔y≡x y≤x rewrite x⊔y≡x = v
 ... | max₂ x⊔y≡y x≤y rewrite x⊔y≡y with getδ x≤y
 ...     | δ , y≡x+δ rewrite y≡x+δ = v ++ replicate e
 \end{code}
-%</padFst>
+%</padToWithA>
 
 %<*padSnd>
 \begin{code}
-padSnd : {α : Set} (x y : ℕ) → α → Vec α y → Vec α (x ⊔ y)
-padSnd x y e v with x ⊔' y
+padTo₂_withA_ : ∀ {ℓ} {α : Set ℓ} {y} x → α → Vec α y → Vec α (x ⊔ y)
+padTo₂_withA_ {y = y} x e v with x ⊔' y
 ... | max₂ x⊔y≡y x≤y rewrite x⊔y≡y = v
 ... | max₁ x⊔y≡x y≤x rewrite x⊔y≡x with getδ y≤x
 ...     | δ , x≡y+δ rewrite x≡y+δ = v ++ replicate e
@@ -64,20 +64,20 @@ padSnd x y e v with x ⊔' y
 
 %<*unpadFst>
 \begin{code}
-unpadFst : {α : Set} (x y : ℕ) → Vec α (x ⊔ y) → Vec α x
-unpadFst x y v with x ⊔' y
-unpadFst x y v | max₁ x⊔y≡x y≤x rewrite x⊔y≡x = v
-unpadFst x y v | max₂ x⊔y≡y x≤y rewrite x⊔y≡y with getδ x≤y
-...                | _ , y≡x+δ rewrite y≡x+δ = take x v
+unpadFrom₁ : ∀ {ℓ} {α : Set ℓ} {x} y → Vec α (x ⊔ y) → Vec α x
+unpadFrom₁ {x = x} y v with x ⊔' y
+... | max₁ x⊔y≡x y≤x rewrite x⊔y≡x = v
+... | max₂ x⊔y≡y x≤y rewrite x⊔y≡y with getδ x≤y
+...                                | _ , y≡x+δ rewrite y≡x+δ = take x v
 \end{code}
 %</unpadFst>
 
 %<*unpadSnd>
 \begin{code}
-unpadSnd : {α : Set} (x y : ℕ) → Vec α (x ⊔ y) → Vec α y
-unpadSnd x y v with x ⊔' y
-unpadSnd x y v | max₂ x⊔y≡y x≤y rewrite x⊔y≡y = v
-unpadSnd x y v | max₁ x⊔y≡x y≤x rewrite x⊔y≡x with getδ y≤x
-...                | _ , x≡y+δ rewrite x≡y+δ = take y v
+unpadFrom₂ : ∀ {ℓ} {α : Set ℓ} {y} x → Vec α (x ⊔ y) → Vec α y
+unpadFrom₂ {y = y} x v with x ⊔' y
+... | max₂ x⊔y≡y x≤y rewrite x⊔y≡y = v
+... | max₁ x⊔y≡x y≤x rewrite x⊔y≡x with getδ y≤x
+...                                | _ , x≡y+δ rewrite x≡y+δ = take y v
 \end{code}
 %</unpadSnd>
