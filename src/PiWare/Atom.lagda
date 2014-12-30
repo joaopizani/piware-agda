@@ -9,6 +9,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_)
 
 
 %<*Atomic>
+\AgdaTarget{Atomic, Atom, n→atom, atom→n, inv-left, inv-right}
 \begin{code}
 record Atomic : Set₁ where
     field
