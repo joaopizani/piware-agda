@@ -14,6 +14,7 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 
 
 %<*xor-spec-table>
+\AgdaTarget{⊻ℂ-spec-table}
 \begin{code}
 ⊻ℂ-spec-table : (B × B) → B
 ⊻ℂ-spec-table (false , false) = false
@@ -24,6 +25,7 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 %</xor-spec-table>
 
 %<*xor-proof-table>
+\AgdaTarget{⊻ℂ-proof-table}
 \begin{code}
 ⊻ℂ-proof-table : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ ⊻ℂ-spec-table (a , b)
 ⊻ℂ-proof-table false false = refl
@@ -34,6 +36,7 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 %</xor-proof-table>
 
 %<*xor-spec-subfunc>
+\AgdaTarget{⊻ℂ-spec-subfunc}
 \begin{code}
 ⊻ℂ-spec-subfunc : (B × B) → B
 ⊻ℂ-spec-subfunc = uncurry′ _xor_
@@ -41,6 +44,7 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 %</xor-spec-subfunc>
 
 %<*xor-equiv>
+\AgdaTarget{⊻ℂ-xor-equiv}
 \begin{code}
 ⊻ℂ-xor-equiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
 ⊻ℂ-xor-equiv true  b     = refl
@@ -50,6 +54,7 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 %</xor-equiv>
 
 %<*xor-proof-subfunc>
+\AgdaTarget{⊻ℂ-proof-subfunc}
 \begin{code}
 ⊻ℂ-proof-subfunc : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ ⊻ℂ-spec-subfunc (a , b)
 ⊻ℂ-proof-subfunc = ⊻ℂ-xor-equiv
@@ -58,6 +63,7 @@ open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
 
 
 %<*haddSpec>
+\AgdaTarget{haddSpec}
 \begin{code}
 haddSpec : B → B → (B × B)
 haddSpec a b = (a ∧ b) , (a xor b)
@@ -65,6 +71,7 @@ haddSpec a b = (a ∧ b) , (a xor b)
 %</haddSpec>
 
 %<*proofHaddBool>
+\AgdaTarget{proofHaddBool}
 \begin{code}
 proofHaddBool : ∀ a b → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
 proofHaddBool a b = cong (_,_ (a ∧ b)) (⊻ℂ-xor-equiv a b)
@@ -72,6 +79,7 @@ proofHaddBool a b = cong (_,_ (a ∧ b)) (⊻ℂ-xor-equiv a b)
 %</proofHaddBool>
 
 %<*faddSpec>
+\AgdaTarget{faddSpec}
 \begin{code}
 faddSpec : B → B → B → (B × B)
 faddSpec false false false = false , false
@@ -86,6 +94,7 @@ faddSpec true  true  true  = true  , true
 %</faddSpec>
 
 %<*proofFaddBool>
+\AgdaTarget{proofFaddBool}
 \begin{code}
 proofFaddBool : ∀ a b c → ⟦ fadd ⟧ ((a , b) , c) ≡ faddSpec a b c
 proofFaddBool true  true  true  = refl

@@ -16,6 +16,7 @@ open import PiWare.Samples.BoolTrioComb using (⊥ℂ; ¬ℂ; ∨ℂ; mux2to1)
 
 
 %<*shift>
+\AgdaTarget{shift}
 \begin{code}
 shift : ℂ B B
 shift = delayℂ pSwap
@@ -23,6 +24,7 @@ shift = delayℂ pSwap
 %</shift>
 
 %<*toggle>
+\AgdaTarget{toggle}
 \begin{code}
 toggle : ℂ ⊤ B
 toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
@@ -31,6 +33,7 @@ toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
 
 -- input × load → out
 %<*reg>
+\AgdaTarget{reg}
 \begin{code}
 reg : ℂ (B × B) B
 reg = delayℂ comb

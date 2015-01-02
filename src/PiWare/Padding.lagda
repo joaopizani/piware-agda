@@ -11,6 +11,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 -- Maximum view: gives a proof for the maximum of two naturals, along with their ordering
 %<*MaxView>
+\AgdaTarget{\_⊔''\_, max₁, max₂}
 \begin{code}
 data _⊔''_ : ℕ → ℕ → Set where
     max₁ : {a b : ℕ} → a ⊔ b ≡ a → b ≤ a → a ⊔'' b
@@ -20,6 +21,7 @@ data _⊔''_ : ℕ → ℕ → Set where
 
 -- View function for the maximum view
 %<*maxView>
+\AgdaTarget{\_⊔\_'}
 \begin{code}
 _⊔'_ : (a b : ℕ) → a ⊔'' b
 zero     ⊔' zero    = max₁ refl z≤n
@@ -33,6 +35,7 @@ zero     ⊔' (suc _) = max₂ refl z≤n
 
 -- Given a ≤ relation between two naturals, return the (proven) difference (δ)
 %<*getDelta>
+\AgdaTarget{getδ}
 \begin{code}
 getδ : ∀ {x y} → x ≤ y → Σ[ δ ∈ ℕ ] y ≡ x + δ
 getδ z≤n = _ , refl
@@ -43,6 +46,7 @@ getδ (s≤s z≤w) | δ , w≡z+δ = δ , cong suc w≡z+δ
 
 
 %<*padToWithA>
+\AgdaTarget{padTo₁\_withA\_}
 \begin{code}
 padTo₁_withA_ : ∀ {ℓ} {α : Set ℓ} {x} y → α → Vec α x → Vec α (x ⊔ y)
 padTo₁_withA_ {x = x} y e v with x ⊔' y
@@ -53,6 +57,7 @@ padTo₁_withA_ {x = x} y e v with x ⊔' y
 %</padToWithA>
 
 %<*padSnd>
+\AgdaTarget{padTo₂\_withA\_}
 \begin{code}
 padTo₂_withA_ : ∀ {ℓ} {α : Set ℓ} {y} x → α → Vec α y → Vec α (x ⊔ y)
 padTo₂_withA_ {y = y} x e v with x ⊔' y
@@ -63,6 +68,7 @@ padTo₂_withA_ {y = y} x e v with x ⊔' y
 %</padSnd>
 
 %<*unpadFst>
+\AgdaTarget{unpadFrom₁}
 \begin{code}
 unpadFrom₁ : ∀ {ℓ} {α : Set ℓ} {x} y → Vec α (x ⊔ y) → Vec α x
 unpadFrom₁ {x = x} y v with x ⊔' y
@@ -73,6 +79,7 @@ unpadFrom₁ {x = x} y v with x ⊔' y
 %</unpadFst>
 
 %<*unpadSnd>
+\AgdaTarget{unpadFrom₂}
 \begin{code}
 unpadFrom₂ : ∀ {ℓ} {α : Set ℓ} {y} x → Vec α (x ⊔ y) → Vec α y
 unpadFrom₂ {y = y} x v with x ⊔' y

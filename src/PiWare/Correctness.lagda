@@ -21,6 +21,7 @@ open import PiWare.Simulation using (⟦_⟧)
 
 
 %<*seqproof-eq-core>
+\AgdaTarget{\_⟫≡'\_}
 \begin{code}
 _⟫≡'_ :
     {i m o : ℕ} {f₁ : W i → W m} {f₂ : W m → W o} {gt : Gates At}
@@ -32,7 +33,7 @@ _⟫≡'_ {f₁ = f₁} pc₁ pc₂ v rewrite sym (pc₂ (f₁ v)) | sym (pc₁ 
 \end{code}
 %</seqproof-eq-core>
 
-%<*parproof-eq-core>
+
 \begin{code}
 lemma-proj₁-splitAt : ∀ {ℓ} {α : Set ℓ} {i₁ i₂} (v₁ : Vec α i₁) (v₂ : Vec α i₂)
                       → proj₁ (splitAt i₁ (v₁ ++ v₂)) ≡ v₁
@@ -45,7 +46,11 @@ lemma-proj₁₂-splitAt : ∀ {ℓ} {α : Set ℓ} {i₁ i₂} (v₁ : Vec α i
 lemma-proj₁₂-splitAt {i₁ = zero}  ε        _  = refl
 lemma-proj₁₂-splitAt {i₁ = suc n} (v ◁ vs) v₂ with splitAt n (vs ++ v₂) | lemma-proj₁₂-splitAt {i₁ = n} vs v₂
 lemma-proj₁₂-splitAt {i₁ = suc n} (v ◁ vs) v₂ | _ , _ , eq | ind rewrite eq | ind = refl
+\end{code}
 
+%<*parproof-eq-core>
+\AgdaTarget{\_|≡'\_}
+\begin{code}
 _|≡'_ :
     {i₁ o₁ i₂ o₂ : ℕ} {f₁ : W i₁ → W o₁} {f₂ : W i₂ → W o₂} {gt : Gates At}
     {c₁ : ℂ' gt i₁ o₁} {c₂ : ℂ' gt i₂ o₂} {p₁ : comb' gt {i₁} {o₁} c₁} {p₂ : comb' gt {i₂} {o₂} c₂}
@@ -66,6 +71,7 @@ _|≡'_ {i₁ = i₁} {f₁ = f₁} pc₁ pc₂ v₁ v₂
 
 
 %<*eq-down>
+\AgdaTarget{eq⇓}
 \begin{code}
 eq⇓ :
     ∀ {α i β j} → {gt : Gates At} {c' : ℂ' gt i j} {f : W i → W j} {p : comb' gt c'}
@@ -77,6 +83,7 @@ eq⇓ ⦃ sα = sα ⦄ p⇑ v rewrite (p⇑ (⇑ v)) = {!!}
 %</eq-down>
 
 %<*eq-up>
+\AgdaTarget{eq⇑}
 \begin{code}
 eq⇑ :
     ∀ {α i β j} → {gt : Gates At} {c' : ℂ' gt i j} {f : W i → W j} {p : comb' gt c'}
@@ -89,6 +96,7 @@ eq⇑ ⦃ sα ⦄ ⦃ sβ ⦄ p⇓ x rewrite p⇓ (⇓ x) = refl
 
 
 %<*seqproof-eq>
+\AgdaTarget{\_⟫≡\_}
 \begin{code}
 _⟫≡_ :
     ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ {f₁ : α → β} {f₂ : β → γ}
@@ -106,6 +114,7 @@ _⟫≡_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ {f₁ = f₁} {f₂ = f₂} {c₁ =
 
 
 %<*parproof-eq>
+\AgdaTarget{\_|≡\_}
 \begin{code}
 _|≡_ :
     ∀ {α i β j γ k δ l} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄

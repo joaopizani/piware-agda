@@ -12,6 +12,7 @@ open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺)
 
 
 %<*unzip>
+\AgdaTarget{unzip}
 \begin{code}
 unzip : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} → List (α × β) → List α × List β
 unzip []             = [] , []
@@ -20,6 +21,7 @@ unzip ((x , y) ∷ zs) = mapₚ (_∷_ x) (_∷_ y) (unzip zs)
 %</unzip>
 
 %<*unzip-nonempty>
+\AgdaTarget{unzip⁺}
 \begin{code}
 unzip⁺ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} → List⁺ (α × β) → List⁺ α × List⁺ β
 unzip⁺ ((x , y) ∷ zs) = mapₚ (_∷_ x) (_∷_ y) (unzip zs)
@@ -28,6 +30,7 @@ unzip⁺ ((x , y) ∷ zs) = mapₚ (_∷_ x) (_∷_ y) (unzip zs)
 
 
 %<*uncurry-nonempty>
+\AgdaTarget{uncurry⁺}
 \begin{code}
 uncurry⁺ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {γ : Set ℓ₂} → (α → List α → γ) → List⁺ α → γ
 uncurry⁺ f (x ∷ xs) = f x xs
@@ -36,6 +39,7 @@ uncurry⁺ f (x ∷ xs) = f x xs
 
 
 %<*splitAt-noproof>
+\AgdaTarget{splitAt'}
 \begin{code}
 splitAt' : ∀ {ℓ} {α : Set ℓ} (m : ℕ) {n : ℕ} → Vec α (m + n) → Vec α m × Vec α n
 splitAt' m v = mapₚ id proj₁ (splitAt m v)
@@ -43,6 +47,7 @@ splitAt' m v = mapₚ id proj₁ (splitAt m v)
 %</splitAt-noproof>
 
 %<*splitAt-nonempty>
+\AgdaTarget{splitAt⁺}
 \begin{code}
 splitAt⁺ : ∀ {ℓ} {α : Set ℓ} (m : ℕ) {n : ℕ} → List⁺ (Vec α (m + n)) → List⁺ (Vec α m × Vec α n)
 splitAt⁺ m = map⁺ (splitAt' m)
@@ -51,6 +56,7 @@ splitAt⁺ m = map⁺ (splitAt' m)
 
 
 %<*seggregateSums>
+\AgdaTarget{seggregateSums}
 \begin{code}
 seggregateSums : ∀ {ℓ} {α β : Set ℓ} → List (α ⊎ β) → List α × List β
 seggregateSums = < gfilter isInj₁ , gfilter isInj₂ >

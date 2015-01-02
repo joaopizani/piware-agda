@@ -11,6 +11,7 @@ open import PiWare.Utils using (uncurry⁺)
 
 -- Causal context: past × present
 %<*causal-context>
+\AgdaTarget{Γᶜ}
 \begin{code}
 Γᶜ : (α : Set) → Set
 Γᶜ = List⁺
@@ -19,6 +20,7 @@ open import PiWare.Utils using (uncurry⁺)
 
 -- Causal step: causal context → next value
 %<*causal-step>
+\AgdaTarget{_⇒ᶜ_}
 \begin{code}
 _⇒ᶜ_ : (α β : Set) → Set
 α ⇒ᶜ β = Γᶜ α → β
@@ -27,6 +29,7 @@ _⇒ᶜ_ : (α β : Set) → Set
 
 -- Needs to use the trick with tails⁺' and uncurry⁺ to "convince" the termination checker
 %<*tails-nonempty>
+\AgdaTarget{tails⁺}
 \begin{code}
 tails⁺ : ∀ {α} → Γᶜ α → List⁺ (Γᶜ α)
 tails⁺ {α} = uncurry⁺ tails⁺'

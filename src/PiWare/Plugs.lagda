@@ -25,6 +25,7 @@ open import PiWare.Plugs.Core Gt
 
 -- identity
 %<*pid>
+\AgdaTarget{pid}
 \begin{code}
 pid : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α α
 pid ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ pid'
@@ -33,6 +34,7 @@ pid ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ pid'
 
 -- rearranging wires
 %<*pSwap>
+\AgdaTarget{pSwap}
 \begin{code}
 pSwap : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ (α × β) (β × α)
 pSwap {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sα ⦄ ⦄ (pSwap' {i} {j})
@@ -41,6 +43,7 @@ pSwap {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄
 
 
 %<*pIntertwine>
+\AgdaTarget{pIntertwine}
 \begin{code}
 pIntertwine : ∀ {α i β j γ k δ l}
     → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
@@ -55,6 +58,7 @@ pIntertwine {i = i} {j = j} {k = k} {l = l}  ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄
 
 -- associativity
 %<*pALR>
+\AgdaTarget{pALR}
 \begin{code}
 pALR : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
     → ℂ ((α × β) × γ) (α × (β × γ))
@@ -65,6 +69,7 @@ pALR {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
 %</pALR>
 
 %<*pARL>
+\AgdaTarget{pARL}
 \begin{code}
 pARL : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
     → ℂ (α × (β × γ)) ((α × β) × γ)
@@ -77,6 +82,7 @@ pARL {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
 
 -- vector plugs
 %<*pHead>
+\AgdaTarget{pHead}
 \begin{code}
 pHead : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (suc n)) α
 pHead {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ sα ⦄ (pHead' {m} {i})
@@ -84,6 +90,7 @@ pHead {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ �
 %</pHead>
 
 %<*pUncons>
+\AgdaTarget{pUncons}
 \begin{code}
 pUncons : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (suc n)) (α × Vec α n)
 pUncons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ pid'
@@ -91,6 +98,7 @@ pUncons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ 
 %</pUncons>
 
 %<*pCons>
+\AgdaTarget{pCons}
 \begin{code}
 pCons : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (α × Vec α n) (Vec α (suc n))
 pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ pid'
@@ -98,6 +106,7 @@ pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n 
 %</pCons>
 
 %<*pSingletonIn>
+\AgdaTarget{pSingletonIn}
 \begin{code}
 pSingletonIn : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α (Vec α 1)
 pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  c'
@@ -107,6 +116,7 @@ pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} ⦃
 %</pSingletonIn>
 
 %<*pSingletonOut>
+\AgdaTarget{pSingletonOut}
 \begin{code}
 pSingletonOut : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α 1) α
 pSingletonOut {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  c'
@@ -117,6 +127,7 @@ pSingletonOut {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ �
 
 
 %<*pVecHalf>
+\AgdaTarget{pVecHalf}
 \begin{code}
 pVecHalf : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (2 * suc n)) (Vec α (suc n) × Vec α (suc n))
 pVecHalf {_} {i} {m} ⦃ sα ⦄ =
@@ -127,6 +138,7 @@ pVecHalf {_} {i} {m} ⦃ sα ⦄ =
 %</pVecHalf>
 
 %<*pVecHalfPow>
+\AgdaTarget{pVecHalfPow}
 \begin{code}
 pVecHalfPow :
     ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ (Vec α (2 ^ suc n)) (Vec α (2 ^ n) × Vec α (2 ^ n))
@@ -139,6 +151,7 @@ pVecHalfPow {_} {i} {m} ⦃ sα ⦄ =
 
 
 %<*pForkVec>
+\AgdaTarget{pForkVec}
 \begin{code}
 pForkVec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α (Vec α n)
 pForkVec {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ (pFork' {m} {i})
@@ -146,6 +159,7 @@ pForkVec {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃
 %</pForkVec>
 
 %<*pFork-product>
+\AgdaTarget{pFork×}
 \begin{code}
 pFork× : ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α (α × α)
 pFork× {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  c'
@@ -157,6 +171,7 @@ pFork× {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ s
 
 -- pairs
 %<*pFst>
+\AgdaTarget{pFst}
 \begin{code}
 pFst : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ (α × β) α
 pFst {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sα ⦄ (pFst' {i} {j})
@@ -164,6 +179,7 @@ pFst {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ 
 %</pFst>
 
 %<*pSnd>
+\AgdaTarget{pSnd}
 \begin{code}
 pSnd : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ (α × β) β
 pSnd {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sβ ⦄ (pSnd' {i} {j})

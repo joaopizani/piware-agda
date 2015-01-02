@@ -18,6 +18,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 
 
 %<*fundamentals>
+\AgdaTarget{⊥ℂ, ⊤ℂ, ¬ℂ, ∧ℂ, ∨ℂ}
 \begin{code}
 ⊥ℂ ⊤ℂ : ℂ ⊤ B
 ⊥ℂ = Mkℂ (Gate FalseConst#) named "falseGate"
@@ -33,6 +34,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 %</fundamentals>
 
 %<*nand>
+\AgdaTarget{¬∧ℂ}
 \begin{code}
 ¬∧ℂ : ℂ (B × B) B
 ¬∧ℂ = ∧ℂ ⟫ ¬ℂ named "nandGate"
@@ -40,6 +42,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 %</nand>
 
 %<*xor>
+\AgdaTarget{⊻ℂ}
 \begin{code}
 ⊻ℂ : ℂ (B × B) B
 ⊻ℂ =   pFork×
@@ -52,6 +55,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 
 a × b → c × s
 %<*hadd>
+\AgdaTarget{hadd}
 \begin{code}
 hadd : ℂ (B × B) (B × B)
 hadd =   pFork×
@@ -62,6 +66,7 @@ hadd =   pFork×
 
 (a × b) × cin → co × s
 %<*fadd>
+\AgdaTarget{fadd}
 \begin{code}
 fadd : ℂ ((B × B) × B) (B × B)
 fadd =   hadd || pid
@@ -75,6 +80,7 @@ fadd =   hadd || pid
 
 
 %<*mux2to1>
+\AgdaTarget{mux2to1}
 \begin{code}
 mux2to1 : ℂ (B × (B × B)) B
 mux2to1 =   pFork×

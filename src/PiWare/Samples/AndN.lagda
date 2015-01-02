@@ -25,6 +25,7 @@ open import PiWare.Plugs.Core BoolTrio using (pid')
 
 
 %<*andN-core>
+\AgdaTarget{andN'}
 \begin{code}
 andN' : ∀ n → ℂ' n 1
 andN' zero    = Gate TrueConst#
@@ -33,6 +34,7 @@ andN' (suc n) = pid' {1} |' andN' n  ⟫'  Gate And#
 %</andN-core>
 
 %<*andN-core-comb>
+\AgdaTarget{andN'-comb}
 \begin{code}
 andN'-comb : ∀ n → comb' (andN' n)
 andN'-comb zero    = tt
@@ -41,6 +43,7 @@ andN'-comb (suc n) = (tt , andN'-comb n) , tt
 %</andN-core-comb>
 
 %<*andN>
+\AgdaTarget{andN}
 \begin{code}
 andN : ∀ n → ℂ (Vec B n) B {n} {1}
 andN k = Mkℂ ⦃ sα = ⇓W⇑[ id , id ] ⦄ (andN' k)
@@ -48,6 +51,7 @@ andN k = Mkℂ ⦃ sα = ⇓W⇑[ id , id ] ⦄ (andN' k)
 %</andN>
 
 %<*andN-comb>
+\AgdaTarget{andN-comb}
 \begin{code}
 andN-comb : ∀ n → comb (andN n)
 andN-comb = andN'-comb

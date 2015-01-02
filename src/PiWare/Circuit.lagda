@@ -18,8 +18,9 @@ open Atomic At using (Atom#)
 \end{code}
 
 
--- "High-level" circuit types, packing the synthesizable instances
+-- "High-level" circuit type, packing the synthesizable instances
 %<*Circuit>
+\AgdaTarget{ℂ, base}
 \begin{code}
 record ℂ (α β : Set) {i j : ℕ} : Set where
     inductive
@@ -28,12 +29,12 @@ record ℂ (α β : Set) {i j : ℕ} : Set where
         ⦃ sα ⦄ : ⇓W⇑ α {i}
         ⦃ sβ ⦄ : ⇓W⇑ β {j}
         base   : ℂ' i j
-
 \end{code}
 %</Circuit>
 
 
 %<*comb>
+\AgdaTarget{comb}
 \begin{code}
 comb : ∀ {α i β j} → ℂ α β {i} {j} → Set
 comb (Mkℂ c') = comb' c'
@@ -43,6 +44,7 @@ comb (Mkℂ c') = comb' c'
 
 -- "Smart constructors"
 %<*named>
+\AgdaTarget{\_named\_}
 \begin{code}
 _named_ : ∀ {α i β j} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ α β {i} {j} → String → ℂ α β {i} {j}
 _named_ ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') s = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (c' Named s)
@@ -50,6 +52,7 @@ _named_ ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') s = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (c'
 $</named>
 
 %<*delayC>
+\AgdaTarget{delayℂ}
 \begin{code}
 delayℂ : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
          → (c : ℂ (α × γ) (β × γ) {i + k} {j + k}) {p : comb c} → ℂ α β {i} {j}
@@ -58,6 +61,7 @@ delayℂ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ c') {p} = Mkℂ ⦃ sα ⦄ 
 %</delayC>
 
 %<*seq>
+\AgdaTarget{\_⟫\_}
 \begin{code}
 _⟫_ : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
       → ℂ α β {i} {j} → ℂ β γ {j} {k} → ℂ α γ {i} {k}
@@ -66,6 +70,7 @@ _⟫_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ 
 %</seq>
 
 %<*par>
+\AgdaTarget{\_||\_}
 \begin{code}
 _||_ : ∀ {α i γ k β j δ l} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
        → ℂ α γ {i} {k} → ℂ β δ {j} {l} →  ℂ (α × β) (γ × δ) {i + j} {k + l}
@@ -75,6 +80,7 @@ _||_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ c₁) (Mkℂ c₂) =
 %</par>
 
 %<*sum>
+\AgdaTarget{|+}
 \begin{code}
 |+ : ∀ {α i β j γ k}
        → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
@@ -92,6 +98,7 @@ infixl 8 _⟫_
 
 
 %<*lemma-comb-seq>
+\AgdaTarget{\_comb⟫\_}
 \begin{code}
 _comb⟫_ : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
                → {c₁ : ℂ α β {i} {j}} {c₂ : ℂ β γ {j} {k}} → comb c₁ → comb c₂ → comb (c₁ ⟫ c₂)
@@ -100,6 +107,7 @@ _comb⟫_ {i = i} {j = j} {k = k} {c₁ = Mkℂ c₁'} {c₂ = Mkℂ c₂'} p₁
 %</lemma-comb-seq>
 
 %<*lemma-comb-par>
+\AgdaTarget{\_comb|\_}
 \begin{code}
 _comb|_ : ∀ {α i γ k β j δ l} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
                → {c₁ : ℂ α γ {i} {k}} {c₂ : ℂ β δ {j} {l}} → comb c₁ → comb c₂ → comb (c₁ || c₂)
@@ -108,6 +116,7 @@ _comb|_ {i = i} {k = k} {j = j} {l = l} {c₁ = Mkℂ c₁'} {c₂ = Mkℂ c₂'
 %</lemma-comb-par>
 
 %<*lemma-comb-sum>
+\AgdaTarget{comb|+}
 \begin{code}
 comb|+ : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
          → {c₁ : ℂ α γ {i} {k}} {c₂ : ℂ β γ {j} {k}}

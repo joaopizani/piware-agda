@@ -30,6 +30,7 @@ open Gates At Gt using (spec)
 
 -- helpers for circuit evaluation (both combinational and sequential)
 %<*plugOutputs>
+\AgdaTarget{plugOutputs}
 \begin{code}
 plugOutputs : {α : Set} {o i : ℕ} → (Fin o → Fin i) → Vec α i → Vec α o
 plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
@@ -39,6 +40,7 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 
 -- combinational eval
 %<*eval-core>
+\AgdaTarget{⟦\_⟧'}
 \begin{code}
 ⟦_⟧' : {i o : ℕ} → (c : ℂ' i o) {p : comb' c} → (W i → W o)
 ⟦ Nil ⟧' = const ε
@@ -56,6 +58,7 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 -- sequential eval as "causal stream function"
 -- again the "uncurrying trick" to convince the termination checker
 %<*delay>
+\AgdaTarget{delay}
 \begin{code}
 delay : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → W i ⇒ᶜ W (o + l)
 delay {i} {o} {l} c {p} = uncurry⁺ (delay' {i} {o} {l} c {p})
@@ -67,6 +70,7 @@ delay {i} {o} {l} c {p} = uncurry⁺ (delay' {i} {o} {l} c {p})
 %</delay>
 
 %<*eval-causal>
+\AgdaTarget{⟦\_⟧ᶜ}
 \begin{code}
 ⟦_⟧ᶜ : {i o : ℕ} → ℂ' i o → (W i ⇒ᶜ W o)
 ⟦ Nil     ⟧ᶜ (w⁰ ∷ _) = ⟦ Nil ⟧' w⁰
@@ -83,6 +87,7 @@ delay {i} {o} {l} c {p} = uncurry⁺ (delay' {i} {o} {l} c {p})
 %</eval-causal>
 
 %<*run-causal>
+\AgdaTarget{runᶜ}
 \begin{code}
 runᶜ : ∀ {α β} → (α ⇒ᶜ β) → (Stream α → Stream β)
 runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ ∷ []) , ♭ x⁺)
@@ -92,6 +97,7 @@ runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ ∷ []) , ♭ x⁺)
 %</run-causal>
 
 %<*eval-seq-core>
+\AgdaTarget{⟦\_⟧*'}
 \begin{code}
 ⟦_⟧*' : {i o : ℕ} → ℂ' i o → (Stream (W i) → Stream (W o))
 ⟦_⟧*' = runᶜ ∘ ⟦_⟧ᶜ
