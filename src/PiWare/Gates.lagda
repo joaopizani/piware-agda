@@ -11,7 +11,7 @@ open import PiWare.Synthesizable At using (W)
 
 
 %<*Gates>
-\AgdaTarget{Gates, spec}
+\AgdaTarget{Gates, Gates\#, spec}
 \begin{code}
 record Gates : Set where
     field
