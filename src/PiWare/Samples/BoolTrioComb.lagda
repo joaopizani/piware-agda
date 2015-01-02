@@ -21,15 +21,15 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 \AgdaTarget{⊥ℂ, ⊤ℂ, ¬ℂ, ∧ℂ, ∨ℂ}
 \begin{code}
 ⊥ℂ ⊤ℂ : ℂ ⊤ B
-⊥ℂ = Mkℂ (Gate FalseConst#) named "falseGate"
-⊤ℂ = Mkℂ (Gate TrueConst#) named "trueGate"
+⊥ℂ = Mkℂ (Gate FalseConst#) named "⊥ℂ"
+⊤ℂ = Mkℂ (Gate TrueConst#) named "⊤ℂ"
 
 ¬ℂ : ℂ B B
-¬ℂ = Mkℂ (Gate Not#) named "notGate"
+¬ℂ = Mkℂ (Gate Not#) named "¬ℂ"
 
 ∧ℂ ∨ℂ : ℂ (B × B) B
-∧ℂ = Mkℂ (Gate And#) named "andGate"
-∨ℂ = Mkℂ (Gate Or#) named "orGate"
+∧ℂ = Mkℂ (Gate And#) named "∧ℂ"
+∨ℂ = Mkℂ (Gate Or#) named "∨ℂ"
 \end{code}
 %</fundamentals>
 
@@ -37,7 +37,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 \AgdaTarget{¬∧ℂ}
 \begin{code}
 ¬∧ℂ : ℂ (B × B) B
-¬∧ℂ = ∧ℂ ⟫ ¬ℂ named "nandGate"
+¬∧ℂ = ∧ℂ ⟫ ¬ℂ named "¬∧ℂ"
 \end{code}
 %</nand>
 
@@ -48,7 +48,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 ⊻ℂ =   pFork×
      ⟫ (¬ℂ || pid ⟫ ∧ℂ) || (pid || ¬ℂ ⟫ ∧ℂ)
      ⟫ ∨ℂ
-     named "xorGate"
+     named "⊻ℂ"
 \end{code}
 %</xor>
 
