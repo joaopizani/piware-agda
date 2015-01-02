@@ -22,7 +22,7 @@ private
   %</cardinality>
 
   %<*pattern-synonyms>
-  \AgdaTarget{False#, True#, Absurd#}
+  \AgdaTarget{False\#, True\#, Absurd\#}
   \begin{code}
   pattern False#    = Fz
   pattern True#     = Fs Fz

@@ -20,7 +20,7 @@ open import PiWare.Utils using (uncurry⁺)
 
 -- Causal step: causal context → next value
 %<*causal-step>
-\AgdaTarget{_⇒ᶜ_}
+\AgdaTarget{\_⇒ᶜ\_}
 \begin{code}
 _⇒ᶜ_ : (α β : Set) → Set
 α ⇒ᶜ β = Γᶜ α → β
