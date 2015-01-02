@@ -21,6 +21,7 @@ open A.Atomic Atomic-B using (Atom#)
 instance
 \end{code}
 %<*Synth-Bool>
+\AgdaTarget{⇓W⇑-B}
 \begin{code}
   ⇓W⇑-B : ⇓W⇑ B
   ⇓W⇑-B = ⇓W⇑[ singleton , head ]

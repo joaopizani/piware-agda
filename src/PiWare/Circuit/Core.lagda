@@ -23,6 +23,7 @@ comb' : {i o : ℕ} → ℂ' i o → Set
 %</pre-decls>
 
 %<*Circuit-core>
+\AgdaTarget{ℂ', Nil, Gate, DelayLoop, Plug, \_⟫'\_, \_|'\_, \_|+'\_, \_Named\_}
 \begin{code}
 data ℂ' where
     Nil   : ℂ' zero zero
@@ -46,6 +47,7 @@ infixl 4 _⟫'_
 
 
 %<*comb-core>
+\AgdaTarget{comb'}
 \begin{code}
 comb' Nil           = ⊤
 comb' (Gate _)      = ⊤
@@ -59,6 +61,7 @@ comb' (c Named _)   = comb' c
 %</comb-core>
 
 %<*lemma-comb-seq-core>
+\AgdaTarget{\_comb⟫'\_}
 \begin{code}
 _comb⟫'_ : {i m o : ℕ} {c₁' : ℂ' i m} {c₂' : ℂ' m o} → comb' c₁' → comb' c₂' → comb' (c₁' ⟫' c₂')
 _comb⟫'_ = _,_
@@ -66,6 +69,7 @@ _comb⟫'_ = _,_
 %</lemma-comb-seq-core>
 
 %<*lemma-comb-par-core>
+\AgdaTarget{\_comb|'\_}
 \begin{code}
 _comb|'_ : {i₁ o₁ i₂ o₂ : ℕ} {c₁' : ℂ' i₁ o₁} {c₂' : ℂ' i₂ o₂} → comb' c₁' → comb' c₂' → comb' (c₁' |' c₂')
 _comb|'_ = _,_
@@ -73,6 +77,7 @@ _comb|'_ = _,_
 %</lemma-comb-par-core>
 
 %<*lemma-comb-sum-core>
+\AgdaTarget{\_comb|+'\_}
 \begin{code}
 _comb|+'_ : {i₁ i₂ o : ℕ} {c₁' : ℂ' i₁ o} {c₂' : ℂ' i₂ o} → comb' c₁' → comb' c₂' → comb' (c₁' |+' c₂')
 _comb|+'_ = _,_

@@ -17,18 +17,21 @@ open import PiWare.Samples.BoolTrioSeq using (toggle; shift; reg)
 
 
 %<*toggle7>
+\AgdaTarget{toggle7}
 \begin{code}
 toggle7 = take 7 $ ⟦ toggle ⟧* (repeat tt)
 \end{code}
 %</toggle7>
 
 %<*shift7>
+\AgdaTarget{shift7}
 \begin{code}
 shift7 = take 7 $ ⟦ shift ⟧* (iterate not false)
 \end{code}
 %</shift7>
 
 %<*rhold>
+\AgdaTarget{rhold}
 \begin{code}
 rhold = take 7 (⟦ reg ⟧* $
                   zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))
@@ -37,6 +40,7 @@ rhold = take 7 (⟦ reg ⟧* $
 %</rhold>
 
 %<*rload>
+\AgdaTarget{rload}
 \begin{code}
 rload = take 7 (⟦ reg ⟧* $
                   zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))

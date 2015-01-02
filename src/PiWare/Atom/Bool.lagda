@@ -22,6 +22,7 @@ private
   %</cardinality>
 
   %<*pattern-synonyms>
+  \AgdaTarget{False#, True#, Absurd#}
   \begin{code}
   pattern False#    = Fz
   pattern True#     = Fs Fz
@@ -30,6 +31,7 @@ private
   %</pattern-synonyms>
 
   %<*nToBool>
+  \AgdaTarget{n→B}
   \begin{code}
   n→B : Fin |B| → B
   n→B = λ { False# → false;  True# → true;  (Absurd# ()) }
@@ -37,6 +39,7 @@ private
   %</nToBool>
   
   %<*boolToN>
+  \AgdaTarget{B→n}
   \begin{code}
   B→n : B → Fin |B|
   B→n = λ { false → False#;  true → True# }
@@ -44,6 +47,7 @@ private
   %</boolToN>
   
   %<*inv-left-Bool>
+  \AgdaTarget{inv-left-B}
   \begin{code}
   inv-left-B : ∀ i → B→n (n→B i) ≡ i
   inv-left-B = λ { False# → refl;  True# → refl;  (Absurd# ()) }
@@ -51,6 +55,7 @@ private
   %</inv-left-Bool>
 
   %<*inv-right-Bool>
+  \AgdaTarget{inv-right-B}
   \begin{code}
   inv-right-B : ∀ b → n→B (B→n b) ≡ b
   inv-right-B = λ { false → refl;  true → refl }
@@ -59,6 +64,7 @@ private
 
 
 %<*Atomic-Bool>
+\AgdaTarget{Atomic-B}
 \begin{code}
 Atomic-B : Atomic
 Atomic-B = record {

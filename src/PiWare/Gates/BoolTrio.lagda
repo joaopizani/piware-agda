@@ -38,16 +38,19 @@ pattern Absurd# n    = Fs (Fs (Fs (Fs (Fs n))))
 \end{code}
 %</ins-outs>
 
+%<*specs>
+\AgdaTarget{spec-not, spec-and, spec-or}
 \begin{code}
-spec-not : Vec B 1 → Vec B 1
-spec-and spec-or : Vec B 2 → Vec B 1
-
+spec-not          : Vec B 1 → Vec B 1
+spec-and spec-or  : Vec B 2 → Vec B 1
 spec-not (x ◁ ε)     = [ not x ]
 spec-and (x ◁ y ◁ ε) = [ x ∧ y ]
 spec-or  (x ◁ y ◁ ε) = [ x ∨ y ]
 \end{code}
+%</specs>
 
 %<*spec>
+\AgdaTarget{spec}
 \begin{code}
 spec : (g : Fin |BoolTrio|) → (W (|in| g) → W (|out| g))
 spec FalseConst#  = const [ false ]
@@ -60,6 +63,7 @@ spec (Absurd# ())
 %</spec>
 
 %<*BoolTrio>
+\AgdaTarget{BoolTrio}
 \begin{code}
 BoolTrio : Gates
 BoolTrio = record {

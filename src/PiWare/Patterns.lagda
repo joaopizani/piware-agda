@@ -14,6 +14,7 @@ open import PiWare.Patterns.Core Gt using (parsN'; seqsN')
 
 
 %<*parsN>
+\AgdaTarget{parsN}
 \begin{code}
 parsN : ∀ {k α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ α β {i} {j} → ℂ (Vec α k) (Vec β k) {k * i} {k * j}
 parsN {k = k} {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') = Mkℂ ⦃ ⇓W⇑-Vec ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec ⦃ sβ ⦄ ⦄ (parsN' {k} {i} {j} c')
@@ -22,6 +23,7 @@ parsN {k = k} {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') = Mkℂ ⦃ ⇓
 
 
 %<*seqsN>
+\AgdaTarget{seqsN}
 \begin{code}
 seqsN : (k : ℕ) → ∀ {α i} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α α {i} {i} → ℂ α α {i} {i}
 seqsN k ⦃ sα ⦄ (Mkℂ c') = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ (seqsN' k c')

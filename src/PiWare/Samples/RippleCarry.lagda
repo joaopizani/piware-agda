@@ -19,6 +19,7 @@ open import PiWare.Samples.BoolTrioComb using (fadd)
 
 -- cin × a × b → s × cout
 %<*ripple-commented>
+\AgdaTarget{ripple}
 \begin{code}
 ripple : (n : ℕ) → let W = Vec B n in ℂ (B × W × W) (W × B)
 ripple zero    = pid || pFst ⟫ pSwap

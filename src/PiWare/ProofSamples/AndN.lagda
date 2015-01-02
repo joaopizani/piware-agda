@@ -20,10 +20,11 @@ open import PiWare.Simulation BoolTrio using (⟦_⟧)
 
 
 %<*proof-andN-core-alltrue>
+\AgdaTarget{proof-andN'-alltrue}
 \begin{code}
-proof-andN-core-alltrue : ∀ n → ⟦ andN' n ⟧' {andN'-comb n} (replicate true) ≡ [ true ]
-proof-andN-core-alltrue zero    = refl
-proof-andN-core-alltrue (suc n) = cong (spec-and ∘ (_∷_ true)) (proof-andN-core-alltrue n)
+proof-andN'-alltrue : ∀ n → ⟦ andN' n ⟧' {andN'-comb n} (replicate true) ≡ [ true ]
+proof-andN'-alltrue zero    = refl
+proof-andN'-alltrue (suc n) = cong (spec-and ∘ (_∷_ true)) (proof-andN'-alltrue n)
 \end{code}
 %</proof-andN-core-alltrue>
 
@@ -31,6 +32,7 @@ proof-andN-core-alltrue (suc n) = cong (spec-and ∘ (_∷_ true)) (proof-andN-c
 \end{code}
 
 %<*proof-andN-alltrue>
+\AgdaTarget{proof-andN-alltrue}
 \begin{code}
 proof-andN-alltrue : ∀ n → ⟦ andN n ⟧ {andN-comb n} (replicate true) ≡ true
 proof-andN-alltrue zero    = refl

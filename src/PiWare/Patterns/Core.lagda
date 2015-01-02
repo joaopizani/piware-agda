@@ -19,6 +19,7 @@ open import PiWare.Plugs.Core Gt using (pid')
 -- Base case relies on the identity of _|'_:
 -- ∀ c' : Nil |' c' ≡⟦⟧  c'  (where _≡⟦⟧_ means "have same simulation semantics")
 %<*pars-core>
+\AgdaTarget{pars'}
 \begin{code}
 pars' : ∀ {k i o} → Vec (ℂ' i o) k → ℂ' (k * i) (k * o)
 pars' {_} {i} {o} = foldr (λ k → ℂ' (k * i) (k * o)) _|'_ Nil
@@ -26,6 +27,7 @@ pars' {_} {i} {o} = foldr (λ k → ℂ' (k * i) (k * o)) _|'_ Nil
 %</pars-core>
 
 %<*parsN-core>
+\AgdaTarget{parsN'}
 \begin{code}
 parsN' : ∀ {k i o} → ℂ' i o → ℂ' (k * i) (k * o)
 parsN' {k} = pars' ∘ replicate {n = k}
@@ -36,6 +38,7 @@ parsN' {k} = pars' ∘ replicate {n = k}
 -- Base case relies on the identity of _⟫'_:
 -- ∀ c' : pid' ⟫' c' ≡⟦⟧ c'  (where _≡⟦⟧_ means "have same simulation semantics")
 %<*seqs-core>
+\AgdaTarget{seqs'}
 \begin{code}
 seqs' : ∀ {k io} → Vec (ℂ' io io) k → ℂ' io io
 seqs' {_} {io} = foldr (const $ ℂ' io io) _⟫'_ pid'
@@ -43,6 +46,7 @@ seqs' {_} {io} = foldr (const $ ℂ' io io) _⟫'_ pid'
 %</seqs-core>
 
 %<*seqsN-core>
+\AgdaTarget{seqsN'}
 \begin{code}
 seqsN' : (k : ℕ) {io : ℕ} → ℂ' io io → ℂ' io io
 seqsN' k = seqs' ∘ replicate {n = k}
@@ -51,6 +55,7 @@ seqsN' k = seqs' ∘ replicate {n = k}
 
 
 %<*row-core>
+\AgdaTarget{row'}
 row' : ∀ {k i o r} → ℂ' (i + r) (o + r) → ℂ' (r + (k * i)) ((k * o) + r)
 row' {zero}   {i} {o} {r} _ rewrite +-comm r 0  = pid'
 row' {suc k'} {i} {o} {r} c' = {!row' {k'} c'!}

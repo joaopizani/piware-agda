@@ -3,7 +3,7 @@ open import PiWare.Atom
 
 module PiWare.Synthesizable (At : Atomic) where
 
-open import Function using (_∘_; const)
+open import Function using (_∘_; _$_; const)
 open import Data.Unit using (⊤; tt)
 open import Data.Bool using (if_then_else_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
@@ -26,6 +26,7 @@ open Atomic At using (Atom; Atom#; atom→n; n→atom)
 
 -- Words are sequences of "Atoms"
 %<*Word>
+\AgdaTarget{W}
 \begin{code}
 W : ℕ → Set
 W = Vec Atom
@@ -35,6 +36,7 @@ W = Vec Atom
 
 -- Provides a mapping between metalanguage types and words
 %<*Synth>
+\AgdaTarget{⇓W⇑, ⇓, ⇑}
 \begin{code}
 record ⇓W⇑ (α : Set) {i : ℕ} : Set where
     constructor ⇓W⇑[_,_]
@@ -49,15 +51,17 @@ open ⇓W⇑ ⦃ ... ⦄
 \end{code}
 
 
--- Deduce Left or Right from tag. CONVENTION: Right by default
+-- Deduce Left or Right from tag. CONVENTION: Right by default (if atom→n t ≠ l)
 %<*untag>
+\AgdaTarget{untag}
 \begin{code}
 untag : ∀ {i j} (l : Atom#) → W (suc (i ⊔ j)) → W i ⊎ W j
-untag {i} {j} l (t ◁ ab) = (if ⌊ atom→n t ≟ l ⌋ then inj₁ ∘ unpadFrom₁ j else inj₂ ∘ unpadFrom₂ i) ab
+untag {i} {j} l (t ◁ ab) = if ⌊ atom→n t ≟ l ⌋ then (inj₁ ∘ unpadFrom₁ j) else (inj₂ ∘ unpadFrom₂ i) $ ab
 \end{code}
 %</untag>
 
 %<*untagList>
+\AgdaTarget{untagList}
 \begin{code}
 untagList : ∀ {i j} (l : Atom#) → List (W (suc (i ⊔ j))) → List (W i) × List (W j)
 untagList l = seggregateSums ∘ mapₗ (untag l)
@@ -70,6 +74,7 @@ untagList l = seggregateSums ∘ mapₗ (untag l)
 instance
 \end{code}
 %<*Synth-Unit>
+\AgdaTarget{⇓W⇑-⊤}
 \begin{code}
   ⇓W⇑-⊤ : ⇓W⇑ ⊤ {0}
   ⇓W⇑-⊤ = ⇓W⇑[ const ε , const tt ]
@@ -77,6 +82,7 @@ instance
 %</Synth-Unit>
 
 %<*Synth-Product>
+\AgdaTarget{⇓W⇑-×}
 \begin{code}
 instance
   ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
@@ -91,6 +97,7 @@ instance
 %</Synth-Product>
 
 %<*Synth-Vec>
+\AgdaTarget{⇓W⇑-Vec}
 \begin{code}
 instance
   ⇓W⇑-Vec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
@@ -107,6 +114,7 @@ instance
 %</Synth-Vec>
 
 %<*Synth-Sum>
+\AgdaTarget{⇓W⇑-⊎}
 \begin{code}
 instance
   ⇓W⇑-⊎ : ∀ {α i β j} (l r p : Atom#) {d : l ≢ r} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
