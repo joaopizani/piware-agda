@@ -5,7 +5,7 @@ open import Function using (id)
 open import Data.Nat using (zero; suc; _*_)
 open import Data.Bool using () renaming (Bool to B)
 open import Data.Unit using (tt)
-open import Data.Product using (_,_; proj₂)
+open import Data.Product using (_,_)
 open import Data.Vec using (Vec)
 
 import Algebra as A
@@ -15,12 +15,12 @@ open import Relation.Binary.PropositionalEquality using (sym)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B using (⇓W⇑[_,_])
-open import PiWare.Synthesizable.Bool using ()  -- only instances
-
 open import PiWare.Gates.BoolTrio using (BoolTrio; TrueConst#; And#)
 open import PiWare.Circuit.Core BoolTrio using (ℂ'; Gate; _|'_; _⟫'_; comb')
 open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; comb)
 open import PiWare.Plugs.Core BoolTrio using (pid')
+
+open import PiWare.Synthesizable.Bool using ()  -- only instances
 \end{code}
 
 

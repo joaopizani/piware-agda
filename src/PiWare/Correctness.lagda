@@ -74,7 +74,7 @@ _|≡'_ {i₁ = i₁} {f₁ = f₁} pc₁ pc₂ v₁ v₂
 \AgdaTarget{eq⇓}
 \begin{code}
 eq⇓ :
-    ∀ {α i β j} → {gt : Gates At} {c' : ℂ' gt i j} {f : W i → W j} {p : comb' gt c'}
+    ∀ {α i β j} {gt : Gates At} {c' : ℂ' gt i j} {f : W i → W j} {p : comb' gt c'}
     ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄
     → ((x : α) → ⟦_⟧ gt {α} {i} {β} {j} (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c') {p} x ≡ ⇑ ⦃ sβ ⦄ (f (⇓ ⦃ sα ⦄ x)) )
     → ((v : W i) → ⟦_⟧' gt {i} {j} c' {p} v ≡ f v)
@@ -86,7 +86,7 @@ eq⇓ ⦃ sα = sα ⦄ p⇑ v rewrite (p⇑ (⇑ v)) = {!!}
 \AgdaTarget{eq⇑}
 \begin{code}
 eq⇑ :
-    ∀ {α i β j} → {gt : Gates At} {c' : ℂ' gt i j} {f : W i → W j} {p : comb' gt c'}
+    ∀ {α i β j} {gt : Gates At} {c' : ℂ' gt i j} {f : W i → W j} {p : comb' gt c'}
     ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄
     → ((v : W i) → ⟦_⟧' gt {i} {j} c' {p} v ≡ f v)
     → ((x : α) → ⟦_⟧ gt {α} {i} {β} {j} (Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c') {p} x ≡ ⇑ ⦃ sβ ⦄ (f (⇓ ⦃ sα ⦄ x)) )
@@ -99,8 +99,8 @@ eq⇑ ⦃ sα ⦄ ⦃ sβ ⦄ p⇓ x rewrite p⇓ (⇓ x) = refl
 \AgdaTarget{\_⟫≡\_}
 \begin{code}
 _⟫≡_ :
-    ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ {f₁ : α → β} {f₂ : β → γ}
-    → {gt : Gates At} {c₁ : ℂ gt α β {i} {j}} {c₂ : ℂ gt β γ {j} {k}} {p₁ : comb gt c₁} {p₂ : comb gt c₂}
+    ∀ {α i β j γ k} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ {f₁ : α → β} {f₂ : β → γ}
+    {gt : Gates At} {c₁ : ℂ gt α β {i} {j}} {c₂ : ℂ gt β γ {j} {k}} {p₁ : comb gt c₁} {p₂ : comb gt c₂}
     → ((x₁ : α) → ⟦_⟧ gt {α} {i} {β} {j} c₁ {p₁} x₁ ≡ f₁ x₁)
     → ((x₂ : β) → ⟦_⟧ gt {β} {j} {γ} {k} c₂ {p₂} x₂ ≡ f₂ x₂)
     → ((x : α)
@@ -117,9 +117,9 @@ _⟫≡_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ {f₁ = f₁} {f₂ = f₂} {c₁ =
 \AgdaTarget{\_|≡\_}
 \begin{code}
 _|≡_ :
-    ∀ {α i β j γ k δ l} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
-    → {f₁ : α → γ} {f₂ : β → δ} {gt : Gates At} {c₁ : ℂ gt α γ {i} {k}} {c₂ : ℂ gt β δ {j} {l}}
-    → {p₁ : comb gt c₁} {p₂ : comb gt c₂} {x₁ : α} {x₂ : β}
+    ∀ {α i β j γ k δ l} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
+    {f₁ : α → γ} {f₂ : β → δ} {gt : Gates At} {c₁ : ℂ gt α γ {i} {k}} {c₂ : ℂ gt β δ {j} {l}}
+    {p₁ : comb gt c₁} {p₂ : comb gt c₂} {x₁ : α} {x₂ : β}
     → ⟦_⟧ gt {i = i} {j = k} c₁ {p₁} x₁ ≡ f₁ x₁
     → ⟦_⟧ gt {i = j} {j = l} c₂ {p₂} x₂ ≡ f₂ x₂
     → ⟦_⟧ gt {i = i + j} {j = k + l} (_||_ gt c₁ c₂)

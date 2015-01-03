@@ -14,16 +14,13 @@ open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; _≡_; refl)
 open Relation.Binary.PropositionalEquality.≡-Reasoning
 
-open import PiWare.Circuit.Core Gt using (ℂ'; Plug; _⟫'_; _|'_; _Named_)
-\end{code}
-
-\begin{code}
 import Algebra as A
 import Data.Nat.Properties as NP
+open A.CommutativeSemiring NP.commutativeSemiring using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
 open import Data.Nat.Properties.Simple using (*-right-zero)
 open import Algebra.Operations (A.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
-open module CS = A.CommutativeSemiring NP.commutativeSemiring
-     using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
+
+open import PiWare.Circuit.Core Gt using (ℂ'; Plug; _⟫'_; _|'_; _Named_)
 \end{code}
 
 
@@ -98,9 +95,8 @@ open NP.SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
 
 %<*twiceSuc>
 \begin{code}
-twiceSuc : ∀ n w → w + (n + suc n) * w ≡ w + n * w + (w + n * w)
-twiceSuc = solve 2 eq refl where
-  eq = λ n w → w :+ (n :+ (con 1 :+ n)) :* w := w :+ n :* w :+ (w :+ n :* w)
+twiceSuc : ∀ n w →  w + (n + suc n) * w  ≡  w + n * w + (w + n * w)
+twiceSuc = solve 2 (λ n w → w :+ (n :+ (con 1 :+ n)) :* w := w :+ n :* w :+ (w :+ n :* w)) refl
 \end{code}
 %</twiceSuc>
 
@@ -124,17 +120,14 @@ eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
 pVecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
 pVecHalfPowEq zero w rewrite (proj₂ +-identity) w = refl
 pVecHalfPowEq (suc n) w = begin
-    2 ^ suc (suc n) * w           ≡⟨ refl ⟩
-    2 * 2 ^ suc n * w             ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
-    2 * (2 ^ suc n * w)           ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
-    2 * (2 ^ n * w  +  2 ^ n * w) ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
-    (2 ^ n * w + 2 ^ n * w) * 2   ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
-    2 ^ n * w * 2   +  2 ^ n * w * 2
-  ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  eqAdd p p) ⟩
-    2 * (2 ^ n * w) +  2 * (2 ^ n * w)
-  ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
-    2 * 2 ^ n * w   +  2 * 2 ^ n * w
-  ≡⟨ refl ⟩
+    2 ^ suc (suc n) * w                ≡⟨ refl ⟩
+    2 * 2 ^ suc n * w                  ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
+    2 * (2 ^ suc n * w)                ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
+    2 * (2 ^ n * w  +  2 ^ n * w)      ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
+    (2 ^ n * w + 2 ^ n * w) * 2        ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
+    2 ^ n * w * 2   +  2 ^ n * w * 2   ≡⟨ (let p = *-comm (2 ^ n * w) 2      in eqAdd p p) ⟩
+    2 * (2 ^ n * w) +  2 * (2 ^ n * w) ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w) in eqAdd p p) ⟩
+    2 * 2 ^ n * w   +  2 * 2 ^ n * w   ≡⟨ refl ⟩
     2 ^ suc n * w   +  2 ^ suc n * w
   ∎
 \end{code}
@@ -154,7 +147,7 @@ pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id Named "pVecHalfPow'"
 pFork' : ∀ {k n} → ℂ' n (k * n)
 pFork' {k} {zero}  rewrite *-right-zero k = pid'
 pFork' {k} {suc m} = p Named "pFork'"
-  where p = Plug (λ x → (toℕ x) mod (suc m))
+  where p = Plug $ λ x → (toℕ x) mod (suc m)
 \end{code}
 %</pFork-core>
 
