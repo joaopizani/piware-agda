@@ -3,6 +3,7 @@ module PiWare.Atom where
 
 open import Data.Nat using (ℕ; suc)
 open import Data.Fin using (Fin)
+open import Data.Vec using (Vec)
 
 open import Relation.Binary.PropositionalEquality using (_≡_)
 \end{code}
@@ -22,5 +23,6 @@ record Atomic : Set₁ where
 
     |Atom| = suc |Atom|-1
     Atom#  = Fin |Atom|
+    W = Vec Atom
 \end{code}
 %</Atomic>

@@ -7,9 +7,10 @@ module PiWare.Patterns.Core {At : Atomic} (Gt : Gates At) where
 open import Function using (const; _∘_; _$_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec; []; _∷_; replicate; foldr)
+
 import Algebra as A
 import Data.Nat.Properties as NP
-open module CS = A.CommutativeSemiring NP.commutativeSemiring using (+-comm)
+open A.CommutativeSemiring NP.commutativeSemiring using (+-comm)
 
 open import PiWare.Circuit.Core Gt using (ℂ'; Nil; _⟫'_; _|'_)
 open import PiWare.Plugs.Core Gt using (pid')

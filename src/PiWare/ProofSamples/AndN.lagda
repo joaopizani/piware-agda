@@ -10,7 +10,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 import Algebra as A
 import Data.Nat.Properties as NP
-open module CS = A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
+open A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio; spec-and)
 open import PiWare.Samples.AndN using (andN'; andN'-comb; andN; andN-comb)

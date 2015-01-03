@@ -6,12 +6,13 @@ open import Data.Unit using (⊤)
 open import Data.Product using (_×_)
 
 open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Synthesizable Atomic-B
-open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Plugs BoolTrio using (pid; pALR; pARL; pSwap; pFork×)
 open import PiWare.Circuit BoolTrio using (ℂ; delayℂ; _⟫_; _||_; _named_)
 open import PiWare.Samples.BoolTrioComb using (⊥ℂ; ¬ℂ; ∨ℂ; mux2to1)
+
+open import PiWare.Synthesizable Atomic-B using ()  -- only instances
+open import PiWare.Synthesizable.Bool using ()  -- only instances
 \end{code}
 
 

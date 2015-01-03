@@ -20,18 +20,8 @@ open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
 open import PiWare.Utils using (seggregateSums)
-open Atomic At using (Atom; Atom#; atom→n; n→atom)
+open Atomic At using (Atom; Atom#; W; atom→n; n→atom)
 \end{code}
-
-
--- Words are sequences of "Atoms"
-%<*Word>
-\AgdaTarget{W}
-\begin{code}
-W : ℕ → Set
-W = Vec Atom
-\end{code}
-%</Word>
 
 
 -- Provides a mapping between metalanguage types and words

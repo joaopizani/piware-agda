@@ -6,10 +6,9 @@ open import Data.Product using (_×_; _,_; uncurry′)
 open import Data.Vec using (Vec; _∷_) renaming ([] to ε)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
-open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Simulation BoolTrio using (⟦_⟧)
 open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
+open import PiWare.Simulation BoolTrio using (⟦_⟧)
 \end{code}
 
 
