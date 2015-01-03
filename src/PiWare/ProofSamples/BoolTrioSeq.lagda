@@ -5,10 +5,10 @@ open import Function using (_$_)
 open import Data.Unit using (tt)
 open import Data.Bool using (not; false; true)
 open import Data.Product using (_,_)
-
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Coinduction using (♯_; ♭)
 open import Data.Stream using (_∷_; head; tail; take; repeat; iterate; zipWith; _≈_)
+
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Simulation BoolTrio using (⟦_⟧*)

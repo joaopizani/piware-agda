@@ -10,13 +10,13 @@ open import Data.Vec using (Vec; _++_; splitAt) renaming ([] to ε; _∷_ to _�
 open import Data.Product using (_,_; proj₁; proj₂) renaming (map to mapₚ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 
-open import PiWare.Synthesizable At
-open ⇓W⇑ ⦃ ... ⦄
-
 open import PiWare.Circuit.Core using (ℂ'; _⟫'_; _|'_; comb'; _comb⟫'_; _comb|'_)
 open import PiWare.Circuit using (ℂ; Mkℂ; comb; _⟫_; _||_; _comb⟫_; _comb|_; comb|+)
 open import PiWare.Simulation.Core using (⟦_⟧')
 open import PiWare.Simulation using (⟦_⟧)
+
+open import PiWare.Synthesizable At using ()  -- only instances
+open ⇓W⇑ ⦃ ... ⦄
 \end{code}
 
 

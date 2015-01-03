@@ -14,16 +14,15 @@ open import Data.List using (List; []; _∷_; map)
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺)
 open import Data.CausalStream using (Γᶜ; _⇒ᶜ_; tails⁺)
 open import PiWare.Utils using (unzip⁺; splitAt'; splitAt⁺; uncurry⁺)
+open import Coinduction using (♯_; ♭)
 open import Data.Vec using (Vec; _++_; lookup; replicate; allFin; drop)
                      renaming ([] to ε; _∷_ to _◁_; take to takeᵥ; map to mapᵥ)
 
-open import Relation.Binary.PropositionalEquality using (refl)
-open import Coinduction using (♯_; ♭)
 
-open import PiWare.Synthesizable At using (W; untag; untagList)
-open import PiWare.Circuit.Core Gt
-    using (ℂ'; comb'; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
-open Atomic At using (Atom#; n→atom)
+open import PiWare.Synthesizable At using (untag; untagList)
+open import PiWare.Circuit.Core Gt using (ℂ'; comb'; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
+
+open Atomic At using (Atom#; W; n→atom)
 open Gates At Gt using (spec)
 \end{code}
 

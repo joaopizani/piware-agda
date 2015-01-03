@@ -10,12 +10,12 @@ open import Data.Vec using (Vec)
 
 import Algebra as A
 import Data.Nat.Properties as NP
+open A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
 open import Relation.Binary.PropositionalEquality using (sym)
-open module CS = A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B using (⇓W⇑[_,_])
-open import PiWare.Synthesizable.Bool using (⇓W⇑-B)
+open import PiWare.Synthesizable.Bool using ()  -- only instances
 
 open import PiWare.Gates.BoolTrio using (BoolTrio; TrueConst#; And#)
 open import PiWare.Circuit.Core BoolTrio using (ℂ'; Gate; _|'_; _⟫'_; comb')
