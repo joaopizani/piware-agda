@@ -1,7 +1,7 @@
 \begin{code}
 module Data.CausalStream where
 
-open import Data.Product using (_,_; uncurry′)
+open import Data.Product using (uncurry′)
 open import Data.List using (List; []; _∷_)
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming ([_] to [_]⁺)
 

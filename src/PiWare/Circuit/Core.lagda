@@ -30,7 +30,7 @@ data ℂ' where
     Gate  : (g# : Gates#) → ℂ' (|in| g#) (|out| g#)
     DelayLoop : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → ℂ' i o
 
-    Plug : ∀ {i o} → (f : Fin o → Fin i) → ℂ' i o
+    Plug : ∀ {i o} (f : Fin o → Fin i) → ℂ' i o
     _⟫'_ : ∀ {i m o} → ℂ' i m → ℂ' m o → ℂ' i o
     _|'_ : ∀ {i₁ o₁ i₂ o₂} → ℂ' i₁ o₁ → ℂ' i₂ o₂ → ℂ' (i₁ + i₂) (o₁ + o₂)
     _|+'_ : ∀ {i₁ i₂ o} → ℂ' i₁ o → ℂ' i₂ o → ℂ' (suc (i₁ ⊔ i₂)) o

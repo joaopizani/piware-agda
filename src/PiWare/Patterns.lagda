@@ -27,7 +27,7 @@ parsN {k = k} {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') =
 %<*seqsN>
 \AgdaTarget{seqsN}
 \begin{code}
-seqsN : ∀ {α i} ⦃ sα : ⇓W⇑ α {i} ⦄ (k : ℕ) → ℂ α α {i} {i} → ℂ α α {i} {i}
+seqsN : ∀ (k : ℕ) {α i} ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ α α {i} {i} → ℂ α α {i} {i}
 seqsN k ⦃ sα ⦄ (Mkℂ c') = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ (seqsN' k c')
 \end{code}
 %</seqsN>

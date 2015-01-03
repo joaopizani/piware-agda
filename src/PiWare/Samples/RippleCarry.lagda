@@ -18,7 +18,7 @@ open import PiWare.Synthesizable.Bool  -- only instances
 
 
 -- cin × a × b → s × cout
-%<*ripple-commented>
+%<*ripple>
 \AgdaTarget{ripple}
 \begin{code}
 ripple : (n : ℕ) → let W = Vec B n in ℂ (B × W × W) (W × B)
@@ -33,4 +33,4 @@ ripple (suc m) =
     ⟫ pCons || pid
     where pAssoc = pARL ⟫ pARL || pid
 \end{code}
-%</ripple-commented>
+%</ripple>

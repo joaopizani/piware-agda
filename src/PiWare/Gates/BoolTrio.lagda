@@ -8,9 +8,9 @@ open import Data.Vec using (Vec; [_]) renaming (_∷_ to _◁_; [] to ε)
 open import Data.Bool using (false; true; not; _∧_; _∨_) renaming (Bool to B)
 
 open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Atom
-open Atomic Atomic-B using (W)
 open import PiWare.Gates Atomic-B using (Gates)
+import PiWare.Atom as PA
+open PA.Atomic Atomic-B using (W)
 \end{code}
 
 
