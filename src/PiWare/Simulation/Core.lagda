@@ -1,6 +1,6 @@
 \begin{code}
-open import PiWare.Atom
-open import PiWare.Gates
+open import PiWare.Atom using (Atomic; module Atomic)
+open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Simulation.Core {At : Atomic} (Gt : Gates At) where
 
