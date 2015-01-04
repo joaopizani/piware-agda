@@ -2,12 +2,14 @@
 module PiWare.Utils where
 
 open import Function using (id)
-open import Data.Nat using (ℕ; _+_)
-open import Data.Product using (_×_; _,_; proj₁; <_,_>) renaming (map to mapₚ)
+open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Product using (_×_; _,_; proj₁; proj₂; <_,_>) renaming (map to mapₚ)
 open import Data.Sum using (_⊎_; isInj₁; isInj₂)
-open import Data.Vec using (Vec; splitAt)
+open import Data.Vec using (Vec; splitAt; _++_) renaming ([] to ε; _∷_ to _◁_)
 open import Data.List using (List; gfilter; _∷_; [])
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺)
+
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 
 
@@ -62,3 +64,24 @@ seggregateSums : ∀ {ℓ} {α β : Set ℓ} → List (α ⊎ β) → List α ×
 seggregateSums = < gfilter isInj₁ , gfilter isInj₂ >
 \end{code}
 %</seggregateSums>
+
+
+%<*lemma-proj₁-splitAt>
+\begin{code}
+lemma-proj₁-splitAt : ∀ {ℓ} {α : Set ℓ} {i₁ i₂} (v₁ : Vec α i₁) (v₂ : Vec α i₂)
+                      → proj₁ (splitAt i₁ (v₁ ++ v₂)) ≡ v₁
+lemma-proj₁-splitAt {i₁ = zero}  ε        v₂ = refl
+lemma-proj₁-splitAt {i₁ = suc n} (v ◁ vs) v₂ with splitAt n (vs ++ v₂) | lemma-proj₁-splitAt vs v₂
+lemma-proj₁-splitAt {i₁ = suc n} (v ◁ vs) v₂ | _ , _ , eq              | ind rewrite eq | ind = refl
+\end{code}
+%</lemma-proj₁-splitAt>
+
+%<*lemma-proj₁₂-splitAt>
+\begin{code}
+lemma-proj₁₂-splitAt : ∀ {ℓ} {α : Set ℓ} {i₁ i₂} (v₁ : Vec α i₁) (v₂ : Vec α i₂) 
+                       → proj₁ (proj₂ (splitAt i₁ (v₁ ++ v₂))) ≡ v₂
+lemma-proj₁₂-splitAt {i₁ = zero}  ε        _  = refl
+lemma-proj₁₂-splitAt {i₁ = suc n} (v ◁ vs) v₂ with splitAt n (vs ++ v₂) | lemma-proj₁₂-splitAt vs v₂
+lemma-proj₁₂-splitAt {i₁ = suc n} (v ◁ vs) v₂ | _ , _ , eq              | ind rewrite eq | ind = refl
+\end{code}
+%</lemma-proj₁₂-splitAt>
