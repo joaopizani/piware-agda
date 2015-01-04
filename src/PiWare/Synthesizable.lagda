@@ -1,5 +1,5 @@
 \begin{code}
-open import PiWare.Atom
+open import PiWare.Atom using (Atomic; module Atomic)
 
 module PiWare.Synthesizable (At : Atomic) where
 
