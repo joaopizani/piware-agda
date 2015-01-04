@@ -1,3 +1,4 @@
+
 \begin{code}
 open import PiWare.Atom using (Atomic)
 open import PiWare.Gates using (Gates)
@@ -5,10 +6,10 @@ open import PiWare.Gates using (Gates)
 module PiWare.Correctness (At : Atomic) where
 
 open import Function using (_∘_)
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Vec using (Vec; _++_; splitAt) renaming ([] to ε; _∷_ to _◁_)
-open import Data.Product using (_,_; proj₁; proj₂) renaming (map to mapₚ)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
+open import Data.Nat using (ℕ; _+_)
+open import Data.Vec using (_++_)
+open import Data.Product using (_,_) renaming (map to mapₚ)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 
 open import PiWare.Circuit.Core using (ℂ'; _⟫'_; _|'_; comb'; _comb⟫'_; _comb|'_)
 open import PiWare.Circuit using (ℂ; Mkℂ; comb; _⟫_; _||_; _comb⟫_; _comb|_; comb|+)
@@ -34,20 +35,6 @@ _⟫≡'_ {f₁ = f₁} pc₁ pc₂ v rewrite sym (pc₂ (f₁ v)) | sym (pc₁ 
 %</seqproof-eq-core>
 
 
-\begin{code}
-lemma-proj₁-splitAt : ∀ {ℓ} {α : Set ℓ} {i₁ i₂} (v₁ : Vec α i₁) (v₂ : Vec α i₂)
-                      → proj₁ (splitAt i₁ (v₁ ++ v₂)) ≡ v₁
-lemma-proj₁-splitAt {i₁ = zero}  ε        v₂ = refl
-lemma-proj₁-splitAt {i₁ = suc n} (v ◁ vs) v₂ with splitAt n (vs ++ v₂) | lemma-proj₁-splitAt {i₁ = n} vs v₂
-lemma-proj₁-splitAt {i₁ = suc n} (v ◁ vs) v₂ | _ , _ , eq | ind rewrite eq | ind = refl
-
-lemma-proj₁₂-splitAt : ∀ {ℓ} {α : Set ℓ} {i₁ i₂} (v₁ : Vec α i₁) (v₂ : Vec α i₂) 
-                       → proj₁ (proj₂ (splitAt i₁ (v₁ ++ v₂))) ≡ v₂
-lemma-proj₁₂-splitAt {i₁ = zero}  ε        _  = refl
-lemma-proj₁₂-splitAt {i₁ = suc n} (v ◁ vs) v₂ with splitAt n (vs ++ v₂) | lemma-proj₁₂-splitAt {i₁ = n} vs v₂
-lemma-proj₁₂-splitAt {i₁ = suc n} (v ◁ vs) v₂ | _ , _ , eq | ind rewrite eq | ind = refl
-\end{code}
-
 %<*parproof-eq-core>
 \AgdaTarget{\_|≡'\_}
 \begin{code}
@@ -67,7 +54,6 @@ _|≡'_ {i₁ = i₁} {f₁ = f₁} pc₁ pc₂ v₁ v₂
           | pc₂ v₂ = refl
 \end{code}
 %</parproof-eq-core>
-
 
 
 %<*eq-down>

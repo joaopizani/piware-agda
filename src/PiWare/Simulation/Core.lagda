@@ -30,7 +30,7 @@ open Gates At Gt using (spec)
 %<*plugOutputs>
 \AgdaTarget{plugOutputs}
 \begin{code}
-plugOutputs : {α : Set} {o i : ℕ} (Fin o → Fin i) → Vec α i → Vec α o
+plugOutputs : {α : Set} {o i : ℕ} → (Fin o → Fin i) → Vec α i → Vec α o
 plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 \end{code}
 %</plugOutputs>
