@@ -23,19 +23,17 @@ comb' : {i o : ℕ} → ℂ' i o → Set
 %</pre-decls>
 
 %<*Circuit-core>
-\AgdaTarget{ℂ', Nil, Gate, DelayLoop, Plug, \_⟫'\_, \_|'\_, \_|+'\_, \_Named\_}
+\AgdaTarget{ℂ', Nil, Gate, DelayLoop, Plug, \_⟫'\_, \_|'\_, \_|+'\_}
 \begin{code}
 data ℂ' where
-    Nil   : ℂ' zero zero
-    Gate  : (g# : Gates#) → ℂ' (|in| g#) (|out| g#)
-    DelayLoop : ∀ {i o l} (c : ℂ' (i + l) (o + l)) {p : comb' c} → ℂ' i o
+    Nil        : ℂ' zero zero
+    Gate       : (g# : Gates#) → ℂ' (|in| g#) (|out| g#)
+    DelayLoop  : ∀ {i o l} (c : ℂ' (i + l) (o + l)) → ℂ' i o
 
-    Plug : ∀ {i o} (f : Fin o → Fin i) → ℂ' i o
-    _⟫'_ : ∀ {i m o} → ℂ' i m → ℂ' m o → ℂ' i o
-    _|'_ : ∀ {i₁ o₁ i₂ o₂} → ℂ' i₁ o₁ → ℂ' i₂ o₂ → ℂ' (i₁ + i₂) (o₁ + o₂)
-    _|+'_ : ∀ {i₁ i₂ o} → ℂ' i₁ o → ℂ' i₂ o → ℂ' (suc (i₁ ⊔ i₂)) o
-
-    _Named_ : ∀ {i o} → ℂ' i o → String → ℂ' i o
+    Plug   : ∀ {i o} (f : Fin o → Fin i) → ℂ' i o
+    _⟫'_   : ∀ {i m o} → ℂ' i m → ℂ' m o → ℂ' i o
+    _|'_   : ∀ {i₁ o₁ i₂ o₂} → ℂ' i₁ o₁ → ℂ' i₂ o₂ → ℂ' (i₁ + i₂) (o₁ + o₂)
+    _|+'_  : ∀ {i₁ i₂ o} → ℂ' i₁ o → ℂ' i₂ o → ℂ' (suc (i₁ ⊔ i₂)) o
 \end{code}
 %</Circuit-core>
 
@@ -56,7 +54,6 @@ comb' (DelayLoop _) = ⊥
 comb' (c₁ ⟫' c₂)    = comb' c₁ × comb' c₂
 comb' (c₁ |' c₂)    = comb' c₁ × comb' c₂
 comb' (c₁ |+' c₂)   = comb' c₁ × comb' c₂
-comb' (c Named _)   = comb' c
 \end{code}
 %</comb-core>
 
