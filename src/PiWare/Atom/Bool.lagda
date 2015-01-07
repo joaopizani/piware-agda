@@ -14,18 +14,23 @@ open import PiWare.Atom using (Atomic)
 \begin{code}
 private
 \end{code}
-  %<*cardinality>
+  %<*cardinality-minus-1>
   \begin{code}
   |B|-1 = 1
-  |B| = suc |B|-1
+  \end{code}
+  %</cardinality-minus-1>
+
+  %<*cardinality>
+  \begin{code}
+  |B| = 2
   \end{code}
   %</cardinality>
 
   %<*pattern-synonyms>
-  \AgdaTarget{False\#, True\#, Absurd\#}
+  \AgdaTarget{Zero, One, Absurd\#}
   \begin{code}
-  pattern False#    = Fz
-  pattern True#     = Fs Fz
+  pattern Zero    = Fz
+  pattern One     = Fs Fz
   pattern Absurd# n = Fs (Fs n)
   \end{code}
   %</pattern-synonyms>
@@ -34,7 +39,7 @@ private
   \AgdaTarget{n→B}
   \begin{code}
   n→B : Fin |B| → B
-  n→B = λ { False# → false;  True# → true;  (Absurd# ()) }
+  n→B = λ { Zero → false;  One → true;  (Absurd# ()) }
   \end{code}
   %</nToBool>
   
@@ -42,7 +47,7 @@ private
   \AgdaTarget{B→n}
   \begin{code}
   B→n : B → Fin |B|
-  B→n = λ { false → False#;  true → True# }
+  B→n = λ { false → Zero;  true → One }
   \end{code}
   %</boolToN>
   
@@ -50,7 +55,7 @@ private
   \AgdaTarget{inv-left-B}
   \begin{code}
   inv-left-B : ∀ i → B→n (n→B i) ≡ i
-  inv-left-B = λ { False# → refl;  True# → refl;  (Absurd# ()) }
+  inv-left-B = λ { Zero → refl;  One → refl;  (Absurd# ()) }
   \end{code}
   %</inv-left-Bool>
 
