@@ -25,16 +25,21 @@ open Atomic At using (Atom; Atom#; W; atom→n; n→atom)
 
 
 -- Provides a mapping between metalanguage types and words
-%<*Synth>
-\AgdaTarget{⇓W⇑, ⇓, ⇑}
+%<*Synth-header>
+\AgdaTarget{⇓W⇑}
 \begin{code}
 record ⇓W⇑ (α : Set) {i : ℕ} : Set where
     constructor ⇓W⇑[_,_]
     field
+\end{code}
+%</Synth-header>
+%<*Synth-down-up>
+\AgdaTarget{⇓, ⇑}
+\begin{code}
         ⇓ : α → W i
         ⇑ : W i → α
 \end{code}
-%</Synth>
+%</Synth-down-up>
 
 \begin{code}
 open ⇓W⇑ ⦃ ... ⦄
@@ -79,7 +84,7 @@ instance
   ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
       where down : (α × β) → W (i + j)
             down (a , b) = (⇓ a) ++ (⇓ b)
-  
+
             up : W (i + j) → (α × β)
             up w with splitAt i w
             up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
@@ -97,7 +102,7 @@ instance
 
             down : Vec α n → W (n * i)
             down = concat ∘ mapᵥ ⇓
-            
+
             up : W (n * i) → Vec α n
             up = mapᵥ ⇑ ∘ group' n i
 \end{code}
@@ -112,7 +117,7 @@ instance
       where down : α ⊎ β → W (suc (i ⊔ j))
             down = [ (λ a → (n→atom l) ◁ (padTo₁ j withA n→atom p) (⇓ a))
                    , (λ b → (n→atom r) ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
-            
+
             up : W (suc (i ⊔ j)) → α ⊎ β
             up = map⊎ ⇑ ⇑ ∘ (untag l)
 \end{code}
