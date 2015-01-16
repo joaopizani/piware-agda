@@ -11,7 +11,7 @@ open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (ℂ; _⟫_; _||_)
+open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; _⟫_; _||_)
 open import PiWare.Plugs BoolTrio using (pid; pFst; pSwap; pCons; pUncons; pIntertwine; pALR; pARL)
 open import PiWare.Samples.BoolTrioComb using (fadd)
 \end{code}
@@ -20,7 +20,7 @@ open import PiWare.Samples.BoolTrioComb using (fadd)
 -- cin × a × b → s × cout
 %<*ripple-commented>
 \begin{code}
-ripple : (n : ℕ) → let W = Vec B n in ℂ (B × W × W) (W × B)
+ripple : (n : ℕ) → let W = Vec B n in Anyℂ (B × W × W) (W × B)
 ripple zero    = pid || pFst ⟫ pSwap
 ripple (suc m) =
       pid   || (pUncons || pUncons ⟫ pIntertwine)

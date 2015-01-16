@@ -23,14 +23,30 @@ data CombSeq : Set where
 \end{code}
 %</CombSeq>
 
+
+%<*Circuit-core-predecl>
+\begin{code}
+data ℂ' : {cs : CombSeq} → ℕ → ℕ → Set
+\end{code}
+%</Circuit-core-predecl>
+
+
+%<*AnyCircuit-core>
+\begin{code}
+Anyℂ' : ℕ → ℕ → Set
+Anyℂ' i o = ∀ {cs} → ℂ' {cs} i o
+\end{code}
+%</AnyCircuit-core>
+
+
 %<*Circuit-core>
 \begin{code}
-data ℂ' : {cs : CombSeq} → ℕ → ℕ → Set where
-    Nil   : ∀ {cs} → ℂ' {cs} zero zero
-    Gate  : ∀ {cs} → (g# : Gates#) → ℂ' {cs} (|in| g#) (|out| g#)
+data ℂ' where
+    Nil   : Anyℂ' zero zero
+    Gate  : (g# : Gates#) → Anyℂ' (|in| g#) (|out| g#)
     DelayLoop : ∀ {i o l} (c : ℂ' {Comb} (i + l) (o + l)) → ℂ' {Seq} i o
 
-    Plug : ∀ {i o cs} → (f : Fin o → Fin i) → ℂ' {cs} i o
+    Plug : ∀ {i o} → (f : Fin o → Fin i) → Anyℂ' i o
     _⟫'_ : ∀ {i m o cs} → ℂ' {cs} i m → ℂ' {cs} m o → ℂ' {cs} i o
     _|'_ : ∀ {i₁ o₁ i₂ o₂ cs} → ℂ' {cs} i₁ o₁ → ℂ' {cs} i₂ o₂ → ℂ' {cs} (i₁ + i₂) (o₁ + o₂)
     _|+'_ : ∀ {i₁ i₂ o cs} → ℂ' {cs} i₁ o → ℂ' {cs} i₂ o → ℂ' {cs} (suc (i₁ ⊔ i₂)) o

@@ -34,6 +34,14 @@ record ℂ {cs : CombSeq} (α β : Set) {i j : ℕ} : Set where
 %</Circuit>
 
 
+%<*AnyCircuit>
+\begin{code}
+Anyℂ : (α β : Set){i j : ℕ} → Set
+Anyℂ α β {i} {j} = ∀ {cs} → ℂ {cs} α β {i} {j}
+\end{code}
+$</AnyCircuit>
+
+
 -- "Smart constructors"
 %<*named>
 \begin{code}

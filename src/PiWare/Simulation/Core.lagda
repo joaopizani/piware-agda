@@ -22,7 +22,7 @@ open import Coinduction using (♯_; ♭)
 
 open import PiWare.Synthesizable At using (W; untag; untagList)
 open import PiWare.Circuit.Core Gt
-    using (ℂ'; Comb; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
+    using (ℂ'; Anyℂ'; Comb; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
 open Atomic At using (Atom#; n→atom)
 open Gates At Gt using (spec)
 \end{code}

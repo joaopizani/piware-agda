@@ -13,20 +13,20 @@ open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio; FalseConst#; TrueConst#; Not#; And#; Or#)
 open import PiWare.Circuit.Core BoolTrio using (Gate)
 open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL; pFst; pSnd)
-open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
+open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 \end{code}
 
 
 %<*fundamentals>
 \begin{code}
-⊥ℂ ⊤ℂ : ℂ ⊤ B
+⊥ℂ ⊤ℂ : Anyℂ ⊤ B
 ⊥ℂ = Mkℂ (Gate FalseConst#) named "falseGate"
 ⊤ℂ = Mkℂ (Gate TrueConst#) named "trueGate"
 
-¬ℂ : ℂ B B
+¬ℂ : Anyℂ B B
 ¬ℂ = Mkℂ (Gate Not#) named "notGate"
 
-∧ℂ ∨ℂ : ℂ (B × B) B
+∧ℂ ∨ℂ : Anyℂ (B × B) B
 ∧ℂ = Mkℂ (Gate And#) named "andGate"
 ∨ℂ = Mkℂ (Gate Or#) named "orGate"
 \end{code}
@@ -34,14 +34,14 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 
 %<*nand>
 \begin{code}
-¬∧ℂ : ℂ (B × B) B
+¬∧ℂ : Anyℂ (B × B) B
 ¬∧ℂ = ∧ℂ ⟫ ¬ℂ named "nandGate"
 \end{code}
 %</nand>
 
 %<*xor>
 \begin{code}
-⊻ℂ : ℂ (B × B) B
+⊻ℂ : Anyℂ (B × B) B
 ⊻ℂ =   pFork×
      ⟫ (¬ℂ || pid ⟫ ∧ℂ) || (pid || ¬ℂ ⟫ ∧ℂ)
      ⟫ ∨ℂ
@@ -53,7 +53,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Mkℂ; _⟫_; _||_; |+; _named_)
 a × b → c × s
 %<*hadd>
 \begin{code}
-hadd : ℂ (B × B) (B × B)
+hadd : Anyℂ (B × B) (B × B)
 hadd =   pFork×
        ⟫ ∧ℂ || ⊻ℂ
        named "hadd"
@@ -63,7 +63,7 @@ hadd =   pFork×
 (a × b) × cin → co × s
 %<*fadd>
 \begin{code}
-fadd : ℂ ((B × B) × B) (B × B)
+fadd : Anyℂ ((B × B) × B) (B × B)
 fadd =   hadd || pid
        ⟫    pALR
        ⟫ pid  || hadd
@@ -76,7 +76,7 @@ fadd =   hadd || pid
 
 %<*mux2to1>
 \begin{code}
-mux2to1 : ℂ (B × (B × B)) B
+mux2to1 : Anyℂ (B × (B × B)) B
 mux2to1 =   pFork×
           ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
           ⟫ ∨ℂ
