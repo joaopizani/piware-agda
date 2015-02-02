@@ -20,11 +20,10 @@ open import PiWare.Circuit.Core Gt using (ℂ'; Anyℂ'; Plug; _⟫'_; _|'_; _Na
 
 \begin{code}
 import Algebra as A
-import Data.Nat.Properties as NP
+import Data.Nat.Properties as N
 open import Data.Nat.Properties.Simple using (*-right-zero)
-open import Algebra.Operations (A.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
-open module CS = A.CommutativeSemiring NP.commutativeSemiring
-     using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
+open import Algebra.Operations (A.CommutativeSemiring.semiring N.commutativeSemiring) using (_^_)
+open A.CommutativeSemiring N.commutativeSemiring using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
 \end{code}
 
 %<*pSwap-core>
@@ -35,8 +34,9 @@ pSwap' {n} {m} = p n m Named "pSwap"
         p n m with n + m ≟ 0
         p n m | yes _ rewrite +-comm n m = Plug id
         p n m | no ¬z = Plug $ finSwap (fromWitnessFalse ¬z)
-           where finSwap : False (n + m ≟ 0) → Fin (m + n) → Fin (n + m)
-                 finSwap ¬z x = _mod_ (toℕ x + m) (n + m) {¬z}
+           where
+             finSwap : False (n + m ≟ 0) → Fin (m + n) → Fin (n + m)
+             finSwap ¬z x = _mod_ (toℕ x + m) (n + m) {¬z}
 \end{code}
 %</pSwap-core>
 
@@ -87,7 +87,7 @@ pHead' {n} {w} = Plug (inject+ (n * w)) Named "pHead"
 %</pHead-core>
 
 \begin{code}
-open NP.SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
+open N.SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
 \end{code}
 
 %<*twiceSuc>
@@ -117,17 +117,14 @@ eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
 pVecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
 pVecHalfPowEq zero w rewrite (proj₂ +-identity) w = refl
 pVecHalfPowEq (suc n) w = begin
-    2 ^ suc (suc n) * w           ≡⟨ refl ⟩
-    2 * 2 ^ suc n * w             ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
-    2 * (2 ^ suc n * w)           ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
-    2 * (2 ^ n * w  +  2 ^ n * w) ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
-    (2 ^ n * w + 2 ^ n * w) * 2   ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
-    2 ^ n * w * 2   +  2 ^ n * w * 2
-  ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  eqAdd p p) ⟩
-    2 * (2 ^ n * w) +  2 * (2 ^ n * w)
-  ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
-    2 * 2 ^ n * w   +  2 * 2 ^ n * w
-  ≡⟨ refl ⟩
+    2 ^ suc (suc n) * w                 ≡⟨ refl ⟩
+    2 * 2 ^ suc n * w                   ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
+    2 * (2 ^ suc n * w)                 ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
+    2 * (2 ^ n * w  +  2 ^ n * w)       ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
+    (2 ^ n * w + 2 ^ n * w) * 2         ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
+    2 ^ n * w * 2   +  2 ^ n * w * 2    ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  eqAdd p p) ⟩
+    2 * (2 ^ n * w) +  2 * (2 ^ n * w)  ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
+    2 * 2 ^ n * w   +  2 * 2 ^ n * w    ≡⟨ refl ⟩
     2 ^ suc n * w   +  2 ^ suc n * w
   ∎
 \end{code}

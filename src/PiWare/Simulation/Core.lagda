@@ -1,6 +1,6 @@
 \begin{code}
-open import PiWare.Atom
-open import PiWare.Gates
+open import PiWare.Atom using (Atomic; module Atomic)
+open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Simulation.Core {At : Atomic} (Gt : Gates At) where
 
@@ -21,8 +21,7 @@ open import Relation.Binary.PropositionalEquality using (refl)
 open import Coinduction using (♯_; ♭)
 
 open import PiWare.Synthesizable At using (untag; untagList)
-open import PiWare.Circuit.Core Gt
-    using (ℂ'; Anyℂ'; Comb; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
+open import PiWare.Circuit.Core Gt using (ℂ'; Anyℂ'; Comb; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
 open Atomic At using (Atom#; n→atom; W)
 open Gates At Gt using (spec)
 \end{code}

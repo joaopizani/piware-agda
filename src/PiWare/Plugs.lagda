@@ -10,9 +10,9 @@ open import Data.Vec using (Vec)
 open import Data.Product using (_×_; proj₂)
 
 open import Algebra as A
-open import Data.Nat.Properties as NP
-open module CS = A.CommutativeSemiring NP.commutativeSemiring using (+-identity)
-open import Algebra.Operations (A.CommutativeSemiring.semiring NP.commutativeSemiring) using (_^_)
+open import Data.Nat.Properties as N
+open A.CommutativeSemiring N.commutativeSemiring using (+-identity)
+open import Algebra.Operations (A.CommutativeSemiring.semiring N.commutativeSemiring) using (_^_)
 open import Relation.Binary.PropositionalEquality using (cong; sym)
 
 open import PiWare.Circuit.Core Gt using (ℂ')

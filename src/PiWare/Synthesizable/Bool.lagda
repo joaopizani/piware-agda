@@ -1,18 +1,14 @@
 \begin{code}
 module PiWare.Synthesizable.Bool where
 
-open import Data.Product using (_×_)
-open import Data.Sum using (_⊎_)
-open import Data.Nat using (suc; _⊔_)
 open import Data.Bool using () renaming (Bool to B)
-open import Data.Vec using (Vec; head) renaming ([_] to singleton)
-open import Relation.Binary.PropositionalEquality using (_≢_)
+open import Data.Vec using (head) renaming ([_] to singleton)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B using (⇓W⇑; ⇓W⇑[_,_])
 
-import PiWare.Atom as A
-open A.Atomic Atomic-B using (Atom#)
+open import PiWare.Atom using (module Atomic)
+open Atomic Atomic-B using (Atom#)
 \end{code}
 
 

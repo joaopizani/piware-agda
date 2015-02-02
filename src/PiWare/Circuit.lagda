@@ -1,5 +1,5 @@
 \begin{code}
-open import PiWare.Atom
+open import PiWare.Atom using (Atomic; module Atomic)
 open import PiWare.Gates using (Gates)
 
 module PiWare.Circuit {At : Atomic} (Gt : Gates At) where
@@ -12,8 +12,7 @@ open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 open import PiWare.Circuit.Core Gt using (CombSeq; Comb; Seq) public
-open import PiWare.Circuit.Core Gt
-     using (ℂ'; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
+open import PiWare.Circuit.Core Gt using (ℂ'; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
 
 open Atomic At using (Atom#) 
 \end{code}

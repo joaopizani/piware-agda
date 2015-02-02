@@ -3,14 +3,13 @@ module PiWare.Samples.BoolTrioComb where
 
 open import Data.Bool using () renaming (Bool to B)
 open import Data.Product using (_×_)
-open import Data.Sum using (_⊎_)
 open import Data.Unit using (⊤)
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 
 open import PiWare.Atom.Bool using (Atomic-B; False#; True#)
 open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
-open import PiWare.Gates.BoolTrio using (BoolTrio; FalseConst#; TrueConst#; Not#; And#; Or#)
+open import PiWare.Gates.BoolTrio using (BoolTrio; ⊥ℂ#; ⊤ℂ#; Not#; And#; Or#)
 open import PiWare.Circuit.Core BoolTrio using (Gate)
 open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL; pFst; pSnd)
 open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; _named_)
@@ -20,8 +19,8 @@ open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; 
 %<*fundamentals>
 \begin{code}
 ⊥ℂ ⊤ℂ : Anyℂ ⊤ B
-⊥ℂ = Mkℂ (Gate FalseConst#) named "falseGate"
-⊤ℂ = Mkℂ (Gate TrueConst#) named "trueGate"
+⊥ℂ = Mkℂ (Gate ⊥ℂ#) named "falseGate"
+⊤ℂ = Mkℂ (Gate ⊤ℂ#) named "trueGate"
 
 ¬ℂ : Anyℂ B B
 ¬ℂ = Mkℂ (Gate Not#) named "notGate"
