@@ -22,7 +22,7 @@ open import PiWare.Plugs.Core Gt using (pid')
 %<*pars-core>
 \AgdaTarget{pars'}
 \begin{code}
-pars' : ∀ {k i o} → Vec (ℂ' i o) k → ℂ' (k * i) (k * o)
+pars' : ∀ {k i o cs} → Vec (ℂ' {cs} i o) k → ℂ' {cs} (k * i) (k * o)
 pars' {_} {i} {o} = foldr (λ k → ℂ' (k * i) (k * o)) _|'_ Nil
 \end{code}
 %</pars-core>
@@ -30,7 +30,7 @@ pars' {_} {i} {o} = foldr (λ k → ℂ' (k * i) (k * o)) _|'_ Nil
 %<*parsN-core>
 \AgdaTarget{parsN'}
 \begin{code}
-parsN' : ∀ {k i o} → ℂ' i o → ℂ' (k * i) (k * o)
+parsN' : ∀ {k i o cs} → ℂ' {cs} i o → ℂ' {cs} (k * i) (k * o)
 parsN' {k} = pars' ∘ replicate {n = k}
 \end{code}
 %</parsN-core>
@@ -41,7 +41,7 @@ parsN' {k} = pars' ∘ replicate {n = k}
 %<*seqs-core>
 \AgdaTarget{seqs'}
 \begin{code}
-seqs' : ∀ {k io} → Vec (ℂ' io io) k → ℂ' io io
+seqs' : ∀ {k io cs} → Vec (ℂ' {cs} io io) k → ℂ' {cs} io io
 seqs' {_} {io} = foldr (const $ ℂ' io io) _⟫'_ pid'
 \end{code}
 %</seqs-core>
@@ -49,7 +49,7 @@ seqs' {_} {io} = foldr (const $ ℂ' io io) _⟫'_ pid'
 %<*seqsN-core>
 \AgdaTarget{seqsN'}
 \begin{code}
-seqsN' : (k : ℕ) {io : ℕ} → ℂ' io io → ℂ' io io
+seqsN' : (k : ℕ) → ∀ {io cs} → ℂ' {cs} io io → ℂ' {cs} io io
 seqsN' k = seqs' ∘ replicate {n = k}
 \end{code}
 %</seqsN-core>
