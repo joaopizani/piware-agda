@@ -1,11 +1,11 @@
 \begin{code}
 module PiWare.Utils where
 
-open import Function using (id)
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Function using (id; _∘_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; <_,_>) renaming (map to mapₚ)
 open import Data.Sum using (_⊎_; isInj₁; isInj₂)
-open import Data.Vec using (Vec; splitAt; _++_) renaming ([] to ε; _∷_ to _◁_)
+open import Data.Vec using (Vec; splitAt; _++_; group) renaming ([] to ε; _∷_ to _◁_)
 open import Data.List using (List; gfilter; _∷_; [])
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺)
 
@@ -47,6 +47,14 @@ splitAt' : ∀ {ℓ} {α : Set ℓ} (m : ℕ) {n : ℕ} → Vec α (m + n) → V
 splitAt' m v = mapₚ id proj₁ (splitAt m v)
 \end{code}
 %</splitAt-noproof>
+
+%<*group-noproof>
+\AgdaTarget{group'}
+\begin{code}
+group' : ∀ {ℓ} {α : Set ℓ} (n k : ℕ) → Vec α (n * k) → Vec (Vec α k) n
+group' n k = proj₁ ∘ group n k
+\end{code}
+%</group-noproof>
 
 %<*splitAt-nonempty>
 \AgdaTarget{splitAt⁺}

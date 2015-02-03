@@ -8,18 +8,16 @@ open import Data.Unit using (⊤; tt)
 open import Data.Bool using (if_then_else_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
-open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Fin.Properties using (_≟_)
 open import Data.Nat using (ℕ; suc; _+_; _*_; _⊔_)
 open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
 open import Data.List using (List) renaming (map to mapₗ)
 
-open import Relation.Binary.PropositionalEquality using (_≢_; refl; sym)
+open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Decidable using (⌊_⌋)
-open import Relation.Nullary.Core using (yes; no)
 
 open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
-open import PiWare.Utils using (seggregateSums)
+open import PiWare.Utils using (group'; seggregateSums)
 open Atomic At using (Atom; Atom#; W; atom→n; n→atom)
 \end{code}
 
@@ -92,14 +90,12 @@ instance
 instance
   ⇓W⇑-Vec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
   ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
-      where group' : {α : Set} (n k : ℕ) → Vec α (n * k) → Vec (Vec α k) n
-            group' n k = proj₁ ∘ group n k
-
-            down : Vec α n → W (n * i)
-            down = concat ∘ mapᵥ ⇓
+    where
+      down : Vec α n → W (n * i)
+      down = concat ∘ mapᵥ ⇓
             
-            up : W (n * i) → Vec α n
-            up = mapᵥ ⇑ ∘ group' n i
+      up : W (n * i) → Vec α n
+      up = mapᵥ ⇑ ∘ group' n i
 \end{code}
 %</Synth-Vec>
 
