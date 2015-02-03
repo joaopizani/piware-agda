@@ -9,7 +9,7 @@ open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import PiWare.Atom.Bool using (Atomic-B; False#; True#)
 open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
-open import PiWare.Gates.BoolTrio using (BoolTrio; ⊥ℂ#; ⊤ℂ#; Not#; And#; Or#)
+open import PiWare.Gates.BoolTrio using (BoolTrio; ⊥ℂ#; ⊤ℂ#; ¬ℂ#; ∧ℂ#; ∨ℂ#)
 open import PiWare.Circuit.Core BoolTrio using (Gate)
 open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL; pFst; pSnd)
 open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; _named_)
@@ -19,22 +19,22 @@ open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; 
 %<*fundamentals>
 \begin{code}
 ⊥ℂ ⊤ℂ : Anyℂ ⊤ B
-⊥ℂ = Mkℂ (Gate ⊥ℂ#) named "falseGate"
-⊤ℂ = Mkℂ (Gate ⊤ℂ#) named "trueGate"
+⊥ℂ = Mkℂ (Gate ⊥ℂ#) named "⊥ℂ"
+⊤ℂ = Mkℂ (Gate ⊤ℂ#) named "⊤ℂ"
 
 ¬ℂ : Anyℂ B B
-¬ℂ = Mkℂ (Gate Not#) named "notGate"
+¬ℂ = Mkℂ (Gate ¬ℂ#) named "¬ℂ"
 
 ∧ℂ ∨ℂ : Anyℂ (B × B) B
-∧ℂ = Mkℂ (Gate And#) named "andGate"
-∨ℂ = Mkℂ (Gate Or#) named "orGate"
+∧ℂ = Mkℂ (Gate ∧ℂ#) named "∧ℂ"
+∨ℂ = Mkℂ (Gate ∨ℂ#) named "∨ℂ"
 \end{code}
 %</fundamentals>
 
 %<*nand>
 \begin{code}
 ¬∧ℂ : Anyℂ (B × B) B
-¬∧ℂ = ∧ℂ ⟫ ¬ℂ named "nandGate"
+¬∧ℂ = ∧ℂ ⟫ ¬ℂ named "¬∧ℂ"
 \end{code}
 %</nand>
 
@@ -44,7 +44,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; 
 ⊻ℂ =   pFork×
      ⟫ (¬ℂ || pid ⟫ ∧ℂ) || (pid || ¬ℂ ⟫ ∧ℂ)
      ⟫ ∨ℂ
-     named "xorGate"
+     named "⊻ℂ"
 \end{code}
 %</xor>
 

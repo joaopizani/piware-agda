@@ -17,7 +17,7 @@ open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B using (⇓W⇑[_,_])
 open import PiWare.Synthesizable.Bool using (⇓W⇑-B)
 
-open import PiWare.Gates.BoolTrio using (BoolTrio; TrueConst#; And#)
+open import PiWare.Gates.BoolTrio using (BoolTrio; ⊤ℂ#; ∧ℂ#)
 open import PiWare.Circuit.Core BoolTrio using (ℂ'; Anyℂ'; Gate; _|'_; _⟫'_)
 open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ)
 open import PiWare.Plugs.Core BoolTrio using (pid')
@@ -27,8 +27,8 @@ open import PiWare.Plugs.Core BoolTrio using (pid')
 %<*andN-core>
 \begin{code}
 andN' : ∀ n → Anyℂ' n 1
-andN' zero    = Gate TrueConst#
-andN' (suc n) = pid' {1} |' andN' n  ⟫'  Gate And#
+andN' zero    = Gate ⊤ℂ#
+andN' (suc n) = pid' {1} |' andN' n  ⟫'  Gate ∧ℂ#
 \end{code}
 %</andN-core>
 
