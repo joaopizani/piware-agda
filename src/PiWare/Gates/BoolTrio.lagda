@@ -24,9 +24,9 @@ open Atomic Atomic-B using (W)
 \begin{code}
 pattern ⊥ℂ#       = Fz
 pattern ⊤ℂ#       = Fs Fz
-pattern Not#      = Fs (Fs Fz)
-pattern And#      = Fs (Fs (Fs Fz))
-pattern Or#       = Fs (Fs (Fs (Fs Fz)))
+pattern ¬ℂ#       = Fs (Fs Fz)
+pattern ∧ℂ#       = Fs (Fs (Fs Fz))
+pattern ∨ℂ#       = Fs (Fs (Fs (Fs Fz)))
 pattern Absurd# n = Fs (Fs (Fs (Fs (Fs n))))
 \end{code}
 %</pattern-synonyms>
@@ -34,7 +34,7 @@ pattern Absurd# n = Fs (Fs (Fs (Fs (Fs n))))
 %<*ins-outs>
 \begin{code}
 |in| |out| : Fin |BoolTrio| → ℕ
-|in| = λ { ⊥ℂ# → 0; ⊤ℂ# → 0; Not# → 1; And# → 2; Or# → 2; (Absurd# ()) }
+|in| = λ { ⊥ℂ# → 0; ⊤ℂ# → 0; ¬ℂ# → 1; ∧ℂ# → 2; ∨ℂ# → 2; (Absurd# ()) }
 |out| _ = 1
 \end{code}
 %</ins-outs>
@@ -54,11 +54,11 @@ spec-or  (x ◁ y ◁ ε) = [ x ∨ y ]
 \AgdaTarget{spec}
 \begin{code}
 spec : (g : Fin |BoolTrio|) → (W (|in| g) → W (|out| g))
-spec ⊥ℂ#  = const [ false ]
-spec ⊤ℂ#  = const [ true  ]
-spec Not# = spec-not
-spec And# = spec-and
-spec Or#  = spec-or
+spec ⊥ℂ# = const [ false ]
+spec ⊤ℂ# = const [ true  ]
+spec ¬ℂ# = spec-not
+spec ∧ℂ# = spec-and
+spec ∨ℂ# = spec-or
 spec (Absurd# ())
 \end{code}
 %</spec>
