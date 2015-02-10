@@ -15,7 +15,7 @@ open import PiWare.Patterns.Core Gt using (parsN'; seqsN')
 
 %<*parsN>
 \begin{code}
-parsN : ∀ {k α i β j cs} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ {cs} α β {i} {j} → ℂ {cs} (Vec α k) (Vec β k) {k * i} {k * j}
+parsN : ∀ {k α i β j p} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ {p} α β {i} {j} → ℂ {p} (Vec α k) (Vec β k) {k * i} {k * j}
 parsN {k = k} {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') = Mkℂ ⦃ ⇓W⇑-Vec ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec ⦃ sβ ⦄ ⦄ (parsN' {k} {i} {j} c')
 \end{code}
 %</parsN>
@@ -23,7 +23,7 @@ parsN {k = k} {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') = Mkℂ ⦃ ⇓
 
 %<*seqsN>
 \begin{code}
-seqsN : (k : ℕ) → ∀ {α i cs} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ {cs} α α {i} {i} → ℂ {cs} α α {i} {i}
+seqsN : (k : ℕ) → ∀ {α i p} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ℂ {p} α α {i} {i} → ℂ {p} α α {i} {i}
 seqsN k ⦃ sα ⦄ (Mkℂ c') = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ (seqsN' k c')
 \end{code}
 %</seqsN>

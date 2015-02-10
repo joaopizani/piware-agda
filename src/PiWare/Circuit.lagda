@@ -5,14 +5,14 @@ open import PiWare.Gates using (Gates)
 module PiWare.Circuit {At : Atomic} (Gt : Gates At) where
 
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
+open import Data.Bool using (true)
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
 open import Data.String using (String)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
-open import PiWare.Circuit.Core Gt using (CombSeq; Comb; Seq) public
-open import PiWare.Circuit.Core Gt using (ℂ'; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
+open import PiWare.Circuit.Core Gt using (ℂ'; IsComb; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
 
 open Atomic At using (Atom#) 
 \end{code}
@@ -21,13 +21,13 @@ open Atomic At using (Atom#)
 -- "High-level" circuit types, packing the synthesizable instances
 %<*Circuit>
 \begin{code}
-record ℂ {cs : CombSeq} (α β : Set) {i j : ℕ} : Set where
+record ℂ {p : IsComb} (α β : Set) {i j : ℕ} : Set where
     inductive
     constructor Mkℂ
     field
         ⦃ sα ⦄ : ⇓W⇑ α {i}
         ⦃ sβ ⦄ : ⇓W⇑ β {j}
-        base   : ℂ' {cs} i j
+        base : ℂ' {p} i j
 
 \end{code}
 %</Circuit>
@@ -36,7 +36,7 @@ record ℂ {cs : CombSeq} (α β : Set) {i j : ℕ} : Set where
 %<*AnyCircuit>
 \begin{code}
 Anyℂ : (α β : Set){i j : ℕ} → Set
-Anyℂ α β {i} {j} = ∀ {cs} → ℂ {cs} α β {i} {j}
+Anyℂ α β {i} {j} = ∀ {p} → ℂ {p} α β {i} {j}
 \end{code}
 $</AnyCircuit>
 
@@ -44,7 +44,7 @@ $</AnyCircuit>
 -- "Smart constructors"
 %<*named>
 \begin{code}
-_named_ : ∀ {cs α i β j} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ {cs} α β {i} {j} → String → ℂ {cs} α β {i} {j}
+_named_ : ∀ {p α i β j} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ℂ {p} α β {i} {j} → String → ℂ {p} α β {i} {j}
 _named_ ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') s = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (c' Named s)
 \end{code}
 $</named>
@@ -52,23 +52,23 @@ $</named>
 %<*delayC>
 \begin{code}
 delayℂ : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
-         → (c : ℂ {Comb} (α × γ) (β × γ) {i + k} {j + k}) → ℂ α β {i} {j}
+         → (c : ℂ {true} (α × γ) (β × γ) {i + k} {j + k}) → ℂ α β {i} {j}
 delayℂ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ c') = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (DelayLoop c')
 \end{code}
 %</delayC>
 
 %<*seq>
 \begin{code}
-_⟫_ : ∀ {cs α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
-      → ℂ {cs} α β {i} {j} → ℂ {cs} β γ {j} {k} → ℂ {cs} α γ {i} {k}
+_⟫_ : ∀ {p α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
+      → ℂ {p} α β {i} {j} → ℂ {p} β γ {j} {k} → ℂ {p} α γ {i} {k}
 _⟫_ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ sα ⦄ ⦃ sγ ⦄ (c₁ ⟫' c₂)
 \end{code}
 %</seq>
 
 %<*par>
 \begin{code}
-_||_ : ∀ {cs α i γ k β j δ l} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
-       → ℂ {cs} α γ {i} {k} → ℂ {cs} β δ {j} {l} →  ℂ {cs} (α × β) (γ × δ) {i + j} {k + l}
+_||_ : ∀ {p α i γ k β j δ l} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sδ : ⇓W⇑ δ {l} ⦄
+       → ℂ {p} α γ {i} {k} → ℂ {p} β δ {j} {l} →  ℂ {p} (α × β) (γ × δ) {i + j} {k + l}
 _||_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ c₁) (Mkℂ c₂) =
     Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sγ ⦄ ⦃ sδ ⦄ ⦄ (c₁ |' c₂)
 \end{code}
@@ -76,12 +76,12 @@ _||_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ c₁) (Mkℂ c₂) =
 
 %<*sum>
 \begin{code}
-|+ : ∀ {cs α i β j γ k}
+|+ : ∀ {p α i β j γ k}
        → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
-       → (n₁ n₂ p : Atom#) {diff : n₁ ≢ n₂}
-       → ℂ {cs} α γ {i} {k} → ℂ {cs} β γ {j} {k} → ℂ {cs} (α ⊎ β) γ {suc (i ⊔ j)} {k}
-|+ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ n₁ n₂ p {d} (Mkℂ c₁) (Mkℂ c₂) =
-    Mkℂ ⦃ ⇓W⇑-⊎ n₁ n₂ p {d} ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ |+' c₂)
+       → (n₁ n₂ m : Atom#) {diff : n₁ ≢ n₂}
+       → ℂ {p} α γ {i} {k} → ℂ {p} β γ {j} {k} → ℂ {p} (α ⊎ β) γ {suc (i ⊔ j)} {k}
+|+ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ n₁ n₂ m {d} (Mkℂ c₁) (Mkℂ c₂) =
+    Mkℂ ⦃ ⇓W⇑-⊎ n₁ n₂ m {d} ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ |+' c₂)
 \end{code}
 %</sum>
 
