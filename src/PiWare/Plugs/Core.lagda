@@ -15,10 +15,7 @@ open import Relation.Binary.PropositionalEquality using (cong; sym; _≡_; refl)
 open Relation.Binary.PropositionalEquality.≡-Reasoning
 
 open import PiWare.Circuit.Core Gt using (ℂ'; Anyℂ'; Plug; _⟫'_; _|'_; _Named_)
-\end{code}
 
-
-\begin{code}
 import Algebra as A
 import Data.Nat.Properties as N
 open import Data.Nat.Properties.Simple using (*-right-zero)

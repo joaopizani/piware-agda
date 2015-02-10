@@ -11,8 +11,8 @@ open import Data.Vec using (_++_)
 open import Data.Product using (_,_) renaming (map to mapₚ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 
-open import PiWare.Circuit.Core using (ℂ'; _⟫'_; _|'_; comb'; _comb⟫'_; _comb|'_)
-open import PiWare.Circuit using (ℂ; Mkℂ; comb; _⟫_; _||_; _comb⟫_; _comb|_; comb|+)
+open import PiWare.Circuit.Core using (ℂ'; _⟫'_; _|'_)
+open import PiWare.Circuit using (ℂ; Mkℂ; _⟫_; _||_)
 open import PiWare.Simulation.Core using (⟦_⟧')
 open import PiWare.Simulation using (⟦_⟧)
 
