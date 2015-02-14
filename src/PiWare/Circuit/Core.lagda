@@ -20,13 +20,16 @@ open Gates At Gt using (Gates#; |in|; |out|)
 \begin{code}
 IsComb : Set
 IsComb = Bool
+
+pattern σ = true
+pattern ω = false
 \end{code}
 %</IsComb>
 
 
 %<*Circuit-core-predecl>
 \begin{code}
-data ℂ' : {cs : IsComb} → ℕ → ℕ → Set
+data ℂ' : {p : IsComb} → ℕ → ℕ → Set
 \end{code}
 %</Circuit-core-predecl>
 
@@ -44,7 +47,7 @@ Anyℂ' i o = ∀ {p} → ℂ' {p} i o
 data ℂ' where
     Nil   : Anyℂ' zero zero
     Gate  : (g# : Gates#) → Anyℂ' (|in| g#) (|out| g#)
-    DelayLoop : ∀ {i o l} (c : ℂ' {true} (i + l) (o + l)) → ℂ' {false} i o
+    DelayLoop : ∀ {i o l} (c : ℂ' {σ} (i + l) (o + l)) → ℂ' {ω} i o
 
     Plug : ∀ {i o} → (f : Fin o → Fin i) → Anyℂ' i o
     _⟫'_ : ∀ {i m o p} → ℂ' {p} i m → ℂ' {p} m o → ℂ' {p} i o

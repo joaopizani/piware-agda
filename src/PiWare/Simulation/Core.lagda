@@ -5,8 +5,7 @@ open import PiWare.Gates using (Gates; module Gates)
 module PiWare.Simulation.Core {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘_; _$_; const)
-open import Data.Nat using (ℕ; _+_)
-open import Data.Bool using (true)
+open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Fin using (Fin) renaming (zero to Fz)
 open import Data.Product using (_×_; _,_; proj₁; uncurry′) renaming (map to mapₚ)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
@@ -21,8 +20,7 @@ open import Data.Vec using (Vec; _++_; lookup; replicate; allFin; drop)
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Coinduction using (♯_; ♭)
 
-open import PiWare.Synthesizable At using (untag; untagList)
-open import PiWare.Circuit.Core Gt using (ℂ'; Anyℂ'; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
+open import PiWare.Circuit.Core Gt using (ℂ'; Anyℂ'; σ; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
 open Atomic At using (Atom#; n→atom; W)
 open Gates At Gt using (spec)
 \end{code}
@@ -38,9 +36,15 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 
 
 -- combinational eval
+-- TODO: fix untag
+\begin{code}
+postulate untag : ∀ {i j} → W (suc $ i ⊔ j) → W i ⊎ W j
+postulate untagList : ∀ {i j} → List (W (suc $ i ⊔ j)) → List (W i) × List (W j)
+\end{code}
+
 %<*eval-core>
 \begin{code}
-⟦_⟧' : {i o : ℕ} → (c : ℂ' {true} i o) → (W i → W o)
+⟦_⟧' : ∀ {i o} → ℂ' {σ} i o → (W i → W o)
 ⟦ Nil ⟧' = const ε
 ⟦ Gate g#  ⟧' = spec g#
 ⟦ Plug p   ⟧' = plugOutputs p
@@ -56,10 +60,10 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 -- again the "uncurrying trick" to convince the termination checker
 %<*delay>
 \begin{code}
-delay : ∀ {i o l} (c : ℂ' {true} (i + l) (o + l)) → W i ⇒ᶜ W (o + l)
+delay : ∀ {i o l} (c : ℂ' {σ} (i + l) (o + l)) → W i ⇒ᶜ W (o + l)
 delay {i} {o} {l} c = uncurry⁺ (delay' {i} {o} {l} c)
   where
-    delay' : ∀ {i o l} (c : ℂ' {true} (i + l) (o + l)) → W i → List (W i) → W (o + l)
+    delay' : ∀ {i o l} (c : ℂ' {σ} (i + l) (o + l)) → W i → List (W i) → W (o + l)
     delay' {_} {_} c w⁰ [] = ⟦ c ⟧' (w⁰ ++ replicate (n→atom Fz))
     delay' {_} {o} c w⁰ (w⁻¹ ∷ w⁻) = ⟦ c ⟧' (w⁰ ++ drop o (delay' {_} {o} c w⁻¹ w⁻))
 \end{code}
