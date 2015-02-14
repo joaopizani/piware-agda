@@ -5,14 +5,13 @@ open import PiWare.Gates using (Gates)
 module PiWare.Circuit {At : Atomic} (Gt : Gates At) where
 
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
-open import Data.Bool using (true)
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
 open import Data.String using (String)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
-open import PiWare.Circuit.Core Gt using (ℂ'; IsComb; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
+open import PiWare.Circuit.Core Gt using (ℂ'; IsComb; σ; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
 
 open Atomic At using (Atom#) 
 \end{code}
@@ -52,7 +51,7 @@ $</named>
 %<*delayC>
 \begin{code}
 delayℂ : ∀ {α i β j γ k} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ ⦃ sγ : ⇓W⇑ γ {k} ⦄
-         → (c : ℂ {true} (α × γ) (β × γ) {i + k} {j + k}) → ℂ α β {i} {j}
+         → (c : ℂ {σ} (α × γ) (β × γ) {i + k} {j + k}) → ℂ α β {i} {j}
 delayℂ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ (Mkℂ c') = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (DelayLoop c')
 \end{code}
 %</delayC>
