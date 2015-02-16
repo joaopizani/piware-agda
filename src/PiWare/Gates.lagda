@@ -11,14 +11,14 @@ open Atomic At using (W)
 
 
 %<*Gates>
-\AgdaTarget{Gates, Gates\#, spec}
+\AgdaTarget{Gates, |in|, |out|, spec, Gates\#}
 \begin{code}
 record Gates : Set where
     field
         |Gates|    : ℕ
         |in| |out| : Fin |Gates| → ℕ
-        spec       : (g : Fin |Gates|) → (W (|in| g) → W (|out| g))
+        spec       : (g# : Fin |Gates|) → (W (|in| g#) → W (|out| g#))
 
-    Gates#   = Fin |Gates|
+    Gates# = Fin |Gates|
 \end{code}
 %</Gates>

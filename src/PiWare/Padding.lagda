@@ -19,6 +19,7 @@ data _⊔''_ : ℕ → ℕ → Set where
 \end{code}
 %</MaxView>
 
+
 -- View function for the maximum view
 %<*maxView>
 \AgdaTarget{\_⊔\_'}
@@ -32,6 +33,7 @@ zero     ⊔' (suc _) = max₂ refl z≤n
 (suc a') ⊔' (suc b') | max₂ a⊔b≡b a≤b = max₂ (cong suc a⊔b≡b) (s≤s a≤b)
 \end{code}
 %</maxView>
+
 
 -- Given a ≤ relation between two naturals, return the (proven) difference (δ)
 %<*getDelta>

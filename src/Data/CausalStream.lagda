@@ -1,7 +1,6 @@
 \begin{code}
 module Data.CausalStream where
 
-open import Data.Product using (uncurry′)
 open import Data.List using (List; []; _∷_)
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming ([_] to [_]⁺)
 
@@ -9,7 +8,7 @@ open import PiWare.Utils using (uncurry⁺)
 \end{code}
 
 
--- Causal context: past × present
+-- Causal context: present × past
 %<*causal-context>
 \AgdaTarget{Γᶜ}
 \begin{code}

@@ -64,8 +64,8 @@ instance
 %<*Synth-Unit>
 \AgdaTarget{⇓W⇑-⊤}
 \begin{code}
-  ⇓W⇑-⊤ : ⇓W⇑ ⊤ {0}
-  ⇓W⇑-⊤ = ⇓W⇑[ const ε , const tt ]
+ ⇓W⇑-⊤ : ⇓W⇑ ⊤ {0}
+ ⇓W⇑-⊤ = ⇓W⇑[ const ε , const tt ]
 \end{code}
 %</Synth-Unit>
 
@@ -73,14 +73,14 @@ instance
 \AgdaTarget{⇓W⇑-×}
 \begin{code}
 instance
-  ⇓W⇑-× : ∀ {α i β j} → ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
-  ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
-      where down : (α × β) → W (i + j)
-            down (a , b) = (⇓ a) ++ (⇓ b)
-  
-            up : W (i + j) → (α × β)
-            up w with splitAt i w
-            up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
+ ⇓W⇑-× : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
+ ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
+     where down : (α × β) → W (i + j)
+           down (a , b) = (⇓ a) ++ (⇓ b)
+ 
+           up : W (i + j) → (α × β)
+           up w with splitAt i w
+           up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
 \end{code}
 %</Synth-Product>
 
@@ -88,14 +88,14 @@ instance
 \AgdaTarget{⇓W⇑-Vec}
 \begin{code}
 instance
-  ⇓W⇑-Vec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
-  ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
-    where
-      down : Vec α n → W (n * i)
-      down = concat ∘ mapᵥ ⇓
-            
-      up : W (n * i) → Vec α n
-      up = mapᵥ ⇑ ∘ group' n i
+ ⇓W⇑-Vec : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
+ ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
+   where
+     down : Vec α n → W (n * i)
+     down = concat ∘ mapᵥ ⇓
+           
+     up : W (n * i) → Vec α n
+     up = mapᵥ ⇑ ∘ group' n i
 \end{code}
 %</Synth-Vec>
 
@@ -103,13 +103,13 @@ instance
 \AgdaTarget{⇓W⇑-⊎}
 \begin{code}
 instance
-  ⇓W⇑-⊎ : ∀ {α i β j} (l r p : Atom#) {d : l ≢ r} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
-  ⇓W⇑-⊎ {α} {i} {β} {j} l r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
-      where down : α ⊎ β → W (suc (i ⊔ j))
-            down = [ (λ a → (n→atom l) ◁ (padTo₁ j withA n→atom p) (⇓ a))
-                   , (λ b → (n→atom r) ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
-            
-            up : W (suc (i ⊔ j)) → α ⊎ β
-            up = map⊎ ⇑ ⇑ ∘ (untag l)
+ ⇓W⇑-⊎ : ∀ {α i β j} (l r p : Atom#) {d : l ≢ r} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
+ ⇓W⇑-⊎ {α} {i} {β} {j} l r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
+   where down : α ⊎ β → W (suc (i ⊔ j))
+         down = [ (λ a → (n→atom l) ◁ (padTo₁ j withA n→atom p) (⇓ a))
+                , (λ b → (n→atom r) ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
+           
+         up : W (suc (i ⊔ j)) → α ⊎ β
+         up = map⊎ ⇑ ⇑ ∘ (untag l)
 \end{code}
 %</Synth-Sum>
