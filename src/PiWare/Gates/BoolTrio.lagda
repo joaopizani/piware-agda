@@ -15,12 +15,14 @@ open Atomic Atomic-B using (W)
 
 
 %<*cardinality>
+\AgdaTarget{|BoolTrio|}
 \begin{code}
 |BoolTrio| = 5
 \end{code}
 %</cardinality>
 
 %<*pattern-synonyms>
+\AgdaTarget{⊥ℂ\#, ⊤ℂ\#, ¬ℂ\#, ∧ℂ\#, ∨ℂ\#, Absurd\#}
 \begin{code}
 pattern ⊥ℂ#       = Fz
 pattern ⊤ℂ#       = Fs Fz

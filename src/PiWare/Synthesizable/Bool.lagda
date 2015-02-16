@@ -19,7 +19,7 @@ instance
 %<*Synth-Bool>
 \AgdaTarget{⇓W⇑-B}
 \begin{code}
-  ⇓W⇑-B : ⇓W⇑ B
-  ⇓W⇑-B = ⇓W⇑[ singleton , head ]
+ ⇓W⇑-B : ⇓W⇑ B
+ ⇓W⇑-B = ⇓W⇑[ singleton , head ]
 \end{code}
 %</Synth-Bool>
