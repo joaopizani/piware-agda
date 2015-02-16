@@ -12,7 +12,9 @@ open import Data.String using (String)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
-open import PiWare.Circuit.Core Gt using (ℂ'; IsComb; σ; ω; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
+import PiWare.Circuit.Core as CircuitCore
+open CircuitCore Gt using (ℂ'; IsComb; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
+open CircuitCore Gt using (σ; ω) public
 
 open Atomic At using (Atom#) 
 \end{code}
