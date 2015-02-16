@@ -6,7 +6,6 @@ module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘_)
 open import Data.Nat using (ℕ)
-open import Data.Bool using (true)
 open import Data.Stream using (Stream) renaming (map to mapₛ)
 
 open import PiWare.Synthesizable At
@@ -19,7 +18,7 @@ open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 
 %<*eval>
 \begin{code}
-⟦_⟧ : ∀ {α i β j} → (c : ℂ {true} α β {i} {j}) → (α → β)
+⟦_⟧ : ∀ {α i β j} → ℂ α β {i} {j} → (α → β)
 ⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧ = ⇑ ∘ ⟦ c' ⟧' ∘ ⇓
 \end{code}
 %</eval>

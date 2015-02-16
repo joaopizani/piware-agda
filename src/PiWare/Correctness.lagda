@@ -1,4 +1,3 @@
-
 \begin{code}
 open import PiWare.Atom using (Atomic)
 open import PiWare.Gates using (Gates)

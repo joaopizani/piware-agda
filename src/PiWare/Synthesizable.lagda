@@ -88,7 +88,7 @@ instance
 \AgdaTarget{⇓W⇑-Vec}
 \begin{code}
 instance
- ⇓W⇑-Vec : ∀ {α i n} → ⦃ sα : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
+ ⇓W⇑-Vec : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
  ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
    where
      down : Vec α n → W (n * i)
@@ -103,7 +103,7 @@ instance
 \AgdaTarget{⇓W⇑-⊎}
 \begin{code}
 instance
- ⇓W⇑-⊎ : ∀ {α i β j} (l r p : Atom#) {d : l ≢ r} ⦃ sα : ⇓W⇑ α {i} ⦄ ⦃ sβ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
+ ⇓W⇑-⊎ : ∀ {α i β j} (l r p : Atom#) {d : l ≢ r} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
  ⇓W⇑-⊎ {α} {i} {β} {j} l r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
    where down : α ⊎ β → W (suc (i ⊔ j))
          down = [ (λ a → (n→atom l) ◁ (padTo₁ j withA n→atom p) (⇓ a))

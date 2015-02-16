@@ -12,20 +12,20 @@ open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio; ⊥ℂ#; ⊤ℂ#; ¬ℂ#; ∧ℂ#; ∨ℂ#)
 open import PiWare.Circuit.Core BoolTrio using (Gate)
 open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL; pFst; pSnd)
-open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; _named_)
+open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ; _⟫_; _||_; |+; _named_)
 \end{code}
 
 
 %<*fundamentals>
 \begin{code}
-⊥ℂ ⊤ℂ : Anyℂ ⊤ B
+⊥ℂ ⊤ℂ : ℂX ⊤ B
 ⊥ℂ = Mkℂ (Gate ⊥ℂ#) named "⊥ℂ"
 ⊤ℂ = Mkℂ (Gate ⊤ℂ#) named "⊤ℂ"
 
-¬ℂ : Anyℂ B B
+¬ℂ : ℂX B B
 ¬ℂ = Mkℂ (Gate ¬ℂ#) named "¬ℂ"
 
-∧ℂ ∨ℂ : Anyℂ (B × B) B
+∧ℂ ∨ℂ : ℂX (B × B) B
 ∧ℂ = Mkℂ (Gate ∧ℂ#) named "∧ℂ"
 ∨ℂ = Mkℂ (Gate ∨ℂ#) named "∨ℂ"
 \end{code}
@@ -33,14 +33,14 @@ open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; 
 
 %<*nand>
 \begin{code}
-¬∧ℂ : Anyℂ (B × B) B
+¬∧ℂ : ℂX (B × B) B
 ¬∧ℂ = ∧ℂ ⟫ ¬ℂ named "¬∧ℂ"
 \end{code}
 %</nand>
 
 %<*xor>
 \begin{code}
-⊻ℂ : Anyℂ (B × B) B
+⊻ℂ : ℂX (B × B) B
 ⊻ℂ =   pFork×
      ⟫ (¬ℂ || pid ⟫ ∧ℂ) || (pid || ¬ℂ ⟫ ∧ℂ)
      ⟫ ∨ℂ
@@ -52,7 +52,7 @@ open import PiWare.Circuit BoolTrio using (ℂ; Anyℂ; Mkℂ; _⟫_; _||_; |+; 
 a × b → c × s
 %<*hadd>
 \begin{code}
-hadd : Anyℂ (B × B) (B × B)
+hadd : ℂX (B × B) (B × B)
 hadd =   pFork×
        ⟫ ∧ℂ || ⊻ℂ
        named "hadd"
@@ -62,7 +62,7 @@ hadd =   pFork×
 (a × b) × cin → co × s
 %<*fadd>
 \begin{code}
-fadd : Anyℂ ((B × B) × B) (B × B)
+fadd : ℂX ((B × B) × B) (B × B)
 fadd =   hadd || pid
        ⟫    pALR
        ⟫ pid  || hadd
@@ -75,7 +75,7 @@ fadd =   hadd || pid
 
 %<*mux2to1>
 \begin{code}
-mux2to1 : Anyℂ (B × (B × B)) B
+mux2to1 : ℂX (B × (B × B)) B
 mux2to1 =   pFork×
           ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
           ⟫ ∨ℂ

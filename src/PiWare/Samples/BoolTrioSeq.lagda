@@ -24,6 +24,7 @@ shift = delayℂ pSwap
 \end{code}
 %</shift>
 
+
 %<*toggle>
 \AgdaTarget{toggle}
 \begin{code}
@@ -31,6 +32,7 @@ toggle : ℂ ⊤ B
 toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ pFork×)
 \end{code}
 %</toggle>
+
 
 -- input × load → out
 %<*reg>

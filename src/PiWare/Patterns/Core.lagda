@@ -10,27 +10,19 @@ open import Data.Bool using (Bool; true; _∧_)
 open import Data.Vec using (Vec; []; _∷_; replicate; foldr; map)
 open import Data.Product using (Σ-syntax; proj₁)
 
-import Algebra as A
-import Data.Nat.Properties as NP
-open A.CommutativeSemiring NP.commutativeSemiring using (+-comm)
-
-open import PiWare.Circuit.Core Gt using (ℂ'; IsComb; Nil; _⟫'_; _|'_)
+open import PiWare.Circuit.Core Gt using (ℂ'X; IsComb; Nil; _⟫'_; _|'_)
 open import PiWare.Plugs.Core Gt using (pid')
 \end{code}
 
 
 -- Base case relies on the identity of _|'_:
 -- ∀ c' : Nil |' c' ≡⟦⟧  c'  (where _≡⟦⟧_ means "have same simulation semantics")
-\begin{code}
-and : ∀ {n} → Vec Bool n → Bool
-and = foldr (const Bool) _∧_ true
-\end{code}
-
+-- TODO: What should be the type here????
 %<*pars-core>
 \AgdaTarget{pars'}
 \begin{code}
-pars' : ∀ {k i o} (cs : Vec (Σ[ p ∈ IsComb ] ℂ' {p} i o) k) → ℂ' {and (map proj₁ cs)} (k * i) (k * o)
-pars' {k} {i} {o} = {!!}  -- foldr (λ k → ℂ' (k * i) (k * o)) _|'_ Nil
+pars' : ∀ {k i o} (cs : Vec (ℂ'X i o) k) → ℂ'X (k * i) (k * o)
+pars' {k} {i} {o} = foldr (λ k → ℂ'X (k * i) (k * o)) _|'_ Nil
 \end{code}
 %</pars-core>
 

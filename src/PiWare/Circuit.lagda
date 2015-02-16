@@ -33,19 +33,12 @@ record ℂ {p : IsComb} (α β : Set) {i j : ℕ} : Set where
 \end{code}
 %</Circuit>
 
-%<*Circuit-comb>
+%<*Circuit-any>
 \begin{code}
-ℂσ : (α β : Set) {i j : ℕ} → Set
-ℂσ α β {i} {j} = ℂ {σ} α β {i} {j}
+ℂX : (α β : Set) {i j : ℕ} → Set
+ℂX α β {i} {j} = ∀ {p} → ℂ {p} α β {i} {j}
 \end{code}
-%</Circuit-comb>
-
-%<*Circuit-seq>
-\begin{code}
-ℂω : (α β : Set) {i j : ℕ} → Set
-ℂω α β {i} {j} = ℂ {ω} α β {i} {j}
-\end{code}
-%</Circuit-seq>
+%</Circuit-any>
 
 
 -- "Smart constructors"
@@ -59,31 +52,31 @@ $</named>
 %<*delayC>
 \begin{code}
 delayℂ : ∀ {α i β j γ k} → ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄
-         → ℂσ (α × γ) (β × γ) {i + k} {j + k} → ℂω α β {i} {j}
+         → ℂ {σ} (α × γ) (β × γ) {i + k} {j + k} → ℂ {ω} α β {i} {j}
 delayℂ ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (DelayLoop c')
 \end{code}
 %</delayC>
 
 %<*seq>
 \begin{code}
-_⟫_ : ∀ {α i β j γ k p₁ p₂} → ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄
-      → ℂ {p₁} α β {i} {j} → ℂ {p₂} β γ {j} {k} → ℂ {p₁ ∧ p₂} α γ {i} {k}
+_⟫_ : ∀ {α i β j γ k p} → ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄
+      → ℂ {p} α β {i} {j} → ℂ {p} β γ {j} {k} → ℂ {p} α γ {i} {k}
 _⟫_ ⦃ sα ⦄ ⦃ _ ⦄ ⦃ sγ ⦄ (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ sα ⦄ ⦃ sγ ⦄ (c₁ ⟫' c₂)
 \end{code}
 %</seq>
 
 %<*par>
 \begin{code}
-_||_ : ∀ {α i γ k β j δ l p₁ p₂} → ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ δ {l} ⦄
-       → ℂ {p₁} α γ {i} {k} → ℂ {p₂} β δ {j} {l} →  ℂ {p₁ ∧ p₂} (α × β) (γ × δ) {i + j} {k + l}
+_||_ : ∀ {α i γ k β j δ l p} → ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ δ {l} ⦄
+       → ℂ {p} α γ {i} {k} → ℂ {p} β δ {j} {l} →  ℂ {p} (α × β) (γ × δ) {i + j} {k + l}
 _||_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sγ ⦄ ⦃ sδ ⦄ ⦄ (c₁ |' c₂)
 \end{code}
 %</par>
 
 %<*sum>
 \begin{code}
-|+ : ∀ {α i β j γ k p₁ p₂} → ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ (n m ε : Atom#) {d : n ≢ m}
-     → ℂ {p₁} α γ {i} {k} → ℂ {p₂} β γ {j} {k} → ℂ {p₁ ∧ p₂} (α ⊎ β) γ {suc (i ⊔ j)} {k}
+|+ : ∀ {α i β j γ k p} → ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ (n m ε : Atom#) {d : n ≢ m}
+     → ℂ {p} α γ {i} {k} → ℂ {p} β γ {j} {k} → ℂ {p} (α ⊎ β) γ {suc (i ⊔ j)} {k}
 |+ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ n m ε {d} (Mkℂ c₁) (Mkℂ c₂) = Mkℂ ⦃ ⇓W⇑-⊎ n m ε {d} ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ |+' c₂)
 \end{code}
 %</sum>

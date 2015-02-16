@@ -14,7 +14,7 @@ open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; _≡_; refl)
 open Relation.Binary.PropositionalEquality.≡-Reasoning
 
-open import PiWare.Circuit.Core Gt using (ℂ'; ℂ'σ; Plug; _⟫'_; _|'_; _Named_)
+open import PiWare.Circuit.Core Gt using (ℂ'; ℂ'X; Plug; _⟫'_; _|'_; _Named_)
 
 import Algebra as A
 import Data.Nat.Properties as N
@@ -27,9 +27,9 @@ open A.CommutativeSemiring N.commutativeSemiring using (+-assoc; +-identity; +-c
 %<*pSwap-core>
 \AgdaTarget{pSwap'}
 \begin{code}
-pSwap' : ∀ {n m} → ℂ'σ (n + m) (m + n)
+pSwap' : ∀ {n m} → ℂ'X (n + m) (m + n)
 pSwap' {n} {m} = p n m Named "pSwap"
-  where p : ∀ n m → ℂ'σ (n + m) (m + n)
+  where p : ∀ n m → ℂ'X (n + m) (m + n)
         p n m with n + m ≟ 0
         p n m | yes _ rewrite +-comm n m = Plug id
         p n m | no ¬z                    = Plug $ finSwap (fromWitnessFalse ¬z)
@@ -43,7 +43,7 @@ pSwap' {n} {m} = p n m Named "pSwap"
 %<*pid-core>
 \AgdaTarget{pid'}
 \begin{code}
-pid' : ∀ {n} → ℂ'σ n n
+pid' : ∀ {n} → ℂ'X n n
 pid' = Plug id Named "pid"
 \end{code}
 %</pid-core>
@@ -53,7 +53,7 @@ pid' = Plug id Named "pid"
 %<*pALR-core>
 \AgdaTarget{pALR'}
 \begin{code}
-pALR' : ∀ {w v y} → ℂ'σ ((w + v) + y) (w + (v + y))
+pALR' : ∀ {w v y} → ℂ'X ((w + v) + y) (w + (v + y))
 pALR' {w} {v} {y} = Plug p Named "pALR"
   where p : Fin (w + (v + y)) → Fin ((w + v) + y)
         p x rewrite +-assoc w v y = x
@@ -63,7 +63,7 @@ pALR' {w} {v} {y} = Plug p Named "pALR"
 %<*pARL-core>
 \AgdaTarget{pARL'}
 \begin{code}
-pARL' : ∀ {w v y : ℕ} → ℂ'σ (w + (v + y)) ((w + v) + y)
+pARL' : ∀ {w v y : ℕ} → ℂ'X (w + (v + y)) ((w + v) + y)
 pARL' {w} {v} {y} = Plug p Named "pARL"
   where p : Fin ((w + v) + y) → Fin (w + (v + y))
         p x rewrite sym (+-assoc w v y) = x
@@ -74,7 +74,7 @@ pARL' {w} {v} {y} = Plug p Named "pARL"
 %<*pIntertwine-core>
 \AgdaTarget{pIntertwine'}
 \begin{code}
-pIntertwine' : ∀ {a b c d} → ℂ'σ ((a + b) + (c + d)) ((a + c) + (b + d))
+pIntertwine' : ∀ {a b c d} → ℂ'X ((a + b) + (c + d)) ((a + c) + (b + d))
 pIntertwine' {a} {b} {c} {d} = p Named "pIntertwine"
   where p =    pALR' {a} {b} {c + d}
             ⟫' _|'_ {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
@@ -88,7 +88,7 @@ pIntertwine' {a} {b} {c} {d} = p Named "pIntertwine"
 %<*pHead-core>
 \AgdaTarget{pHead'}
 \begin{code}
-pHead' : ∀ {n w} → ℂ'σ (suc n * w) w
+pHead' : ∀ {n w} → ℂ'X (suc n * w) w
 pHead' {n} {w} = Plug (inject+ (n * w)) Named "pHead"
 \end{code}
 %</pHead-core>
@@ -105,7 +105,7 @@ twiceSuc = solve 2 eq refl where
 %<*pVecHalf-core>
 \AgdaTarget{pVecHalf'}
 \begin{code}
-pVecHalf' : ∀ {n w} → ℂ'σ ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
+pVecHalf' : ∀ {n w} → ℂ'X ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
 pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id Named "pVecHalf"
 \end{code}
 %</pVecHalf-core>
@@ -133,7 +133,7 @@ pVecHalfPowEq (suc n) w = begin
 %<*pVecHalfPow-core>
 \AgdaTarget{pVecHalfPow'}
 \begin{code}
-pVecHalfPow' : ∀ {n w} → ℂ'σ ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
+pVecHalfPow' : ∀ {n w} → ℂ'X ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
 pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id Named "pVecHalfPow"
 \end{code}
 %</pVecHalfPow-core>
@@ -142,7 +142,7 @@ pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id Named "pVecHalfPow"
 %<*pFork-core>
 \AgdaTarget{pFork'}
 \begin{code}
-pFork' : ∀ {k n} → ℂ'σ n (k * n)
+pFork' : ∀ {k n} → ℂ'X n (k * n)
 pFork' {k} {zero}  rewrite *-right-zero k = pid'
 pFork' {k} {suc m} = p Named "pFork"
   where p = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
@@ -153,7 +153,7 @@ pFork' {k} {suc m} = p Named "pFork"
 %<*pFst-core>
 \AgdaTarget{pFst'}
 \begin{code}
-pFst' : ∀ {m n} → ℂ'σ (m + n) m
+pFst' : ∀ {m n} → ℂ'X (m + n) m
 pFst' {m} {n} = Plug (inject+ n) Named "pFst"
 \end{code}
 %</pFst-core>
@@ -162,7 +162,7 @@ pFst' {m} {n} = Plug (inject+ n) Named "pFst"
 %<*pSnd-core>
 \AgdaTarget{pSnd'}
 \begin{code}
-pSnd' : ∀ {m n} → ℂ'σ (m + n) n
+pSnd' : ∀ {m n} → ℂ'X (m + n) n
 pSnd' {m} {n} = Plug (raise m) Named "pSnd"
 \end{code}
 %</pSnd-core>

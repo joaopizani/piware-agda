@@ -2,15 +2,10 @@
 module PiWare.ProofSamples.AndN where
 
 open import Function using (_∘_)
-open import Data.Nat using (zero; suc; _*_)
-open import Data.Bool using (true; _∧_)
+open import Data.Nat using (zero; suc)
+open import Data.Bool using (true)
 open import Data.Vec using (replicate; [_]; _∷_)
-open import Data.Product using (proj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
-
-import Algebra as A
-import Data.Nat.Properties as NP
-open module CS = A.CommutativeSemiring NP.commutativeSemiring using (*-identity)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio; spec-and)
 open import PiWare.Samples.AndN using (andN'; andN)
