@@ -8,7 +8,8 @@ open import Data.Product using (_×_)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Plugs BoolTrio using (pid; pALR; pSwap; pFork×)
 open import PiWare.Circuit BoolTrio using (ℂ; delayℂ; _⟫_; _||_)
-open import PiWare.Samples.BoolTrioComb using (⊥ℂ; ¬ℂ; ∨ℂ; mux2to1)
+open import PiWare.Samples.BoolTrioComb using (⊥ℂ; ¬ℂ; ∨ℂ)
+open import PiWare.Samples.Muxes using (mux2to1)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B using ()  -- only instances

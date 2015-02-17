@@ -10,7 +10,7 @@ open import PiWare.Atom.Bool using (Atomic-B; False#; True#)
 open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio; ⊥ℂ#; ⊤ℂ#; ¬ℂ#; ∧ℂ#; ∨ℂ#)
-open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL; pFst; pSnd)
+open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL)
 open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ; _⟫_; _||_; |+; gateℂ)
 \end{code}
 
@@ -73,14 +73,3 @@ fadd =   hadd || pid
        ⟫ ∨ℂ   || pid
 \end{code}
 %</fadd>
-
-
-%<*mux2to1>
-\AgdaTarget{mux2To1}
-\begin{code}
-mux2to1 : ℂX (B × (B × B)) B
-mux2to1 =   pFork×
-          ⟫ (¬ℂ || pFst ⟫ ∧ℂ) || (pid || pSnd ⟫ ∧ℂ)
-          ⟫ ∨ℂ
-\end{code}
-%</mux2to1>
