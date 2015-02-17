@@ -11,7 +11,7 @@ open Atomic At using (W)
 
 
 %<*Gates>
-\AgdaTarget{Gates, |in|, |out|, spec, Gates\#}
+\AgdaTarget{Gates, |Gates|, |in|, |out|, spec, Gates\#}
 \begin{code}
 record Gates : Set where
     field

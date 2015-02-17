@@ -17,6 +17,7 @@ open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 
 
 %<*eval>
+\AgdaTarget{⟦\_⟧}
 \begin{code}
 ⟦_⟧ : ∀ {α i β j} → ℂ α β {i} {j} → (α → β)
 ⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧ = ⇑ ∘ ⟦ c' ⟧' ∘ ⇓
@@ -24,6 +25,7 @@ open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 %</eval>
 
 %<*eval-seq>
+\AgdaTarget{⟦\_⟧*}
 \begin{code}
 ⟦_⟧* : ∀ {α i β j} → ℂ α β {i} {j} → (Stream α → Stream β)
 ⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧* = mapₛ ⇑ ∘ ⟦ c' ⟧*' ∘ mapₛ ⇓

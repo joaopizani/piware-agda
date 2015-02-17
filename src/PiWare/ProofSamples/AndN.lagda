@@ -15,6 +15,7 @@ open import PiWare.Simulation BoolTrio using (⟦_⟧)
 
 
 %<*proof-andN-core-alltrue>
+\AgdaTarget{proof-andN-core-alltrue}
 \begin{code}
 proof-andN-core-alltrue : ∀ n → ⟦ andN' n ⟧' (replicate true) ≡ [ true ]
 proof-andN-core-alltrue zero    = refl
@@ -22,10 +23,9 @@ proof-andN-core-alltrue (suc n) = cong (spec-and ∘ (_∷_ true)) (proof-andN-c
 \end{code}
 %</proof-andN-core-alltrue>
 
-\begin{code}
-\end{code}
 
 %<*proof-andN-alltrue>
+\AgdaTarget{proof-andN-alltrue}
 \begin{code}
 proof-andN-alltrue : ∀ n → ⟦ andN n ⟧ (replicate true) ≡ true
 proof-andN-alltrue zero    = refl

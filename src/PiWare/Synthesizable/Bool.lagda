@@ -6,9 +6,6 @@ open import Data.Vec using (head) renaming ([_] to singleton)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B using (⇓W⇑; ⇓W⇑[_,_])
-
-open import PiWare.Atom using (module Atomic)
-open Atomic Atomic-B using (Atom#)
 \end{code}
 
 
