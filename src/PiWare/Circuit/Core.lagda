@@ -41,7 +41,7 @@ data ℂ' : {p : IsComb} → ℕ → ℕ → Set
 \AgdaTarget{ℂ', Nil, Gate, DelayLoop, Plug, \_⟫'\_, \_|'\_, \_|+'\_, \_Named\_}
 \begin{code}
 data ℂ' where
-    Nil   : ℂ'X zero zero
+    Nil   : ∀ {n} → ℂ'X n zero
     Gate  : (g# : Gates#) → ℂ'X (|in| g#) (|out| g#)
     Plug  : ∀ {i o} → (Fin o → Fin i) → ℂ'X i o
 
