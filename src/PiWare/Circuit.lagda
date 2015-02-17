@@ -14,7 +14,7 @@ open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 import PiWare.Circuit.Core as CircuitCore
-open CircuitCore Gt using (ℂ'; IsComb; Gate; Plug; DelayLoop; _⟫'_; _|'_; _|+'_)
+open CircuitCore Gt using (ℂ'; IsComb; Nil; Gate; Plug; DelayLoop; _⟫'_; _|'_; _|+'_)
 open CircuitCore Gt using (σ; ω) public
 
 open Atomic At using (Atom#) 
@@ -47,6 +47,14 @@ record ℂ {p : IsComb} (α β : Set) {i j : ℕ} : Set where
 
 
 -- "Smart constructors"
+%<*nilC>
+\AgdaTarget{nilℂ}
+\begin{code}
+nilℂ : ∀ {α i β} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {0} ⦄ → ℂX α β
+nilℂ ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ Nil
+\end{code}
+%</nilC>
+
 %<*gateC>
 \AgdaTarget{gateℂ}
 \begin{code}
