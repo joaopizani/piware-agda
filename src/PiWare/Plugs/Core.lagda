@@ -4,12 +4,12 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Plugs.Core {At : Atomic} (Gt : Gates At) where
 
-open import Function using (id; _$_)
+open import Function using (id; _$_; _∘_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _≟_; _*_)
 open import Data.Nat.DivMod using (_mod_; DivMod; _divMod_)
 open import Data.Fin using (Fin; toℕ; inject+; raise)
 open import Data.Product using (proj₂)
-open import Relation.Nullary using (yes; no)
+open import Relation.Nullary using (yes; no; ¬_)
 open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; _≡_; refl)
 open Relation.Binary.PropositionalEquality.≡-Reasoning
@@ -24,71 +24,113 @@ open A.CommutativeSemiring N.commutativeSemiring using (+-assoc; +-identity; +-c
 \end{code}
 
 
-%<*pSwap-core>
-\AgdaTarget{pSwap'}
+%<*id-plug-core>
+\AgdaTarget{id⤨'}
 \begin{code}
-pSwap' : ∀ {n m} → ℂ'X (n + m) (m + n)
-pSwap' {n} {m} with n + m ≟ 0
-pSwap' {n} {m} | yes _ rewrite +-comm n m = Plug id
-pSwap' {n} {m} | no ¬z                    = Plug $ finSwap (fromWitnessFalse ¬z)
-    where finSwap : False (n + m ≟ 0) → Fin (m + n) → Fin (n + m)
-          finSwap ¬z x = _mod_ (toℕ x + m) (n + m) {¬z}
+id⤨' : ∀ {n} → ℂ'X n n
+id⤨' = Plug id
 \end{code}
-%</pSwap-core>
+%</id-plug-core>
 
 
-%<*pid-core>
-\AgdaTarget{pid'}
+%<*swap-fin>
 \begin{code}
-pid' : ∀ {n} → ℂ'X n n
-pid' = Plug id
+swap⤪ : ∀ {n m} → ¬ (n + m ≡ 0) → Fin (m + n) → Fin (n + m)
+swap⤪ {n} {m} ¬z x = _mod_ (toℕ x + m) (n + m) {fromWitnessFalse ¬z}
 \end{code}
-%</pid-core>
+%</swap-fin>
+
+%<*swap-plug-core>
+\AgdaTarget{swap⤨'}
+\begin{code}
+swap⤨' : ∀ {n m} → ℂ'X (n + m) (m + n)
+swap⤨' {n} {m} with n + m ≟ 0
+swap⤨' {n} {m} | yes _ rewrite +-comm n m = id⤨'
+swap⤨' {n} {m} | no ¬z                    = Plug (swap⤪ {n} {m} ¬z)
+\end{code}
+%</swap-plug-core>
 
 
 -- associativity plugs
-%<*pALR-core>
-\AgdaTarget{pALR'}
+%<*ALR-fin>
 \begin{code}
-pALR' : ∀ {w v y} → ℂ'X ((w + v) + y) (w + (v + y))
-pALR' {w} {v} {y} = Plug p
-  where p : Fin (w + (v + y)) → Fin ((w + v) + y)
-        p x rewrite +-assoc w v y = x
+ALR⤪ : ∀ {w v y} → Fin (w + (v + y)) → Fin ((w + v) + y)
+ALR⤪ {w} {v} {y} rewrite +-assoc w v y = id
 \end{code}
-%</pALR-core>
+%</ALR-fin>
 
-%<*pARL-core>
-\AgdaTarget{pARL'}
+%<*ALR-plug-core>
+\AgdaTarget{ALR⤨'}
 \begin{code}
-pARL' : ∀ {w v y : ℕ} → ℂ'X (w + (v + y)) ((w + v) + y)
-pARL' {w} {v} {y} = Plug p
-  where p : Fin ((w + v) + y) → Fin (w + (v + y))
-        p x rewrite sym (+-assoc w v y) = x
+ALR⤨' : ∀ {w v y} → ℂ'X ((w + v) + y) (w + (v + y))
+ALR⤨' {w} {v} {y} = Plug (ALR⤪ {w} {v} {y})
 \end{code}
-%</pARL-core>
+%</ALR-plug-core>
+
+
+%<*ARL-fin>
+\begin{code}
+ARL⤪ : ∀ {w v y} → Fin ((w + v) + y) → Fin (w + (v + y))
+ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = id
+\end{code}
+%</ARL-fin>
+
+%<*ARL-plug-core>
+\AgdaTarget{ARL⤨'}
+\begin{code}
+ARL⤨' : ∀ {w v y : ℕ} → ℂ'X (w + (v + y)) ((w + v) + y)
+ARL⤨' {w} {v} {y} = Plug (ARL⤪ {w} {v} {y})
+\end{code}
+%</ARL-plug-core>
+
 
 -- TODO: Substitute seq composition by simple Fin → Fin function
-%<*pIntertwine-core>
-\AgdaTarget{pIntertwine'}
 \begin{code}
-pIntertwine' : ∀ {a b c d} → ℂ'X ((a + b) + (c + d)) ((a + c) + (b + d))
-pIntertwine' {a} {b} {c} {d} = 
-       pALR' {a} {b} {c + d}
-    ⟫' _|'_ {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
-    ⟫' _|'_ {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
-    ⟫' _|'_ {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
-    ⟫'  pARL' {a} {c} {b + d}
+postulate _|⤪_ : ∀ {a b c d} → (Fin b → Fin a) → (Fin d → Fin c) → (Fin (b + d) → Fin (a + c))
+-- _|⤪_ {a} {b} {c} {d} f g = {!!}
+
+_⟫⤪_ : ∀ {a b c} → (Fin b → Fin a) → (Fin c → Fin b) → (Fin c → Fin a)
+f ⟫⤪ g = f ∘ g
+
+infixr 6 _⟫⤪_
+infixr 7 _|⤪_
 \end{code}
-%</pIntertwine-core>
+
+%<*intertwine-fin>
+\begin{code}
+intertwine⤪ : ∀ {a b c d} → Fin ((a + suc c) + (suc b + d)) → Fin ((a + suc b) + (suc c + d))
+intertwine⤪ {a} {b} {c} {d} =
+       ALR⤪ {a} {suc b} {suc c + d}
+    ⟫⤪ _|⤪_ {a} {a}  id  (ARL⤪ {suc b})
+    ⟫⤪ _|⤪_ {a} {a}  id  (swap⤪ {suc b} {suc c} (λ ()) |⤪ id)
+    ⟫⤪ _|⤪_ {a} {a}  id  (ALR⤪ {suc c})
+    ⟫⤪ ARL⤪ {a} {suc c} {suc b + d}
+\end{code}
+%</intertwine-fin>
+
+%<*intertwine-plug-core>
+\AgdaTarget{intertwine⤨'}
+\begin{code}
+intertwine⤨' : ∀ {a b c d} → ℂ'X ((a + suc b) + (suc c + d)) ((a + suc c) + (suc b + d))
+intertwine⤨' {a} {b} {c} {d} = Plug (intertwine⤪ {a} {b} {c} {d})
+\end{code}
+%</intertwine-plug-core>
 
 
-%<*pHead-core>
-\AgdaTarget{pHead'}
+%<*head-fin>
 \begin{code}
-pHead' : ∀ {n w} → ℂ'X (suc n * w) w
-pHead' {n} {w} = Plug (inject+ (n * w))
+head⤪ : ∀ {n w} → Fin w → Fin (suc n * w)
+head⤪ {n} {w} = inject+ (n * w)
 \end{code}
-%</pHead-core>
+%</head-fin>
+
+%<*head-plug-core>
+\AgdaTarget{head⤨'}
+\begin{code}
+head⤨' : ∀ {n w} → ℂ'X (suc n * w) w
+head⤨' {n} {w} = Plug (head⤪ {n} {w})
+\end{code}
+%</head-plug-core>
 
 
 \begin{code}
@@ -99,25 +141,32 @@ twiceSuc = solve 2 eq refl where
   eq = λ n w → w :+ (n :+ (con 1 :+ n)) :* w := w :+ n :* w :+ (w :+ n :* w)
 \end{code}
 
-%<*pVecHalf-core>
-\AgdaTarget{pVecHalf'}
+%<*vecHalf-fin>
 \begin{code}
-pVecHalf' : ∀ {n w} → ℂ'X ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
-pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
+vecHalf⤪ : ∀ {n w} → Fin (suc n * w + suc n * w) → Fin ((2 * suc n) * w)
+vecHalf⤪ {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = id
 \end{code}
-%</pVecHalf-core>
+%</vecHalf-fin>
+
+%<*vecHalf-plug-core>
+\AgdaTarget{vecHalf⤨'}
+\begin{code}
+vecHalf⤨' : ∀ {n w} → ℂ'X ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
+vecHalf⤨' {n} {w} = Plug (vecHalf⤪ {n} {w})
+\end{code}
+%</vecHalf-plug-core>
 
 
 \begin{code}
 eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
 eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
 
-pVecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
-pVecHalfPowEq zero w rewrite (proj₂ +-identity) w = refl
-pVecHalfPowEq (suc n) w = begin
+vecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
+vecHalfPowEq zero w rewrite (proj₂ +-identity) w = refl
+vecHalfPowEq (suc n) w = begin
     2 ^ suc (suc n) * w                 ≡⟨ refl ⟩
     2 * 2 ^ suc n * w                   ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
-    2 * (2 ^ suc n * w)                 ≡⟨ cong (λ x → 2 * x) $ pVecHalfPowEq n w ⟩
+    2 * (2 ^ suc n * w)                 ≡⟨ cong (λ x → 2 * x) $ vecHalfPowEq n w ⟩
     2 * (2 ^ n * w  +  2 ^ n * w)       ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
     (2 ^ n * w + 2 ^ n * w) * 2         ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
     2 ^ n * w * 2   +  2 ^ n * w * 2    ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  eqAdd p p) ⟩
@@ -127,38 +176,66 @@ pVecHalfPowEq (suc n) w = begin
   ∎
 \end{code}
 
-%<*pVecHalfPow-core>
-\AgdaTarget{pVecHalfPow'}
+%<*vecHalfPow-fin>
 \begin{code}
-pVecHalfPow' : ∀ {n w} → ℂ'X ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
-pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
+vecHalfPow⤪ : ∀ {n w} → Fin ((2 ^ n) * w + (2 ^ n) * w) → Fin ((2 ^ suc n) * w)
+vecHalfPow⤪ {n} {w} rewrite vecHalfPowEq n w = id
 \end{code}
-%</pVecHalfPow-core>
+%</vecHalfPow-fin>
 
-
-%<*pFork-core>
-\AgdaTarget{pFork'}
+%<*vecHalfPow-plug-core>
+\AgdaTarget{vecHalfPow⤨'}
 \begin{code}
-pFork' : ∀ {k n} → ℂ'X n (k * n)
-pFork' {k} {zero}  rewrite *-right-zero k = pid'
-pFork' {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
+vecHalfPow⤨' : ∀ {n w} → ℂ'X ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
+vecHalfPow⤨' {n} {w} = Plug (vecHalfPow⤪ {n} {w})
 \end{code}
-%</pFork-core>
+%</vecHalfPow-plug-core>
 
 
-%<*pFst-core>
-\AgdaTarget{pFst'}
+%<*fork-fin>
 \begin{code}
-pFst' : ∀ {m n} → ℂ'X (m + n) m
-pFst' {m} {n} = Plug (inject+ n)
+fork⤪ : ∀ {k n} → Fin (k * (suc n)) → Fin (suc n)
+fork⤪ {k} {n} x = DivMod.remainder $ (toℕ x) divMod (suc n)
 \end{code}
-%</pFst-core>
+%</fork-fin>
 
-
-%<*pSnd-core>
-\AgdaTarget{pSnd'}
+%<*fork-plug-core>
+\AgdaTarget{fork⤨'}
 \begin{code}
-pSnd' : ∀ {m n} → ℂ'X (m + n) n
-pSnd' {m} {n} = Plug (raise m)
+fork⤨' : ∀ {k n} → ℂ'X n (k * n)
+fork⤨' {k} {zero} rewrite *-right-zero k = id⤨'
+fork⤨' {k} {suc m} = Plug (fork⤪ {k} {m})
 \end{code}
-%</pSnd-core>
+%</fork-plug-core>
+
+
+%<*fst-fin>
+\begin{code}
+fst⤪ : ∀ {m n} → Fin m → Fin (m + n)
+fst⤪ {m} {n} = inject+ n
+\end{code}
+%</fst-fin>
+
+%<*fst-plug-core>
+\AgdaTarget{fst⤨'}
+\begin{code}
+fst⤨' : ∀ {m n} → ℂ'X (m + n) m
+fst⤨' {m} {n} = Plug (fst⤪ {m} {n})
+\end{code}
+%</fst-plug-core>
+
+
+%<*snd-fin>
+\begin{code}
+snd⤪ : ∀ {m n} → Fin n → Fin (m + n)
+snd⤪ {m} = raise m
+\end{code}
+%</snd-fin>
+
+%<*snd-plug-core>
+\AgdaTarget{snd⤨'}
+\begin{code}
+snd⤨' : ∀ {m n} → ℂ'X (m + n) n
+snd⤨' {m} = Plug (snd⤪ {m})
+\end{code}
+%</snd-plug-core>
