@@ -8,12 +8,12 @@ open import Data.Vec using (Vec)
 open import Data.Product using (_×_; proj₂)
 
 open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Synthesizable Atomic-B using ()
-open import PiWare.Synthesizable.Bool using ()
+open import PiWare.Synthesizable Atomic-B
+open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio; ¬ℂ#; ∧ℂ#; ∨ℂ#)
-open import PiWare.Circuit.Core BoolTrio using (ℂ'X; Nil; Gate; _⟫'_; _|'_)
-open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ; nilℂ; _⟫_; _||_)
-open import PiWare.Plugs.Core BoolTrio using (pid'; pFork'; pFst'; pSnd')
+open import PiWare.Circuit.Core BoolTrio using (ℂ'; ℂ'X; Nil; Gate; _⟫'_; _|'_)
+open import PiWare.Circuit BoolTrio using (ℂ; ℂX; Mkℂ; nilℂ; _⟫_; _||_)
+open import PiWare.Plugs.Core BoolTrio using (pid'; pFork'; pFst'; pSnd'; pIntertwine'; pALR'; pARL'; pSwap')
 open import PiWare.Plugs BoolTrio using (pFork×; pid; pFst; pSnd)
 open import PiWare.Samples.BoolTrioComb using (¬ℂ; ∧ℂ; ∨ℂ)
 
@@ -53,22 +53,32 @@ mux2to1 = Mkℂ mux2to1'
 \end{code}
 %</mux2to1>
 
+TODO: with publicly exported Fin → Fin "plug functions", we can just compose them
+\begin{code}
+pAdapt' : ∀ n → ℂ'X (1 + ((1 + n) + (1 + n))) ((1 + 1 + 1) + (1 + (n + n)))
+pAdapt' n =
+       pFork' {2} {1}  |'  pid' {(1 + n) + (1 + n)}
+    ⟫' pid' {2}  |'  pIntertwine' {1} {n} {1} {n}
+    ⟫' pARL' {1 + 1} {1 + 1} {n + n}
+    ⟫' pIntertwine' {1} {1} {1} {1}  |'  pid' {n + n}
+    ⟫' (pid' {2} |' pSwap' {1} {1})  |'  pid' {n + n}
+    ⟫' pARL' {1 + 1} {1} {1}  |'  pid' {n + n}
+    ⟫' pALR' {1 + 1 + 1} {1} {n + n}
+\end{code}
 
 %<*muxN-core>
 \AgdaTarget{muxN'}
 \begin{code}
-muxN' : ∀ n → ℂ'X (suc (n + n)) n
+muxN' : ∀ n → ℂ'X (1 + (n + n)) n
 muxN' zero = Nil
-muxN' (suc n) = pAdapt' ⟫' mux2to1' |' muxN' n
-    where pAdapt' = {!!}
+muxN' (suc n) = pAdapt' n ⟫' mux2to1' |' muxN' n
 \end{code}
 %</muxN-core>
 
 %<*muxN>
 \AgdaTarget{muxN}
-muxN : ∀ n → let W = Vec B  in  ℂX (B × (W n × W n)) (W n) {suc (n + n)} {n}
-muxN zero    = nilℂ
-muxN (suc n) = _⟫_ ⦃ {!!} ⦄ ⦃ {!!} ⦄ ⦃ {!!} ⦄ (_⟫_ ⦃ {!!} ⦄ ⦃ {!!} ⦄ ⦃ {!!} ⦄ pAdapt (_||_ ⦃ {!!} ⦄ ⦃ {!!} ⦄ ⦃ {!!} ⦄ ⦃ {!!} ⦄ mux (muxN n))) {!pCons!}
-    where pAdapt : let W = Vec B in ℂX (B × (W (suc n) × W (suc n))) ((B × (B × B)) × (B × (W n × W n)))
-          pAdapt = {!!}
+\begin{code}
+muxN : ∀ n → ℂX (B × (Vec B n × Vec B n)) (Vec B n) {1 + (n + n)} {n}
+muxN n = Mkℂ ⦃ {!!} ⦄ ⦃ {!!} ⦄ (muxN' n)
+\end{code}
 %</muxN>
