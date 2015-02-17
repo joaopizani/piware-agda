@@ -69,6 +69,7 @@ instance
 \end{code}
 %</Synth-Unit>
 
+
 %<*Synth-Product>
 \AgdaTarget{⇓W⇑-×}
 \begin{code}
@@ -84,6 +85,7 @@ instance
 \end{code}
 %</Synth-Product>
 
+
 %<*Synth-Vec>
 \AgdaTarget{⇓W⇑-Vec}
 \begin{code}
@@ -98,6 +100,7 @@ instance
      up = mapᵥ ⇑ ∘ group' n i
 \end{code}
 %</Synth-Vec>
+
 
 %<*Synth-Sum>
 \AgdaTarget{⇓W⇑-⊎}

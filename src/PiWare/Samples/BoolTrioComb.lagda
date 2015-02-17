@@ -10,28 +10,29 @@ open import PiWare.Atom.Bool using (Atomic-B; False#; True#)
 open import PiWare.Synthesizable Atomic-B
 open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio; ⊥ℂ#; ⊤ℂ#; ¬ℂ#; ∧ℂ#; ∨ℂ#)
-open import PiWare.Circuit.Core BoolTrio using (Gate)
 open import PiWare.Plugs BoolTrio using (pFork×; pid; pALR; pARL; pFst; pSnd)
-open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ; _⟫_; _||_; |+; _named_)
+open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ; _⟫_; _||_; |+; _named_; gateℂ)
 \end{code}
 
 
 %<*fundamentals>
+\AgdaTarget{⊥ℂ, ⊤ℂ, ¬ℂ, ∧ℂ, ∨ℂ}
 \begin{code}
 ⊥ℂ ⊤ℂ : ℂX ⊤ B
-⊥ℂ = Mkℂ (Gate ⊥ℂ#) named "⊥ℂ"
-⊤ℂ = Mkℂ (Gate ⊤ℂ#) named "⊤ℂ"
+⊥ℂ = gateℂ ⊥ℂ# named "⊥ℂ"
+⊤ℂ = gateℂ ⊤ℂ# named "⊤ℂ"
 
 ¬ℂ : ℂX B B
-¬ℂ = Mkℂ (Gate ¬ℂ#) named "¬ℂ"
+¬ℂ = gateℂ ¬ℂ# named "¬ℂ"
 
 ∧ℂ ∨ℂ : ℂX (B × B) B
-∧ℂ = Mkℂ (Gate ∧ℂ#) named "∧ℂ"
-∨ℂ = Mkℂ (Gate ∨ℂ#) named "∨ℂ"
+∧ℂ = gateℂ ∧ℂ# named "∧ℂ"
+∨ℂ = gateℂ ∨ℂ# named "∨ℂ"
 \end{code}
 %</fundamentals>
 
 %<*nand>
+\AgdaTarget{¬∧ℂ}
 \begin{code}
 ¬∧ℂ : ℂX (B × B) B
 ¬∧ℂ = ∧ℂ ⟫ ¬ℂ named "¬∧ℂ"
@@ -39,6 +40,7 @@ open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ; _⟫_; _||_; |+; _named_
 %</nand>
 
 %<*xor>
+\AgdaTarget{⊻ℂ}
 \begin{code}
 ⊻ℂ : ℂX (B × B) B
 ⊻ℂ =   pFork×
@@ -51,6 +53,7 @@ open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ; _⟫_; _||_; |+; _named_
 
 a × b → c × s
 %<*hadd>
+\AgdaTarget{hadd}
 \begin{code}
 hadd : ℂX (B × B) (B × B)
 hadd =   pFork×
@@ -59,8 +62,10 @@ hadd =   pFork×
 \end{code}
 %</hadd>
 
+
 (a × b) × cin → co × s
 %<*fadd>
+\AgdaTarget{fadd}
 \begin{code}
 fadd : ℂX ((B × B) × B) (B × B)
 fadd =   hadd || pid
@@ -74,6 +79,7 @@ fadd =   hadd || pid
 
 
 %<*mux2to1>
+\AgdaTarget{mux2To1}
 \begin{code}
 mux2to1 : ℂX (B × (B × B)) B
 mux2to1 =   pFork×
