@@ -20,7 +20,7 @@ open import Data.Vec using (Vec; _++_; lookup; replicate; allFin; drop)
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Coinduction using (♯_; ♭)
 
-open import PiWare.Circuit.Core Gt using (ℂ'; σ; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_; _Named_)
+open import PiWare.Circuit.Core Gt using (ℂ'; σ; Nil; Gate; Plug; DelayLoop; _|'_; _|+'_; _⟫'_)
 open Atomic At using (Atom#; n→atom; W)
 open Gates At Gt using (spec)
 \end{code}
@@ -50,7 +50,6 @@ postulate untagList : ∀ {i j} → List (W (suc $ i ⊔ j)) → List (W i) × L
 ⟦ Nil       ⟧' = const ε
 ⟦ Gate g#   ⟧' = spec g#
 ⟦ Plug p    ⟧' = plugOutputs p
-⟦ c Named _ ⟧' = ⟦ c ⟧'
 ⟦ c₁ ⟫' c₂  ⟧' = ⟦ c₂ ⟧' ∘ ⟦ c₁ ⟧'
 ⟦ _|'_  {i₁} c₁ c₂ ⟧' = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧' ⟦ c₂ ⟧' ∘ splitAt' i₁
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧' = [ ⟦ c₁ ⟧' , ⟦ c₂ ⟧' ]′ ∘ untag {i₁}
@@ -79,7 +78,6 @@ delay {i} {o} {l} c = uncurry⁺ (delay' {i} {o} {l} c)
 ⟦ Gate g#             ⟧ᶜ (w⁰ ∷ _) = ⟦ Gate g# ⟧' w⁰
 ⟦ Plug p              ⟧ᶜ (w⁰ ∷ _) = plugOutputs p w⁰
 ⟦ DelayLoop {o = j} c ⟧ᶜ          = takeᵥ j ∘ delay {o = j} c
-⟦ c Named _ ⟧ᶜ = ⟦ c ⟧ᶜ
 
 ⟦ c₁ ⟫' c₂         ⟧ᶜ = ⟦ c₂ ⟧ᶜ ∘ map⁺ ⟦ c₁ ⟧ᶜ ∘ tails⁺
 ⟦ _|'_ {i₁} c₁ c₂  ⟧ᶜ = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘ unzip⁺ ∘ splitAt⁺ i₁
