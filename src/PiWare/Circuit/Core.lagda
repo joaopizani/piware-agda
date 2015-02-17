@@ -7,7 +7,6 @@ module PiWare.Circuit.Core {At : Atomic} (Gt : Gates At) where
 open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Bool using (Bool; true; false; _∧_)
 open import Data.Fin using (Fin)
-open import Data.String using (String)
 
 open Gates At Gt using (Gates#; |in|; |out|)
 \end{code}
@@ -51,8 +50,6 @@ data ℂ' where
     _⟫'_  : ∀ {i m o p}       → ℂ' {p} i m   → ℂ' {p} m o   → ℂ' {p} i o
     _|'_  : ∀ {i₁ o₁ i₂ o₂ p} → ℂ' {p} i₁ o₁ → ℂ' {p} i₂ o₂ → ℂ' {p} (i₁ + i₂) (o₁ + o₂)
     _|+'_ : ∀ {i₁ i₂ o p}     → ℂ' {p} i₁ o  → ℂ' {p} i₂ o  → ℂ' {p} (suc (i₁ ⊔ i₂)) o
-
-    _Named_ : ∀ {i o p} → ℂ' {p} i o → String → ℂ' {p} i o
 \end{code}
 %</Circuit-core>
 

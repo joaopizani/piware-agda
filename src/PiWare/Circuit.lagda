@@ -14,7 +14,7 @@ open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 import PiWare.Circuit.Core as CircuitCore
-open CircuitCore Gt using (ℂ'; IsComb; Gate; Plug; DelayLoop; _⟫'_; _|'_; _|+'_; _Named_)
+open CircuitCore Gt using (ℂ'; IsComb; Gate; Plug; DelayLoop; _⟫'_; _|'_; _|+'_)
 open CircuitCore Gt using (σ; ω) public
 
 open Atomic At using (Atom#) 
@@ -62,14 +62,6 @@ plugℂ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ 
 plugℂ ⦃ sα ⦄ ⦃ sβ ⦄ f = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (Plug f)
 \end{code}
 %</plugC>
-
-%<*named>
-\AgdaTarget{\_named\_}
-\begin{code}
-_named_ : ∀ {α i β j p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂ {p} α β {i} {j} → String → ℂ {p} α β {i} {j}
-_named_ ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') s = Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ (c' Named s)
-\end{code}
-$</named>
 
 %<*delayC>
 \AgdaTarget{delayℂ}
