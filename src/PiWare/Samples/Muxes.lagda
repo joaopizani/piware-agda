@@ -77,8 +77,6 @@ muxN' (suc n) = pAdapt' n ⟫' mux2to1' |' muxN' n
 
 %<*muxN>
 \AgdaTarget{muxN}
-\begin{code}
 muxN : ∀ n → ℂX (B × (Vec B n × Vec B n)) (Vec B n) {1 + (n + n)} {n}
 muxN n = Mkℂ ⦃ {!!} ⦄ ⦃ {!!} ⦄ (muxN' n)
-\end{code}
 %</muxN>
