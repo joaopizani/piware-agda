@@ -14,7 +14,7 @@ open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; _≡_; refl)
 open Relation.Binary.PropositionalEquality.≡-Reasoning
 
-open import PiWare.Circuit.Core Gt using (ℂ'; ℂ'X; Plug; _⟫'_; _|'_; _Named_)
+open import PiWare.Circuit.Core Gt using (ℂ'X; Plug; _⟫'_; _|'_)
 
 import Algebra as A
 import Data.Nat.Properties as N
@@ -28,14 +28,11 @@ open A.CommutativeSemiring N.commutativeSemiring using (+-assoc; +-identity; +-c
 \AgdaTarget{pSwap'}
 \begin{code}
 pSwap' : ∀ {n m} → ℂ'X (n + m) (m + n)
-pSwap' {n} {m} = p n m Named "pSwap"
-  where p : ∀ n m → ℂ'X (n + m) (m + n)
-        p n m with n + m ≟ 0
-        p n m | yes _ rewrite +-comm n m = Plug id
-        p n m | no ¬z                    = Plug $ finSwap (fromWitnessFalse ¬z)
-           where
-             finSwap : False (n + m ≟ 0) → Fin (m + n) → Fin (n + m)
-             finSwap ¬z x = _mod_ (toℕ x + m) (n + m) {¬z}
+pSwap' {n} {m} with n + m ≟ 0
+pSwap' {n} {m} | yes _ rewrite +-comm n m = Plug id
+pSwap' {n} {m} | no ¬z                    = Plug $ finSwap (fromWitnessFalse ¬z)
+    where finSwap : False (n + m ≟ 0) → Fin (m + n) → Fin (n + m)
+          finSwap ¬z x = _mod_ (toℕ x + m) (n + m) {¬z}
 \end{code}
 %</pSwap-core>
 
@@ -44,7 +41,7 @@ pSwap' {n} {m} = p n m Named "pSwap"
 \AgdaTarget{pid'}
 \begin{code}
 pid' : ∀ {n} → ℂ'X n n
-pid' = Plug id Named "pid"
+pid' = Plug id
 \end{code}
 %</pid-core>
 
@@ -54,7 +51,7 @@ pid' = Plug id Named "pid"
 \AgdaTarget{pALR'}
 \begin{code}
 pALR' : ∀ {w v y} → ℂ'X ((w + v) + y) (w + (v + y))
-pALR' {w} {v} {y} = Plug p Named "pALR"
+pALR' {w} {v} {y} = Plug p
   where p : Fin (w + (v + y)) → Fin ((w + v) + y)
         p x rewrite +-assoc w v y = x
 \end{code}
@@ -64,7 +61,7 @@ pALR' {w} {v} {y} = Plug p Named "pALR"
 \AgdaTarget{pARL'}
 \begin{code}
 pARL' : ∀ {w v y : ℕ} → ℂ'X (w + (v + y)) ((w + v) + y)
-pARL' {w} {v} {y} = Plug p Named "pARL"
+pARL' {w} {v} {y} = Plug p
   where p : Fin ((w + v) + y) → Fin (w + (v + y))
         p x rewrite sym (+-assoc w v y) = x
 \end{code}
@@ -75,12 +72,12 @@ pARL' {w} {v} {y} = Plug p Named "pARL"
 \AgdaTarget{pIntertwine'}
 \begin{code}
 pIntertwine' : ∀ {a b c d} → ℂ'X ((a + b) + (c + d)) ((a + c) + (b + d))
-pIntertwine' {a} {b} {c} {d} = p Named "pIntertwine"
-  where p =    pALR' {a} {b} {c + d}
-            ⟫' _|'_ {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
-            ⟫' _|'_ {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
-            ⟫' _|'_ {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
-            ⟫'  pARL' {a} {c} {b + d}
+pIntertwine' {a} {b} {c} {d} = 
+       pALR' {a} {b} {c + d}
+    ⟫' _|'_ {a} {a} {b + (c + d)} {(b + c) + d}  pid'  (pARL' {b} {c} {d})
+    ⟫' _|'_ {a} {a} {(b + c) + d} {(c + b) + d}  pid'  ((pSwap' {b} {c}) |' pid')
+    ⟫' _|'_ {a} {a} {(c + b) + d} {c + (b + d)}  pid'  (pALR' {c} {b} {d})
+    ⟫'  pARL' {a} {c} {b + d}
 \end{code}
 %</pIntertwine-core>
 
@@ -89,7 +86,7 @@ pIntertwine' {a} {b} {c} {d} = p Named "pIntertwine"
 \AgdaTarget{pHead'}
 \begin{code}
 pHead' : ∀ {n w} → ℂ'X (suc n * w) w
-pHead' {n} {w} = Plug (inject+ (n * w)) Named "pHead"
+pHead' {n} {w} = Plug (inject+ (n * w))
 \end{code}
 %</pHead-core>
 
@@ -106,7 +103,7 @@ twiceSuc = solve 2 eq refl where
 \AgdaTarget{pVecHalf'}
 \begin{code}
 pVecHalf' : ∀ {n w} → ℂ'X ((2 * (suc n)) * w) ((suc n) * w + (suc n) * w)
-pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id Named "pVecHalf"
+pVecHalf' {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = Plug id
 \end{code}
 %</pVecHalf-core>
 
@@ -134,7 +131,7 @@ pVecHalfPowEq (suc n) w = begin
 \AgdaTarget{pVecHalfPow'}
 \begin{code}
 pVecHalfPow' : ∀ {n w} → ℂ'X ((2 ^ (suc n)) * w) ((2 ^ n) * w + (2 ^ n) * w)
-pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id Named "pVecHalfPow"
+pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id
 \end{code}
 %</pVecHalfPow-core>
 
@@ -144,8 +141,7 @@ pVecHalfPow' {n} {w} rewrite pVecHalfPowEq n w = Plug id Named "pVecHalfPow"
 \begin{code}
 pFork' : ∀ {k n} → ℂ'X n (k * n)
 pFork' {k} {zero}  rewrite *-right-zero k = pid'
-pFork' {k} {suc m} = p Named "pFork"
-  where p = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
+pFork' {k} {suc m} = Plug (λ x → DivMod.remainder $ (toℕ x) divMod (suc m))
 \end{code}
 %</pFork-core>
 
@@ -154,7 +150,7 @@ pFork' {k} {suc m} = p Named "pFork"
 \AgdaTarget{pFst'}
 \begin{code}
 pFst' : ∀ {m n} → ℂ'X (m + n) m
-pFst' {m} {n} = Plug (inject+ n) Named "pFst"
+pFst' {m} {n} = Plug (inject+ n)
 \end{code}
 %</pFst-core>
 
@@ -163,6 +159,6 @@ pFst' {m} {n} = Plug (inject+ n) Named "pFst"
 \AgdaTarget{pSnd'}
 \begin{code}
 pSnd' : ∀ {m n} → ℂ'X (m + n) n
-pSnd' {m} {n} = Plug (raise m) Named "pSnd"
+pSnd' {m} {n} = Plug (raise m)
 \end{code}
 %</pSnd-core>

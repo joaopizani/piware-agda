@@ -17,7 +17,7 @@ open import Relation.Binary.PropositionalEquality using (cong; sym)
 
 open import PiWare.Circuit.Core Gt using (ℂ')
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
-open import PiWare.Circuit Gt using (ℂX; Mkℂ; _named_)
+open import PiWare.Circuit Gt using (ℂX; Mkℂ)
 open import PiWare.Plugs.Core Gt
   using (pid'; pSwap'; pIntertwine'; pALR'; pARL'; pHead'; pVecHalf'; pVecHalfPow'; pFork'; pFst'; pSnd')
 \end{code}
