@@ -6,11 +6,11 @@ module PiWare.Plugs.Core {At : Atomic} (Gt : Gates At) where
 
 open import Function using (id; _$_; _∘_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _≟_; _*_)
-open import Data.Nat.DivMod using (_mod_; DivMod; _divMod_)
+open import Data.Nat.DivMod using (_mod_)
 open import Data.Fin using (Fin; toℕ; inject+; raise)
 open import Data.Product using (proj₂)
 open import Relation.Nullary using (yes; no; ¬_)
-open import Relation.Nullary.Decidable using (False; fromWitnessFalse)
+open import Relation.Nullary.Decidable using (fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; _≡_; refl)
 open Relation.Binary.PropositionalEquality.≡-Reasoning
 
@@ -84,7 +84,7 @@ ARL⤨' {w} {v} {y} = Plug (ARL⤪ {w} {v} {y})
 %</ARL-plug-core>
 
 
--- TODO: Substitute seq composition by simple Fin → Fin function
+-- TODO: Fin function "parallel composition"
 \begin{code}
 postulate _|⤪_ : ∀ {a b c d} → (Fin b → Fin a) → (Fin d → Fin c) → (Fin (b + d) → Fin (a + c))
 -- _|⤪_ {a} {b} {c} {d} f g = {!!}
@@ -195,7 +195,7 @@ vecHalfPow⤨' {n} {w} = Plug (vecHalfPow⤪ {n} {w})
 %<*fork-fin>
 \begin{code}
 fork⤪ : ∀ {k n} → Fin (k * (suc n)) → Fin (suc n)
-fork⤪ {k} {n} x = DivMod.remainder $ (toℕ x) divMod (suc n)
+fork⤪ {k} {n} x = (toℕ x) mod (suc n)
 \end{code}
 %</fork-fin>
 

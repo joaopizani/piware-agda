@@ -1,6 +1,5 @@
 \begin{code}
-open import PiWare.Atom using (Atomic)
-open import PiWare.Gates using (Gates)
+open import PiWare.Atom using (Atomic; module Atomic)
 
 module PiWare.Correctness (At : Atomic) where
 
@@ -10,12 +9,14 @@ open import Data.Vec using (_++_)
 open import Data.Product using (_,_) renaming (map to mapₚ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 
+open import PiWare.Gates using (Gates)
 open import PiWare.Circuit.Core using (ℂ'; _⟫'_; _|'_)
 open import PiWare.Circuit using (ℂ; Mkℂ; _⟫_; _||_)
 open import PiWare.Simulation.Core using (⟦_⟧')
 open import PiWare.Simulation using (⟦_⟧)
 
-open import PiWare.Synthesizable At using ()  -- only instances
+open Atomic At using (W)
+open import PiWare.Synthesizable At using (module ⇓W⇑)  -- only instances
 open ⇓W⇑ ⦃ ... ⦄
 \end{code}
 

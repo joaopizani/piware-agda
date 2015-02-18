@@ -13,7 +13,7 @@ open import PiWare.Synthesizable.Bool using (⇓W⇑-B)
 open import PiWare.Gates.BoolTrio using (BoolTrio; ⊤ℂ#; ∧ℂ#)
 open import PiWare.Circuit.Core BoolTrio using (ℂ'X; Gate; _|'_; _⟫'_)
 open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ)
-open import PiWare.Plugs.Core BoolTrio using (pid')
+open import PiWare.Plugs.Core BoolTrio using (id⤨')
 \end{code}
 
 
@@ -22,7 +22,7 @@ open import PiWare.Plugs.Core BoolTrio using (pid')
 \begin{code}
 andN' : ∀ n → ℂ'X n 1
 andN' zero    = Gate ⊤ℂ#
-andN' (suc n) = pid' {1} |' andN' n  ⟫'  Gate ∧ℂ#
+andN' (suc n) = id⤨' {1} |' andN' n  ⟫'  Gate ∧ℂ#
 \end{code}
 %</andN-core>
 
