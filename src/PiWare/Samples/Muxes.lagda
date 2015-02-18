@@ -3,10 +3,10 @@ module PiWare.Samples.Muxes where
 
 open import Function using (_$_; _∘_; id)
 open import Data.Fin using (Fin)
-open import Data.Nat using (zero; suc; _+_)
+open import Data.Nat using (zero; suc; _+_; _*_)
 open import Data.Bool using () renaming (Bool to B)
 open import Data.Vec using (Vec)
-open import Data.Product using (_×_)
+open import Data.Product using (_×_; proj₂)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B
@@ -16,6 +16,11 @@ open import PiWare.Circuit.Core BoolTrio using (IsComb; ℂ'; ℂ'X; Nil; Gate; 
 open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ)
 open import PiWare.Plugs.Functions using (fork×⤪; fst⤪; snd⤪; intertwine⤪; ALR⤪; ARL⤪; swap⤪; _⟫⤪_; _|⤪_)
 open import PiWare.Plugs.Core BoolTrio using (id⤨'; fork×⤨'; fst⤨'; snd⤨')
+
+import Algebra as A
+import Data.Nat.Properties as N
+open A.CommutativeSemiring N.commutativeSemiring using (*-identity)
+*-identity-right = proj₂ *-identity
 \end{code}
 
 
@@ -75,14 +80,14 @@ muxN' (suc n) = adapt⤨' n  ⟫'  mux' |' muxN' n
 
 TODO: fix this (maybe there is a confusion between IsComb and Bool
 \begin{code}
-postulate muxN-sα : ∀ n → ⇓W⇑ (IsComb × Vec IsComb n × Vec IsComb n) {1 + (n + n)}
-postulate muxN-sβ : ∀ n → ⇓W⇑ (Vec IsComb n) {n}
+postulate muxN-sα : ∀ n → ⇓W⇑ (B × (Vec B n × Vec B n)) {1 + (n + n)}
+postulate muxN-sβ : ∀ n → ⇓W⇑ (Vec B n) {n}
 \end{code}
 
 %<*muxN>
 \AgdaTarget{muxN}
 \begin{code}
-muxN : ∀ n → ℂX (B × (Vec B n × Vec B n)) (Vec B n) {1 + (n + n)} {n}
-muxN n = Mkℂ ⦃ muxN-sα n ⦄ ⦃ muxN-sβ n ⦄ (muxN' n)
+muxN : ∀ n → ℂX (B × (Vec B n × Vec B n)) (Vec B n) {1 + ((n * 1) + (n * 1))} {n * 1}
+muxN n rewrite *-identity-right n = Mkℂ ⦃ muxN-sα n ⦄ ⦃ muxN-sβ n ⦄ (muxN' n)
 \end{code}
 %</muxN>
