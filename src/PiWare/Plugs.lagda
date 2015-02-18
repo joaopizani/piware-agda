@@ -19,168 +19,157 @@ open import PiWare.Circuit.Core Gt using (ℂ')
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
 open import PiWare.Circuit Gt using (ℂX; Mkℂ)
 open import PiWare.Plugs.Core Gt
-  using (pid'; pSwap'; pIntertwine'; pALR'; pARL'; pHead'; pVecHalf'; pVecHalfPow'; pFork'; pFst'; pSnd')
+  using (id⤨'; swap⤨'; intertwine⤨'; ALR⤨'; ARL⤨'; head⤨'; vecHalf⤨'; vecHalfPow⤨'; fork⤨'; fst⤨'; snd⤨')
 \end{code}
 
 
-%<*pid>
-\AgdaTarget{pid}
+%<*id-plug>
+\AgdaTarget{id⤨}
 \begin{code}
-pid : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α α
-pid ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ pid'
+id⤨ : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α α
+id⤨ ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ id⤨'
 \end{code}
-%</pid>
+%</id-plug>
 
 
-%<*pSwap>
-\AgdaTarget{pSwap}
+%<*swap-plug>
+\AgdaTarget{swap⤨}
 \begin{code}
-pSwap : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂX (α × β) (β × α)
-pSwap {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sα ⦄ ⦄ (pSwap' {i} {j})
+swap⤨ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂX (α × β) (β × α)
+swap⤨ {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sα ⦄ ⦄ (swap⤨' {i} {j})
 \end{code}
-%</pSwap>
+%</swap-plug>
 
 
-%<*pIntertwine>
-\AgdaTarget{pIntertwine}
+%<*intertwine-plug>
+\AgdaTarget{intertwine⤨}
 \begin{code}
-pIntertwine : ∀ {α i β j γ k δ l} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ ⦃ _ : ⇓W⇑ δ {l} ⦄
+intertwine⤨ : ∀ {α i β j γ k δ l} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {suc j} ⦄ ⦃ _ : ⇓W⇑ γ {suc k} ⦄ ⦃ _ : ⇓W⇑ δ {l} ⦄
               → ℂX ((α × β) × (γ × δ)) ((α × γ) × (β × δ))
-pIntertwine {i = i} {j = j} {k = k} {l = l} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ ⦃ sδ ⦄ =
+intertwine⤨ {i = i} {j = j} {k = k} {l = l} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ ⦃ sδ ⦄ =
     Mkℂ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sγ ⦄ ⦃ sδ ⦄ ⦄ ⦄
         ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sγ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sδ ⦄ ⦄ ⦄
-        (pIntertwine' {i} {j} {k} {l})
+        (intertwine⤨' {i} {j} {k} {l})
 \end{code}
-%</pIntertwine>
+%</intertwine-plug>
 
 
 -- associativity plugs
-%<*pALR>
-\AgdaTarget{pALR}
+%<*ALR-plug>
+\AgdaTarget{ALR⤨}
 \begin{code}
-pALR : ∀ {α i β j γ k} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ → ℂX ((α × β) × γ) (α × (β × γ))
-pALR {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
-    Mkℂ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sγ ⦄ ⦄ ⦄ (pALR' {i} {j} {k})
+ALR⤨ : ∀ {α i β j γ k} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ → ℂX ((α × β) × γ) (α × (β × γ))
+ALR⤨ {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
+    Mkℂ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sγ ⦄ ⦄ ⦄ (ALR⤨' {i} {j} {k})
 \end{code}
-%</pALR>
+%</ALR-plug>
 
 
-%<*pARL>
-\AgdaTarget{pARL}
+%<*ARL-plug>
+\AgdaTarget{ARL⤨}
 \begin{code}
-pARL : ∀ {α i β j γ k} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ → ℂX (α × (β × γ)) ((α × β) × γ)
-pARL {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
-    Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sγ ⦄ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ ⦄ (pARL' {i} {j} {k})
+ARL⤨ : ∀ {α i β j γ k} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ → ℂX (α × (β × γ)) ((α × β) × γ)
+ARL⤨ {i = i} {j = j} {k = k} ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ =
+    Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sβ ⦄ ⦃ sγ ⦄ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ ⦄ (ARL⤨' {i} {j} {k})
 \end{code}
-%</pARL>
+%</ARL-plug>
  
 
 -- vector plugs
-%<*pHead>
-\AgdaTarget{pHead}
+%<*head-plug>
+\AgdaTarget{head⤨}
 \begin{code}
-pHead : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (suc n)) α
-pHead {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ sα ⦄ (pHead' {m} {i})
+head⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (suc n)) α
+head⤨ {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ sα ⦄ (head⤨' {m} {i})
 \end{code}
-%</pHead>
+%</head-plug>
 
 
-%<*pUncons>
-\AgdaTarget{pUncons}
+%<*uncons-plug>
+\AgdaTarget{uncons⤨}
 \begin{code}
-pUncons : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (suc n)) (α × Vec α n)
-pUncons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ pid'
+uncons⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (suc n)) (α × Vec α n)
+uncons⤨ {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ id⤨'
 \end{code}
-%</pUncons>
+%</uncons-plug>
 
 
-%<*pCons>
-\AgdaTarget{pCons}
+%<*cons-plug>
+\AgdaTarget{cons⤨}
 \begin{code}
-pCons : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (α × Vec α n) (Vec α (suc n))
-pCons {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ pid'
+cons⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (α × Vec α n) (Vec α (suc n))
+cons⤨ {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ id⤨'
 \end{code}
-%</pCons>
+%</cons-plug>
 
 
-%<*pSingletonIn>
-\AgdaTarget{pSingletonIn}
+%<*singleton-plug>
+\AgdaTarget{singleton⤨}
 \begin{code}
-pSingletonIn : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (Vec α 1)
-pSingletonIn {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  c'
+singleton⤨ : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (Vec α 1)
+singleton⤨ {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  c'
   where c' : ℂ' i (1 * i)
-        c' rewrite (proj₂ +-identity) i = pid'
+        c' rewrite (proj₂ +-identity) i = id⤨'
 \end{code}
-%</pSingletonIn>
+%</singleton-plug>
 
 
-%<*pSingletonOut>
-\AgdaTarget{pSingletonOut}
+%<*vecHalf-plug>
+\AgdaTarget{vecHalf⤨}
 \begin{code}
-pSingletonOut : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α 1) α
-pSingletonOut {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ ⦃ sα ⦄  c'
-  where c' : ℂ' (1 * i) i
-        c' rewrite (proj₂ +-identity) i = pid'
-\end{code}
-%</pSingletonOut>
-
-
-%<*pVecHalf>
-\AgdaTarget{pVecHalt}
-\begin{code}
-pVecHalf : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (2 * suc n)) (Vec α (suc n) × Vec α (suc n))
-pVecHalf {_} {i} {m} ⦃ sα ⦄ =
+vecHalf⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (2 * suc n)) (Vec α (suc n) × Vec α (suc n))
+vecHalf⤨ {_} {i} {m} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓W⇑-Vec {n = 2 * suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦄
-        (pVecHalf' {m} {i})
+        (vecHalf⤨' {m} {i})
 \end{code}
-%</pVecHalf>
+%</vecHalf-plug>
 
 
-%<*pVecHalfPow>
-\AgdaTarget{pVecHalfPow}
+%<*vecHalfPow-plug>
+\AgdaTarget{vecHalfPow⤨}
 \begin{code}
-pVecHalfPow : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (2 ^ suc n)) (Vec α (2 ^ n) × Vec α (2 ^ n))
-pVecHalfPow {_} {i} {m} ⦃ sα ⦄ =
+vecHalfPow⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (2 ^ suc n)) (Vec α (2 ^ n) × Vec α (2 ^ n))
+vecHalfPow⤨ {_} {i} {m} ⦃ sα ⦄ =
     Mkℂ ⦃ ⇓W⇑-Vec {n = 2 ^ suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ ⇓W⇑-Vec {n = 2 ^ m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = 2 ^ m} ⦃ sα ⦄ ⦄ ⦄ 
-        (pVecHalfPow' {m} {i})
+        (vecHalfPow⤨' {m} {i})
 \end{code}
-%</pVecHalfPow>
+%</vecHalfPow-plug>
 
 
-%<*pForkVec>
-\AgdaTarget{pForkVec}
+%<*forkVec-plug>
+\AgdaTarget{forkVec⤨}
 \begin{code}
-pForkVec : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (Vec α n)
-pForkVec {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ (pFork' {m} {i})
+forkVec⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (Vec α n)
+forkVec⤨ {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ (fork⤨' {m} {i})
 \end{code}
-%</pForkVec>
+%</forkVec-plug>
 
 
-%<*pFork-product>
-\AgdaTarget{pFork×}
+%<*forkProduct-plug>
+\AgdaTarget{fork×⤨}
 \begin{code}
-pFork× : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (α × α)
-pFork× {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  c'
+fork×⤨ : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (α × α)
+fork×⤨ {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  c'
   where c' : ℂ' i (i + i)
-        c' rewrite sym $ cong (_+_ i) ((proj₂ +-identity) i) = pFork' {2} {i}
+        c' rewrite sym $ cong (_+_ i) ((proj₂ +-identity) i) = fork⤨' {2} {i}
 \end{code}
-%</pFork-product>
+%</forkProduct-plug>
 
 
 -- pairs
-%<*pFst>
-\AgdaTarget{pFst}
+%<*fst-plug>
+\AgdaTarget{fst⤨}
 \begin{code}
-pFst : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂX (α × β) α
-pFst {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sα ⦄ (pFst' {i} {j})
+fst⤨ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂX (α × β) α
+fst⤨ {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sα ⦄ (fst⤨' {i} {j})
 \end{code}
-%</pFst>
+%</fst-plug>
 
 
-%<*pSnd>
-\AgdaTarget{pSnd}
+%<*snd-plug>
+\AgdaTarget{snd⤨}
 \begin{code}
-pSnd : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂX (α × β) β
-pSnd {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sβ ⦄ (pSnd' {i} {j})
+snd⤨ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂX (α × β) β
+snd⤨ {i = i} {j = j} ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sβ ⦄ (snd⤨' {i} {j})
 \end{code}
-%</pSnd>
+%</snd-plug>

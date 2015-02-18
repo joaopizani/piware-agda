@@ -15,7 +15,7 @@ import Data.Nat.Properties as N
 open A.CommutativeSemiring N.commutativeSemiring using (+-identity)
 
 open import PiWare.Circuit.Core Gt using (ℂ'; IsComb; Nil; _⟫'_; _|'_)
-open import PiWare.Plugs.Core Gt using (pid')
+open import PiWare.Plugs.Core Gt using (id⤨')
 \end{code}
 
 
@@ -46,7 +46,7 @@ parsN' {k} = pars' ∘ replicate {n = k}
 \AgdaTarget{seqs'}
 \begin{code}
 seqs' : ∀ {k io p} → Vec (ℂ' {p} io io) k → ℂ' {p} io io
-seqs' {_} {io} {p} = foldr (const $ ℂ' {p} io io) _⟫'_ pid'
+seqs' {_} {io} {p} = foldr (const $ ℂ' {p} io io) _⟫'_ id⤨'
 \end{code}
 %</seqs-core>
 
@@ -61,9 +61,7 @@ seqsN' k = seqs' ∘ replicate {n = k}
 
 %<*row-core>
 \AgdaTarget{row'}
-\begin{code}
 row' : ∀ {k i o h p} → ℂ' {p} (h + i) (o + h) → ℂ' {p} (h + (k * i)) ((k * o) + h)
-row' {zero}  {i} {o} {h} _ rewrite (proj₂ +-identity) h = pid'
+row' {zero}  {i} {o} {h} _ rewrite (proj₂ +-identity) h = id⤨'
 row' {suc k} {i} {o} {h} c' = {!row' {k} {i} {o} {h} c'!}
-\end{code}
 %</row-core>
