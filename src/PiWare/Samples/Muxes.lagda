@@ -14,8 +14,8 @@ open import PiWare.Synthesizable.Bool
 open import PiWare.Gates.BoolTrio using (BoolTrio; ¬ℂ#; ∧ℂ#; ∨ℂ#)
 open import PiWare.Circuit.Core BoolTrio using (IsComb; ℂ'; ℂ'X; Nil; Gate; Plug; _⟫'_; _|'_)
 open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ)
-open import PiWare.Plugs.Core BoolTrio
-  using (id⤨'; fork⤨'; fst⤨'; snd⤨'; fork⤪; fst⤪; snd⤪; intertwine⤪; ALR⤪; ARL⤪; swap⤪; _⟫⤪_; _|⤪_)
+open import PiWare.Plugs.Functions using (fork×⤪; fst⤪; snd⤪; intertwine⤪; ALR⤪; ARL⤪; swap⤪; _⟫⤪_; _|⤪_)
+open import PiWare.Plugs.Core BoolTrio using (id⤨'; fork×⤨'; fst⤨'; snd⤨')
 \end{code}
 
 
@@ -33,8 +33,8 @@ open import PiWare.Plugs.Core BoolTrio
 \begin{code}
 mux' : ℂ'X 3 1  -- s × (a × b) → c
 mux' =
-                                    fork⤨' {2}
-    ⟫' (¬ℂ' |' fst⤨' {1} {1} ⟫' ∧ℂ')  |'  (id⤨' {1} |' snd⤨' {1} {1} ⟫' ∧ℂ')
+                                    fork×⤨'
+    ⟫' (¬ℂ' |' fst⤨' {1} {1} ⟫' ∧ℂ')  |'  (id⤨' {1} |' snd⤨' {1} ⟫' ∧ℂ')
     ⟫'                                ∨ℂ'
 \end{code}
 %</mux-core>

@@ -15,11 +15,10 @@ open A.CommutativeSemiring N.commutativeSemiring using (+-identity)
 open import Algebra.Operations (A.CommutativeSemiring.semiring N.commutativeSemiring) using (_^_)
 open import Relation.Binary.PropositionalEquality using (cong; sym)
 
-open import PiWare.Circuit.Core Gt using (ℂ')
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
 open import PiWare.Circuit Gt using (ℂX; Mkℂ)
 open import PiWare.Plugs.Core Gt
-  using (id⤨'; swap⤨'; intertwine⤨'; ALR⤨'; ARL⤨'; head⤨'; vecHalf⤨'; vecHalfPow⤨'; fork⤨'; fst⤨'; snd⤨')
+  using (id⤨'; swap⤨'; intertwine⤨'; ALR⤨'; ARL⤨'; head⤨'; vecHalf⤨'; vecHalfPow⤨'; fst⤨'; snd⤨'; singleton⤨'; forkVec⤨'; fork×⤨')
 \end{code}
 
 
@@ -107,9 +106,7 @@ cons⤨ {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {
 \AgdaTarget{singleton⤨}
 \begin{code}
 singleton⤨ : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (Vec α 1)
-singleton⤨ {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄  c'
-  where c' : ℂ' i (1 * i)
-        c' rewrite (proj₂ +-identity) i = id⤨'
+singleton⤨ {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = 1} ⦃ sα ⦄ ⦄ (singleton⤨' {i}) 
 \end{code}
 %</singleton-plug>
 
@@ -140,7 +137,7 @@ vecHalfPow⤨ {_} {i} {m} ⦃ sα ⦄ =
 \AgdaTarget{forkVec⤨}
 \begin{code}
 forkVec⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (Vec α n)
-forkVec⤨ {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ (fork⤨' {m} {i})
+forkVec⤨ {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ (forkVec⤨' {m} {i})
 \end{code}
 %</forkVec-plug>
 
@@ -149,9 +146,7 @@ forkVec⤨ {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} �
 \AgdaTarget{fork×⤨}
 \begin{code}
 fork×⤨ : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX α (α × α)
-fork×⤨ {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄  c'
-  where c' : ℂ' i (i + i)
-        c' rewrite sym $ cong (_+_ i) ((proj₂ +-identity) i) = fork⤨' {2} {i}
+fork×⤨ {_} {i} ⦃ sα ⦄ = Mkℂ ⦃ sα ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sα ⦄ ⦄ (fork×⤨' {i})
 \end{code}
 %</forkProduct-plug>
 
