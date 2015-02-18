@@ -48,31 +48,20 @@ mux = Mkℂ mux'
 %</mux>
 
 
-TODO: with publicly exported Fin → Fin "plug functions", we can just compose them
 \begin{code}
-postulate adapt⤪ : ∀ n → Fin ((1 + 1 + 1) + (1 + (n + n))) → Fin (1 + ((1 + n) + (1 + n)))
---adapt⤪ n = ?
+adapt⤪ : ∀ n → Fin ((1 + 1 + 1) + (1 + (n + n))) → Fin (1 + ((1 + n) + (1 + n)))
+adapt⤪ n =
+       _|⤪_ {1} {2}  (fork×⤪ {1})  (id {A = Fin ((1 + n) + (1 + n))})
+  ⟫⤪  (_|⤪_ {2} {2} id  (intertwine⤪ {1} {n} {1} {n}))
+  ⟫⤪                ARL⤪ {1 + 1} {1 + 1} {n + n}
+  ⟫⤪  intertwine⤪ {1} {1} {1} {1}   |⤪  id
+  ⟫⤪  (_|⤪_ {2 + 2} {2 + 2} {n + n} {n + n}  (id {A = Fin 2} |⤪ swap⤪ {1})  id)
+  ⟫⤪           ARL⤪ {1 + 1} {1} {1}  |⤪  id
+  ⟫⤪                ALR⤪ {1 + 1 + 1} {1} {n + n}
 
 adapt⤨' : ∀ n → ℂ'X (1 + ((1 + n) + (1 + n))) ((1 + 1 + 1) + (1 + (n + n)))
 adapt⤨' = Plug ∘ adapt⤪
 \end{code}
-1        + ((1 + n)  + (1 + n))
-(1 + 1)  + ((a + n)  + (b + n))
-(1 + 1)  + ((a + b)  + (n + n))
-((1 + 1) + (a + b))  + (n + n)
-((1 + a) + (1 + b))  + (n + n)
-((1 + a) + (b + 1))  + (n + n)
-((1 + a + b) + 1)    + (n + n)
-(1 + a + b) + (1     + (n + n))
-(1 + 1 + 1) + (1 + (n + n))
-
-            fork⤪  |⤪  id
-⟫⤪             id  |⤪  intertwine⤪
-⟫⤪                ARL⤪
-⟫⤪  intertwine⤪    |⤪  id
-⟫⤪  (id |⤪ swap⤪)  |⤪  id
-⟫⤪           ARL⤪  |⤪  id
-⟫⤪                ALR⤪
 
 %<*muxN-core>
 \AgdaTarget{muxN'}
