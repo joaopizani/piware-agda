@@ -5,7 +5,6 @@ open import PiWare.Gates using (Gates; module Gates)
 module PiWare.Circuit.Core {At : Atomic} (Gt : Gates At) where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
-open import Data.Bool using (Bool; true; false; _∧_)
 open import Data.Fin using (Fin)
 
 open Gates At Gt using (Gates#; |in|; |out|)
@@ -15,10 +14,8 @@ open Gates At Gt using (Gates#; |in|; |out|)
 %<*IsComb>
 \AgdaTarget{IsComb, σ, ω}
 \begin{code}
-IsComb = Bool
-
-pattern σ = true
-pattern ω = false
+data IsComb : Set where
+    σ ω : IsComb
 \end{code}
 %</IsComb>
 
