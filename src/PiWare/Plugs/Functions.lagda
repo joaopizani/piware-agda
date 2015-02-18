@@ -35,6 +35,7 @@ infixr 7 _|⤪_
 
 
 %<*swap-fin>
+\AgdaTarget{swap⤪}
 \begin{code}
 swap⤪ : ∀ {n m} → Fin (m + n) → Fin (n + m)
 swap⤪ {n} {m} x with n + m ≟ 0
@@ -45,6 +46,7 @@ swap⤪ {n} {m} x | no ¬z = _mod_ (toℕ x + m) (n + m) {fromWitnessFalse ¬z}
 
 
 %<*ALR-fin>
+\AgdaTarget{ALR⤪}
 \begin{code}
 ALR⤪ : ∀ {w v y} → Fin (w + (v + y)) → Fin ((w + v) + y)
 ALR⤪ {w} {v} {y} rewrite +-assoc w v y = id
@@ -53,6 +55,7 @@ ALR⤪ {w} {v} {y} rewrite +-assoc w v y = id
 
 
 %<*ARL-fin>
+\AgdaTarget{ARL⤪}
 \begin{code}
 ARL⤪ : ∀ {w v y} → Fin ((w + v) + y) → Fin (w + (v + y))
 ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = id
@@ -61,6 +64,7 @@ ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = id
 
 
 %<*intertwine-fin>
+\AgdaTarget{intertwine⤪}
 \begin{code}
 intertwine⤪ : ∀ {a b c d} → Fin ((a + c) + (b + d)) → Fin ((a + b) + (c + d))
 intertwine⤪ {a} {b} {c} {d} =
@@ -74,11 +78,21 @@ intertwine⤪ {a} {b} {c} {d} =
 
 
 %<*head-fin>
+\AgdaTarget{head⤪}
 \begin{code}
 head⤪ : ∀ {n w} → Fin w → Fin (suc n * w)
 head⤪ {n} {w} = inject+ (n * w)
 \end{code}
 %</head-fin>
+
+
+%<*singleton-fin>
+\AgdaTarget{singleton⤪}
+\begin{code}
+singleton⤪ : ∀ {w} → Fin (1 * w) → Fin w
+singleton⤪ {w} rewrite (proj₂ +-identity) w = id
+\end{code}
+%</singleton-fin>
 
 
 \begin{code}
@@ -90,6 +104,7 @@ twiceSuc = solve 2 eq refl where
 \end{code}
 
 %<*vecHalf-fin>
+\AgdaTarget{vecHalf⤪}
 \begin{code}
 vecHalf⤪ : ∀ {n w} → Fin (suc n * w + suc n * w) → Fin ((2 * suc n) * w)
 vecHalf⤪ {n} {w} rewrite (proj₂ +-identity) n | twiceSuc n w = id
@@ -117,6 +132,7 @@ vecHalfPowEq (suc n) w = begin
 \end{code}
 
 %<*vecHalfPow-fin>
+\AgdaTarget{vecHalfPow⤪}
 \begin{code}
 vecHalfPow⤪ : ∀ {n w} → Fin ((2 ^ n) * w + (2 ^ n) * w) → Fin ((2 ^ suc n) * w)
 vecHalfPow⤪ {n} {w} rewrite vecHalfPowEq n w = id
@@ -124,16 +140,27 @@ vecHalfPow⤪ {n} {w} rewrite vecHalfPowEq n w = id
 %</vecHalfPow-fin>
 
 
-%<*fork-fin>
+%<*forkVec-fin>
+\AgdaTarget{forkVec⤪}
 \begin{code}
-fork⤪ : ∀ {k n} → Fin (k * n) → Fin n
-fork⤪ {k} {zero}  x rewrite *-right-zero k = x
-fork⤪ {_} {suc m} x = (toℕ x) mod (suc m)
+forkVec⤪ : ∀ {k n} → Fin (k * n) → Fin n
+forkVec⤪ {k} {zero}  x rewrite *-right-zero k = x
+forkVec⤪ {_} {suc m} x = (toℕ x) mod (suc m)
 \end{code}
-%</fork-fin>
+%</forkVec-fin>
+
+
+%<*forkProd-fin>
+\AgdaTarget{fork×⤪}
+\begin{code}
+fork×⤪ : ∀ {w} → Fin (w + w) → Fin w
+fork×⤪ {w} rewrite sym $ cong (_+_ w) ((proj₂ +-identity) w) = forkVec⤪ {2} {w}
+\end{code}
+%</forkProd-fin>
 
 
 %<*fst-fin>
+\AgdaTarget{fst⤪}
 \begin{code}
 fst⤪ : ∀ {m n} → Fin m → Fin (m + n)
 fst⤪ {m} {n} = inject+ n
@@ -142,6 +169,7 @@ fst⤪ {m} {n} = inject+ n
 
 
 %<*snd-fin>
+\AgdaTarget{snd⤪}
 \begin{code}
 snd⤪ : ∀ {m n} → Fin n → Fin (m + n)
 snd⤪ {m} = raise m

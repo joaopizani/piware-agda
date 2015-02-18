@@ -8,7 +8,7 @@ open import Data.Unit using (⊤)
 open import Data.Product using (_×_)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Plugs.Core BoolTrio using (ALR⤪; swap⤪; _⟫⤪_; _|⤪_)
+open import PiWare.Plugs.Functions using (ALR⤪; swap⤪; _⟫⤪_; _|⤪_)
 open import PiWare.Plugs BoolTrio using (swap⤨; fork×⤨)
 open import PiWare.Circuit BoolTrio using (ℂ; plugℂ; delayℂ; _⟫_; _||_)
 open import PiWare.Samples.BoolTrioComb using (⊥ℂ; ¬ℂ; ∨ℂ)
@@ -44,9 +44,8 @@ toggle = ⊥ℂ ⟫ delayℂ (∨ℂ ⟫ ¬ℂ ⟫ fork×⤨)
 \begin{code}
 reg : ℂ (B × B) B
 reg = delayℂ (rearrange ⟫ mux ⟫ fork×⤨)
-    where rearrange = plugℂ $    swap⤪ {1} {1} (λ ())  |⤪  id
-                              ⟫⤪                 ALR⤪ {1} {1} {1}
-                              ⟫⤪  id {A = Fin 1}  |⤪  swap⤪ {1} {1} (λ ())
+    where rearrange = plugℂ $     swap⤪ {1} {1}   |⤪   id
+                              ⟫⤪                 ALR⤪ {1} {1}
+                              ⟫⤪  id {A = Fin 1}  |⤪   swap⤪ {1}
 \end{code}
 %</reg>
-

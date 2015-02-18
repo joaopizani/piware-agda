@@ -9,7 +9,7 @@ open import Data.Nat using (ℕ; suc; _+_; _*_)
 
 open import PiWare.Circuit.Core Gt using (ℂ'X; Plug)
 open import PiWare.Plugs.Functions
-    using (swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪; fork⤪; fst⤪; snd⤪)
+    using (swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪)
 
 import Algebra as A
 import Data.Nat.Properties as N
@@ -72,6 +72,15 @@ head⤨' {n} {w} = Plug (head⤪ {n} {w})
 %</head-plug-core>
 
 
+%<*singleton-plug-core>
+\AgdaTarget{singleton⤨'}
+\begin{code}
+singleton⤨' : ∀ {w} → ℂ'X w (1 * w)
+singleton⤨' {w} = Plug (singleton⤪ {w})
+\end{code}
+%</singleton-plug-core>
+
+
 %<*vecHalf-plug-core>
 \AgdaTarget{vecHalf⤨'}
 \begin{code}
@@ -90,13 +99,22 @@ vecHalfPow⤨' {n} {w} = Plug (vecHalfPow⤪ {n} {w})
 %</vecHalfPow-plug-core>
 
 
-%<*fork-plug-core>
-\AgdaTarget{fork⤨'}
+%<*forkVec-plug-core>
+\AgdaTarget{forkVec⤨'}
 \begin{code}
-fork⤨' : ∀ {k n} → ℂ'X n (k * n)
-fork⤨' {k} {n} = Plug (fork⤪ {k} {n})
+forkVec⤨' : ∀ {k n} → ℂ'X n (k * n)
+forkVec⤨' {k} {n} = Plug (forkVec⤪ {k} {n})
 \end{code}
-%</fork-plug-core>
+%</forkVec-plug-core>
+
+
+%<*forkProd-plug-core>
+\AgdaTarget{fork×⤨'}
+\begin{code}
+fork×⤨' : ∀ {w} → ℂ'X w (w + w)
+fork×⤨' {w} = Plug (fork×⤪ {w})
+\end{code}
+%</forkProd-plug-core>
 
 
 %<*fst-plug-core>

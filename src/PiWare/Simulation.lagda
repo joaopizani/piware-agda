@@ -8,11 +8,11 @@ open import Function using (_∘_)
 open import Data.Nat using (ℕ)
 open import Data.Stream using (Stream) renaming (map to mapₛ)
 
-open import PiWare.Synthesizable At
+open import PiWare.Synthesizable At using (module ⇓W⇑)
+open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
+
 open import PiWare.Circuit Gt using (ℂ; Mkℂ)
 open import PiWare.Simulation.Core Gt using (⟦_⟧'; ⟦_⟧*')
-
-open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 \end{code}
 
 
