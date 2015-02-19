@@ -1,12 +1,16 @@
 \begin{code}
 module PiWare.Plugs.Functions where
 
-open import Function using (id; _∘_; _$_)
-open import Data.Nat using (zero; suc; _+_; _*_; _≟_)
-open import Data.Fin using (Fin; toℕ; inject+; raise)
+open import Function using (id; _∘_; _∘′_; _$_)
+open import Data.Fin using (Fin; toℕ; inject+; raise; reduce≥; fromℕ≤) renaming (zero to Fz)
 open import Data.Nat.DivMod using (_mod_)
+open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
 open import Data.Product using (proj₂)
 
+open import Data.Nat as Nat using (ℕ; pred; zero; suc; _+_; _*_; _<_; _≤?_; _≟_; _≥_; _≤_; z≤n; s≤s; _≮_)
+open import Relation.Binary using (module DecTotalOrder)
+open DecTotalOrder Nat.decTotalOrder using () renaming (refl to ≤-refl)
+open import Relation.Nullary.Negation using (contradiction)
 open import Relation.Nullary using (yes; no; ¬_)
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; refl; _≡_; module ≡-Reasoning)
@@ -20,10 +24,19 @@ open import Data.Nat.Properties.Simple using (*-right-zero)
 \end{code}
 
 
--- TODO: Fin function "parallel composition"
 \begin{code}
-postulate _|⤪_ : ∀ {a b c d} → (Fin b → Fin a) → (Fin d → Fin c) → (Fin (b + d) → Fin (a + c))
--- _|⤪_ {a} {b} {c} {d} f g = {!!}
+≮⇒> : {n m : ℕ} → n ≮ m → n ≥ m
+≮⇒> {_}     {zero}  _  = z≤n
+≮⇒> {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
+≮⇒> {suc n} {suc m} ¬p = s≤s $ ≮⇒> (¬p ∘ s≤s)
+
+splitFin : ∀ {n m} → Fin (n + m) → Fin n ⊎ Fin m
+splitFin {n} x with suc (toℕ x) ≤? n
+splitFin     x | yes p  = inj₁ $ fromℕ≤ p
+splitFin     x | no  ¬p = inj₂ $ reduce≥ x (≮⇒> ¬p)
+
+_|⤪_ : ∀ {a b c d} → (Fin b → Fin a) → (Fin d → Fin c) → Fin (b + d) → Fin (a + c)
+_|⤪_ {a} {b} {c} {d} f g = [ (inject+ c) ∘′ f , (raise a) ∘′ g ]′ ∘′ splitFin
 
 _⟫⤪_ : ∀ {a b c} → (Fin b → Fin a) → (Fin c → Fin b) → (Fin c → Fin a)
 f ⟫⤪ g = f ∘ g
