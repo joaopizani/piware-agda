@@ -13,9 +13,9 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 %<*MaxView>
 \AgdaTarget{\_⊔''\_, max₁, max₂}
 \begin{code}
-data _⊔''_ : ℕ → ℕ → Set where
-    max₁ : {a b : ℕ} → a ⊔ b ≡ a → b ≤ a → a ⊔'' b
-    max₂ : {a b : ℕ} → a ⊔ b ≡ b → a ≤ b → a ⊔'' b
+data _⊔''_  (a b : ℕ) : Set where
+    max₁ : a ⊔ b ≡ a → b ≤ a → a ⊔'' b
+    max₂ : a ⊔ b ≡ b → a ≤ b → a ⊔'' b
 \end{code}
 %</MaxView>
 
