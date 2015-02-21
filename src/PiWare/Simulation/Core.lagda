@@ -13,7 +13,8 @@ open import Data.Stream using (Stream; _∷_)
 open import Data.List using (List; []; _∷_; map)
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺)
 open import Data.CausalStream using (Γᶜ; _⇒ᶜ_; tails⁺)
-open import PiWare.Utils using (unzip⁺; splitAt'; splitAt⁺; uncurry⁺)
+open import Data.Vec.Extra using (splitAt')
+open import Data.List.NonEmpty.Extra using (unzip⁺; splitAt⁺; uncurry⁺)
 open import Data.Vec using (Vec; _++_; lookup; replicate; allFin; drop)
                      renaming ([] to ε; _∷_ to _◁_; take to takeᵥ; map to mapᵥ)
 
@@ -30,7 +31,7 @@ open Gates At Gt using (spec)
 %<*plugOutputs>
 \AgdaTarget{plugOutputs}
 \begin{code}
-plugOutputs : {α : Set} {o i : ℕ} → (Fin o → Fin i) → Vec α i → Vec α o
+plugOutputs : ∀ {α : Set} {o i} → (Fin o → Fin i) → Vec α i → Vec α o
 plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 \end{code}
 %</plugOutputs>
@@ -58,15 +59,15 @@ postulate untagList : ∀ {i j} → List (W (suc $ i ⊔ j)) → List (W i) × L
 
 
 -- Sequential eval as "causal stream function". "uncurrying" to convince the termination checker
+-- TODO: Now it's hardcoded to pad the sequence with th first element being (replicate (n→atom Fz))
 %<*delay>
 \AgdaTarget{delay}
 \begin{code}
 delay : ∀ {i o l} → ℂ' {σ} (i + l) (o + l) → (W i ⇒ᶜ W (o + l))
-delay {i} {o} {l} c = uncurry⁺ (delay' {i} {o} {l} c)
-  where
-    delay' : ∀ {i o l} → ℂ' {σ} (i + l) (o + l) → W i → List (W i) → W (o + l)
-    delay' {_} {_} c w⁰ [] = ⟦ c ⟧' (w⁰ ++ replicate (n→atom Fz))
-    delay' {_} {o} c w⁰ (w⁻¹ ∷ w⁻) = ⟦ c ⟧' (w⁰ ++ drop o (delay' {_} {o} c w⁻¹ w⁻))
+delay {i} {o} {l} = uncurry⁺ ∘ delay' {i} {o} {l}
+  where delay' : ∀ {i o l} → ℂ' {σ} (i + l) (o + l) → W i → List (W i) → W (o + l)
+        delay' {_} {_} c w⁰ []         = ⟦ c ⟧' (w⁰ ++ replicate (n→atom Fz))
+        delay' {_} {o} c w⁰ (w⁻¹ ∷ w⁻) = ⟦ c ⟧' (w⁰ ++ drop o (delay' {_} {o} c w⁻¹ w⁻))
 \end{code}
 %</delay>
 

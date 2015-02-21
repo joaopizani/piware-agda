@@ -6,18 +6,19 @@ module PiWare.Synthesizable (At : Atomic) where
 open import Function using (_∘_; _$_; const)
 open import Data.Unit using (⊤; tt)
 open import Data.Bool using (if_then_else_)
-open import Data.Product using (_×_; _,_; proj₁; proj₂)
-open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
+open import Data.Product using (_×_; _,_; proj₁; proj₂; <_,_>)
+open import Data.Sum using (_⊎_; inj₁; inj₂; isInj₁; isInj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin.Properties using (_≟_)
 open import Data.Nat using (ℕ; suc; _+_; _*_; _⊔_)
 open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
-open import Data.List using (List) renaming (map to mapₗ)
+open import Data.List using (List; gfilter; map)
+
+open import Data.Vec.Extra using (group')
 
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Decidable using (⌊_⌋)
 
 open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
-open import PiWare.Utils using (group'; seggregateSums)
 open Atomic At using (Atom; Atom#; W; atom→n; n→atom)
 \end{code}
 
@@ -48,11 +49,19 @@ untag {i} {j} l (t ◁ ab) = if ⌊ atom→n t ≟ l ⌋ then (inj₁ ∘ unpadF
 \end{code}
 %</untag>
 
+%<*seggregateSums>
+\AgdaTarget{seggregateSums}
+\begin{code}
+seggregateSums : ∀ {ℓ} {α β : Set ℓ} → List (α ⊎ β) → List α × List β
+seggregateSums = < gfilter isInj₁ , gfilter isInj₂ >
+\end{code}
+%</seggregateSums>
+
 %<*untagList>
 \AgdaTarget{untagList}
 \begin{code}
 untagList : ∀ {i j} (l : Atom#) → List (W (suc (i ⊔ j))) → List (W i) × List (W j)
-untagList l = seggregateSums ∘ mapₗ (untag l)
+untagList l = seggregateSums ∘ map (untag l)
 \end{code}
 %</untagList>
 
