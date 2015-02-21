@@ -26,7 +26,7 @@ open N.SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
 
 
 \begin{code}
-≮⇒> : {n m : ℕ} → n ≮ m → n ≥ m
+≮⇒> : ∀ {n m} → n ≮ m → n ≥ m
 ≮⇒> {_}     {zero}  _  = z≤n
 ≮⇒> {zero}  {suc m} ¬p = contradiction (s≤s z≤n) ¬p
 ≮⇒> {suc n} {suc m} ¬p = s≤s $ ≮⇒> (¬p ∘′ s≤s)
@@ -97,6 +97,24 @@ head⤪ : ∀ {n w} → Fin w → Fin (suc n * w)
 head⤪ {n} {w} = inject+ (n * w)
 \end{code}
 %</head-fin>
+
+
+%<*uncons-fin>
+\AgdaTarget{uncons⤪}
+\begin{code}
+uncons⤪ : ∀ {i n} → Fin (i + n * i) → Fin (suc n * i)
+uncons⤪ = id
+\end{code}
+%</uncons-fin>
+
+
+%<*cons-fin>
+\AgdaTarget{cons⤪}
+\begin{code}
+cons⤪ : ∀ {i n} → Fin (suc n * i) → Fin (i + n * i)
+cons⤪ = id
+\end{code}
+%</cons-fin>
 
 
 %<*singleton-fin>

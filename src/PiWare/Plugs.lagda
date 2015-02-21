@@ -18,7 +18,8 @@ open import Relation.Binary.PropositionalEquality using (cong; sym)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
 open import PiWare.Circuit Gt using (ℂX; Mkℂ)
 open import PiWare.Plugs.Core Gt
-  using (id⤨'; swap⤨'; intertwine⤨'; ALR⤨'; ARL⤨'; head⤨'; vecHalf⤨'; vecHalfPow⤨'; fst⤨'; snd⤨'; singleton⤨'; forkVec⤨'; fork×⤨')
+    using ( id⤨'; swap⤨'; intertwine⤨'; ALR⤨'; ARL⤨'; head⤨'; vecHalf⤨'; vecHalfPow⤨'
+          ; fst⤨'; snd⤨'; singleton⤨'; forkVec⤨'; fork×⤨'; uncons⤨'; cons⤨')
 \end{code}
 
 
@@ -88,7 +89,8 @@ head⤨ {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ 
 \AgdaTarget{uncons⤨}
 \begin{code}
 uncons⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (Vec α (suc n)) (α × Vec α n)
-uncons⤨ {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ id⤨'
+uncons⤨ {_} {i} {m} ⦃ sα ⦄ =
+    Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ (uncons⤨' {i} {m})
 \end{code}
 %</uncons-plug>
 
@@ -97,7 +99,7 @@ uncons⤨ {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ �
 \AgdaTarget{cons⤨}
 \begin{code}
 cons⤨ : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ℂX (α × Vec α n) (Vec α (suc n))
-cons⤨ {n = m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ id⤨'
+cons⤨ {_} {i} {m} ⦃ sα ⦄ = Mkℂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ ⇓W⇑-Vec {n = m} ⦃ sα ⦄ ⦄ ⦄ ⦃ ⇓W⇑-Vec {n = suc m} ⦃ sα ⦄ ⦄ (cons⤨' {i} {m})
 \end{code}
 %</cons-plug>
 

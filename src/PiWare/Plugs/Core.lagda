@@ -9,7 +9,8 @@ open import Data.Nat using (ℕ; suc; _+_; _*_)
 
 open import PiWare.Circuit.Core Gt using (ℂ'X; Plug)
 open import PiWare.Plugs.Functions
-    using (swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪)
+    using ( swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
+          ; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
 
 import Algebra as A
 import Data.Nat.Properties as N
@@ -70,6 +71,24 @@ head⤨' : ∀ {n w} → ℂ'X (suc n * w) w
 head⤨' {n} {w} = Plug (head⤪ {n} {w})
 \end{code}
 %</head-plug-core>
+
+
+%<*uncons-plug-core>
+\AgdaTarget{uncons⤨'}
+\begin{code}
+uncons⤨' : ∀ {i n} → ℂ'X (suc n * i) (i + n * i)
+uncons⤨' {i} {n} = Plug (uncons⤪ {i} {n})
+\end{code}
+%</uncons-plug-core>
+
+
+%<*cons-plug-core>
+\AgdaTarget{cons⤨'}
+\begin{code}
+cons⤨' : ∀ {i n} → ℂ'X (i + n * i) (suc n * i)
+cons⤨' {i} {n} = Plug (cons⤪ {i} {n})
+\end{code}
+%</cons-plug-core>
 
 
 %<*singleton-plug-core>
