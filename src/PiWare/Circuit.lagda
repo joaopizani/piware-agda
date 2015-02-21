@@ -33,7 +33,6 @@ record ℂ {p : IsComb} (α β : Set) {i j : ℕ} : Set where
         ⦃ sα ⦄ : ⇓W⇑ α {i}
         ⦃ sβ ⦄ : ⇓W⇑ β {j}
         base : ℂ' {p} i j
-
 \end{code}
 %</Circuit>
 

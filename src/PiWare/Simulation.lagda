@@ -6,13 +6,12 @@ module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘_)
 open import Data.Nat using (ℕ)
-open import Data.Stream using (Stream) renaming (map to mapₛ)
-
-open import PiWare.Synthesizable At using (module ⇓W⇑)
-open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
+open import Data.Stream using (Stream; map)
 
 open import PiWare.Circuit Gt using (ℂ; Mkℂ)
 open import PiWare.Simulation.Core Gt using (⟦_⟧'; ⟦_⟧*')
+open import PiWare.Synthesizable At using (module ⇓W⇑)
+open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 \end{code}
 
 
@@ -28,6 +27,6 @@ open import PiWare.Simulation.Core Gt using (⟦_⟧'; ⟦_⟧*')
 \AgdaTarget{⟦\_⟧*}
 \begin{code}
 ⟦_⟧* : ∀ {α i β j} → ℂ α β {i} {j} → (Stream α → Stream β)
-⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧* = mapₛ ⇑ ∘ ⟦ c' ⟧*' ∘ mapₛ ⇓
+⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧* = map ⇑ ∘ ⟦ c' ⟧*' ∘ map ⇓
 \end{code}
 %</eval-seq>

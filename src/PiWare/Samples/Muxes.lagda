@@ -78,7 +78,6 @@ muxN' (suc n) = adapt⤨' n  ⟫'  mux' |' muxN' n
 %</muxN-core>
 
 
-TODO: fix this (maybe there is a confusion between IsComb and Bool
 \begin{code}
 postulate muxN-sα : ∀ n → ⇓W⇑ (B × (Vec B n × Vec B n)) {1 + (n + n)}
 postulate muxN-sβ : ∀ n → ⇓W⇑ (Vec B n) {n}

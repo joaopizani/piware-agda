@@ -4,7 +4,7 @@ module Data.CausalStream where
 open import Data.List using (List; []; _∷_)
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming ([_] to [_]⁺)
 
-open import PiWare.Utils using (uncurry⁺)
+open import Data.List.NonEmpty.Extra using (uncurry⁺)
 \end{code}
 
 
@@ -17,6 +17,7 @@ open import PiWare.Utils using (uncurry⁺)
 \end{code}
 %</causal-context>
 
+
 -- Causal step: causal context → next value
 %<*causal-step>
 \AgdaTarget{\_⇒ᶜ\_}
@@ -25,6 +26,7 @@ _⇒ᶜ_ : (α β : Set) → Set
 α ⇒ᶜ β = Γᶜ α → β
 \end{code}
 %</causal-step>
+
 
 -- Needs to use the trick with tails⁺' and uncurry⁺ to "convince" the termination checker
 %<*tails-nonempty>

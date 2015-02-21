@@ -1,6 +1,7 @@
 \begin{code}
 module NArySum where
 
+open import Function using (_∘_)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Bool using (Bool; true)
 open import Data.Char using (Char)
@@ -8,11 +9,11 @@ open import Level using () renaming (suc to sucₗ)
 open import Data.Vec using (Vec; lookup; replicate) renaming ([] to ε; _∷_ to _◁_)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 
-open import Relation.Binary.PropositionalEquality using (_≡_)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 \end{code}
 
 \begin{code}
-data Vec' {ℓ} : (n : ℕ) (αₛ : Vec (Set ℓ) n) → Set (sucₗ ℓ) where
+data Vec' {ℓ} : ∀ n (αₛ : Vec (Set ℓ) n) → Set (sucₗ ℓ) where
     ε   : Vec' 0 ε
     _◁_ : ∀ {α n αₛ} → α → Vec' n αₛ → Vec' (suc n) (α ◁ αₛ)
 
@@ -39,4 +40,15 @@ ex2' = 40 ◁ 41 ◁ 42 ◁ 43 ◁ 44 ◁ ε
 
 ex2 : Vec ℕ 5
 ex2 = 40 ◁ 41 ◁ 42 ◁ 43 ◁ 44 ◁ ε
+
+test : Vec'-to-Vec ex2' ≡ ex2
+test = refl
+
+inverse-right : ∀ {ℓ n} {α : Set ℓ} (v : Vec α n) → (Vec'-to-Vec ∘ Vec-to-Vec') v ≡ v
+inverse-right ε                                 = refl
+inverse-right (x ◁ xs) rewrite inverse-right xs = refl
+
+inverse-left : ∀ {ℓ n} {α : Set ℓ} (v : Vec' n (replicate α)) → (Vec-to-Vec' ∘ Vec'-to-Vec) v ≡ v
+inverse-left ε                                = refl
+inverse-left (x ◁ xs) rewrite inverse-left xs = refl
 \end{code}

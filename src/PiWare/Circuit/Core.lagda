@@ -14,11 +14,9 @@ open Gates At Gt using (Gates#; |in|; |out|)
 %<*IsComb>
 \AgdaTarget{IsComb, σ, ω}
 \begin{code}
-data IsComb : Set where
-    σ ω : IsComb
+data IsComb : Set where σ ω : IsComb
 \end{code}
 %</IsComb>
-
 
 %<*Circuit-core-predecl>
 \begin{code}
