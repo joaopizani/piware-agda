@@ -3,7 +3,7 @@ open import PiWare.Atom using (Atomic; module Atomic)
 
 module PiWare.Synthesizable (At : Atomic) where
 
-open import Function using (_∘_; _$_; const)
+open import Function using (_∘′_; _$_; const)
 open import Data.Unit using (⊤; tt)
 open import Data.Bool using (if_then_else_)
 open import Data.Product using (_×_; _,_; proj₁; proj₂; <_,_>)
@@ -45,7 +45,7 @@ open ⇓W⇑ ⦃ ... ⦄
 \AgdaTarget{untag}
 \begin{code}
 untag : ∀ {i j} (l : Atom#) → W (suc (i ⊔ j)) → W i ⊎ W j
-untag {i} {j} l (t ◁ ab) = if ⌊ atom→n t ≟ l ⌋ then (inj₁ ∘ unpadFrom₁ j) else (inj₂ ∘ unpadFrom₂ i) $ ab
+untag {i} {j} l (t ◁ ab) = if ⌊ atom→n t ≟ l ⌋ then (inj₁ ∘′ unpadFrom₁ j) else (inj₂ ∘′ unpadFrom₂ i) $ ab
 \end{code}
 %</untag>
 
@@ -61,7 +61,7 @@ seggregateSums = < gfilter isInj₁ , gfilter isInj₂ >
 \AgdaTarget{untagList}
 \begin{code}
 untagList : ∀ {i j} (l : Atom#) → List (W (suc (i ⊔ j))) → List (W i) × List (W j)
-untagList l = seggregateSums ∘ map (untag l)
+untagList l = seggregateSums ∘′ map (untag l)
 \end{code}
 %</untagList>
 
@@ -103,10 +103,10 @@ instance
  ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
    where
      down : Vec α n → W (n * i)
-     down = concat ∘ mapᵥ ⇓
+     down = concat ∘′ mapᵥ ⇓
            
      up : W (n * i) → Vec α n
-     up = mapᵥ ⇑ ∘ group' n i
+     up = mapᵥ ⇑ ∘′ group' n i
 \end{code}
 %</Synth-Vec>
 
@@ -122,6 +122,6 @@ instance
                 , (λ b → (n→atom r) ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
            
          up : W (suc (i ⊔ j)) → α ⊎ β
-         up = map⊎ ⇑ ⇑ ∘ (untag l)
+         up = map⊎ ⇑ ⇑ ∘′ (untag l)
 \end{code}
 %</Synth-Sum>

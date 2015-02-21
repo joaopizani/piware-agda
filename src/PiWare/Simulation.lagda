@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
-open import Function using (_∘_)
+open import Function using (_∘′_)
 open import Data.Nat using (ℕ)
 open import Data.Stream using (Stream; map)
 
@@ -19,7 +19,7 @@ open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 \AgdaTarget{⟦\_⟧}
 \begin{code}
 ⟦_⟧ : ∀ {α i β j} → ℂ α β {i} {j} → (α → β)
-⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧ = ⇑ ∘ ⟦ c' ⟧' ∘ ⇓
+⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧ = ⇑ ∘′ ⟦ c' ⟧' ∘′ ⇓
 \end{code}
 %</eval>
 
@@ -27,6 +27,6 @@ open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 \AgdaTarget{⟦\_⟧*}
 \begin{code}
 ⟦_⟧* : ∀ {α i β j} → ℂ α β {i} {j} → (Stream α → Stream β)
-⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧* = map ⇑ ∘ ⟦ c' ⟧*' ∘ map ⇓
+⟦ Mkℂ ⦃ sα ⦄ ⦃ sβ ⦄ c' ⟧* = map ⇑ ∘′ ⟦ c' ⟧*' ∘′ map ⇓
 \end{code}
 %</eval-seq>

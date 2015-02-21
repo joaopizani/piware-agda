@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Patterns.Core {At : Atomic} (Gt : Gates At) where
 
-open import Function using (const; _∘_; _$_)
+open import Function using (const; _∘′_; _$_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Bool using (Bool; true; _∧_)
 open import Data.Vec using (Vec; []; _∷_; replicate; foldr; map)
@@ -34,7 +34,7 @@ pars' {k} {i} {o} {p} = foldr (λ k → ℂ' {p} (k * i) (k * o)) _|'_ Nil
 \AgdaTarget{parsN'}
 \begin{code}
 parsN' : ∀ {k i o p} → ℂ' {p} i o → ℂ' {p} (k * i) (k * o)
-parsN' {k} = pars' ∘ replicate {n = k}
+parsN' {k} = pars' ∘′ replicate {n = k}
 \end{code}
 %</parsN-core>
 
@@ -54,7 +54,7 @@ seqs' {_} {io} {p} = foldr (const $ ℂ' {p} io io) _⟫'_ id⤨'
 \AgdaTarget{seqsN'}
 \begin{code}
 seqsN' : ∀ k {io p} → ℂ' {p} io io → ℂ' {p} io io
-seqsN' k = seqs' ∘ replicate {n = k}
+seqsN' k = seqs' ∘′ replicate {n = k}
 \end{code}
 %</seqsN-core>
 
