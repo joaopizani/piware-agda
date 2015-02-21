@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Simulation.Core {At : Atomic} (Gt : Gates At) where
 
-open import Function using (_∘_; _$_; const)
+open import Function using (_∘′_; _$_; const)
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Fin using (Fin) renaming (zero to Fz)
 open import Data.Product using (_×_; _,_; proj₁; uncurry′) renaming (map to mapₚ)
@@ -51,9 +51,9 @@ postulate untagList : ∀ {i j} → List (W (suc $ i ⊔ j)) → List (W i) × L
 ⟦ Nil       ⟧' = const ε
 ⟦ Gate g#   ⟧' = spec g#
 ⟦ Plug p    ⟧' = plugOutputs p
-⟦ c₁ ⟫' c₂  ⟧' = ⟦ c₂ ⟧' ∘ ⟦ c₁ ⟧'
-⟦ _|'_  {i₁} c₁ c₂ ⟧' = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧' ⟦ c₂ ⟧' ∘ splitAt' i₁
-⟦ _|+'_ {i₁} c₁ c₂ ⟧' = [ ⟦ c₁ ⟧' , ⟦ c₂ ⟧' ]′ ∘ untag {i₁}
+⟦ c₁ ⟫' c₂  ⟧' = ⟦ c₂ ⟧' ∘′ ⟦ c₁ ⟧'
+⟦ _|'_  {i₁} c₁ c₂ ⟧' = uncurry′ _++_ ∘′ mapₚ ⟦ c₁ ⟧' ⟦ c₂ ⟧' ∘′ splitAt' i₁
+⟦ _|+'_ {i₁} c₁ c₂ ⟧' = [ ⟦ c₁ ⟧' , ⟦ c₂ ⟧' ]′ ∘′ untag {i₁}
 \end{code}
 %</eval-core>
 
@@ -64,7 +64,7 @@ postulate untagList : ∀ {i j} → List (W (suc $ i ⊔ j)) → List (W i) × L
 \AgdaTarget{delay}
 \begin{code}
 delay : ∀ {i o l} → ℂ' {σ} (i + l) (o + l) → (W i ⇒ᶜ W (o + l))
-delay {i} {o} {l} = uncurry⁺ ∘ delay' {i} {o} {l}
+delay {i} {o} {l} = uncurry⁺ ∘′ delay' {i} {o} {l}
   where delay' : ∀ {i o l} → ℂ' {σ} (i + l) (o + l) → W i → List (W i) → W (o + l)
         delay' {_} {_} c w⁰ []         = ⟦ c ⟧' (w⁰ ++ replicate (n→atom Fz))
         delay' {_} {o} c w⁰ (w⁻¹ ∷ w⁻) = ⟦ c ⟧' (w⁰ ++ drop o (delay' {_} {o} c w⁻¹ w⁻))
@@ -78,10 +78,10 @@ delay {i} {o} {l} = uncurry⁺ ∘ delay' {i} {o} {l}
 ⟦ Nil                 ⟧ᶜ (w⁰ ∷ _) = ⟦ Nil ⟧' w⁰
 ⟦ Gate g#             ⟧ᶜ (w⁰ ∷ _) = ⟦ Gate g# ⟧' w⁰
 ⟦ Plug p              ⟧ᶜ (w⁰ ∷ _) = plugOutputs p w⁰
-⟦ DelayLoop {o = j} c ⟧ᶜ          = takeᵥ j ∘ delay {o = j} c
+⟦ DelayLoop {o = j} c ⟧ᶜ          = takeᵥ j ∘′ delay {o = j} c
 
-⟦ c₁ ⟫' c₂         ⟧ᶜ = ⟦ c₂ ⟧ᶜ ∘ map⁺ ⟦ c₁ ⟧ᶜ ∘ tails⁺
-⟦ _|'_ {i₁} c₁ c₂  ⟧ᶜ = uncurry′ _++_ ∘ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘ unzip⁺ ∘ splitAt⁺ i₁
+⟦ c₁ ⟫' c₂         ⟧ᶜ = ⟦ c₂ ⟧ᶜ ∘′ map⁺ ⟦ c₁ ⟧ᶜ ∘′ tails⁺
+⟦ _|'_ {i₁} c₁ c₂  ⟧ᶜ = uncurry′ _++_ ∘′ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘′ unzip⁺ ∘′ splitAt⁺ i₁
 
 ⟦ _|+'_ {i₁} c₁ c₂ ⟧ᶜ (w⁰ ∷ w⁻) with untag {i₁} w⁰ | untagList {i₁} w⁻
 ... | inj₁ w⁰₁ | w⁻₁ , _   = ⟦ c₁ ⟧ᶜ (w⁰₁ ∷ w⁻₁)
@@ -103,6 +103,6 @@ runᶜ f (x⁰ ∷ x⁺) = runᶜ' f ((x⁰ ∷ []) , ♭ x⁺)
 \AgdaTarget{⟦\_⟧*'}
 \begin{code}
 ⟦_⟧*' : ∀ {i o} → ℂ' i o → (Stream (W i) → Stream (W o))
-⟦_⟧*' = runᶜ ∘ ⟦_⟧ᶜ
+⟦_⟧*' = runᶜ ∘′ ⟦_⟧ᶜ
 \end{code}
 %</eval-seq-core>

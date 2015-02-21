@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.ProofSamples.AndN where
 
-open import Function using (_∘_)
+open import Function using (_∘′_)
 open import Data.Nat using (zero; suc)
 open import Data.Bool using (true)
 open import Data.Vec using (replicate; [_]; _∷_)
@@ -19,7 +19,7 @@ open import PiWare.Simulation BoolTrio using (⟦_⟧)
 \begin{code}
 proof-andN-core-alltrue : ∀ n → ⟦ andN' n ⟧' (replicate true) ≡ [ true ]
 proof-andN-core-alltrue zero    = refl
-proof-andN-core-alltrue (suc n) = cong (spec-and ∘ (_∷_ true)) (proof-andN-core-alltrue n)
+proof-andN-core-alltrue (suc n) = cong (spec-and ∘′ _∷_ true) (proof-andN-core-alltrue n)
 \end{code}
 %</proof-andN-core-alltrue>
 
