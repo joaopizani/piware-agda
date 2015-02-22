@@ -1,25 +1,31 @@
 \begin{code}
 module PiWare.Samples.RippleCarry where
 
-open import Data.Nat using (_+_; _*_)
-open import Data.Product using (_×_)
-open import Data.Vec using (Vec)
-open import Data.Bool using () renaming (Bool to B)
+open import Function using (id)
+open import Data.Nat using (zero; suc; _+_; _*_)
+open import Data.Fin using (Fin)
 
+open import PiWare.Plugs.Functions using (_|⤪_; _⟫⤪_; fst⤪; swap⤪; ARL⤪)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (𝐂̂; Mkℂ̂)
-open import PiWare.Samples.RippleCarryCore using (ripple)
-
-open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Synthesizable Atomic-B using ()
-open import PiWare.Synthesizable.Bool using ()
+open import PiWare.Circuit BoolTrio using (𝐂; Plug; _⟫_; _∥_)
+open import PiWare.Plugs BoolTrio using (id⤨; intertwine⤨; ALR⤨; ARL⤨; uncons⤨; cons⤨)
+open import PiWare.Samples.BoolTrioComb using (fadd)
 \end{code}
 
 
+-- cin × a × b → s × cout
 %<*ripple>
-\AgdaTarget{ripplê}
+\AgdaTarget{ripple}
 \begin{code}
-ripplê : ∀ n →  let W = Vec B n  in  𝐂̂ (B × W × W) (W × B) {1 + (n * 1 + n * 1)} {n * 1 + 1}
-ripplê n = Mkℂ̂ (ripple n)
+ripple : ∀ n → 𝐂 (1 + (n * 1 + n * 1)) ((n * 1) + 1)
+ripple zero    = Plug (id {A = Fin 1} |⤪ fst⤪ {0}  ⟫⤪  swap⤪ {1} {0})
+ripple (suc m) =
+        id⤨ {1}  ∥ (uncons⤨ {1} {m} ∥ uncons⤨ {1} {m}  ⟫  intertwine⤨ {1} {m * 1} {1} {m * 1})
+    ⟫      assoc⤨
+    ⟫      fadd  ∥  id⤨ {m * 1 + m * 1}
+    ⟫       ALR⤨ {1} {1} {m * 1 + m * 1}
+    ⟫   id⤨ {1}  ∥  ripple m
+    ⟫       ARL⤨ {1} {m * 1} {1}
+    where assoc⤨ = Plug (ARL⤪ {1} {1 + 1} {m * 1 + m * 1}  ⟫⤪  ARL⤪ {1} {1} {1} |⤪ id {A = Fin (m * 1 + m * 1)})
 \end{code}
 %</ripple>

@@ -1,43 +1,44 @@
 \begin{code}
 module PiWare.Samples.BoolTrioSeq where
 
-open import Data.Bool using () renaming (Bool to B)
-open import Data.Unit using (⊤)
-open import Data.Product using (_×_)
+open import Function using (id; _$_)
+open import Data.Fin using (Fin)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (ℂ̂; Mkℂ̂)
-open import PiWare.Samples.BoolTrioSeqCore using (shift; toggle; reg)
-
-open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Synthesizable Atomic-B using ()  -- only instances
-open import PiWare.Synthesizable.Bool using ()  -- only instances
+open import PiWare.Circuit BoolTrio using (ℂ; Plug; DelayLoop; _⟫_)
+open import PiWare.Plugs.Functions using (_⟫⤪_; _|⤪_; swap⤪; ALR⤪)
+open import PiWare.Plugs BoolTrio using (swap⤨; fork×⤨)
+open import PiWare.Samples.BoolTrioComb using (¬ℂ; ⊥ℂ; ∨ℂ)
+open import PiWare.Samples.Muxes using (mux)
 \end{code}
 
 
 %<*shift>
-\AgdaTarget{shift̂}
+\AgdaTarget{shift}
 \begin{code}
-shift̂ : ℂ̂ B B
-shift̂ = Mkℂ̂ shift
+shift : ℂ 1 1
+shift = DelayLoop (swap⤨ {1} {1})
 \end{code}
 %</shift>
 
 
 %<*toggle>
-\AgdaTarget{togglê}
+\AgdaTarget{toggle}
 \begin{code}
-togglê : ℂ̂ ⊤ B
-togglê = Mkℂ̂ toggle
+toggle : ℂ 0 1 
+toggle = ⊥ℂ ⟫ DelayLoop (∨ℂ ⟫ ¬ℂ ⟫ fork×⤨)
 \end{code}
 %</toggle>
 
 
 -- input × load → out
 %<*reg>
-\AgdaTarget{reĝ}
+\AgdaTarget{reg}
 \begin{code}
-reĝ : ℂ̂ (B × B) B
-reĝ = Mkℂ̂ reg
+reg : ℂ 2 1
+reg = DelayLoop (rearrange ⟫ mux ⟫ fork×⤨)
+    where rearrange = Plug $    swap⤪ {1} {1}   |⤪   id
+                             ⟫⤪               ALR⤪ {1} {1}
+                             ⟫⤪ id {A = Fin 1}  |⤪   swap⤪ {1}
 \end{code}
 %</reg>
