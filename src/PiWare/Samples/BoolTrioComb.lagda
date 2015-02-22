@@ -1,67 +1,70 @@
 \begin{code}
 module PiWare.Samples.BoolTrioComb where
 
-open import Data.Bool using () renaming (Bool to B)
-open import Data.Product using (_×_)
-open import Data.Unit using (⊤)
+open import Data.Nat using (_+_)
 
-open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (𝐂̂; Mkℂ̂)
-open import PiWare.Samples.BoolTrioCombCore using (⊥ℂ; ⊤ℂ; ¬ℂ; ∧ℂ; ∨ℂ; ¬∧ℂ; ⊻ℂ; hadd; fadd)
-open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Synthesizable Atomic-B using ()
-open import PiWare.Synthesizable.Bool using ()
+open import PiWare.Gates.BoolTrio using (BoolTrio; ⊥ℂ#; ⊤ℂ#; ¬ℂ#; ∧ℂ#; ∨ℂ#)
+open import PiWare.Circuit BoolTrio using (𝐂; Gate; _⟫_; _∥_)
+open import PiWare.Plugs BoolTrio using (id⤨; fork×⤨; ALR⤨; ARL⤨)
 \end{code}
 
 
 %<*fundamentals>
-\AgdaTarget{⊥ℂ̂, ⊤ℂ̂, ¬ℂ̂, ∧ℂ̂, ∨ℂ̂}
+\AgdaTarget{⊥ℂ, ⊤ℂ, ¬ℂ, ∧ℂ, ∨ℂ}
 \begin{code}
-⊥ℂ̂ ⊤ℂ̂ : 𝐂̂ ⊤ B
-⊥ℂ̂ = Mkℂ̂ ⊥ℂ
-⊤ℂ̂ = Mkℂ̂ ⊤ℂ
+⊥ℂ ⊤ℂ : 𝐂 0 1
+⊥ℂ = Gate ⊥ℂ#
+⊤ℂ = Gate ⊤ℂ#
 
-¬ℂ̂ : 𝐂̂ B B
-¬ℂ̂ = Mkℂ̂ ¬ℂ
+¬ℂ : 𝐂 1 1
+¬ℂ = Gate ¬ℂ#
 
-∧ℂ̂ ∨ℂ̂ : 𝐂̂ (B × B) B
-∧ℂ̂ = Mkℂ̂ ∧ℂ
-∨ℂ̂ = Mkℂ̂ ∨ℂ
+∧ℂ ∨ℂ : 𝐂 2 1
+∧ℂ = Gate ∧ℂ#
+∨ℂ = Gate ∨ℂ#
 \end{code}
-%</fundamentals>
+%<*fundamentals>
+
 
 %<*nand>
-\AgdaTarget{¬∧ℂ̂}
+\AgdaTarget{¬∧ℂ}
 \begin{code}
-¬∧ℂ̂ : 𝐂̂ (B × B) B
-¬∧ℂ̂ = Mkℂ̂ ¬∧ℂ
+¬∧ℂ : 𝐂 2 1
+¬∧ℂ = ∧ℂ ⟫ ¬ℂ
 \end{code}
 %</nand>
 
 %<*xor>
-\AgdaTarget{⊻ℂ̂}
+\AgdaTarget{⊻ℂ}
 \begin{code}
-⊻ℂ̂ : 𝐂̂ (B × B) B
-⊻ℂ̂ = Mkℂ̂ ⊻ℂ
+⊻ℂ : 𝐂 2 1
+⊻ℂ =   fork×⤨
+      ⟫ (¬ℂ ∥ id⤨ {1} ⟫ ∧ℂ)  ∥  (id⤨ {1} ∥ ¬ℂ ⟫ ∧ℂ)
+      ⟫                   ∨ℂ
 \end{code}
 %</xor>
 
 
-a × b → c × s
+-- a × b → c × s
 %<*hadd>
-\AgdaTarget{hadd̂}
+\AgdaTarget{hadd}
 \begin{code}
-hadd̂ : 𝐂̂ (B × B) (B × B)
-hadd̂ = Mkℂ̂ hadd
+hadd : 𝐂 2 2
+hadd =    fork×⤨
+        ⟫ ∧ℂ ∥ ⊻ℂ
 \end{code}
 %</hadd>
 
 
-(a × b) × cin → co × s
+-- (a × b) × cin → co × s
 %<*fadd>
-\AgdaTarget{fadd̂}
+\AgdaTarget{fadd}
 \begin{code}
-fadd̂ : 𝐂̂ ((B × B) × B) (B × B)
-fadd̂ = Mkℂ̂ fadd
+fadd : 𝐂 (2 + 1) (1 + 1)
+fadd =     hadd   ∥  id⤨
+       ⟫     ALR⤨ {1} {1}
+       ⟫  id⤨ {1} ∥ hadd
+       ⟫     ARL⤨ {1} {1}
+       ⟫      ∨ℂ   ∥  id⤨
 \end{code}
 %</fadd>

@@ -1,26 +1,20 @@
 \begin{code}
 module PiWare.Samples.AndN where
 
-open import Function using (id)
-
-open import Data.Bool using () renaming (Bool to B)
-open import Data.Vec using (Vec)
+open import Data.Nat using (zero; suc)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (𝐂̂; Mkℂ̂)
-open import PiWare.Samples.AndNCore using (andN)
-
-open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Synthesizable Atomic-B using (⇓W⇑[_,_])
-open import PiWare.Synthesizable.Bool using ()
+open import PiWare.Circuit BoolTrio using (𝐂; _⟫_; _∥_)
+open import PiWare.Plugs BoolTrio using (id⤨)
+open import PiWare.Samples.BoolTrioComb using (⊤ℂ; ∧ℂ)
 \end{code}
 
 
-
 %<*andN>
-\AgdaTarget{andN̂}
+\AgdaTarget{andN}
 \begin{code}
-andN̂ : ∀ n → 𝐂̂ (Vec B n) B
-andN̂ k = Mkℂ̂ ⦃ sα = ⇓W⇑[ id , id ] ⦄ (andN k)
+andN : ∀ n → 𝐂 n 1
+andN zero    = ⊤ℂ
+andN (suc n) = id⤨ {1} ∥ andN n  ⟫  ∧ℂ
 \end{code}
 %</andN>
