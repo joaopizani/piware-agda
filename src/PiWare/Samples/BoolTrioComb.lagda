@@ -6,9 +6,8 @@ open import Data.Product using (_×_)
 open import Data.Unit using (⊤)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (ℂX; Mkℂ)
-open import PiWare.Samples.BoolTrioCombCore using (⊥ℂ'; ⊤ℂ'; ¬ℂ'; ∧ℂ'; ∨ℂ'; ¬∧ℂ'; ⊻ℂ'; hadd'; fadd')
-
+open import PiWare.Circuit BoolTrio using (𝐂̂; Mkℂ̂)
+open import PiWare.Samples.BoolTrioCombCore using (⊥ℂ; ⊤ℂ; ¬ℂ; ∧ℂ; ∨ℂ; ¬∧ℂ; ⊻ℂ; hadd; fadd)
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable Atomic-B using ()
 open import PiWare.Synthesizable.Bool using ()
@@ -16,53 +15,53 @@ open import PiWare.Synthesizable.Bool using ()
 
 
 %<*fundamentals>
-\AgdaTarget{⊥ℂ, ⊤ℂ, ¬ℂ, ∧ℂ, ∨ℂ}
+\AgdaTarget{⊥ℂ̂, ⊤ℂ̂, ¬ℂ̂, ∧ℂ̂, ∨ℂ̂}
 \begin{code}
-⊥ℂ ⊤ℂ : ℂX ⊤ B
-⊥ℂ = Mkℂ ⊥ℂ'
-⊤ℂ = Mkℂ ⊤ℂ'
+⊥ℂ̂ ⊤ℂ̂ : 𝐂̂ ⊤ B
+⊥ℂ̂ = Mkℂ̂ ⊥ℂ
+⊤ℂ̂ = Mkℂ̂ ⊤ℂ
 
-¬ℂ : ℂX B B
-¬ℂ = Mkℂ ¬ℂ'
+¬ℂ̂ : 𝐂̂ B B
+¬ℂ̂ = Mkℂ̂ ¬ℂ
 
-∧ℂ ∨ℂ : ℂX (B × B) B
-∧ℂ = Mkℂ ∧ℂ'
-∨ℂ = Mkℂ ∨ℂ'
+∧ℂ̂ ∨ℂ̂ : 𝐂̂ (B × B) B
+∧ℂ̂ = Mkℂ̂ ∧ℂ
+∨ℂ̂ = Mkℂ̂ ∨ℂ
 \end{code}
 %</fundamentals>
 
 %<*nand>
-\AgdaTarget{¬∧ℂ}
+\AgdaTarget{¬∧ℂ̂}
 \begin{code}
-¬∧ℂ : ℂX (B × B) B
-¬∧ℂ = Mkℂ ¬∧ℂ'
+¬∧ℂ̂ : 𝐂̂ (B × B) B
+¬∧ℂ̂ = Mkℂ̂ ¬∧ℂ
 \end{code}
 %</nand>
 
 %<*xor>
-\AgdaTarget{⊻ℂ}
+\AgdaTarget{⊻ℂ̂}
 \begin{code}
-⊻ℂ : ℂX (B × B) B
-⊻ℂ = Mkℂ ⊻ℂ'
+⊻ℂ̂ : 𝐂̂ (B × B) B
+⊻ℂ̂ = Mkℂ̂ ⊻ℂ
 \end{code}
 %</xor>
 
 
 a × b → c × s
 %<*hadd>
-\AgdaTarget{hadd}
+\AgdaTarget{hadd̂}
 \begin{code}
-hadd : ℂX (B × B) (B × B)
-hadd = Mkℂ hadd'
+hadd̂ : 𝐂̂ (B × B) (B × B)
+hadd̂ = Mkℂ̂ hadd
 \end{code}
 %</hadd>
 
 
 (a × b) × cin → co × s
 %<*fadd>
-\AgdaTarget{fadd}
+\AgdaTarget{fadd̂}
 \begin{code}
-fadd : ℂX ((B × B) × B) (B × B)
-fadd = Mkℂ fadd'
+fadd̂ : 𝐂̂ ((B × B) × B) (B × B)
+fadd̂ = Mkℂ̂ fadd
 \end{code}
 %</fadd>

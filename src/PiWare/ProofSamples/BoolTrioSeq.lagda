@@ -11,38 +11,38 @@ open import Data.Stream using (_∷_; head; tail; take; repeat; iterate; zipWith
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Simulation BoolTrio using (⟦_⟧*)
-open import PiWare.Samples.BoolTrioSeq using (toggle; shift; reg)
+open import PiWare.Simulation BoolTrio using (⟦_⟧̂*)
+open import PiWare.Samples.BoolTrioSeq using (togglê; shift̂; reĝ)
 \end{code}
 
 
 %<*toggle7>
-\AgdaTarget{toggle7}
+\AgdaTarget{toggle7̂}
 \begin{code}
-toggle7 = take 7 $ ⟦ toggle ⟧* (repeat tt)
+toggle7̂ = take 7 $ ⟦ togglê ⟧̂* (repeat tt)
 \end{code}
 %</toggle7>
 
 %<*shift7>
-\AgdaTarget{shift7}
+\AgdaTarget{shift7̂}
 \begin{code}
-shift7 = take 7 $ ⟦ shift ⟧* (iterate not false)
+shift7̂ = take 7 $ ⟦ shift̂ ⟧̂* (iterate not false)
 \end{code}
 %</shift7>
 
 %<*rhold>
-\AgdaTarget{rhold}
+\AgdaTarget{rhold̂}
 \begin{code}
-rhold = take 7 (⟦ reg ⟧* $
+rhold̂ = take 7 (⟦ reĝ ⟧̂* $
                   zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))
                               (true ∷ ♯ repeat false))
 \end{code}
 %</rhold>
 
 %<*rload>
-\AgdaTarget{rload}
+\AgdaTarget{rload̂}
 \begin{code}
-rload = take 7 (⟦ reg ⟧* $
+rload̂ = take 7 (⟦ reĝ ⟧̂* $
                   zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))
                               (false ∷ ♯ (true ∷ ♯ repeat false)) )
 \end{code}
@@ -52,16 +52,16 @@ rload = take 7 (⟦ reg ⟧* $
 
 %<*proofShiftHead>
 \begin{code}
-proofShiftHead : ∀ {x y zs} → head (⟦ shift ⟧* (x ∷ ♯ (y ∷ ♯ zs)) ) ≡ false
-proofShiftHead = refl
+proofShiftHead̂ : ∀ {x y zs} → head (⟦ shift̂ ⟧̂* (x ∷ ♯ (y ∷ ♯ zs)) ) ≡ false
+proofShiftHead̂ = refl
 \end{code}
 %</proofShiftHead>
 
 %<*proofShiftTail>
 \begin{code}
-proofShiftTail : ∀ {ins} → tail (⟦ shift ⟧* ins) ≈ ins
-proofShiftTail {true ∷ xs} = {!!}
-proofShiftTail {false ∷ xs} = {!!}
+proofShiftTail̂ : ∀ {ins} → tail (⟦ shift̂ ⟧̂* ins) ≈ ins
+proofShiftTail̂ {true ∷ xs} = {!!}
+proofShiftTail̂ {false ∷ xs} = {!!}
 \end{code}
 %</proofShiftTail>
 

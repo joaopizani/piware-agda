@@ -8,26 +8,26 @@ open import Data.Nat using (ℕ; _*_)
 open import Data.Vec using (Vec)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-Vec)
-open import PiWare.Circuit Gt using (ℂ; Mkℂ)
-open import PiWare.Patterns.Core Gt using (parsN'; seqsN')
+open import PiWare.Circuit Gt using (ℂ̂; Mkℂ̂)
+open import PiWare.Patterns.Core Gt using (parsN; seqsN)
 \end{code}
 
 
 %<*parsN>
-\AgdaTarget{parsN}
+\AgdaTarget{parsN̂}
 \begin{code}
-parsN : ∀ {k α i β j p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄
-        → ℂ {p} α β {i} {j} → ℂ {p} (Vec α k) (Vec β k) {k * i} {k * j}
-parsN {k = k} {i = i} {j = j} {p = p} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ c') =
-    Mkℂ ⦃ ⇓W⇑-Vec ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec ⦃ sβ ⦄ ⦄ (parsN' {k} {i} {j} {p} c')
+parsN̂ : ∀ {k α i β j p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄
+        → ℂ̂ {p} α β {i} {j} → ℂ̂ {p} (Vec α k) (Vec β k) {k * i} {k * j}
+parsN̂ {k = k} {i = i} {j = j} {p = p} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ̂ c) =
+    Mkℂ̂ ⦃ ⇓W⇑-Vec ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec ⦃ sβ ⦄ ⦄ (parsN {k} {i} {j} {p} c)
 \end{code}
 %</parsN>
 
 
 %<*seqsN>
-\AgdaTarget{seqsN}
+\AgdaTarget{seqsN̂}
 \begin{code}
-seqsN : ∀ k {α j p} ⦃ _ : ⇓W⇑ α {j} ⦄ → ℂ {p} α α {j} {j} → ℂ {p} α α {j} {j}
-seqsN k {p = p} ⦃ sα ⦄ (Mkℂ c') = Mkℂ ⦃ sα ⦄ ⦃ sα ⦄ (seqsN' k {p = p} c')
+seqsN̂ : ∀ k {α j p} ⦃ _ : ⇓W⇑ α {j} ⦄ → ℂ̂ {p} α α {j} {j} → ℂ̂ {p} α α {j} {j}
+seqsN̂ k {p = p} ⦃ sα ⦄ (Mkℂ̂ c) = Mkℂ̂ ⦃ sα ⦄ ⦃ sα ⦄ (seqsN k {p = p} c)
 \end{code}
 %</seqsN>

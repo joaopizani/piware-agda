@@ -7,102 +7,102 @@ open import Data.Vec using (Vec; _∷_) renaming ([] to ε)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Samples.BoolTrioComb using (⊻ℂ; hadd; fadd)
-open import PiWare.Simulation BoolTrio using (⟦_⟧)
+open import PiWare.Samples.BoolTrioComb using (⊻ℂ̂; hadd̂; fadd̂)
+open import PiWare.Simulation BoolTrio using (⟦_⟧̂)
 \end{code}
 
 
 %<*xor-spec-table>
-\AgdaTarget{⊻ℂ-spec-table}
+\AgdaTarget{⊻ℂ̂-spec-table}
 \begin{code}
-⊻ℂ-spec-table : (B × B) → B
-⊻ℂ-spec-table (false , false) = false
-⊻ℂ-spec-table (false , true ) = true
-⊻ℂ-spec-table (true  , false) = true
-⊻ℂ-spec-table (true  , true ) = false
+⊻ℂ̂-spec-table : (B × B) → B
+⊻ℂ̂-spec-table (false , false) = false
+⊻ℂ̂-spec-table (false , true ) = true
+⊻ℂ̂-spec-table (true  , false) = true
+⊻ℂ̂-spec-table (true  , true ) = false
 \end{code}
 %</xor-spec-table>
 
 %<*xor-proof-table>
-\AgdaTarget{⊻ℂ-proof-table}
+\AgdaTarget{⊻ℂ̂-proof-table}
 \begin{code}
-⊻ℂ-proof-table : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ ⊻ℂ-spec-table (a , b)
-⊻ℂ-proof-table false false = refl
-⊻ℂ-proof-table false true  = refl
-⊻ℂ-proof-table true  false = refl
-⊻ℂ-proof-table true  true  = refl
+⊻ℂ̂-proof-table : ∀ a b → ⟦ ⊻ℂ̂ ⟧̂ (a , b) ≡ ⊻ℂ̂-spec-table (a , b)
+⊻ℂ̂-proof-table false false = refl
+⊻ℂ̂-proof-table false true  = refl
+⊻ℂ̂-proof-table true  false = refl
+⊻ℂ̂-proof-table true  true  = refl
 \end{code}
 %</xor-proof-table>
 
 %<*xor-spec-subfunc>
-\AgdaTarget{⊻ℂ-spec-subfunc}
+\AgdaTarget{⊻ℂ̂-spec-subfunc}
 \begin{code}
-⊻ℂ-spec-subfunc : (B × B) → B
-⊻ℂ-spec-subfunc = uncurry′ _xor_
+⊻ℂ̂-spec-subfunc : (B × B) → B
+⊻ℂ̂-spec-subfunc = uncurry′ _xor_
 \end{code}
 %</xor-spec-subfunc>
 
 %<*xor-equiv>
-\AgdaTarget{⊻ℂ-xor-equiv}
+\AgdaTarget{⊻ℂ̂-xor-equiv}
 \begin{code}
-⊻ℂ-xor-equiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
-⊻ℂ-xor-equiv true  b     = refl
-⊻ℂ-xor-equiv false true  = refl
-⊻ℂ-xor-equiv false false = refl
+⊻ℂ̂-xor-equiv : ∀ a b → (not a ∧ b) ∨ (a ∧ not b) ≡ (a xor b)
+⊻ℂ̂-xor-equiv true  b     = refl
+⊻ℂ̂-xor-equiv false true  = refl
+⊻ℂ̂-xor-equiv false false = refl
 \end{code}
 %</xor-equiv>
 
 %<*xor-proof-subfunc>
-\AgdaTarget{⊻ℂ-proof-subfunc}
+\AgdaTarget{⊻ℂ̂-proof-subfunc}
 \begin{code}
-⊻ℂ-proof-subfunc : ∀ a b → ⟦ ⊻ℂ ⟧ (a , b) ≡ ⊻ℂ-spec-subfunc (a , b)
-⊻ℂ-proof-subfunc = ⊻ℂ-xor-equiv
+⊻ℂ̂-proof-subfunc : ∀ a b → ⟦ ⊻ℂ̂ ⟧̂ (a , b) ≡ ⊻ℂ̂-spec-subfunc (a , b)
+⊻ℂ̂-proof-subfunc = ⊻ℂ̂-xor-equiv
 \end{code}
 %</xor-proof-subfunc>
 
 
 %<*haddSpec>
-\AgdaTarget{haddSpec}
+\AgdaTarget{haddSpeĉ}
 \begin{code}
-haddSpec : B → B → (B × B)
-haddSpec a b = (a ∧ b) , (a xor b)
+haddSpeĉ : B → B → (B × B)
+haddSpeĉ a b = (a ∧ b) , (a xor b)
 \end{code}
 %</haddSpec>
 
 %<*proofHaddBool>
-\AgdaTarget{proofHaddBool}
+\AgdaTarget{proofHaddBool̂}
 \begin{code}
-proofHaddBool : ∀ a b → ⟦ hadd ⟧ (a , b) ≡ haddSpec a b
-proofHaddBool a b = cong (_,_ (a ∧ b)) (⊻ℂ-xor-equiv a b)
+proofHaddBool̂ : ∀ a b → ⟦ hadd̂ ⟧̂ (a , b) ≡ haddSpeĉ a b
+proofHaddBool̂ a b = cong (_,_ (a ∧ b)) (⊻ℂ̂-xor-equiv a b)
 \end{code}
 %</proofHaddBool>
 
 %<*faddSpec>
-\AgdaTarget{faddSpec}
+\AgdaTarget{faddSpeĉ}
 \begin{code}
-faddSpec : B → B → B → (B × B)
-faddSpec false false false = false , false
-faddSpec false false true  = false , true
-faddSpec false true  false = false , true
-faddSpec false true  true  = true  , false
-faddSpec true  false false = false , true
-faddSpec true  false true  = true  , false
-faddSpec true  true  false = true  , false
-faddSpec true  true  true  = true  , true
+faddSpeĉ : B → B → B → (B × B)
+faddSpeĉ false false false = false , false
+faddSpeĉ false false true  = false , true
+faddSpeĉ false true  false = false , true
+faddSpeĉ false true  true  = true  , false
+faddSpeĉ true  false false = false , true
+faddSpeĉ true  false true  = true  , false
+faddSpeĉ true  true  false = true  , false
+faddSpeĉ true  true  true  = true  , true
 \end{code}
 %</faddSpec>
 
 %<*proofFaddBool>
-\AgdaTarget{proofFaddBool}
+\AgdaTarget{proofFaddBool̂}
 \begin{code}
-proofFaddBool : ∀ a b c → ⟦ fadd ⟧ ((a , b) , c) ≡ faddSpec a b c
-proofFaddBool true  true  true  = refl
-proofFaddBool true  true  false = refl
-proofFaddBool true  false true  = refl
-proofFaddBool true  false false = refl
-proofFaddBool false true  true  = refl
-proofFaddBool false true  false = refl
-proofFaddBool false false true  = refl
-proofFaddBool false false false = refl
+proofFaddBool̂ : ∀ a b c → ⟦ fadd̂ ⟧̂ ((a , b) , c) ≡ faddSpeĉ a b c
+proofFaddBool̂ true  true  true  = refl
+proofFaddBool̂ true  true  false = refl
+proofFaddBool̂ true  false true  = refl
+proofFaddBool̂ true  false false = refl
+proofFaddBool̂ false true  true  = refl
+proofFaddBool̂ false true  false = refl
+proofFaddBool̂ false false true  = refl
+proofFaddBool̂ false false false = refl
 \end{code}
 %</proofFaddBool>
