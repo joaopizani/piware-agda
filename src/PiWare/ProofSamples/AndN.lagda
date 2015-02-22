@@ -7,17 +7,17 @@ open import Data.Vec using (replicate)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Simulation BoolTrio using (⟦_⟧)
-open import PiWare.Samples.AndN using (andN)
+open import PiWare.Simulation BoolTrio using (⟦_⟧̂)
+open import PiWare.Samples.AndN using (andN̂)
 open import PiWare.ProofSamples.AndNCore using (proof-andN-core-alltrue)
 \end{code}
 
 
 %<*proof-andN-alltrue>
-\AgdaTarget{proof-andN-alltrue}
+\AgdaTarget{proof-andN-alltruê}
 \begin{code}
-proof-andN-alltrue : ∀ n → ⟦ andN n ⟧ (replicate true) ≡ true
-proof-andN-alltrue zero    = refl
-proof-andN-alltrue (suc n) rewrite proof-andN-core-alltrue n = refl
+proof-andN-alltruê : ∀ n → ⟦ andN̂ n ⟧̂ (replicate true) ≡ true
+proof-andN-alltruê zero    = refl
+proof-andN-alltruê (suc n) rewrite proof-andN-core-alltrue n = refl
 \end{code}
 %</proof-andN-alltrue>
