@@ -21,6 +21,7 @@ open import Data.Vec using (Vec; _++_; lookup; replicate; allFin; drop)
 open import Relation.Binary.PropositionalEquality using (refl)
 open import Coinduction using (♯_; ♭)
 
+open import PiWare.Synthesizable At using (untag; untagList)
 open import PiWare.Circuit Gt using (ℂ; σ; Nil; Gate; Plug; DelayLoop; _∥_; _|+_; _⟫_)
 open Atomic At using (Atom#; n→atom; W)
 open Gates At Gt using (spec)
@@ -36,13 +37,6 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 \end{code}
 %</plugOutputs>
 
-
--- combinational eval
--- TODO: fix untag
-\begin{code}
-postulate untag : ∀ {i j} → W (suc $ i ⊔ j) → W i ⊎ W j
-postulate untagList : ∀ {i j} → List (W (suc $ i ⊔ j)) → List (W i) × List (W j)
-\end{code}
 
 %<*eval>
 \AgdaTarget{⟦\_⟧}
