@@ -2,7 +2,9 @@ STDLIB=${HOME}/build/agda/lib/current/src
 SRC=src
 
 AGDA_MODULES=Data/CausalStream \
-             PiWare/Utils \
+			 Data/List/Extra \
+			 Data/List/NonEmpty/Extra \
+			 Data/Vec/Extra \
              PiWare/Atom \
              PiWare/Atom/Bool \
              PiWare/Padding \
@@ -10,20 +12,29 @@ AGDA_MODULES=Data/CausalStream \
              PiWare/Synthesizable/Bool \
              PiWare/Gates \
              PiWare/Gates/BoolTrio \
-             PiWare/Circuit/Core \
              PiWare/Circuit \
-             PiWare/Plugs/Core \
+             PiWare/Circuit/Typed \
+             PiWare/Plugs/Functions \
              PiWare/Plugs \
-             PiWare/Simulation/Core \
+             PiWare/Plugs/Typed \
              PiWare/Simulation \
-             PiWare/Samples/BoolTrioComb \
-             PiWare/Samples/BoolTrioSeq \
-             PiWare/Patterns/Core \
+             PiWare/Simulation/Typed \
              PiWare/Patterns \
-             PiWare/ProofSamples/BoolTrioComb \
+             PiWare/Patterns/Typed \
+             PiWare/Samples/BoolTrioComb \
+             PiWare/Samples/BoolTrioComb/Typed \
+			 PiWare/Samples/Muxes \
+			 PiWare/Samples/Muxes/Typed \
+             PiWare/Samples/BoolTrioSeq \
+             PiWare/Samples/BoolTrioSeq/Typed \
              PiWare/Samples/AndN \
-             PiWare/ProofSamples/AndN \
-             PiWare/Samples/RippleCarry
+             PiWare/Samples/AndN/Typed \
+             PiWare/Samples/RippleCarry \
+             PiWare/Samples/RippleCarry/Typed \
+             PiWare/ProofSamples/BoolTrioComb \
+             PiWare/ProofSamples/AndN
+
+
 
 
 all: $(AGDA_MODULES:%=$(SRC)/%.agdai)
