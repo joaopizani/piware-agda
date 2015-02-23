@@ -5,7 +5,7 @@ open import PiWare.Gates using (Gates; module Gates)
 module PiWare.Circuit.Typed {At : Atomic} (Gt : Gates At) where
 
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
-open import Data.Fin using (Fin)
+open import Data.Fin using (Fin) renaming (zero to Fz)
 open import Data.Bool using (_∧_)
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
@@ -100,9 +100,9 @@ _∥̂_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ̂ c₁) (Mkℂ̂ 
 %<*sum>
 \AgdaTarget{|+̂}
 \begin{code}
-|+̂ : ∀ {α i β j γ k p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ (n m ε : Atom#) {d : n ≢ m}
+|+̂ : ∀ {α i β j γ k p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ (r ε : Atom#) {d : r ≢ Fz}
      → ℂ̂ {p} α γ {i} {k} → ℂ̂ {p} β γ {j} {k} → ℂ̂ {p} (α ⊎ β) γ {suc (i ⊔ j)} {k}
-|+̂ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ n m ε {d} (Mkℂ̂ c₁) (Mkℂ̂ c₂) = Mkℂ̂ ⦃ ⇓W⇑-⊎ n m ε {d} ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ |+ c₂)
+|+̂ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ r ε {d} (Mkℂ̂ c₁) (Mkℂ̂ c₂) = Mkℂ̂ ⦃ ⇓W⇑-⊎ r ε {d} ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ |+ c₂)
 \end{code}
 %</sum>
 
