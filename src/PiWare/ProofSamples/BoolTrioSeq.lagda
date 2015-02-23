@@ -11,8 +11,8 @@ open import Data.Stream using (_∷_; head; tail; take; repeat; iterate; zipWith
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Simulation BoolTrio using (⟦_⟧̂*)
-open import PiWare.Samples.BoolTrioSeq using (togglê; shift̂; reĝ)
+open import PiWare.Simulation.Typed BoolTrio using (⟦_⟧̂*)
+open import PiWare.Samples.BoolTrioSeq.Typed using (togglê; shift̂; reĝ)
 \end{code}
 
 
