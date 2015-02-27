@@ -2,9 +2,10 @@
 module RelationBinaryIndexed where
 
 open import Level using (suc; _⊔_)
-open import Relation.Binary.Core using (_⇒_)
 open import Relation.Binary.Indexed.Core using (Rel; IsEquivalence; module IsEquivalence)
 open import Relation.Binary.Indexed using (Transitive; Reflexive)
+
+open import RelationBinaryIndexedCore using (_⇒_)
 \end{code}
 
 
@@ -12,7 +13,7 @@ open import Relation.Binary.Indexed using (Transitive; Reflexive)
 record IsPreorder {i a ℓ₁ ℓ₂} {I : Set i} (A : I → Set a) (_≈_ : Rel A ℓ₁) (_∼_ : Rel A ℓ₂) : Set (i ⊔ a ⊔ ℓ₁ ⊔ ℓ₂) where
     field
         isEquivalence : IsEquivalence A _≈_
-        reflexive : _≈_ ⇒ _∼_
+        reflexive : _⇒_ {A = A} {B = A} _≈_ _∼_
         trans : Transitive A _∼_
 
     module Eq = IsEquivalence isEquivalence
