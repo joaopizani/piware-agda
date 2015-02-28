@@ -5,6 +5,9 @@ AGDA_MODULES=Data/CausalStream \
 			 Data/List/Extra \
 			 Data/List/NonEmpty/Extra \
 			 Data/Vec/Extra \
+			 Relation/Binary/Indexed/Core/Extra \
+			 Relation/Binary/Indexed/Extra \
+			 Relation/Binary/Indexed/PreorderReasoning \
              PiWare/Atom \
              PiWare/Atom/Bool \
              PiWare/Padding \
