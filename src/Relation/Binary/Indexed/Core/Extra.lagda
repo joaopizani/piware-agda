@@ -4,6 +4,7 @@ module Relation.Binary.Indexed.Core.Extra where
 open import Level using (Level; suc; _⊔_)
 open import Function using (flip)
 open import Data.Product using (_×_)
+open import Relation.Nullary using (¬_)
 open import Relation.Binary.Indexed.Core using (REL; Rel)
 \end{code}
 
@@ -25,4 +26,14 @@ _Respects₂_ : ∀ {i a ℓ₁ ℓ₂} {I : Set i} {A : I → Set a} → Rel A 
 _Respects₂_ {A = A} R _∼_ =
       (∀ {i} {x : A i} → _Respects_ {A = A} (R x)      _∼_)
     × (∀ {i} {y : A i} → _Respects_ {A = A} (flip R y) _∼_)
+
+
+-- Indexed equality
+infix 4 _≡_ _≢_
+
+data _≡_ {i} {a} {I : Set i} {A : I → Set a} : ∀ {i₁ i₂} (x : A i₁) (y : A i₂) → Set (a ⊔ i) where
+    refl : ∀ {i₁} (x : A i₁) → x ≡ x
+
+_≢_ : ∀ {i} {a} {I : Set i} {A : I → Set a} {i₁ i₂} (x : A i₁) (y : A i₂) → Set _
+_≢_ {A = A} x y = ¬ (_≡_ {A = A} x y)
 \end{code}
