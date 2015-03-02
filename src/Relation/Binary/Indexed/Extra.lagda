@@ -42,8 +42,12 @@ record Preorder {i} (I : Set i) c ℓ₁ ℓ₂ : Set (suc (i ⊔ c ⊔ ℓ₁ �
   open IsPreorder isPreorder public
 
 
+
+setoidIsReflexive : ∀ {i c ℓ} {I : Set i} (S : Setoid I c ℓ) → let open Setoid S in _⇒′_ {A = Carrier} (_≡_ {A = Carrier}) _≈_
+setoidIsReflexive S = {!!}
+
 setoidIsPreorder : ∀ {i c ℓ} {I : Set i} (S : Setoid I c ℓ)
-                   → let open Setoid S  in  IsPreorder Carrier (_≡_ {A = Carrier}) _≈_
+                   → let open Setoid S in IsPreorder Carrier (_≡_ {A = Carrier}) _≈_
 setoidIsPreorder S =
   let open Setoid S
   in record
