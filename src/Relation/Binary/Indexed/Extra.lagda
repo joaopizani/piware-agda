@@ -7,7 +7,8 @@ open import Data.Product using (_,_)
 open import Relation.Binary.Indexed using (Transitive; Reflexive)
 open import Relation.Binary.Indexed.Core using (Rel; IsEquivalence; module IsEquivalence; Setoid; module Setoid)
 
-open import Relation.Binary.Indexed.Core.Extra using (_⇒′_; _Respects₂_; _≡_)
+open import Relation.Binary.Indexed.Core.Extra
+  using (_⇒′_; _Respects₂_; _≡_; setoidIsReflexive) renaming (isEquivalence to isEq)
 \end{code}
 
 
@@ -42,17 +43,21 @@ record Preorder {i} (I : Set i) c ℓ₁ ℓ₂ : Set (suc (i ⊔ c ⊔ ℓ₁ �
   open IsPreorder isPreorder public
 
 
-
-setoidIsReflexive : ∀ {i c ℓ} {I : Set i} (S : Setoid I c ℓ) → let open Setoid S in _⇒′_ {A = Carrier} (_≡_ {A = Carrier}) _≈_
-setoidIsReflexive S = {!!}
-
 setoidIsPreorder : ∀ {i c ℓ} {I : Set i} (S : Setoid I c ℓ)
-                   → let open Setoid S in IsPreorder Carrier (_≡_ {A = Carrier}) _≈_
+                   → let open Setoid S using (Carrier; _≈_) in IsPreorder Carrier (_≡_ {A = Carrier}) _≈_
 setoidIsPreorder S =
-  let open Setoid S
+  let open Setoid S using (trans)
   in record
-       { isEquivalence = {!!}
-       ; reflexive     = {!reflexive!}
-       ; trans         = {!!}
+       { isEquivalence = isEq
+       ; reflexive     = setoidIsReflexive S
+       ; trans         = trans
        }
+
+setoidPreorder : ∀ {i c ℓ} {I : Set i} (S : Setoid I c ℓ) → Preorder I c (c ⊔ i) ℓ 
+setoidPreorder S = let open Setoid S in record
+  { Carrier    = Carrier
+  ; _≈_        = (_≡_ {A = Carrier})
+  ; _∼_        = _≈_
+  ; isPreorder = setoidIsPreorder S
+  }
 \end{code}

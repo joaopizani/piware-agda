@@ -5,7 +5,8 @@ open import Level using (Level; suc; _⊔_)
 open import Function using (flip)
 open import Data.Product using (_×_)
 open import Relation.Nullary using (¬_)
-open import Relation.Binary.Indexed.Core using (REL; Rel)
+open import Relation.Binary.Indexed.Core
+  using (REL; Rel; Setoid; module Setoid; IsEquivalence; Symmetric; Transitive)
 \end{code}
 
 
@@ -29,11 +30,35 @@ _Respects₂_ {A = A} R _∼_ =
 
 
 -- Indexed equality
-infix 4 _≡_ _≢_
+module Dummy where
+  infix 4 _≡_ _≢_
+  
+  data _≡_ {i} {a} {I : Set i} {A : I → Set a} : ∀ {i₁ i₂} (x : A i₁) (y : A i₂) → Set (a ⊔ i) where
+    refl : ∀ {i₁} {x : A i₁} → x ≡ x
+  
+  _≢_ : ∀ {i} {a} {I : Set i} {A : I → Set a} {i₁ i₂} (x : A i₁) (y : A i₂) → Set _
+  _≢_ {A = A} x y = ¬ (_≡_ {A = A} x y)
 
-data _≡_ {i} {a} {I : Set i} {A : I → Set a} : ∀ {i₁ i₂} (x : A i₁) (y : A i₂) → Set (a ⊔ i) where
-    refl : ∀ {i₁} (x : A i₁) → x ≡ x
+open Dummy public
 
-_≢_ : ∀ {i} {a} {I : Set i} {A : I → Set a} {i₁ i₂} (x : A i₁) (y : A i₂) → Set _
-_≢_ {A = A} x y = ¬ (_≡_ {A = A} x y)
+
+sym : ∀ {i a} {I : Set i} {A : I → Set a} → Symmetric A (_≡_ {A = A})
+sym refl = refl
+
+trans : ∀ {i a} {I : Set i} {A : I → Set a} → Transitive A (_≡_ {A = A})
+trans refl eq = eq
+
+isEquivalence : ∀ {i a} {I : Set i} {A : I → Set a} → IsEquivalence A (_≡_ {A = A})
+isEquivalence = record
+  { refl  = refl
+  ; sym   = sym
+  ; trans = trans
+  }
+
+
+setoidIsReflexive : ∀ {i c ℓ} {I : Set i} (S : Setoid I c ℓ)
+                    → let open Setoid S using (_≈_; Carrier)
+                      in _⇒′_ {A = Carrier} (_≡_ {A = Carrier}) _≈_
+setoidIsReflexive S refl = let open Setoid S using (_≈_) renaming (refl to refl≈) in refl≈
 \end{code}
+
