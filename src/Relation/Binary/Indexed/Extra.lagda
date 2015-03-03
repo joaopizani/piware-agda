@@ -7,8 +7,8 @@ open import Data.Product using (_,_)
 open import Relation.Binary.Indexed using (Transitive; Reflexive)
 open import Relation.Binary.Indexed.Core using (Rel; IsEquivalence; module IsEquivalence; Setoid; module Setoid)
 
-open import Relation.Binary.Indexed.Core.Extra
-  using (_⇒′_; _Respects₂_; _≡_; setoidIsReflexive) renaming (isEquivalence to isEq)
+open import Relation.Binary.Indexed.Core.Extra using (_⇒′_; _Respects₂_; _≡_; setoidIsReflexive)
+open import Relation.Binary.Indexed.Equality.Core using () renaming (isEquivalence to ≡-isEquivalence)
 \end{code}
 
 
@@ -48,7 +48,7 @@ setoidIsPreorder : ∀ {i c ℓ} {I : Set i} (S : Setoid I c ℓ)
 setoidIsPreorder S =
   let open Setoid S using (trans)
   in record
-       { isEquivalence = isEq
+       { isEquivalence = ≡-isEquivalence
        ; reflexive     = setoidIsReflexive S
        ; trans         = trans
        }

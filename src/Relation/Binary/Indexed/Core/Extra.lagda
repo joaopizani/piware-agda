@@ -5,8 +5,7 @@ open import Level using (Level; suc; _⊔_)
 open import Function using (flip)
 open import Data.Product using (_×_)
 open import Relation.Nullary using (¬_)
-open import Relation.Binary.Indexed.Core
-  using (REL; Rel; Setoid; module Setoid; IsEquivalence; Symmetric; Transitive)
+open import Relation.Binary.Indexed.Core using (REL; Rel; Setoid; module Setoid)
 \end{code}
 
 
@@ -41,19 +40,6 @@ module Dummy where
 
 open Dummy public
 
-
-sym : ∀ {i a} {I : Set i} {A : I → Set a} → Symmetric A (_≡_ {A = A})
-sym refl = refl
-
-trans : ∀ {i a} {I : Set i} {A : I → Set a} → Transitive A (_≡_ {A = A})
-trans refl eq = eq
-
-isEquivalence : ∀ {i a} {I : Set i} {A : I → Set a} → IsEquivalence A (_≡_ {A = A})
-isEquivalence = record
-  { refl  = refl
-  ; sym   = sym
-  ; trans = trans
-  }
 
 
 setoidIsReflexive : ∀ {i c ℓ} {I : Set i} (S : Setoid I c ℓ)
