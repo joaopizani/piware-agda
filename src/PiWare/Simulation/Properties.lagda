@@ -9,9 +9,11 @@ open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (zero; suc)
 open import Data.Product using (_,_; proj₂)
 open import Data.Vec using (lookup; tabulate)
-open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecPropEq)
-open VecPropEq using (from-≡)
+open import Data.Vec.Extra using (splitAt-i+0)
 open import Data.Vec.Properties using (tabulate-allFin; map-lookup-allFin; lookup∘tabulate)
+open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecPropEq)
+open VecPropEq using (from-≡; to-≡)
+
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 open Atomic At using (W)
@@ -19,12 +21,11 @@ open import PiWare.Plugs Gt using (id⤨)
 open import PiWare.Circuit Gt using (ℂ; Nil; Plug; _⟫_; _∥_)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open import PiWare.Simulation.Equality Gt
-  using (_≋_; refl≋; begin_; _∎; _≈ℂ⟨_⟩_; ≣⇒≋; refl≣; ≣-trans; ≡×≡⇒×≡×)
+  using (_≅_; _≣_; ≊; _≋_; refl≋; begin_; _∎; _≈ℂ⟨_⟩_; ≣⇒≋; refl≣; ≣-trans; ≡×≡⇒×≡×)
 
 import Algebra as A
 import Data.Nat.Properties as N
 open A.CommutativeSemiring N.commutativeSemiring using (+-identity)
-+-identity-right = proj₂ +-identity
 \end{code}
 
 
@@ -73,5 +74,10 @@ plugs-inverse {f = f} {g = g} f∘g≡id = {!!}
 ∥-identity-left c = refl≋ refl (λ _ → from-≡ refl)
 
 ∥-identity-right : ∀ {i o} (c : ℂ i o) → c ∥ Nil {0} ≋ c
-∥-identity-right {i} {o} c = refl≋ (≡×≡⇒×≡× (+-identity-right i , +-identity-right o)) {!!}
+∥-identity-right {i} {o} c = refl≋ io≡ {!∥-identity-right′!}
+  where
+    io≡ = ≡×≡⇒×≡× $ (proj₂ +-identity) i , (proj₂ +-identity) o
+
+    ∥-identity-right′ : ≊ io≡ (c ∥ Nil) c
+    ∥-identity-right′ w = {!!}
 \end{code}

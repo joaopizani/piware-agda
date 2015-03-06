@@ -1,12 +1,17 @@
 \begin{code}
 module Data.Vec.Extra where
 
-open import Function using (id; _∘_)
+open import Function using (id; _∘_; _$_)
 open import Data.Nat using (zero; suc; _+_; _*_)
-open import Data.Vec using (Vec; splitAt; []; _∷_; _++_; group)
 open import Data.Product using (_×_; _,_; map; proj₁; proj₂)
+open import Data.Vec using (Vec; splitAt; []; _∷_; _++_; group)
+open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecEqPropositional)
+open VecEqPropositional using (_≈_; sym; trans)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; setoid)
+
+open import Data.Vec.Properties using (module UsingVectorEquality)
+open module VecPropertiesEq {a} {A : Set a} = UsingVectorEquality (setoid A) using (xs++[]=xs)
 \end{code}
 
 
@@ -29,7 +34,6 @@ splitAt-proj₁ {i₁ = suc n} (v ∷ vs) v₂ | _ , _ , eq              | ind r
 \end{code}
 %</splitAt-proj₁>
 
-
 %<*splitAt-proj₂>
 \AgdaTarget{splitAt-proj₂}
 \begin{code}
@@ -39,6 +43,15 @@ splitAt-proj₂ {i₁ = suc n} (v ∷ vs) v₂ with splitAt n (vs ++ v₂) | spl
 splitAt-proj₂ {i₁ = suc n} (v ∷ vs) v₂ | _ , _ , eq              | ind rewrite eq | ind = refl
 \end{code}
 %</splitAt-proj₂>
+
+
+%<*splitAt-i+0>
+\begin{code}
+splitAt-i+0 : ∀ {ℓ} {α : Set ℓ} {i} {v : Vec α (i + 0)} {w : Vec α i} (v≈w : v ≈ w) → proj₁ (splitAt i v) ≈ w
+splitAt-i+0 {i = i} {v} v≈w with splitAt i v
+splitAt-i+0 v≈w | v′ , [] , refl = trans (sym $ xs++[]=xs v′) v≈w
+\end{code}
+%</splitAt-i+0>
 
 
 %<*group-noproof>
