@@ -4,8 +4,8 @@ open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
-open import Function using (_∘′_; _$_; const)
-open import Data.Nat using (ℕ; suc; _+_; _⊔_)
+open import Function using (_∘′_; _$_; const; flip)
+open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin) renaming (zero to Fz)
 open import Data.Product using (_×_; _,_; proj₁; uncurry′) renaming (map to mapₚ)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
@@ -24,7 +24,7 @@ open import Coinduction using (♯_; ♭)
 open import PiWare.Synthesizable At using (untag; untagList)
 open import PiWare.Circuit Gt using (ℂ; σ; Nil; Gate; Plug; DelayLoop; _∥_; _|+_; _⟫_)
 open Atomic At using (Atom#; n→atom; W)
-open Gates At Gt using (spec)
+open Gates At Gt using (spec; |in|; |out|)
 \end{code}
 
 
@@ -38,16 +38,61 @@ plugOutputs p ins = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 %</plugOutputs>
 
 
+%<*algebra-type>
+\begin{code}
+record ℂσ★ (Cₓ : ℕ → ℕ → Set) : Set where
+  inductive
+  field
+    Nil★  : ∀ {n} → Cₓ n zero
+    Gate★ : ∀ g# → Cₓ (|in| g#) (|out| g#)
+    Plug★ : ∀ {i o} (f : Fin o → Fin i) → Cₓ i o
+
+    _⟫★_  : ∀ {i m o}       → Cₓ i m   → Cₓ m o   → Cₓ i o
+    _∥★_  : ∀ {i₁ o₁ i₂ o₂} → Cₓ i₁ o₁ → Cₓ i₂ o₂ → Cₓ (i₁ + i₂) (o₁ + o₂)
+    _|+★_ : ∀ {i₁ i₂ o}     → Cₓ i₁ o  → Cₓ i₂ o  → Cₓ (suc (i₁ ⊔ i₂)) o
+\end{code}
+%</algebra-type>
+
+%<*fold>
+\begin{code}
+module _ {Carrier : ℕ → ℕ → Set} (algebra : ℂσ★ Carrier) where
+  open ℂσ★ algebra
+  cataℂσ★ : ∀ {i o} → ℂ {σ} i o → Carrier i o
+  cataℂσ★ Nil        = Nil★
+  cataℂσ★ (Gate g#)  = Gate★ g#
+  cataℂσ★ (Plug f)   = Plug★ f
+  cataℂσ★ (c₁ ⟫ c₂)  = cataℂσ★ c₁ ⟫★ cataℂσ★ c₂
+  cataℂσ★ (c₁ ∥ c₂)  = cataℂσ★ c₁ ∥★ cataℂσ★ c₂
+  cataℂσ★ (c₁ |+ c₂) = cataℂσ★ c₁ |+★ cataℂσ★ c₂
+\end{code}
+%</fold>
+
+%<*Word-function-type>
+\begin{code}
+W⟶W : ∀ m n → Set
+W⟶W m n = W m → W n
+\end{code}
+%</Word-function-type>
+
+%<*simulation-combinational-algebra>
+\begin{code}
+simulation-combinational★ : ℂσ★ (W⟶W)
+simulation-combinational★ = record
+  { Nil★  = const ε
+  ; Gate★ = spec
+  ; Plug★ = plugOutputs
+  ; _⟫★_  = flip _∘′_
+  ; _∥★_  = λ {i₁} f₁ f₂ → uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ splitAt' i₁
+  ; _|+★_ = λ {i₁} f₁ f₂ → [ f₁ , f₂ ]′ ∘′ untag {i₁}
+  }
+\end{code}
+%</simulation-combinational-algebra>
+
 %<*eval>
 \AgdaTarget{⟦\_⟧}
 \begin{code}
 ⟦_⟧ : ∀ {i o} → ℂ {σ} i o → (W i → W o)
-⟦ Nil      ⟧ = const ε
-⟦ Gate g#  ⟧ = spec g#
-⟦ Plug p   ⟧ = plugOutputs p
-⟦ c₁ ⟫ c₂  ⟧ = ⟦ c₂ ⟧ ∘′ ⟦ c₁ ⟧
-⟦ _∥_  {i₁} c₁ c₂  ⟧ = uncurry′ _++_ ∘′ mapₚ ⟦ c₁ ⟧ ⟦ c₂ ⟧ ∘′ splitAt' i₁
-⟦ _|+_ {i₁} c₁ c₂ ⟧ = [ ⟦ c₁ ⟧ , ⟦ c₂ ⟧ ]′ ∘′ untag {i₁}
+⟦_⟧ = cataℂσ★ simulation-combinational★
 \end{code}
 %</eval>
 
@@ -73,7 +118,6 @@ delay {i} {o} {l} = uncurry⁺ ∘′ delay' {i} {o} {l}
 ⟦ Gate g#             ⟧ᶜ (w⁰ ∷ _) = ⟦ Gate g# ⟧ w⁰
 ⟦ Plug p              ⟧ᶜ (w⁰ ∷ _) = plugOutputs p w⁰
 ⟦ DelayLoop {o = j} c ⟧ᶜ          = takeᵥ j ∘′ delay {o = j} c
-
 ⟦ c₁ ⟫ c₂         ⟧ᶜ = ⟦ c₂ ⟧ᶜ ∘′ map⁺ ⟦ c₁ ⟧ᶜ ∘′ tails⁺
 ⟦ _∥_ {i₁} c₁ c₂  ⟧ᶜ = uncurry′ _++_ ∘′ mapₚ ⟦ c₁ ⟧ᶜ ⟦ c₂ ⟧ᶜ ∘′ unzip⁺ ∘′ splitAt⁺ i₁
 

@@ -5,7 +5,7 @@ open import PiWare.Gates using (Gates)
 module PiWare.Simulation.Equality {At : Atomic} (Gt : Gates At) where
 
 open import Function using (id; _∘_; _$_)
-open import Data.Nat using (ℕ; _+_)
+open import Data.Nat using (ℕ; _+_; suc)
 open import Data.Product using (_×_; uncurry; _,_; proj₁)
 
 open import PiWare.Circuit Gt using (ℂ; σ; _∥_)
@@ -13,11 +13,11 @@ open import PiWare.Plugs Gt using (id⤨)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open Atomic At using (W; Atom)
 
-open import Data.Vec using (Vec)
+open import Data.Vec using (Vec; []; _∷_)
 open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecPropEq)
-open VecPropEq using (from-≡) renaming (_≈_ to _≈ᵥ_; refl to reflᵥ; sym to symᵥ; trans to transᵥ)
+open VecPropEq using (from-≡; to-≡; _≈_; length-equal; []-cong; _∷-cong_) renaming (refl to reflᵥ; sym to symᵥ; trans to transᵥ)
 open import Relation.Binary as B using ()
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
 open import Relation.Binary.Indexed.Core using (Setoid; IsEquivalence)
 
 import Relation.Binary.Indexed.EqReasoning as IdxEqReasoning
@@ -41,16 +41,14 @@ proj₂≡ refl = refl
 ℂ₍₎ : (ℕ × ℕ) → Set
 ℂ₍₎ = uncurry (ℂ {σ})
 
-module ≣ where
-  _≅_ : ∀ {io} → ℂ₍₎ io → ℂ₍₎ io → Set
-  _≅_ {i , _} c₁ c₂ = ∀ (w : W i) → ⟦ c₁ ⟧ w ≡ ⟦ c₂ ⟧ w
 
-  data _≣_ {io : ℕ × ℕ} : ℂ₍₎ io → ℂ₍₎ io → Set where
-    refl≣ : {c₁ c₂ : ℂ₍₎ io} → c₁ ≅ c₂ → c₁ ≣ c₂
+_≅_ : ∀ {io} → ℂ₍₎ io → ℂ₍₎ io → Set
+_≅_ {i , _} c₁ c₂ = ∀ (w : W i) → ⟦ c₁ ⟧ w ≡ ⟦ c₂ ⟧ w
 
-  infixl 3 _≣_
+data _≣_ {io : ℕ × ℕ} : ℂ₍₎ io → ℂ₍₎ io → Set where
+  refl≣ : {c₁ c₂ : ℂ₍₎ io} → c₁ ≅ c₂ → c₁ ≣ c₂
 
-open ≣ using (_≣_; refl≣) public
+infixl 3 _≣_
 
 ≣-refl : ∀ {io} {c : ℂ₍₎ io} → c ≣ c
 ≣-refl {_} {c} = refl≣ (λ w → refl)
@@ -69,25 +67,26 @@ open ≣ using (_≣_; refl≣) public
   }
 
 
-module ≋ where
-  ≊ : ∀ {io₁ io₂} (p : io₁ ≡ io₂) → ℂ₍₎ io₁ → ℂ₍₎ io₂ → Set
-  ≊ {i₁ , o₁} {i₂ , o₂} p c₁ c₂ = ∀ (w : W i₁) → ⟦ c₁ ⟧ w ≈ᵥ ⟦ c₂ ⟧ (coerce {p = proj₁≡ p} w)
 
-  data _≋_ {io₁ io₂ : ℕ × ℕ} : ℂ₍₎ io₁ → ℂ₍₎ io₂ → Set where
-      refl≋ : (p : io₁ ≡ io₂) {c₁ : ℂ₍₎ io₁} {c₂ : ℂ₍₎ io₂} → ≊ p c₁ c₂ → c₁ ≋ c₂
+_≊_ : ∀ {io io′} → ℂ₍₎ io → ℂ₍₎ io′ → Set
+_≊_ {i , _} {i′ , _} c₁ c₂ = ∀ {w : W i} {w′ : W i′} → w ≈ w′ → ⟦ c₁ ⟧ w ≈ ⟦ c₂ ⟧ w′
 
-  infixl 3 _≋_
+data _≋_ {io₁ io₂} : ℂ₍₎ io₁ → ℂ₍₎ io₂ → Set where
+  refl≋ : {c₁ : ℂ₍₎ io₁} {c₂ : ℂ₍₎ io₂} → c₁ ≊ c₂ → c₁ ≋ c₂
 
-open ≋ using (_≋_; refl≋) public
+infixl 3 _≋_
 
 ≋-refl : ∀ {io} {c : ℂ₍₎ io} → c ≋ c
-≋-refl {_} {c} = refl≋ refl (reflᵥ ∘ ⟦ c ⟧)
+≋-refl {_} {c} = refl≋ (from-≡ ∘ cong ⟦ c ⟧ ∘ to-≡) -- (reflᵥ ∘ ⟦ c ⟧)
  
-≋-sym : ∀ {io₁ io₂} {c₁ : ℂ₍₎ io₁} {c₂ : ℂ₍₎ io₂} → c₁ ≋ c₂ → c₂ ≋ c₁
-≋-sym (refl≋ refl c₁≊c₂) = refl≋ refl (symᵥ ∘ c₁≊c₂)
+≋-sym : ∀ {io io′} {c₁ : ℂ₍₎ io} {c₂ : ℂ₍₎ io′} → c₁ ≋ c₂ → c₂ ≋ c₁
+≋-sym (refl≋ c₁≊c₂) = refl≋ (symᵥ ∘ c₁≊c₂ ∘ symᵥ)
  
 ≋-trans : ∀ {io₁ io₂ io₃} {c₁ : ℂ₍₎ io₁} {c₂ : ℂ₍₎ io₂} {c₃ : ℂ₍₎ io₃} → c₁ ≋ c₂ → c₂ ≋ c₃ → c₁ ≋ c₃
-≋-trans (refl≋ refl c₁≊c₂) (refl≋ refl c₂≊c₃) = refl≋ refl $ λ w → transᵥ (c₁≊c₂ w) (c₂≊c₃ w)
+≋-trans (refl≋ c₁≊c₂) (refl≋ c₂≊c₃) = refl≋ (λ {w} {w′} p → transᵥ (c₁≊c₂ {w} {{!w!}} {!!}) (c₂≊c₃ {!!}))
+
+≊-trans : ∀ {io₁ io₂ io₃} {c₁ : ℂ₍₎ io₁} {c₂ : ℂ₍₎ io₂} {c₃ : ℂ₍₎ io₃} → c₁ ≊ c₂ → c₂ ≊ c₃ → c₁ ≊ c₃
+≊-trans eq₁ eq₂ = {!!}
 
 ≋-isEquivalence : IsEquivalence ℂ₍₎ _≋_
 ≋-isEquivalence = record
@@ -114,7 +113,7 @@ open ≋ using (_≋_; refl≋) public
 
 
 ≣⇒≋ : ∀ {i o} {c₁ c₂ : ℂ i o} → c₁ ≣ c₂ → c₁ ≋ c₂
-≣⇒≋ (refl≣ eq) = refl≋ refl (from-≡ ∘ eq)
+≣⇒≋ (refl≣ eq) = refl≋ {!!} 
 
 
 open IdxEqReasoning ≋-setoid public
