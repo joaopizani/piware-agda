@@ -15,7 +15,7 @@ open import Relation.Binary.PropositionalEquality using (_≢_)
 open import PiWare.Interface using (Ix)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 import PiWare.Circuit as Circ
-open Circ Gt using (ℂ; IsComb; Nil; Gate; Plug; DelayLoop; _⟫_; _∥_; _|+_)
+open Circ Gt using (ℂ; IsComb; Nil; Gate; Plug; DelayLoop; _⟫_; _∥_; _⑆_)
 open Circ Gt using (σ; ω) public
 
 open Atomic At using (Atom#) 
@@ -101,9 +101,9 @@ _∥̂_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ̂ c₁) (Mkℂ̂ 
 %<*sum>
 \AgdaTarget{|+̂}
 \begin{code}
-|+̂ : ∀ {α i β j γ k p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ (r ε : Atom#) {d : r ≢ Fz}
+⑆̂ : ∀ {α i β j γ k p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ (r ε : Atom#) {d : r ≢ Fz}
      → ℂ̂ {p} α γ {i} {k} → ℂ̂ {p} β γ {j} {k} → ℂ̂ {p} (α ⊎ β) γ {suc (i ⊔ j)} {k}
-|+̂ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ r ε {d} (Mkℂ̂ c₁) (Mkℂ̂ c₂) = Mkℂ̂ ⦃ ⇓W⇑-⊎ r ε {d} ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ |+ c₂)
+⑆̂ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ r ε {d} (Mkℂ̂ c₁) (Mkℂ̂ c₂) = Mkℂ̂ ⦃ ⇓W⇑-⊎ r ε {d} ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ ⑆ c₂)
 \end{code}
 %</sum>
 
