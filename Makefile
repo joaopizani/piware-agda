@@ -14,6 +14,7 @@ AGDA_MODULES=Data/CausalStream \
              PiWare/Padding \
              PiWare/Synthesizable \
              PiWare/Synthesizable/Bool \
+			 PiWare/Interface \
              PiWare/Gates \
              PiWare/Gates/BoolTrio \
              PiWare/Circuit \
