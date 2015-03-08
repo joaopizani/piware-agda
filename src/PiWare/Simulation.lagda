@@ -78,7 +78,7 @@ simulation-combinational★ = record
 
 %<*Word-causal-function>
 \begin{code}
-W⇒ᶜW : ℕ → ℕ → Set
+W⇒ᶜW : ∀ i o → Set
 W⇒ᶜW i o = W i ⇒ᶜ W o
 \end{code}
 %</Word-causal-function>

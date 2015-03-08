@@ -12,6 +12,7 @@ open import Data.Sum using (_⊎_)
 open import Data.String using (String)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
+open import PiWare.Interface using (Ix)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 import PiWare.Circuit as Circ
 open Circ Gt using (ℂ; IsComb; Nil; Gate; Plug; DelayLoop; _⟫_; _∥_; _|+_)
@@ -26,7 +27,7 @@ open Gates At Gt using (|in|; |out|)
 %<*Circuit-typed>
 \AgdaTarget{ℂ}
 \begin{code}
-record ℂ̂ {p : IsComb} (α β : Set) {i j : ℕ} : Set where
+record ℂ̂ {p : IsComb} (α β : Set) {i j : Ix} : Set where
     inductive
     constructor Mkℂ̂
     field
@@ -39,7 +40,7 @@ record ℂ̂ {p : IsComb} (α β : Set) {i j : ℕ} : Set where
 %<*Circuit-any-typed>
 \AgdaTarget{𝐂̂}
 \begin{code}
-𝐂̂ : (α β : Set) {i j : ℕ} → Set
+𝐂̂ : (α β : Set) {i j : Ix} → Set
 𝐂̂ α β {i} {j} = ∀ {p} → ℂ̂ {p} α β {i} {j}
 \end{code}
 %</Circuit-any-typed>
