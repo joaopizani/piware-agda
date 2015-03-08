@@ -25,7 +25,7 @@ open Gates At Gt using (|in|; |out|; spec)
 open import PiWare.Synthesizable At using (untag; untagList)
 open import PiWare.Circuit Gt using (ℂ; σ)
 open import PiWare.Circuit.Algebra Gt
-  using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyNil★; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty|+★)
+  using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyNil★; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty⑆★)
 \end{code}
 
 
@@ -43,7 +43,7 @@ gate     : TyGate★ W⟶W
 plug     : TyPlug★ W⟶W
 seq-comb : Ty⟫★ W⟶W
 par-comb : Ty∥★ W⟶W
-sum-comb : Ty|+★ W⟶W
+sum-comb : Ty⑆★ W⟶W
 \end{code}
 %</combinator-Word-function-types>
 
@@ -63,7 +63,7 @@ sum-comb {i₁} f₁ f₂ = [ f₁ , f₂ ]′ ∘′ untag {i₁}
 simulation-combinational★ : ℂσ★ {W⟶W}
 simulation-combinational★ = record
   { Nil★ = nil;       Gate★ = gate;      Plug★ = plug
-  ; _⟫★_ = seq-comb;  _∥★_  = par-comb;  _|+★_ = sum-comb}
+  ; _⟫★_ = seq-comb;  _∥★_  = par-comb;  _⑆★_ = sum-comb}
 \end{code}
 %</simulation-combinational-algebra>
 
@@ -105,7 +105,7 @@ delay-seq {_} {o} f = takeᵥ o ∘′ delay o f
 \begin{code}
 seq-seq : Ty⟫★ W⇒ᶜW
 par-seq : Ty∥★ W⇒ᶜW
-sum-seq : Ty|+★ W⇒ᶜW
+sum-seq : Ty⑆★ W⇒ᶜW
 \end{code}
 %</combinator-word-causal-function-types>
 
@@ -125,7 +125,7 @@ sum-seq {i₁} f₁ f₂ (w⁰ ∷ w⁻) | inj₂ w⁰₂         | _   , w⁻�
 simulation-sequential★ : ℂ★ {W⟶W} {W⇒ᶜW}
 simulation-sequential★ = record
   { Nil★ = nil ∘′ head;   Gate★ = λ g → gate g ∘′ head;   Plug★ = λ f → plug f ∘′ head
-  ; _⟫★_ = seq-seq; _∥★_ = par-seq; _|+★_ = sum-seq
+  ; _⟫★_ = seq-seq; _∥★_ = par-seq; _⑆★_ = sum-seq
   ; DelayLoop★ = delay-seq
   }
 \end{code}

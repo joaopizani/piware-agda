@@ -44,14 +44,14 @@ data ℂ where
 
     DelayLoop : ∀ {i o l} → ℂ {σ} (i + l) (o + l) → ℂ {ω} i o
 
-    _⟫_  : ∀ {i m o p}       → ℂ {p} i m   → ℂ {p} m o   → ℂ {p} i o
-    _∥_  : ∀ {i₁ o₁ i₂ o₂ p} → ℂ {p} i₁ o₁ → ℂ {p} i₂ o₂ → ℂ {p} (i₁ + i₂) (o₁ + o₂)
-    _|+_ : ∀ {i₁ i₂ o p}     → ℂ {p} i₁ o  → ℂ {p} i₂ o  → ℂ {p} (suc (i₁ ⊔ i₂)) o
+    _⟫_ : ∀ {i m o p}       → ℂ {p} i m   → ℂ {p} m o   → ℂ {p} i o
+    _∥_ : ∀ {i₁ o₁ i₂ o₂ p} → ℂ {p} i₁ o₁ → ℂ {p} i₂ o₂ → ℂ {p} (i₁ + i₂) (o₁ + o₂)
+    _⑆_ : ∀ {i₁ i₂ o p}     → ℂ {p} i₁ o  → ℂ {p} i₂ o  → ℂ {p} (suc (i₁ ⊔ i₂)) o
 \end{code}
 %</Circuit>
 
 \begin{code}
 infixl 4 _⟫_
 infixr 5 _∥_
-infixr 5 _|+_
+infixr 5 _⑆_
 \end{code}
