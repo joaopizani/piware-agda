@@ -4,10 +4,11 @@ module PiWare.Gates.BoolTrio where
 open import Function using (const)
 open import Data.Nat using (ℕ)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
-open import Data.Vec using (Vec; [_]) renaming (_∷_ to _◁_; [] to ε)
+open import Data.Vec using ([_]) renaming (_∷_ to _◁_; [] to ε)
 open import Data.Bool using (false; true; not; _∧_; _∨_) renaming (Bool to B)
 
 open import PiWare.Atom.Bool using (Atomic-B)
+open import PiWare.Interface using (Ix)
 open import PiWare.Gates Atomic-B using (Gates)
 open import PiWare.Atom using (module Atomic)
 open Atomic Atomic-B using (W)
@@ -35,7 +36,7 @@ pattern Absurd# n = Fs (Fs (Fs (Fs (Fs n))))
 
 %<*ins-outs>
 \begin{code}
-|in| |out| : Fin |BoolTrio| → ℕ
+|in| |out| : Fin |BoolTrio| → Ix
 |in| = λ { ⊥ℂ# → 0; ⊤ℂ# → 0; ¬ℂ# → 1; ∧ℂ# → 2; ∨ℂ# → 2; (Absurd# ()) }
 |out| _ = 1
 \end{code}
@@ -44,8 +45,8 @@ pattern Absurd# n = Fs (Fs (Fs (Fs (Fs n))))
 %<*specs>
 \AgdaTarget{spec-not, spec-and, spec-or}
 \begin{code}
-spec-not          : Vec B 1 → Vec B 1
-spec-and spec-or  : Vec B 2 → Vec B 1
+spec-not          : W 1 → W 1
+spec-and spec-or  : W 2 → W 1
 spec-not (x ◁ ε)     = [ not x ]
 spec-and (x ◁ y ◁ ε) = [ x ∧ y ]
 spec-or  (x ◁ y ◁ ε) = [ x ∨ y ]

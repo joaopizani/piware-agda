@@ -7,6 +7,7 @@ module PiWare.Circuit.Algebra {At : Atomic} (Gt : Gates At) where
 open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
 
+open import PiWare.Interface using (Ix)
 open import PiWare.Circuit Gt using (ℂ; σ; Nil; Gate; Plug; DelayLoop; _⟫_; _∥_; _|+_)
 open Gates At Gt using (|in|; |out|)
 \end{code}
@@ -14,7 +15,7 @@ open Gates At Gt using (|in|; |out|)
 
 %<*combinator-types-parameterized>
 \begin{code}
-TyNil★ TyGate★ TyPlug★ Ty⟫★ Ty∥★ Ty|+★ : (ℕ → ℕ → Set) → Set
+TyNil★ TyGate★ TyPlug★ Ty⟫★ Ty∥★ Ty|+★ : (Ix → Ix → Set) → Set
 TyNil★  F = ∀ {n}                     → F n zero
 TyGate★ F = ∀ g#                      → F (|in| g#) (|out| g#)
 TyPlug★ F = ∀ {i o} → (Fin o → Fin i) → F i o
@@ -26,7 +27,7 @@ Ty|+★   F = ∀ {i₁ i₂ o}     → F i₁ o  → F i₂ o  → F (suc (i₁
 
 
 \begin{code}
-module _ {Cσₓ : ℕ → ℕ → Set} where
+module _ {Cσₓ : Ix → Ix → Set} where
 \end{code}
 %<*Circuit-combinational-algebra-type>
 \begin{code}
@@ -58,7 +59,7 @@ module _ {Cσₓ : ℕ → ℕ → Set} where
 
 
 \begin{code}
-module _ {Cσₓ : ℕ → ℕ → Set} {Cₓ : ℕ → ℕ → Set} where
+module _ {Cσₓ : Ix → Ix → Set} {Cₓ : Ix → Ix → Set} where
 \end{code}
 %<*Circuit-algebra-type>
 \begin{code}

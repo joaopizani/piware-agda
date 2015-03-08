@@ -20,6 +20,7 @@ open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Decidable using (⌊_⌋)
 
 open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
+open import PiWare.Interface using (Ix)
 open Atomic At using (Atom; Atom#; W; atom→n; n→atom)
 \end{code}
 
@@ -28,7 +29,7 @@ open Atomic At using (Atom; Atom#; W; atom→n; n→atom)
 %<*Synth>
 \AgdaTarget{⇓W⇑, ⇓, ⇑}
 \begin{code}
-record ⇓W⇑ (α : Set) {i : ℕ} : Set where
+record ⇓W⇑ (α : Set) {i : Ix} : Set where
     constructor ⇓W⇑[_,_]
     field
         ⇓ : α → W i
