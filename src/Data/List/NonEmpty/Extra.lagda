@@ -2,8 +2,8 @@
 module Data.List.NonEmpty.Extra where
 
 open import Data.Nat using (_+_)
-open import Data.List using (List)
-open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺)
+open import Data.List using (List; []; _∷_)
+open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺; [_] to [_]⁺)
 open import Data.Product using (_×_; _,_; map)
 open import Data.List.Extra using (unzip)
 open import Data.Vec using (Vec)
@@ -36,3 +36,16 @@ splitAt⁺ : ∀ {ℓ} {α : Set ℓ} m {n} → List⁺ (Vec α (m + n)) → Lis
 splitAt⁺ m = map⁺ (splitAt' m)
 \end{code}
 %</splitAt-nonempty>
+
+
+-- Needs to use the trick with tails⁺' and uncurry⁺ to "convince" the termination checker
+%<*tails-nonempty>
+\AgdaTarget{tails⁺}
+\begin{code}
+tails⁺ : ∀ {ℓ} {α : Set ℓ} → List⁺ α → List⁺ (List⁺ α)
+tails⁺ {α} = uncurry⁺ tails⁺'
+  where tails⁺' : ∀ {ℓ} {α : Set ℓ} → α → List α → List⁺ (List⁺ α)
+        tails⁺' x₀ []        = [ x₀ ∷ [] ]⁺
+        tails⁺' x₀ (x₁ ∷ xs) = let (t₁ ∷ ts) = tails⁺' x₁ xs  in  (x₀ ∷ x₁ ∷ xs) ∷ (t₁ ∷ ts)
+\end{code}
+%</tails-nonempty>
