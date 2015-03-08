@@ -19,6 +19,6 @@ record Gates : Set where
         |in| |out| : Fin |Gates| → ℕ
         spec       : (g# : Fin |Gates|) → (W (|in| g#) → W (|out| g#))
 
-    Gates# = Fin |Gates|
+    Gate# = Fin |Gates|
 \end{code}
 %</Gates>

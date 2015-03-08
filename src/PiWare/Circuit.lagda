@@ -7,14 +7,15 @@ module PiWare.Circuit {At : Atomic} (Gt : Gates At) where
 open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
 
-open Gates At Gt using (Gates#; |in|; |out|)
+open Gates At Gt using (|in|; |out|)
 \end{code}
 
 
 %<*IsComb>
 \AgdaTarget{IsComb, σ, ω}
 \begin{code}
-data IsComb : Set where σ ω : IsComb
+data IsComb : Set where
+  σ ω : IsComb  -- ω ≝ sequential
 \end{code}
 %</IsComb>
 
@@ -36,8 +37,8 @@ data ℂ : {p : IsComb} → ℕ → ℕ → Set
 \AgdaTarget{ℂ, Nil, Gate, DelayLoop, Plug, \_⟫\_, \_∥\_, \_|+\_}
 \begin{code}
 data ℂ where
-    Nil   : ∀ {n} → 𝐂 n zero
-    Gate  : (g# : Gates#) → 𝐂 (|in| g#) (|out| g#)
+    Nil   : ∀ {n}   → 𝐂 n zero
+    Gate  : ∀ g#    → 𝐂 (|in| g#) (|out| g#)
     Plug  : ∀ {i o} → (Fin o → Fin i) → 𝐂 i o
 
     DelayLoop : ∀ {i o l} → ℂ {σ} (i + l) (o + l) → ℂ {ω} i o

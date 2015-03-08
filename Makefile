@@ -17,6 +17,7 @@ AGDA_MODULES=Data/CausalStream \
              PiWare/Gates \
              PiWare/Gates/BoolTrio \
              PiWare/Circuit \
+             PiWare/Circuit/Algebra \
              PiWare/Circuit/Typed \
              PiWare/Plugs/Functions \
              PiWare/Plugs \
