@@ -18,7 +18,7 @@ open import Data.Vec.Extra using (splitAt')
 open import Data.List.NonEmpty using (head)
 open import Data.List.NonEmpty.Extra using (unzip⁺; splitAt⁺; uncurry⁺)
 open import Data.Vec
-  using (Vec; _++_; lookup; replicate; allFin; drop) renaming ([] to ε; take to takeᵥ; map to mapᵥ)
+  using (Vec; _++_; lookup; replicate; allFin; drop; tabulate) renaming ([] to ε; take to takeᵥ)
 
 open Atomic At using (W; n→atom)
 open Gates At Gt using (|in|; |out|; spec)
@@ -51,7 +51,7 @@ sum-comb : Ty⑆★ W⟶W
 \begin{code}
 nil                 = const ε
 gate                = spec
-plug p ins          = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
+plug p ins          = tabulate (λ fin → lookup (p fin) ins)
 seq-comb            = flip _∘′_
 par-comb {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ splitAt' i₁
 sum-comb {i₁} f₁ f₂ = [ f₁ , f₂ ]′ ∘′ untag {i₁}
