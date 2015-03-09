@@ -27,17 +27,17 @@ Ty⑆★    F = ∀ {i₁ i₂ o}     → F i₁ o  → F i₂ o  → F (suc (i�
 
 
 \begin{code}
-module _ {Cσₓ : Ix → Ix → Set} where
+module _ {Carrier : Ix → Ix → Set} where
 \end{code}
 %<*Circuit-combinational-algebra-type>
 \begin{code}
  record ℂσ★ : Set where
-   field Nil★  : TyNil★ Cσₓ
-         Gate★ : TyGate★ Cσₓ
-         Plug★ : TyPlug★ Cσₓ
-         _⟫★_  : Ty⟫★ Cσₓ
-         _∥★_  : Ty∥★ Cσₓ
-         _⑆★_  : Ty⑆★ Cσₓ
+   field Nil★  : TyNil★ Carrier
+         Gate★ : TyGate★ Carrier
+         Plug★ : TyPlug★ Carrier
+         _⟫★_  : Ty⟫★ Carrier
+         _∥★_  : Ty∥★ Carrier
+         _⑆★_  : Ty⑆★ Carrier
 \end{code}
 %</Circuit-combinational-algebra-type>
 
@@ -47,7 +47,7 @@ module _ {Cσₓ : Ix → Ix → Set} where
 \end{code}
 %<*Circuit-combinational-cata>
 \begin{code}
-  cataℂσ : ∀ {i o} → ℂ {σ} i o → Cσₓ i o
+  cataℂσ : ∀ {i o} → ℂ {σ} i o → Carrier i o
   cataℂσ Nil       = Nil★
   cataℂσ (Gate g)  = Gate★ g
   cataℂσ (Plug f)  = Plug★ f
@@ -59,32 +59,32 @@ module _ {Cσₓ : Ix → Ix → Set} where
 
 
 \begin{code}
-module _ {Cσₓ : Ix → Ix → Set} {Cₓ : Ix → Ix → Set} where
+module _ {Carrierσ : Ix → Ix → Set} {Carrier : Ix → Ix → Set} where
 \end{code}
 %<*Circuit-algebra-type>
 \begin{code}
  record ℂ★ : Set where
-   field Nil★  : TyNil★ Cₓ
-         Gate★ : TyGate★ Cₓ
-         Plug★ : TyPlug★ Cₓ
-         _⟫★_  : Ty⟫★ Cₓ
-         _∥★_  : Ty∥★ Cₓ
-         _⑆★_  : Ty⑆★ Cₓ
-         DelayLoop★ : ∀ {i o l} → Cσₓ (i + l) (o + l) → Cₓ i o
+   field Nil★  : TyNil★ Carrier
+         Gate★ : TyGate★ Carrier
+         Plug★ : TyPlug★ Carrier
+         _⟫★_  : Ty⟫★ Carrier
+         _∥★_  : Ty∥★ Carrier
+         _⑆★_  : Ty⑆★ Carrier
+         DelayLoop★ : ∀ {i o l} → Carrierσ (i + l) (o + l) → Carrier i o
 \end{code}
 %</Circuit-algebra-type>
 
 \begin{code}
- module _ (Aℓσ : ℂσ★ {Cσₓ}) (Aℓ : ℂ★) where
+ module _ (Aℓσ : ℂσ★ {Carrierσ}) (Aℓ : ℂ★) where
   open ℂ★ Aℓ
 \end{code}
 %<*Circuit-cata>
 \begin{code}
-  cataℂ : ∀ {i o} → ℂ i o → Cₓ i o
+  cataℂ : ∀ {i o} → ℂ i o → Carrier i o
   cataℂ Nil           = Nil★
   cataℂ (Gate g)      = Gate★ g
   cataℂ (Plug f)      = Plug★ f
-  cataℂ (DelayLoop c) = DelayLoop★ (cataℂσ {Cσₓ} Aℓσ c)
+  cataℂ (DelayLoop c) = DelayLoop★ (cataℂσ {Carrierσ} Aℓσ c)
   cataℂ (c₁ ⟫ c₂)     = cataℂ c₁ ⟫★ cataℂ c₂
   cataℂ (c₁ ∥ c₂)     = cataℂ c₁ ∥★ cataℂ c₂
   cataℂ (c₁ ⑆ c₂)     = cataℂ c₁ ⑆★ cataℂ c₂
