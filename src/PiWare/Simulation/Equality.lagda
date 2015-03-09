@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Simulation.Equality {At : Atomic} (Gt : Gates At) where
 
-open import Function using (id; _∘_; _$_)
+open import Function using (id; _∘_; _$_; const)
 open import Data.Nat using (ℕ; _+_; suc)
 open import Data.Product using (_×_; uncurry; _,_; proj₁)
 
@@ -25,9 +25,6 @@ import Relation.Binary.Indexed.EqReasoning as IdxEqReasoning
 
 
 \begin{code}
-coerce : ∀ {ℓ n m} {α : Set ℓ} {p : n ≡ m} → Vec α n → Vec α m
-coerce {p = eq} rewrite eq = id
-
 proj₁≡ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} {a₁ a₂ : α} {b₁ b₂ : β} → (a₁ , b₁) ≡ (a₂ , b₂) → a₁ ≡ a₂
 proj₁≡ refl = refl
 
@@ -42,51 +39,31 @@ proj₂≡ refl = refl
 ℂ₍₎ = uncurry (ℂ {σ})
 
 
-_≅_ : ∀ {io} → ℂ₍₎ io → ℂ₍₎ io → Set
-_≅_ {i , _} c₁ c₂ = ∀ (w : W i) → ⟦ c₁ ⟧ w ≡ ⟦ c₂ ⟧ w
-
-data _≣_ {io : ℕ × ℕ} : ℂ₍₎ io → ℂ₍₎ io → Set where
-  refl≣ : {c₁ c₂ : ℂ₍₎ io} → c₁ ≅ c₂ → c₁ ≣ c₂
-
-infixl 3 _≣_
-
-≣-refl : ∀ {io} {c : ℂ₍₎ io} → c ≣ c
-≣-refl {_} {c} = refl≣ (λ w → refl)
-
-≣-sym : ∀ {io} {c₁ c₂ : ℂ₍₎ io} → c₁ ≣ c₂ → c₂ ≣ c₁
-≣-sym (refl≣ eq) = refl≣ (sym ∘ eq)
-
-≣-trans : ∀ {io} {c₁ c₂ c₃ : ℂ₍₎ io} → c₁ ≣ c₂ → c₂ ≣ c₃ → c₁ ≣ c₃
-≣-trans (refl≣ eq₁₂) (refl≣ eq₂₃) = refl≣ $ λ w → trans (eq₁₂ w) (eq₂₃ w)
-
-≣-isEquivalence : ∀ {io} → B.IsEquivalence (_≣_ {io})
-≣-isEquivalence = record
-  { refl  = ≣-refl
-  ; sym   = ≣-sym
-  ; trans = ≣-trans
-  }
 
 
+_≊_ : ∀ {i o i′ o′} → ℂ i o → ℂ i′ o′ → Set
+_≊_ {i} {_} {i′} {_} c₁ c₂ = ∀ {w : W i} {w′ : W i′} → w ≈ w′ → ⟦ c₁ ⟧ w ≈ ⟦ c₂ ⟧ w′
 
-_≊_ : ∀ {io io′} → ℂ₍₎ io → ℂ₍₎ io′ → Set
-_≊_ {i , _} {i′ , _} c₁ c₂ = ∀ {w : W i} {w′ : W i′} → w ≈ w′ → ⟦ c₁ ⟧ w ≈ ⟦ c₂ ⟧ w′
-
-data _≋_ {io₁ io₂} : ℂ₍₎ io₁ → ℂ₍₎ io₂ → Set where
-  refl≋ : {c₁ : ℂ₍₎ io₁} {c₂ : ℂ₍₎ io₂} → c₁ ≊ c₂ → c₁ ≋ c₂
+data _≋_ {i₁ o₁ i₂ o₂} : ℂ i₁ o₁ → ℂ i₂ o₂ → Set where
+  refl≋ : {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} (i≡ : i₁ ≡ i₂) → c₁ ≊ c₂ → c₁ ≋ c₂
 
 infixl 3 _≋_
 
-≋-refl : ∀ {io} {c : ℂ₍₎ io} → c ≋ c
-≋-refl {_} {c} = refl≋ (from-≡ ∘ cong ⟦ c ⟧ ∘ to-≡) -- (reflᵥ ∘ ⟦ c ⟧)
- 
-≋-sym : ∀ {io io′} {c₁ : ℂ₍₎ io} {c₂ : ℂ₍₎ io′} → c₁ ≋ c₂ → c₂ ≋ c₁
-≋-sym (refl≋ c₁≊c₂) = refl≋ (symᵥ ∘ c₁≊c₂ ∘ symᵥ)
- 
-≋-trans : ∀ {io₁ io₂ io₃} {c₁ : ℂ₍₎ io₁} {c₂ : ℂ₍₎ io₂} {c₃ : ℂ₍₎ io₃} → c₁ ≋ c₂ → c₂ ≋ c₃ → c₁ ≋ c₃
-≋-trans (refl≋ c₁≊c₂) (refl≋ c₂≊c₃) = refl≋ (λ {w} {w′} p → transᵥ (c₁≊c₂ {w} {{!w!}} {!!}) (c₂≊c₃ {!!}))
 
-≊-trans : ∀ {io₁ io₂ io₃} {c₁ : ℂ₍₎ io₁} {c₂ : ℂ₍₎ io₂} {c₃ : ℂ₍₎ io₃} → c₁ ≊ c₂ → c₂ ≊ c₃ → c₁ ≊ c₃
-≊-trans eq₁ eq₂ = {!!}
+≊⇒≋ : ∀ {i o₁ o₂} {c₁ : ℂ i o₁} {c₂ : ℂ i o₂} → (∀ w → ⟦ c₁ ⟧ w ≈ ⟦ c₂ ⟧ w) → c₁ ≋ c₂
+≊⇒≋ {i} {c₁ = c₁} {c₂} c₁≊c₂ = refl≋ refl ≈⇒≊
+  where ≈⇒≊ : {w₁ w₂ : W i} → w₁ ≈ w₂ → ⟦ c₁ ⟧ w₁ ≈ ⟦ c₂ ⟧ w₂
+        ≈⇒≊ w₁≈w₂ rewrite to-≡ w₁≈w₂ = c₁≊c₂ _
+
+
+≋-refl : ∀ {i o} {c : ℂ i o} → c ≋ c
+≋-refl = ≊⇒≋ (λ _ → reflᵥ _)
+
+≋-sym : ∀ {i o i′ o′} {c₁ : ℂ i o} {c₂ : ℂ i′ o′} → c₁ ≋ c₂ → c₂ ≋ c₁
+≋-sym (refl≋ refl c₁≊c₂) = ≊⇒≋ (symᵥ ∘ c₁≊c₂ ∘ symᵥ ∘ reflᵥ)
+
+≋-trans : ∀ {i₁ o₁ i₂ o₂ i₃ o₃} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} {c₃ : ℂ i₃ o₃} → c₁ ≋ c₂ → c₂ ≋ c₃ → c₁ ≋ c₃
+≋-trans (refl≋ refl c₁≊c₂) (refl≋ refl c₂≊c₃) = ≊⇒≋ (λ w → transᵥ (c₁≊c₂ $ reflᵥ w) (c₂≊c₃ $ reflᵥ w))
 
 ≋-isEquivalence : IsEquivalence ℂ₍₎ _≋_
 ≋-isEquivalence = record
@@ -96,13 +73,6 @@ infixl 3 _≋_
   }
 
 
-≣-setoid : ∀ {io} → B.Setoid _ _
-≣-setoid {io} = record
-  { Carrier       = ℂ₍₎ io
-  ; _≈_           = _≣_
-  ; isEquivalence = ≣-isEquivalence
-  } 
-
 ≋-setoid : Setoid (ℕ × ℕ) _ _
 ≋-setoid = record
   { Carrier       = ℂ₍₎
@@ -110,10 +80,6 @@ infixl 3 _≋_
   ; isEquivalence = ≋-isEquivalence
   }
 
-
-
-≣⇒≋ : ∀ {i o} {c₁ c₂ : ℂ i o} → c₁ ≣ c₂ → c₁ ≋ c₂
-≣⇒≋ (refl≣ eq) = refl≋ {!!} 
 
 
 open IdxEqReasoning ≋-setoid public
