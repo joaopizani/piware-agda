@@ -8,7 +8,7 @@ open import Function using (id; _∘_; _$_; const)
 open import Data.Nat using (ℕ; _+_; suc)
 open import Data.Product using (_×_; uncurry; _,_; proj₁)
 
-open import PiWare.Circuit Gt using (ℂ; σ; _∥_)
+open import PiWare.Circuit Gt using (ℂ; 𝐂; σ; _∥_)
 open import PiWare.Plugs Gt using (id⤨)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open Atomic At using (W; Atom)
@@ -35,12 +35,6 @@ proj₂≡ refl = refl
 ≡×≡⇒×≡× {a₁ = a₁} {a₂ = .a₁} {b₁ = b₁} {b₂ = .b₁} (refl , refl) = refl
 
 
-ℂ₍₎ : (ℕ × ℕ) → Set
-ℂ₍₎ = uncurry (ℂ {σ})
-
-
-
-
 _≊_ : ∀ {i o i′ o′} → ℂ i o → ℂ i′ o′ → Set
 _≊_ {i} {_} {i′} {_} c₁ c₂ = ∀ {w : W i} {w′ : W i′} → w ≈ w′ → ⟦ c₁ ⟧ w ≈ ⟦ c₂ ⟧ w′
 
@@ -65,17 +59,16 @@ infixl 3 _≋_
 ≋-trans : ∀ {i₁ o₁ i₂ o₂ i₃ o₃} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} {c₃ : ℂ i₃ o₃} → c₁ ≋ c₂ → c₂ ≋ c₃ → c₁ ≋ c₃
 ≋-trans (refl≋ refl c₁≊c₂) (refl≋ refl c₂≊c₃) = ≊⇒≋ (λ w → transᵥ (c₁≊c₂ $ reflᵥ w) (c₂≊c₃ $ reflᵥ w))
 
-≋-isEquivalence : IsEquivalence ℂ₍₎ _≋_
+≋-isEquivalence : IsEquivalence (uncurry (ℂ {σ})) _≋_
 ≋-isEquivalence = record
   { refl  = ≋-refl
   ; sym   = ≋-sym
   ; trans = ≋-trans
   }
 
-
 ≋-setoid : Setoid (ℕ × ℕ) _ _
 ≋-setoid = record
-  { Carrier       = ℂ₍₎
+  { Carrier       = uncurry (ℂ {σ})
   ; _≈_           = _≋_
   ; isEquivalence = ≋-isEquivalence
   }
@@ -91,11 +84,11 @@ open IdxEqReasoning ≋-setoid public
 
 
 -- Testing the whole shebang
-idℂ₂ : ℂ₍₎ (2 , 2)
+idℂ₂ : 𝐂 2 2
 idℂ₂ = id⤨ 
 
-idℂ₂′ : ℂ₍₎ (1 + 1 , 1 + 1)
-idℂ₂′ = id⤨ {1} ∥ id⤨ {1}
+idℂ₂′ : 𝐂 (1 + 1) (1 + 1)
+idℂ₂′ = id⤨ {1} ∥ id⤨
 
 -- cheating a little, real proofs in another module
 postulate id⤨-∥-idempotent : ∀ {n m} → id⤨ {n + m} ≋ id⤨ {n} ∥ id⤨ {m}
