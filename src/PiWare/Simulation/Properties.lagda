@@ -12,7 +12,7 @@ open import Data.Vec using (lookup; tabulate)
 open import Data.Vec.Extra using (splitAt-i+0)
 open import Data.Vec.Properties using (tabulate-allFin; map-lookup-allFin; lookup∘tabulate)
 open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecPropEq)
-open VecPropEq using (from-≡; to-≡)
+open VecPropEq using (from-≡; to-≡) renaming (refl to reflᵥ)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
@@ -20,7 +20,8 @@ open Atomic At using (W)
 open import PiWare.Plugs Gt using (id⤨)
 open import PiWare.Circuit Gt using (ℂ; Nil; Plug; _⟫_; _∥_)
 open import PiWare.Simulation Gt using (⟦_⟧)
-open import PiWare.Simulation.Equality Gt using (_≊_; _≋_; refl≋; begin_; _∎; _≈ℂ⟨_⟩_; ≡×≡⇒×≡×; ≊⇒≋)
+open import PiWare.Simulation.Equality Gt
+  using (_≊_; _≋_; refl≋; begin_; _∎; _≈ℂ⟨_⟩_; ≡×≡⇒×≡×; ≊⇒≋; ≋-trans)
 
 import Algebra as A
 import Data.Nat.Properties as N
@@ -39,13 +40,13 @@ private
   tabulate-ext {n = suc m} ∀x→fx≡gx rewrite ∀x→fx≡gx Fz | tabulate-ext (∀x→fx≡gx ∘ Fs) = refl
 
 plug-∘ : ∀ {i m o} (f : Fin m → Fin i) (g : Fin o → Fin m) → Plug f ⟫ Plug g ≋ Plug (f ∘ g)
-plug-∘ f g = {!!}
+plug-∘ f g = ≊⇒≋ $ from-≡ ∘ λ w → tabulate-ext (λ x → lookup∘tabulate (λ y → lookup (f y) w) (g x))
 
 plug-ext : ∀ {i o} {f : Fin o → Fin i} {g : Fin o → Fin i} → (∀ x → f x ≡ g x) → Plug f ≋ Plug g
-plug-ext p = refl≋ {!!} {!!}
+plug-ext f≡g = ≊⇒≋ $ from-≡ ∘ λ w → tabulate-ext (cong (flip lookup w) ∘ f≡g)
 
 plugs-inverse : ∀ {i o} {f : Fin o → Fin i} {g : Fin i → Fin o} → (∀ x → f (g x) ≡ x) → Plug f ⟫ Plug g ≋ id⤨ {i}
-plugs-inverse f∘g≡id = ≊⇒≋ $ from-≡ ∘ λ w → {!tabulate-ext (cong (flip lookup w) ∘ f∘g≡id)!}
+plugs-inverse {f = f} {g} f∘g≡id = ≋-trans (plug-∘ f g) (plug-ext f∘g≡id)
 
 
 -- Sequence monoid
@@ -61,13 +62,8 @@ plugs-inverse f∘g≡id = ≊⇒≋ $ from-≡ ∘ λ w → {!tabulate-ext (con
 
 -- Parallel monoid
 ∥-identity-left : ∀ {i o} (c : ℂ i o) → Nil {0} ∥ c ≋ c
-∥-identity-left c = refl≋ refl {!!} --(λ _ → from-≡ refl)
+∥-identity-left _ = ≊⇒≋ (λ _ → reflᵥ _)
 
 ∥-identity-right : ∀ {i o} (c : ℂ i o) → c ∥ Nil {0} ≋ c
-∥-identity-right {i} {o} c = refl≋ {!!} {!!} --io≡ {!∥-identity-right′!}
-  where
-    io≡ = ≡×≡⇒×≡× $ (proj₂ +-identity) i , (proj₂ +-identity) o
-
-    ∥-identity-right′ : (c ∥ Nil) ≊ c
-    ∥-identity-right′ w = {!!}
+∥-identity-right {i} {o} c = {!!}
 \end{code}
