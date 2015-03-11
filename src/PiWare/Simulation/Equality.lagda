@@ -38,6 +38,8 @@ proj₂≡ refl = refl
 _≊_ : ∀ {i o i′ o′} → ℂ i o → ℂ i′ o′ → Set
 _≊_ {i} {_} {i′} {_} c₁ c₂ = ∀ {w : W i} {w′ : W i′} → w ≈ w′ → ⟦ c₁ ⟧ w ≈ ⟦ c₂ ⟧ w′
 
+infixl 3 _≊_
+
 data _≋_ {i₁ o₁ i₂ o₂} : ℂ i₁ o₁ → ℂ i₂ o₂ → Set where
   refl≋ : {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} (i≡ : i₁ ≡ i₂) → c₁ ≊ c₂ → c₁ ≋ c₂
 

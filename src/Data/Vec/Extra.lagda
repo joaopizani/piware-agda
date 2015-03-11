@@ -5,13 +5,13 @@ open import Function using (id; _∘_; _$_)
 open import Data.Nat using (zero; suc; _+_; _*_)
 open import Data.Product using (_×_; _,_; map; proj₁; proj₂)
 open import Data.Vec using (Vec; splitAt; []; _∷_; _++_; group)
-open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecEqPropositional)
-open VecEqPropositional using (_≈_; sym; trans)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; setoid)
 
 open import Data.Vec.Properties using (module UsingVectorEquality)
 open module VecPropertiesEq {a} {A : Set a} = UsingVectorEquality (setoid A) using (xs++[]=xs)
+open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecEqPropositional)
+open VecEqPropositional using (_≈_; sym; trans; []-cong; _∷-cong_; from-≡)
 \end{code}
 
 
@@ -61,3 +61,22 @@ group' : ∀ {ℓ} {α : Set ℓ} n k → Vec α (n * k) → Vec (Vec α k) n
 group' n k = proj₁ ∘ group n k
 \end{code}
 %</group-noproof>
+
+
+\begin{code}
+≈-++-prefix : ∀ {n₁ n₂ ℓ} {α : Set ℓ} {v₁ w₁ : Vec α n₁} {v₂ w₂ : Vec α n₂} → v₁ ++ v₂ ≈ w₁ ++ w₂ → v₁ ≈ w₁
+≈-++-prefix {v₁ = []}       {[]}       _                  = []-cong
+≈-++-prefix {v₁ = x₁ ∷ xs₁} {y₁ ∷ ys₁} (x≡y ∷-cong xs≈ys) = x≡y ∷-cong (≈-++-prefix xs≈ys)
+
+≈-++-suffix : ∀ {n₁ n₂ ℓ} {α : Set ℓ} {v₁ w₁ : Vec α n₁} {v₂ w₂ : Vec α n₂} → v₁ ++ v₂ ≈ w₁ ++ w₂ → v₂ ≈ w₂
+≈-++-suffix {v₁ = []}       {[]}       v₂≈w₂              = v₂≈w₂
+≈-++-suffix {v₁ = x₁ ∷ xs₁} {y₁ ∷ ys₁} (x≡y ∷-cong xs≈ys) = ≈-++-suffix {v₁ = xs₁} {ys₁} xs≈ys
+
+++-assoc : ∀ {n₁ n₂ n₃ ℓ} {α : Set ℓ} (v₁ : Vec α n₁) (v₂ : Vec α n₂) (v₃ : Vec α n₃) → (v₁ ++ v₂) ++ v₃ ≈ v₁ ++ (v₂ ++ v₃)
+++-assoc []         _ _ = from-≡ refl
+++-assoc (x₁ ∷ xs₁) _ _ = refl ∷-cong (++-assoc xs₁ _ _)
+
+++-assoc-split₁ : ∀ {n m o ℓ} {α : Set ℓ} {v₁ : Vec α ((n + m) + o)} {v₂ : Vec α (n + (m + o))}
+                  → v₁ ≈ v₂ → proj₁ (splitAt n (proj₁ (splitAt (n + m) v₁))) ≈ proj₁ (splitAt n v₂)
+++-assoc-split₁ = {!!}
+\end{code}
