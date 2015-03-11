@@ -9,12 +9,14 @@ open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Nat using (zero; suc)
 open import Data.Product using (_,_; proj₂)
 open import Data.Vec using (lookup; tabulate)
-open import Data.Vec.Extra using (splitAt-i+0)
-open import Data.Vec.Properties using (tabulate-allFin; map-lookup-allFin; lookup∘tabulate)
-open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecPropEq)
-open VecPropEq using (from-≡; to-≡) renaming (refl to reflᵥ)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; setoid)
+open import Data.Vec.Properties using (tabulate-allFin; map-lookup-allFin; lookup∘tabulate)
+open import Data.Vec.Extra using (splitAt-i+0)
+open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecPropEq)
+open module VecPropsEq {a} {α : Set a} = Data.Vec.Properties.UsingVectorEquality (setoid α) using (xs++[]=xs)
+open VecPropEq using (from-≡; to-≡) renaming (refl to reflᵥ)
 
 open Atomic At using (W)
 open import PiWare.Plugs Gt using (id⤨)
@@ -22,10 +24,6 @@ open import PiWare.Circuit Gt using (ℂ; Nil; Plug; _⟫_; _∥_)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open import PiWare.Simulation.Equality Gt
   using (_≊_; _≋_; refl≋; begin_; _∎; _≈ℂ⟨_⟩_; ≡×≡⇒×≡×; ≊⇒≋; ≋-trans)
-
-import Algebra as A
-import Data.Nat.Properties as N
-open A.CommutativeSemiring N.commutativeSemiring using (+-identity)
 \end{code}
 
 
@@ -45,25 +43,30 @@ plug-∘ f g = ≊⇒≋ $ from-≡ ∘ λ w → tabulate-ext (λ x → lookup�
 plug-ext : ∀ {i o} {f : Fin o → Fin i} {g : Fin o → Fin i} → (∀ x → f x ≡ g x) → Plug f ≋ Plug g
 plug-ext f≡g = ≊⇒≋ $ from-≡ ∘ λ w → tabulate-ext (cong (flip lookup w) ∘ f≡g)
 
-plugs-inverse : ∀ {i o} {f : Fin o → Fin i} {g : Fin i → Fin o} → (∀ x → f (g x) ≡ x) → Plug f ⟫ Plug g ≋ id⤨ {i}
-plugs-inverse {f = f} {g} f∘g≡id = ≋-trans (plug-∘ f g) (plug-ext f∘g≡id)
+plugs⁻¹ : ∀ {i o} {f : Fin o → Fin i} {g : Fin i → Fin o} → (∀ x → f (g x) ≡ x) → Plug f ⟫ Plug g ≋ id⤨ {i}
+plugs⁻¹ {f = f} {g} f∘g≡id = ≋-trans (plug-∘ f g) (plug-ext f∘g≡id)
 
 
 -- Sequence monoid
-⟫-identity-right : ∀ {i o} (c : ℂ i o) → c ⟫ id⤨ ≋ c
-⟫-identity-right c = ≊⇒≋ (from-≡ ∘ id⤨-id ∘ ⟦ c ⟧)
+⟫-identityᵣ : ∀ {i o} (c : ℂ i o) → c ⟫ id⤨ ≋ c
+⟫-identityᵣ c = ≊⇒≋ (from-≡ ∘ id⤨-id ∘ ⟦ c ⟧)
 
-⟫-identity-left : ∀ {i o} (c : ℂ i o) → id⤨ ⟫ c ≋ c
-⟫-identity-left c = ≊⇒≋ (from-≡ ∘ cong ⟦ c ⟧ ∘ id⤨-id)
+⟫-identityₗ : ∀ {i o} (c : ℂ i o) → id⤨ ⟫ c ≋ c
+⟫-identityₗ c = ≊⇒≋ (from-≡ ∘ cong ⟦ c ⟧ ∘ id⤨-id)
 
 ⟫-assoc : ∀ {i m n o} (c₁ : ℂ i m) (c₂ : ℂ m n) (c₃ : ℂ n o) → (c₁ ⟫ c₂) ⟫ c₃ ≋ c₁ ⟫ (c₂ ⟫ c₃)
 ⟫-assoc c₁ c₂ c₃ = ≊⇒≋ (from-≡ ∘ λ _ → refl)
 
 
 -- Parallel monoid
-∥-identity-left : ∀ {i o} (c : ℂ i o) → Nil {0} ∥ c ≋ c
-∥-identity-left _ = ≊⇒≋ (λ _ → reflᵥ _)
+∥-identityₗ : ∀ {i o} (c : ℂ i o) → Nil {0} ∥ c ≋ c
+∥-identityₗ _ = ≊⇒≋ (λ _ → reflᵥ _)
 
-∥-identity-right : ∀ {i o} (c : ℂ i o) → c ∥ Nil {0} ≋ c
-∥-identity-right {i} {o} c = {!!}
+∥-identityᵣ : ∀ {i o} (c : ℂ i o) → c ∥ Nil {0} ≋ c
+∥-identityᵣ {i} {o} c = refl≋ (+-identityᵣ i) ∥-identityᵣ-≊
+  where ∥-identityᵣ-≊ : c ∥ Nil {0} ≊ c
+        ∥-identityᵣ-≊ w≈w′ rewrite to-≡ (splitAt-i+0 w≈w′) = xs++[]=xs (⟦ c ⟧ _)
+
+∥-assoc : ∀ {i₁ o₁ i₂ o₂ i₃ o₃} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} {c₃ : ℂ i₃ o₃} → (c₁ ∥ c₂) ∥ c₃ ≋ c₁ ∥ (c₂ ∥ c₃)
+∥-assoc = {!!}
 \end{code}
