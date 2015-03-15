@@ -6,7 +6,7 @@ open import PiWare.Gates using (Gates; module Gates)
 module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘′_; const; flip)
-open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
+open import Data.Nat using (_+_)
 open import Data.Fin using (Fin) renaming (zero to Fz)
 open import Data.Product using (_,_; uncurry′) renaming (map to mapₚ)
 open import Data.Sum using (inj₁; inj₂; [_,_]′)
@@ -14,7 +14,7 @@ open import Data.Stream using (Stream)
 open import Data.List using (List; []; _∷_)
 open import Data.List.NonEmpty using (_∷_) renaming (map to map⁺)
 open import Data.CausalStream using (_⇒ᶜ_; runᶜ; tailsᶜ)
-open import Data.Vec.Extra using (splitAt')
+open import Data.Vec.Extra using (splitAt′)
 open import Data.List.NonEmpty using (head)
 open import Data.List.NonEmpty.Extra using (unzip⁺; splitAt⁺; uncurry⁺)
 open import Data.Vec
@@ -53,7 +53,7 @@ nil                 = const ε
 gate                = spec
 plug p ins          = mapᵥ (λ fin → lookup (p fin) ins) (allFin _)
 seq-comb            = flip _∘′_
-par-comb {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ splitAt' i₁
+par-comb {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ splitAt′ i₁
 sum-comb {i₁} f₁ f₂ = [ f₁ , f₂ ]′ ∘′ untag {i₁}
 \end{code}
 %</combinator-Word-function-defs>
@@ -69,7 +69,7 @@ simulation-combinational★ = record
 
 %<*simulation-combinational>
 \begin{code}
-⟦_⟧ : ∀ {i o} → ℂ {σ} i o → W⟶W i o
+⟦_⟧ : ∀ {i o} → ℂ i o → W⟶W i o
 ⟦_⟧ = cataℂσ simulation-combinational★
 \end{code}
 %</simulation-combinational>
