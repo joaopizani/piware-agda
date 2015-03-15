@@ -20,12 +20,14 @@ open import PiWare.Samples.BoolTrioComb using (fadd)
 ripple : ∀ n → 𝐂 (1 + (n * 1 + n * 1)) ((n * 1) + 1)
 ripple zero    = Plug (id {A = Fin 1} |⤪ fst⤪ {0}  ⟫⤪  swap⤪ {1} {0})
 ripple (suc m) =
-        id⤨ {1}  ∥ (uncons⤨ {1} {m} ∥ uncons⤨ {1} {m}  ⟫  intertwine⤨ {1} {m * 1} {1} {m * 1})
-    ⟫      assoc⤨
-    ⟫      fadd  ∥  id⤨ {m * 1 + m * 1}
-    ⟫       ALR⤨ {1} {1} {m * 1 + m * 1}
-    ⟫   id⤨ {1}  ∥  ripple m
-    ⟫       ARL⤨ {1} {m * 1} {1}
-    where assoc⤨ = Plug (ARL⤪ {1} {1 + 1} {m * 1 + m * 1}  ⟫⤪  ARL⤪ {1} {1} {1} |⤪ id {A = Fin (m * 1 + m * 1)})
+     id⤨ {1}  ∥ (uncons⤨ {1} {m} ∥ uncons⤨ {1} {m}  ⟫  intertwine⤨ {1} {m * 1} {1} {m * 1})
+  ⟫            assoc⤨
+  ⟫        fadd  ∥  id⤨ {m * 1 + m * 1}
+  ⟫        ALR⤨ {1} {1} {m * 1 + m * 1}
+  ⟫     id⤨ {1}  ∥  ripple m
+  ⟫       ARL⤨ {1} {m * 1} {1}
+  where
+    assoc⤨ =    Plug (ARL⤪ {1} {1 + 1} {m * 1 + m * 1}
+             ⟫⤪ ARL⤪ {1} {1} {1} |⤪ id {A = Fin (m * 1 + m * 1)})
 \end{code}
 %</ripple>

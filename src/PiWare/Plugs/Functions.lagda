@@ -5,23 +5,22 @@ open import Function using (id; _∘′_; _$_)
 open import Data.Fin using (Fin; toℕ; inject+; raise; reduce≥; fromℕ≤)
 open import Data.Nat.DivMod using (_mod_)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≤?_; _≟_; _≥_; z≤n; s≤s; _≮_)
+open import Data.Nat using (zero; suc; _+_; _*_; _≤?_; _≟_; _≥_; z≤n; s≤s; _≮_)
 
-open import Relation.Nullary using (yes; no; ¬_)
+open import Relation.Nullary using (yes; no)
 open import Relation.Nullary.Negation using (contradiction)
 open import Relation.Nullary.Decidable using (fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; refl; _≡_; module ≡-Reasoning)
 open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_)
 
-import Algebra as A
-import Data.Nat.Properties as N
-open A.CommutativeSemiring N.commutativeSemiring using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
-open import Data.Product using (proj₂)
-+-identity-right = proj₂ +-identity
-
-open import Algebra.Operations (A.CommutativeSemiring.semiring N.commutativeSemiring) using (_^_)
 open import Data.Nat.Properties.Simple using (*-right-zero)
-open N.SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
+open import Algebra using (module CommutativeSemiring)
+open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring; module SemiringSolver to ℕ-SemiringSolver)
+open CommutativeSemiring ℕ-commSemiring using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
+open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
+open ℕ-SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
+open import Data.Product using (proj₂)
++-identityᵣ = proj₂ +-identity
 \end{code}
 
 
@@ -121,7 +120,7 @@ cons⤪ = id
 \AgdaTarget{singleton⤪}
 \begin{code}
 singleton⤪ : ∀ {w} → Fin (1 * w) → Fin w
-singleton⤪ {w} rewrite +-identity-right w = id
+singleton⤪ {w} rewrite +-identityᵣ w = id
 \end{code}
 %</singleton-fin>
 
@@ -136,7 +135,7 @@ twiceSuc = solve 2 eq refl where
 \AgdaTarget{vecHalf⤪}
 \begin{code}
 vecHalf⤪ : ∀ {n w} → Fin (suc n * w + suc n * w) → Fin ((2 * suc n) * w)
-vecHalf⤪ {n} {w} rewrite +-identity-right n | twiceSuc n w = id
+vecHalf⤪ {n} {w} rewrite +-identityᵣ n | twiceSuc n w = id
 \end{code}
 %</vecHalf-fin>
 
@@ -146,7 +145,7 @@ eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
 eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
 
 vecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
-vecHalfPowEq zero w rewrite +-identity-right w = refl
+vecHalfPowEq zero w rewrite +-identityᵣ w = refl
 vecHalfPowEq (suc n) w = begin
     2 ^ suc (suc n) * w                 ≡⟨ refl ⟩
     2 * 2 ^ suc n * w                   ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
@@ -183,7 +182,7 @@ forkVec⤪ {_} {suc m} x = (toℕ x) mod (suc m)
 \AgdaTarget{fork×⤪}
 \begin{code}
 fork×⤪ : ∀ {w} → Fin (w + w) → Fin w
-fork×⤪ {w} rewrite sym $ cong (_+_ w) (+-identity-right w) = forkVec⤪ {2} {w}
+fork×⤪ {w} rewrite sym $ cong (_+_ w) (+-identityᵣ w) = forkVec⤪ {2} {w}
 \end{code}
 %</forkProd-fin>
 

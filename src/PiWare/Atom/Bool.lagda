@@ -35,7 +35,9 @@ private
  \AgdaTarget{n→B}
  \begin{code}
  n→B : Fin |B| → B
- n→B = λ { False# → false;  True# → true;  (Absurd# ()) }
+ n→B False#       = false
+ n→B True#        = true
+ n→B (Absurd# ()) 
  \end{code}
  %</nToBool>
  
@@ -43,7 +45,8 @@ private
  \AgdaTarget{B→n}
  \begin{code}
  B→n : B → Fin |B|
- B→n = λ { false → False#;  true → True# }
+ B→n false = False#
+ B→n true  = True#
  \end{code}
  %</boolToN>
  
@@ -51,7 +54,9 @@ private
  \AgdaTarget{inv-left-B}
  \begin{code}
  inv-left-B : ∀ i → B→n (n→B i) ≡ i
- inv-left-B = λ { False# → refl;  True# → refl;  (Absurd# ()) }
+ inv-left-B False#       = refl
+ inv-left-B True#        = refl
+ inv-left-B (Absurd# ())
  \end{code}
  %</inv-left-Bool>
 
@@ -59,7 +64,8 @@ private
  \AgdaTarget{inv-right-B}
  \begin{code}
  inv-right-B : ∀ b → n→B (B→n b) ≡ b
- inv-right-B = λ { false → refl;  true → refl }
+ inv-right-B false = refl
+ inv-right-B true  = refl
  \end{code}
  %</inv-right-Bool>
 
@@ -68,14 +74,13 @@ private
 \AgdaTarget{Atomic-B}
 \begin{code}
 Atomic-B : Atomic
-Atomic-B = record {
-      Atom     = B
-    ; |Atom|-1 = |B|-1
-    ; n→atom   = n→B
-    ; atom→n   = B→n
-   
-    ; inv-left  = inv-left-B
-    ; inv-right = inv-right-B
-    }
+Atomic-B = record
+  { Atom      = B
+  ; |Atom|-1  = |B|-1
+  ; n→atom    = n→B
+  ; atom→n    = B→n
+  ; inv-left  = inv-left-B
+  ; inv-right = inv-right-B
+  }
 \end{code}
 %</Atomic-Bool>

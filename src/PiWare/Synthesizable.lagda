@@ -6,22 +6,22 @@ module PiWare.Synthesizable (At : Atomic) where
 open import Function using (_∘′_; _$_; const)
 open import Data.Unit using (⊤; tt)
 open import Data.Bool using (if_then_else_)
-open import Data.Product using (_×_; _,_; proj₁; proj₂; <_,_>)
+open import Data.Product using (_×_; _,_; <_,_>)
 open import Data.Sum using (_⊎_; inj₁; inj₂; isInj₁; isInj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using () renaming (zero to Fz)
 open import Data.Fin.Properties using (_≟_)
-open import Data.Nat using (ℕ; suc; _+_; _*_; _⊔_)
-open import Data.Vec using (Vec; _++_; splitAt; _>>=_; group; concat) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
+open import Data.Nat using (suc; _+_; _*_; _⊔_)
+open import Data.Vec using (Vec; _++_; splitAt; concat) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
 open import Data.List using (List; gfilter; map)
-
-open import Data.Vec.Extra using (group')
 
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Decidable using (⌊_⌋)
 
+open import Data.Vec.Extra using (group′)
+
 open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
 open import PiWare.Interface using (Ix)
-open Atomic At using (Atom; Atom#; W; atom→n; n→atom)
+open Atomic At using (Atom#; W; atom→n; n→atom)
 \end{code}
 
 
@@ -108,7 +108,7 @@ instance
      down = concat ∘′ mapᵥ ⇓
            
      up : W (n * i) → Vec α n
-     up = mapᵥ ⇑ ∘′ group' n i
+     up = mapᵥ ⇑ ∘′ group′ n i
 \end{code}
 %</Synth-Vec>
 

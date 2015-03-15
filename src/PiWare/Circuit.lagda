@@ -39,7 +39,7 @@ data ℂ : {p : IsComb} → Ix → Ix → Set
 \begin{code}
 data ℂ where
     Nil   : ∀ {n}   → 𝐂 n zero
-    Gate  : ∀ g#    → 𝐂 (|in| g#) (|out| g#)
+    Gate  : ∀ g     → 𝐂 (|in| g) (|out| g)
     Plug  : ∀ {i o} → (Fin o → Fin i) → 𝐂 i o
 
     DelayLoop : ∀ {i o l} → ℂ {σ} (i + l) (o + l) → ℂ {ω} i o

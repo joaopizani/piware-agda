@@ -18,7 +18,7 @@ record Gates : Set where
     field
         |Gates|    : ℕ
         |in| |out| : Fin |Gates| → Ix
-        spec       : (g# : Fin |Gates|) → (W (|in| g#) → W (|out| g#))
+        spec       : (g : Fin |Gates|) → (W (|in| g) → W (|out| g))
 
     Gate# = Fin |Gates|
 \end{code}
