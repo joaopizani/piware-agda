@@ -11,7 +11,7 @@ open Preorder P using (_∼_; _≈_; refl; trans; reflexive) renaming (Carrier t
 \begin{code}
 infix 4 _IsRelatedTo_
 infix 3 _∎
-infix 2 _∼⟨_⟩_ _≈⟨_⟩_ _≈⟨⟩_
+infixr 2 _∼⟨_⟩_ _≈⟨_⟩_ _≈⟨⟩_
 infix 1 begin_
 
 data _IsRelatedTo_ {i₁ i₂} (x : A i₁) (y : A i₂) : Set (suc ℓ₂) where
