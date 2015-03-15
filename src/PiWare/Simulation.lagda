@@ -2,12 +2,11 @@
 open import PiWare.Atom using (Atomic; module Atomic)
 open import PiWare.Gates using (Gates; module Gates)
 
-
 module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘′_; const; flip)
 open import Data.Nat using (_+_)
-open import Data.Fin using (Fin) renaming (zero to Fz)
+open import Data.Fin using () renaming (zero to Fz)
 open import Data.Product using (_,_; uncurry′) renaming (map to mapₚ)
 open import Data.Sum using (inj₁; inj₂; [_,_]′)
 open import Data.Stream using (Stream)
@@ -17,19 +16,18 @@ open import Data.CausalStream using (_⇒ᶜ_; runᶜ; tailsᶜ)
 open import Data.Vec.Extra using (splitAt′)
 open import Data.List.NonEmpty using (head)
 open import Data.List.NonEmpty.Extra using (unzip⁺; splitAt⁺; uncurry⁺)
-open import Data.Vec
-  using (Vec; _++_; lookup; replicate; allFin; drop; tabulate) renaming ([] to ε; take to takeᵥ)
+open import Data.Vec using (Vec; _++_; lookup; replicate; drop; tabulate) renaming ([] to ε; take to takeᵥ)
 
 open Atomic At using (W; n→atom)
 open Gates At Gt using (|in|; |out|; spec)
 open import PiWare.Synthesizable At using (untag; untagList)
 open import PiWare.Circuit Gt using (ℂ; σ)
-open import PiWare.Circuit.Algebra Gt
-  using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyNil★; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty⑆★)
+open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyNil★; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty⑆★)
 \end{code}
 
 
 %<*Word-function>
+\AgdaTarget{W⟶W}
 \begin{code}
 W⟶W : ∀ m n → Set
 W⟶W m n = W m → W n
@@ -48,6 +46,7 @@ sum-comb : Ty⑆★ W⟶W
 %</combinator-Word-function-types>
 
 %<*combinator-Word-function-defs>
+\AgdaTarget{nil,gate,plug,seq-comb,par-comb,sum-comb}
 \begin{code}
 nil                 = const ε
 gate                = spec
@@ -59,6 +58,7 @@ sum-comb {i₁} f₁ f₂ = [ f₁ , f₂ ]′ ∘′ untag {i₁}
 %</combinator-Word-function-defs>
 
 %<*simulation-combinational-algebra>
+\AgdaTarget{simulation-combinational★}
 \begin{code}
 simulation-combinational★ : ℂσ★ {W⟶W}
 simulation-combinational★ = record
@@ -68,6 +68,7 @@ simulation-combinational★ = record
 %</simulation-combinational-algebra>
 
 %<*simulation-combinational>
+\AgdaTarget{⟦\_⟧}
 \begin{code}
 ⟦_⟧ : ∀ {i o} → ℂ i o → W⟶W i o
 ⟦_⟧ = cataℂσ simulation-combinational★
@@ -77,6 +78,7 @@ simulation-combinational★ = record
 
 
 %<*Word-causal-function>
+\AgdaTarget{W⇒ᶜW}
 \begin{code}
 W⇒ᶜW : ∀ i o → Set
 W⇒ᶜW i o = W i ⇒ᶜ W o
@@ -85,16 +87,18 @@ W⇒ᶜW i o = W i ⇒ᶜ W o
 
 -- TODO: Now it's hardcoded to pad the sequence with th first element being (replicate (n→atom Fz))
 %<*delay>
+\AgdaTarget{delay}
 \begin{code}
 delay : ∀ o {i l} → W⟶W (i + l) (o + l) → W⇒ᶜW i (o + l)
-delay o {i} {l} = uncurry⁺ ∘′ delay' o {i} {l}
-  where delay' : ∀ o {i l} → W⟶W (i + l) (o + l) → W i → List (W i) → W (o + l)
-        delay' _ f w⁰ []         = f (w⁰ ++ replicate (n→atom Fz))
-        delay' o f w⁰ (w⁻¹ ∷ w⁻) = f (w⁰ ++ drop o (delay' o f w⁻¹ w⁻))
+delay o {i} {l} = uncurry⁺ ∘′ delay′ o {i} {l}
+  where delay′ : ∀ o {i l} → W⟶W (i + l) (o + l) → W i → List (W i) → W (o + l)
+        delay′ _ f w⁰ []         = f (w⁰ ++ replicate (n→atom Fz))
+        delay′ o f w⁰ (w⁻¹ ∷ w⁻) = f (w⁰ ++ drop o (delay′ o f w⁻¹ w⁻))
 \end{code}
 %</delay>
 
 %<*delay-seq>
+\AgdaTarget{delay-seq}
 \begin{code}
 delay-seq : ∀ {i o l} → W⟶W (i + l) (o + l) → W⇒ᶜW i o
 delay-seq {_} {o} f = takeᵥ o ∘′ delay o f
@@ -110,6 +114,7 @@ sum-seq : Ty⑆★ W⇒ᶜW
 %</combinator-word-causal-function-types>
 
 %<*combinator-word-causal-function-defs>
+\AgdaTarget{seq-seq,par-seq,sum-seq}
 \begin{code}
 seq-seq      f₁ f₂ = f₂ ∘′ map⁺ f₁ ∘′ tailsᶜ
 par-seq {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ unzip⁺ ∘′ splitAt⁺ i₁
@@ -121,6 +126,7 @@ sum-seq {i₁} f₁ f₂ (w⁰ ∷ w⁻) | inj₂ w⁰₂         | _   , w⁻�
 %</combinator-word-causal-function-defs>
 
 %<*simulation-causal-algebra>
+\AgdaTarget{simulation-sequential★}
 \begin{code}
 simulation-sequential★ : ℂ★ {W⟶W} {W⇒ᶜW}
 simulation-sequential★ = record
@@ -132,6 +138,7 @@ simulation-sequential★ = record
 %</simulation-causal-algebra>
 
 %<*simulation-causal>
+\AgdaTarget{⟦\_⟧ᶜ}
 \begin{code}
 ⟦_⟧ᶜ : ∀ {i o} → ℂ i o → (W i ⇒ᶜ W o)
 ⟦_⟧ᶜ = cataℂ simulation-combinational★ simulation-sequential★
@@ -139,6 +146,7 @@ simulation-sequential★ = record
 %</simulation-causal>
 
 %<*simulation-sequential>
+\AgdaTarget{⟦\_⟧*}
 \begin{code}
 ⟦_⟧* : ∀ {i o} → ℂ i o → (Stream (W i) → Stream (W o))
 ⟦_⟧* = runᶜ ∘′ ⟦_⟧ᶜ

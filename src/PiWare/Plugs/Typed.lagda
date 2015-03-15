@@ -4,16 +4,13 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Plugs.Typed {At : Atomic} (Gt : Gates At) where
 
-open import Function using (_$_)
 open import Data.Nat using (suc; _+_; _*_)
 open import Data.Vec using (Vec)
-open import Data.Product using (_×_; proj₂)
+open import Data.Product using (_×_)
 
-open import Algebra as A
-open import Data.Nat.Properties as N
-open A.CommutativeSemiring N.commutativeSemiring using (+-identity)
-open import Algebra.Operations (A.CommutativeSemiring.semiring N.commutativeSemiring) using (_^_)
-open import Relation.Binary.PropositionalEquality using (cong; sym)
+open import Algebra using (module CommutativeSemiring)
+open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
+open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
 open import PiWare.Circuit.Typed Gt using (𝐂̂; Mkℂ̂)

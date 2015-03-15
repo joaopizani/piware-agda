@@ -40,7 +40,8 @@ AGDA_MODULES=Data/CausalStream \
              PiWare/Samples/RippleCarry \
              PiWare/Samples/RippleCarry/Typed \
              PiWare/ProofSamples/BoolTrioComb \
-             PiWare/ProofSamples/AndN
+             PiWare/ProofSamples/AndN \
+			 PiWare/ProofSamples/AndN/Typed
 
 
 

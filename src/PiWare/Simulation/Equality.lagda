@@ -15,7 +15,7 @@ open import Relation.Binary.Indexed.Core using (Setoid; IsEquivalence)
 
 import Relation.Binary.Indexed.EqReasoning as IdxEqReasoning
 
-open import PiWare.Circuit Gt using (ℂ; σ)
+open import PiWare.Circuit Gt using (ℂ)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open Atomic At using (W)
 \end{code}
@@ -90,7 +90,7 @@ infixl 3 _≋_
 %<*Circ-eq-isEquivalence>
 \AgdaTarget{≋-isEquivalence}
 \begin{code}
-≋-isEquivalence : IsEquivalence (uncurry (ℂ {σ})) _≋_
+≋-isEquivalence : IsEquivalence (uncurry ℂ) _≋_
 ≋-isEquivalence = record
   { refl  = ≋-refl
   ; sym   = ≋-sym
@@ -104,7 +104,7 @@ infixl 3 _≋_
 \begin{code}
 ≋-setoid : Setoid (ℕ × ℕ) _ _
 ≋-setoid = record
-  { Carrier       = uncurry (ℂ {σ})
+  { Carrier       = uncurry ℂ
   ; _≈_           = _≋_
   ; isEquivalence = ≋-isEquivalence
   }

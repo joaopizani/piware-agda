@@ -6,10 +6,8 @@ module PiWare.Circuit.Typed {At : Atomic} (Gt : Gates At) where
 
 open import Data.Nat using (ℕ; suc; _+_; _⊔_)
 open import Data.Fin using (Fin) renaming (zero to Fz)
-open import Data.Bool using (_∧_)
 open import Data.Product using (_×_)
 open import Data.Sum using (_⊎_)
-open import Data.String using (String)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Interface using (Ix)

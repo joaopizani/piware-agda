@@ -40,7 +40,7 @@ proj₂′ = proj₁ ∘ proj₂
 
 
 %<*splitAt-noproof>
-\AgdaTarget{splitAt'}
+\AgdaTarget{splitAt′}
 \begin{code}
 splitAt′ : ∀ {ℓ} {α : Set ℓ} m {n} → Vec α (m + n) → Vec α m × Vec α n
 splitAt′ m v = map id proj₁ (splitAt m v)
@@ -88,10 +88,10 @@ proj₁∘splitAt-last≈ {v = v} v≈w = transᵥ (proj₁∘splitAt-last v) v�
 
 
 %<*group-noproof>
-\AgdaTarget{group'}
+\AgdaTarget{group′}
 \begin{code}
-group' : ∀ {ℓ} {α : Set ℓ} n k → Vec α (n * k) → Vec (Vec α k) n
-group' n k = proj₁ ∘ group n k
+group′ : ∀ {ℓ} {α : Set ℓ} n k → Vec α (n * k) → Vec (Vec α k) n
+group′ n k = proj₁ ∘ group n k
 \end{code}
 %</group-noproof>
 

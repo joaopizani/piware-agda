@@ -10,8 +10,8 @@ open import PiWare.Circuit.Typed BoolTrio using (ℂ̂; Mkℂ̂)
 open import PiWare.Samples.BoolTrioSeq using (shift; toggle; reg)
 
 open import PiWare.Atom.Bool using (Atomic-B)
-open import PiWare.Synthesizable Atomic-B using ()  -- only instances
-open import PiWare.Synthesizable.Bool using ()  -- only instances
+open import PiWare.Synthesizable Atomic-B using ()
+open import PiWare.Synthesizable.Bool using ()
 \end{code}
 
 

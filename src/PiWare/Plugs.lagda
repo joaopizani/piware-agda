@@ -12,9 +12,9 @@ open import PiWare.Plugs.Functions
     using ( swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
           ; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
 
-import Algebra as A
-import Data.Nat.Properties as N
-open import Algebra.Operations (A.CommutativeSemiring.semiring N.commutativeSemiring) using (_^_)
+open import Algebra using (module CommutativeSemiring)
+open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
+open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 \end{code}
 
 

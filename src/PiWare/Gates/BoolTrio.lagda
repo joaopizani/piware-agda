@@ -37,8 +37,14 @@ pattern Absurd# n = Fs (Fs (Fs (Fs (Fs n))))
 %<*ins-outs>
 \begin{code}
 |in| |out| : Fin |BoolTrio| → Ix
-|in| = λ { ⊥ℂ# → 0; ⊤ℂ# → 0; ¬ℂ# → 1; ∧ℂ# → 2; ∨ℂ# → 2; (Absurd# ()) }
 |out| _ = 1
+
+|in| ⊥ℂ#          = 0
+|in| ⊤ℂ#          = 0
+|in| ¬ℂ#          = 1
+|in| ∧ℂ#          = 2
+|in| ∨ℂ#          = 2
+|in| (Absurd# ())
 \end{code}
 %</ins-outs>
 
@@ -56,25 +62,26 @@ spec-or  (x ◁ y ◁ ε) = [ x ∨ y ]
 %<*spec>
 \AgdaTarget{spec}
 \begin{code}
-spec : (g : Fin |BoolTrio|) → (W (|in| g) → W (|out| g))
-spec ⊥ℂ# = const [ false ]
-spec ⊤ℂ# = const [ true  ]
-spec ¬ℂ# = spec-not
-spec ∧ℂ# = spec-and
-spec ∨ℂ# = spec-or
+spec : ∀ g → (W (|in| g) → W (|out| g))
+spec ⊥ℂ#          = const [ false ]
+spec ⊤ℂ#          = const [ true  ]
+spec ¬ℂ#          = spec-not
+spec ∧ℂ#          = spec-and
+spec ∨ℂ#          = spec-or
 spec (Absurd# ())
 \end{code}
 %</spec>
+
 
 %<*BoolTrio>
 \AgdaTarget{BoolTrio}
 \begin{code}
 BoolTrio : Gates
-BoolTrio = record {
-      |Gates| = |BoolTrio|
-    ; |in|    = |in|
-    ; |out|   = |out|
-    ; spec    = spec
-    }
+BoolTrio = record
+  { |Gates| = |BoolTrio|
+  ; |in|    = |in|
+  ; |out|   = |out|
+  ; spec    = spec
+  }
 \end{code}
 %</BoolTrio>

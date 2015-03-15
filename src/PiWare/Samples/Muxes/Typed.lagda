@@ -14,10 +14,10 @@ open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Synthesizable.Bool using ()
 open import PiWare.Synthesizable Atomic-B using (⇓W⇑)
 
-import Algebra as A
-import Data.Nat.Properties as N
-open A.CommutativeSemiring N.commutativeSemiring using (*-identity)
-*-identity-right = proj₂ *-identity
+open import Algebra using (module CommutativeSemiring)
+open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
+open CommutativeSemiring ℕ-commSemiring using (*-identity)
+*-identityᵣ = proj₂ *-identity
 \end{code}
 
 
@@ -39,6 +39,6 @@ postulate muxN̂-sβ : ∀ n → ⇓W⇑ (Vec B n) {n}
 \AgdaTarget{muxN}
 \begin{code}
 muxN̂ : ∀ n → 𝐂̂ (B × (Vec B n × Vec B n)) (Vec B n) {1 + ((n * 1) + (n * 1))} {n * 1}
-muxN̂ n rewrite *-identity-right n = Mkℂ̂ ⦃ muxN̂-sα n ⦄ ⦃ muxN̂-sβ n ⦄ (muxN n)
+muxN̂ n rewrite *-identityᵣ n = Mkℂ̂ ⦃ muxN̂-sα n ⦄ ⦃ muxN̂-sβ n ⦄ (muxN n)
 \end{code}
 %</muxN-typed>

@@ -47,7 +47,7 @@ getδ (s≤s z≤w) | δ , w≡z+δ = δ , cong suc w≡z+δ
 %</getDelta>
 
 
-%<*padToWithA>
+%<*padTo1WithA>
 \AgdaTarget{padTo₁\_withA\_}
 \begin{code}
 padTo₁_withA_ : ∀ {ℓ} {α : Set ℓ} {x} y → α → Vec α x → Vec α (x ⊔ y)
@@ -56,9 +56,9 @@ padTo₁_withA_ {x = x} y e v with x ⊔' y
 ... | max₂ x⊔y≡y x≤y rewrite x⊔y≡y with getδ x≤y
 ...     | δ , y≡x+δ rewrite y≡x+δ = v ++ replicate e
 \end{code}
-%</padToWithA>
+%</padTo1WithA>
 
-%<*padSnd>
+%<*padTo2WithA>
 \AgdaTarget{padTo₂\_withA\_}
 \begin{code}
 padTo₂_withA_ : ∀ {ℓ} {α : Set ℓ} {y} x → α → Vec α y → Vec α (x ⊔ y)
@@ -67,9 +67,9 @@ padTo₂_withA_ {y = y} x e v with x ⊔' y
 ... | max₁ x⊔y≡x y≤x rewrite x⊔y≡x with getδ y≤x
 ...     | δ , x≡y+δ rewrite x≡y+δ = v ++ replicate e
 \end{code}
-%</padSnd>
+%</padTo2WithA>
 
-%<*unpadFst>
+%<*unpadFrom1>
 \AgdaTarget{unpadFrom₁}
 \begin{code}
 unpadFrom₁ : ∀ {ℓ} {α : Set ℓ} {x} y → Vec α (x ⊔ y) → Vec α x
@@ -78,9 +78,9 @@ unpadFrom₁ {x = x} y v with x ⊔' y
 ... | max₂ x⊔y≡y x≤y rewrite x⊔y≡y with getδ x≤y
 ...                                | _ , y≡x+δ rewrite y≡x+δ = take x v
 \end{code}
-%</unpadFst>
+%</unpadFrom1>
 
-%<*unpadSnd>
+%<*unpadFrom2>
 \AgdaTarget{unpadFrom₂}
 \begin{code}
 unpadFrom₂ : ∀ {ℓ} {α : Set ℓ} {y} x → Vec α (x ⊔ y) → Vec α y
@@ -89,4 +89,4 @@ unpadFrom₂ {y = y} x v with x ⊔' y
 ... | max₁ x⊔y≡x y≤x rewrite x⊔y≡x with getδ y≤x
 ...                                | _ , x≡y+δ rewrite x≡y+δ = take y v
 \end{code}
-%</unpadSnd>
+%</unpadFrom2>

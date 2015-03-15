@@ -6,15 +6,11 @@ module PiWare.Patterns {At : Atomic} (Gt : Gates At) where
 
 open import Function using (const; _∘′_; _$_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Bool using (Bool; true; _∧_)
+open import Data.Bool using (Bool)
 open import Data.Vec using (Vec; []; _∷_; replicate; foldr; map)
-open import Data.Product using (proj₂)
+open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
 
-import Algebra as A
-import Data.Nat.Properties as N
-open A.CommutativeSemiring N.commutativeSemiring using (+-identity)
-
-open import PiWare.Circuit Gt using (ℂ; IsComb; Nil; _⟫_; _∥_)
+open import PiWare.Circuit Gt using (ℂ; Nil; _⟫_; _∥_)
 open import PiWare.Plugs Gt using (id⤨)
 \end{code}
 
@@ -62,6 +58,6 @@ seqsN k = seqs ∘′ replicate {n = k}
 %<*row>
 \AgdaTarget{row}
 row : ∀ {k i o h p} → ℂ {p} (h + i) (o + h) → ℂ {p} (h + (k * i)) ((k * o) + h)
-row {zero}  {i} {o} {h} _ rewrite (proj₂ +-identity) h = id⤨'
+row {zero}  {i} {o} {h} _ rewrite +-identityᵣ h = id⤨'
 row {suc k} {i} {o} {h} c' = {!row {k} {i} {o} {h} c'!}
 %</row>
