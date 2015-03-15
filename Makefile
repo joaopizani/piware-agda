@@ -24,6 +24,8 @@ AGDA_MODULES=Data/CausalStream \
              PiWare/Plugs \
              PiWare/Plugs/Typed \
              PiWare/Simulation \
+             PiWare/Simulation/Equality \
+             PiWare/Simulation/Properties \
              PiWare/Simulation/Typed \
              PiWare/Patterns \
              PiWare/Patterns/Typed \

@@ -7,7 +7,7 @@ open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺; [
 open import Data.Product using (_×_; _,_; map)
 open import Data.List.Extra using (unzip)
 open import Data.Vec using (Vec)
-open import Data.Vec.Extra using (splitAt')
+open import Data.Vec.Extra using (splitAt′)
 \end{code}
 
 
@@ -33,7 +33,7 @@ uncurry⁺ f (x ∷ xs) = f x xs
 \AgdaTarget{splitAt⁺}
 \begin{code}
 splitAt⁺ : ∀ {ℓ} {α : Set ℓ} m {n} → List⁺ (Vec α (m + n)) → List⁺ (Vec α m × Vec α n)
-splitAt⁺ m = map⁺ (splitAt' m)
+splitAt⁺ m = map⁺ (splitAt′ m)
 \end{code}
 %</splitAt-nonempty>
 
