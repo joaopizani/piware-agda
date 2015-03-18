@@ -17,7 +17,6 @@ open import PiWare.Plugs Gt using (id⤨)
 
 -- Base case relies on the identity of _∥_:
 -- ∀ c' : Nil ∥ c' ≡⟦⟧  c'  (where _≡⟦⟧_ means "have same simulation semantics")
--- TODO: CAN WE combine here one ℂω with a lot of ℂX
 %<*pars>
 \AgdaTarget{pars}
 \begin{code}
@@ -55,9 +54,14 @@ seqsN k = seqs ∘′ replicate {n = k}
 %</seqsN>
 
 
+-- TODO
+\begin{code}
+\end{code}
 %<*row>
 \AgdaTarget{row}
+\begin{code}
 row : ∀ {k i o h p} → ℂ {p} (h + i) (o + h) → ℂ {p} (h + (k * i)) ((k * o) + h)
-row {zero}  {i} {o} {h} _ rewrite +-identityᵣ h = id⤨'
-row {suc k} {i} {o} {h} c' = {!row {k} {i} {o} {h} c'!}
+row {zero}  {i} {o} {h} _ rewrite +-identityᵣ h = id⤨
+row {suc k} {i} {o} {h} c = undefined where postulate undefined : _  -- row {k} {i} {o} {h} c
+\end{code}
 %</row>
