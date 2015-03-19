@@ -148,7 +148,7 @@ simulation-sequential★ = record
 %<*simulation-sequential>
 \AgdaTarget{⟦\_⟧*}
 \begin{code}
-⟦_⟧* : ∀ {i o} → ℂ i o → (Stream (W i) → Stream (W o))
-⟦_⟧* = runᶜ ∘′ ⟦_⟧ᶜ
+⟦_⟧ω : ∀ {i o} → ℂ i o → (Stream (W i) → Stream (W o))
+⟦_⟧ω = runᶜ ∘′ ⟦_⟧ᶜ
 \end{code}
 %</simulation-sequential>

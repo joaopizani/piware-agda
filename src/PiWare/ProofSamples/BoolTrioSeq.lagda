@@ -11,7 +11,7 @@ open import Data.Stream using (_∷_; head; tail; take; repeat; iterate; zipWith
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Simulation.Typed BoolTrio using (⟦_⟧̂*)
+open import PiWare.Simulation.Typed BoolTrio using (⟦_⟧̂ω)
 open import PiWare.Samples.BoolTrioSeq.Typed using (togglê; shift̂; reĝ)
 \end{code}
 
@@ -19,21 +19,21 @@ open import PiWare.Samples.BoolTrioSeq.Typed using (togglê; shift̂; reĝ)
 %<*toggle7>
 \AgdaTarget{toggle7̂}
 \begin{code}
-toggle7̂ = take 7 $ ⟦ togglê ⟧̂* (repeat tt)
+toggle7̂ = take 7 $ ⟦ togglê ⟧̂ω (repeat tt)
 \end{code}
 %</toggle7>
 
 %<*shift7>
 \AgdaTarget{shift7̂}
 \begin{code}
-shift7̂ = take 7 $ ⟦ shift̂ ⟧̂* (iterate not false)
+shift7̂ = take 7 $ ⟦ shift̂ ⟧̂ω (iterate not false)
 \end{code}
 %</shift7>
 
 %<*rhold>
 \AgdaTarget{rhold̂}
 \begin{code}
-rhold̂ = take 7 (⟦ reĝ ⟧̂* $
+rhold̂ = take 7 (⟦ reĝ ⟧̂ω $
                   zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))
                               (true ∷ ♯ repeat false))
 \end{code}
@@ -42,7 +42,7 @@ rhold̂ = take 7 (⟦ reĝ ⟧̂* $
 %<*rload>
 \AgdaTarget{rload̂}
 \begin{code}
-rload̂ = take 7 (⟦ reĝ ⟧̂* $
+rload̂ = take 7 (⟦ reĝ ⟧̂ω $
                   zipWith _,_ (true ∷ ♯ (true ∷ ♯ repeat false))
                               (false ∷ ♯ (true ∷ ♯ repeat false)) )
 \end{code}
@@ -52,14 +52,14 @@ rload̂ = take 7 (⟦ reĝ ⟧̂* $
 
 %<*proofShiftHead>
 \begin{code}
-proofShiftHead̂ : ∀ {x y zs} → head (⟦ shift̂ ⟧̂* (x ∷ ♯ (y ∷ ♯ zs)) ) ≡ false
+proofShiftHead̂ : ∀ {x y zs} → head (⟦ shift̂ ⟧̂ω (x ∷ ♯ (y ∷ ♯ zs)) ) ≡ false
 proofShiftHead̂ = refl
 \end{code}
 %</proofShiftHead>
 
 %<*proofShiftTail>
 \begin{code}
-proofShiftTail̂ : ∀ {ins} → tail (⟦ shift̂ ⟧̂* ins) ≈ ins
+proofShiftTail̂ : ∀ {ins} → tail (⟦ shift̂ ⟧̂ω ins) ≈ ins
 proofShiftTail̂ {true ∷ xs} = {!!}
 proofShiftTail̂ {false ∷ xs} = {!!}
 \end{code}
