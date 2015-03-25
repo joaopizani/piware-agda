@@ -8,7 +8,7 @@ open import Function using (id)
 open import Data.Nat using (ℕ; suc; _+_; _*_)
 
 open import PiWare.Circuit Gt using (𝐂; Plug)
-open import PiWare.Plugs.Functions
+open import PiWare.Plugs.Core
     using ( swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
           ; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
 

@@ -8,7 +8,7 @@ open import Data.Fin using (Fin)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Circuit BoolTrio using (𝐂; _⟫_; _∥_; Plug; Nil)
 open import PiWare.Plugs BoolTrio using (fork×⤨; id⤨; fst⤨; snd⤨)
-open import PiWare.Plugs.Functions using (_⟫⤪_; _|⤪_; fork×⤪; ALR⤪; ARL⤪; intertwine⤪; swap⤪)
+open import PiWare.Plugs.Core using (_⟫⤪_; _|⤪_; fork×⤪; ALR⤪; ARL⤪; intertwine⤪; swap⤪)
 open import PiWare.Samples.BoolTrioComb using (¬ℂ; ∧ℂ; ∨ℂ)
 \end{code}
 
