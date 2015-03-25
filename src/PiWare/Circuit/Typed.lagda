@@ -11,6 +11,7 @@ open import Data.Sum using (_⊎_)
 open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Interface using (Ix)
+open import PiWare.Plugs.Core using (_⤪_)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 import PiWare.Circuit as Circ
 open Circ Gt using (ℂ; IsComb; Nil; Gate; Plug; DelayLoop; _⟫_; _∥_; _⑆_)
@@ -64,7 +65,7 @@ gateℂ̂ g# ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (Gate g#)
 %<*plugC>
 \AgdaTarget{plugℂ̂}
 \begin{code}
-plugℂ̂ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → (Fin j → Fin i) → 𝐂̂ α β {i} {j}
+plugℂ̂ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → i ⤪ j → 𝐂̂ α β {i} {j}
 plugℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ f = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (Plug f)
 \end{code}
 %</plugC>

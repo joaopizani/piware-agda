@@ -8,6 +8,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
 
 open import PiWare.Interface using (Ix)
+open import PiWare.Plugs.Core using (_⤪_)
 open Gates At Gt using (|in|; |out|)
 \end{code}
 
@@ -40,7 +41,7 @@ data ℂ : {p : IsComb} → Ix → Ix → Set
 data ℂ where
     Nil   : ∀ {n}   → 𝐂 n zero
     Gate  : ∀ g     → 𝐂 (|in| g) (|out| g)
-    Plug  : ∀ {i o} → (Fin o → Fin i) → 𝐂 i o
+    Plug  : ∀ {i o} → i ⤪ o → 𝐂 i o
 
     DelayLoop : ∀ {i o l} → ℂ {σ} (i + l) (o + l) → ℂ {ω} i o
 

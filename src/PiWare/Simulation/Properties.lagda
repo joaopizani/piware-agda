@@ -25,6 +25,7 @@ open import Data.Vec.Extra
   using (proj₁∘splitAt-last≈; ++-assoc; ++-assoc-split₁; ++-assoc-split₂; ++-assoc-split₃; splitAt-++; ₁; ₂′)
 
 open Atomic At using (W)
+open import PiWare.Plugs.Core using (_⤪_)
 open import PiWare.Plugs Gt using (id⤨)
 open import PiWare.Circuit Gt using (ℂ; Nil; Plug; _⟫_; _∥_)
 open import PiWare.Simulation Gt using (⟦_⟧)
@@ -57,7 +58,7 @@ private
 %<*plug-seq-compose>
 \AgdaTarget{plug-∘}
 \begin{code}
-plug-∘ : ∀ {i m o} (f : Fin m → Fin i) (g : Fin o → Fin m) → Plug f ⟫ Plug g ≋ Plug (f ∘ g)
+plug-∘ : ∀ {i m o} (f : i ⤪ m) (g : m ⤪ o) → Plug f ⟫ Plug g ≋ Plug (f ∘ g)
 plug-∘ f g = ≅⇒≋ $ from-≡ ∘ λ w → tabulate-ext (λ x → lookup∘tabulate (λ y → lookup (f y) w) (g x))
 \end{code}
 %</plug-seq-compose>
@@ -65,7 +66,7 @@ plug-∘ f g = ≅⇒≋ $ from-≡ ∘ λ w → tabulate-ext (λ x → lookup�
 %<*plug-ext>
 \AgdaTarget{plug-ext}
 \begin{code}
-plug-ext : ∀ {i o} {f : Fin o → Fin i} {g : Fin o → Fin i} → (∀ x → f x ≡ g x) → Plug f ≋ Plug g
+plug-ext : ∀ {i o} {f : i ⤪ o} {g : i ⤪ o} → (∀ x → f x ≡ g x) → Plug f ≋ Plug g
 plug-ext f≡g = ≅⇒≋ $ from-≡ ∘ λ w → tabulate-ext (cong (vec2fun w) ∘ f≡g)
   where vec2fun = flip lookup
 \end{code}
@@ -74,7 +75,7 @@ plug-ext f≡g = ≅⇒≋ $ from-≡ ∘ λ w → tabulate-ext (cong (vec2fun w
 %<*plug-inverse>
 \AgdaTarget{plugs⁻¹}
 \begin{code}
-plugs⁻¹ : ∀ {i o} {f : Fin o → Fin i} {g : Fin i → Fin o} → (∀ x → f (g x) ≡ x) → Plug f ⟫ Plug g ≋ id⤨
+plugs⁻¹ : ∀ {i o} {f : i ⤪ o} {g : o ⤪ i} → (∀ x → f (g x) ≡ x) → Plug f ⟫ Plug g ≋ id⤨
 plugs⁻¹ {f = f} {g} f∘g≡id =
   begin
     Plug f ⟫ Plug g  ≋⟨ plug-∘ f g ⟩

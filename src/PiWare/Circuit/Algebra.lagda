@@ -8,6 +8,7 @@ open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
 
 open import PiWare.Interface using (Ix)
+open import PiWare.Plugs.Core using (_⤪_)
 open import PiWare.Circuit Gt using (ℂ; σ; Nil; Gate; Plug; DelayLoop; _⟫_; _∥_; _⑆_)
 open Gates At Gt using (|in|; |out|)
 \end{code}
@@ -16,9 +17,9 @@ open Gates At Gt using (|in|; |out|)
 %<*combinator-types-parameterized>
 \begin{code}
 TyNil★ TyGate★ TyPlug★ Ty⟫★ Ty∥★ Ty⑆★ : (Ix → Ix → Set) → Set
-TyNil★  F = ∀ {n}                     → F n zero
-TyGate★ F = ∀ g#                      → F (|in| g#) (|out| g#)
-TyPlug★ F = ∀ {i o} → (Fin o → Fin i) → F i o
+TyNil★  F = ∀ {n}            → F n zero
+TyGate★ F = ∀ g#             → F (|in| g#) (|out| g#)
+TyPlug★ F = ∀ {i o} → i ⤪ o → F i o
 Ty⟫★    F = ∀ {i m o}       → F i m   → F m o   → F i o
 Ty∥★    F = ∀ {i₁ o₁ i₂ o₂} → F i₁ o₁ → F i₂ o₂ → F (i₁ + i₂) (o₁ + o₂)
 Ty⑆★    F = ∀ {i₁ i₂ o}     → F i₁ o  → F i₂ o  → F (suc (i₁ ⊔ i₂)) o

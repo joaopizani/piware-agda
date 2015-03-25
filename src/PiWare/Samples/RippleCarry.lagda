@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.Samples.RippleCarry where
 
-open import Function using (id)
+open import Function using (id; _$_)
 open import Data.Nat using (zero; suc; _+_; _*_)
 open import Data.Fin using (Fin)
 
@@ -27,7 +27,7 @@ ripple (suc m) =
   ⟫     id⤨ {1}  ∥  ripple m
   ⟫       ARL⤨ {1} {m * 1} {1}
   where
-    assoc⤨ =    Plug (ARL⤪ {1} {1 + 1} {m * 1 + m * 1}
-             ⟫⤪ ARL⤪ {1} {1} {1} |⤪ id {A = Fin (m * 1 + m * 1)})
+    assoc⤨ = Plug $    ARL⤪ {1} {1 + 1} {m * 1 + m * 1}
+                    ⟫⤪ ARL⤪ {1} {1} {1} |⤪ id {A = Fin (m * 1 + m * 1)}
 \end{code}
 %</ripple>
