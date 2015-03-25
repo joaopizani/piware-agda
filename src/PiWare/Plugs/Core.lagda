@@ -1,5 +1,5 @@
 \begin{code}
-module PiWare.Plugs.Functions where
+module PiWare.Plugs.Core where
 
 open import Function using (id; _∘′_; _$_)
 open import Data.Fin using (Fin; toℕ; inject+; raise; reduce≥; fromℕ≤)

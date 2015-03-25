@@ -6,7 +6,7 @@ open import Data.Fin using (Fin)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Circuit BoolTrio using (ℂ; Plug; DelayLoop; _⟫_)
-open import PiWare.Plugs.Functions using (_⟫⤪_; _|⤪_; swap⤪; ALR⤪)
+open import PiWare.Plugs.Core using (_⟫⤪_; _|⤪_; swap⤪; ALR⤪)
 open import PiWare.Plugs BoolTrio using (swap⤨; fork×⤨)
 open import PiWare.Samples.BoolTrioComb using (¬ℂ; ⊥ℂ; ∨ℂ)
 open import PiWare.Samples.Muxes using (mux)

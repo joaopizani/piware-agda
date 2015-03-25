@@ -20,7 +20,7 @@ AGDA_MODULES=Data/CausalStream \
              PiWare/Circuit \
              PiWare/Circuit/Algebra \
              PiWare/Circuit/Typed \
-             PiWare/Plugs/Functions \
+             PiWare/Plugs/Core \
              PiWare/Plugs \
              PiWare/Plugs/Typed \
              PiWare/Simulation \

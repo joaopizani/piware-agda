@@ -5,7 +5,7 @@ open import Function using (id)
 open import Data.Nat using (zero; suc; _+_; _*_)
 open import Data.Fin using (Fin)
 
-open import PiWare.Plugs.Functions using (_|⤪_; _⟫⤪_; fst⤪; swap⤪; ARL⤪)
+open import PiWare.Plugs.Core using (_|⤪_; _⟫⤪_; fst⤪; swap⤪; ARL⤪)
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Circuit BoolTrio using (𝐂; Plug; _⟫_; _∥_)
 open import PiWare.Plugs BoolTrio using (id⤨; intertwine⤨; ALR⤨; ARL⤨; uncons⤨; cons⤨)
