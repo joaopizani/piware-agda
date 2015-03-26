@@ -9,7 +9,7 @@ open import Data.Nat using (ℕ; suc; _+_; _*_)
 
 open import PiWare.Circuit Gt using (𝐂; Plug)
 open import PiWare.Plugs.Core
-    using ( swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
+    using ( id⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
           ; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
 
 open import Algebra using (module CommutativeSemiring)
@@ -22,7 +22,7 @@ open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) u
 \AgdaTarget{id⤨}
 \begin{code}
 id⤨ : ∀ {n} → 𝐂 n n
-id⤨ = Plug id
+id⤨ = Plug id⤪
 \end{code}
 %</id-plug>
 
