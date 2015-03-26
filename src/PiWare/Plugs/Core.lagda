@@ -1,16 +1,12 @@
 \begin{code}
 module PiWare.Plugs.Core where
 
-open import Function using (id; _∘′_; _$_; flip)
-open import Data.Fin using (Fin; toℕ; inject+; raise; reduce≥; fromℕ≤)
+open import Function using (id; _$_; flip)
+open import Data.Fin using (Fin; toℕ; inject+; raise)
 open import Data.Vec using (Vec; map; _++_; lookup; tabulate)
 open import Data.Nat.DivMod using (_mod_)
-open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]′)
-open import Data.Nat using (zero; suc; _+_; _*_; _≤?_; _≟_; _≥_; z≤n; s≤s; _≮_)
+open import Data.Nat using (zero; suc; _+_; _*_)
 
-open import Relation.Nullary using (yes; no)
-open import Relation.Nullary.Negation using (contradiction)
-open import Relation.Nullary.Decidable using (fromWitnessFalse)
 open import Relation.Binary.PropositionalEquality using (cong; sym; refl; _≡_; module ≡-Reasoning)
 open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_)
 
@@ -27,31 +23,50 @@ open import PiWare.Interface using (Ix)
 \end{code}
 
 
+%<*Plug-type>
 \begin{code}
 infix 8 _⤪_
 
 _⤪_ : Ix → Ix → Set
 i ⤪ o = Vec (Fin i) o
+\end{code}
+%</Plug-type>
 
+
+%<*Plug-par>
+\begin{code}
+infixr 7 _|⤪_
 
 _|⤪_ : ∀ {a b c d} → a ⤪ b → c ⤪ d → (a + c) ⤪ (b + d)
 _|⤪_ {a} {b} {c} {d} f g = map (inject+ c) f ++ map (raise a) g
+\end{code}
+%</Plug-par>
+
+%<*Plug-seq>
+\begin{code}
+infixr 6 _⟫⤪_
 
 _⟫⤪_ : ∀ {a b c} → a ⤪ b → b ⤪ c → a ⤪ c
 f ⟫⤪ g = map (flip lookup f) g
-
-infixr 6 _⟫⤪_
-infixr 7 _|⤪_
 \end{code}
+%<*Plug-seq>
 
 
+%<*id-fin>
+\begin{code}
+id⤪ : ∀ {n} → n ⤪ n
+id⤪ = tabulate id
+\end{code}
+%</id-fin>
+
+
+-- TODO: fix this
 %<*swap-fin>
 \AgdaTarget{swap⤪}
 \begin{code}
---swap⤪ : ∀ {n m} → (n + m) ⤪ (m + n)
---swap⤪ {n} {m} x with n + m ≟ 0
---swap⤪ {n} {m} x | yes _ rewrite +-comm n m = x
---swap⤪ {n} {m} x | no ¬z = _mod_ (toℕ x + m) (n + m) {fromWitnessFalse ¬z}
+swap⤪ : ∀ {n m} → (n + m) ⤪ (m + n)
+swap⤪ {n} {zero}  rewrite +-identityᵣ n = id⤪
+swap⤪ {n} {suc m} = ⊥′ where postulate ⊥′ : _
 \end{code}
 %</swap-fin>
 
@@ -60,7 +75,7 @@ infixr 7 _|⤪_
 \AgdaTarget{ALR⤪}
 \begin{code}
 ALR⤪ : ∀ {w v y} → ((w + v) + y) ⤪ (w + (v + y))
-ALR⤪ {w} {v} {y} rewrite +-assoc w v y = tabulate id
+ALR⤪ {w} {v} {y} rewrite +-assoc w v y = id⤪
 \end{code}
 %</ALR-fin>
 
@@ -69,7 +84,7 @@ ALR⤪ {w} {v} {y} rewrite +-assoc w v y = tabulate id
 \AgdaTarget{ARL⤪}
 \begin{code}
 ARL⤪ : ∀ {w v y} → (w + (v + y)) ⤪ ((w + v) + y)
-ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = tabulate id
+ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = id⤪
 \end{code}
 %</ARL-fin>
 
@@ -77,12 +92,12 @@ ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = tabulate id
 %<*intertwine-fin>
 \AgdaTarget{intertwine⤪}
 \begin{code}
---intertwine⤪ : ∀ {a b c d} → ((a + b) + (c + d)) ⤪ ((a + c) + (b + d))
---intertwine⤪ {a} {b} {c} {d} =    ALR⤪ {a} {b} {c + d}
---                              ⟫⤪ id {A = Fin a}  |⤪  ARL⤪ {b}
---                              ⟫⤪ id {A = Fin a}  |⤪  swap⤪ {b} {c} |⤪ id
---                              ⟫⤪ id {A = Fin a}  |⤪  ALR⤪ {c}
---                              ⟫⤪ ARL⤪ {a} {c} {b + d}
+intertwine⤪ : ∀ {a b c d} → ((a + b) + (c + d)) ⤪ ((a + c) + (b + d))
+intertwine⤪ {a} {b} {c} {d} =    ALR⤪ {a} {b} {c + d}
+                              ⟫⤪ id⤪ {a}  |⤪  ARL⤪ {b}
+                              ⟫⤪ id⤪ {a}  |⤪  swap⤪ {b} {c} |⤪ id⤪ {d}
+                              ⟫⤪ id⤪ {a}  |⤪  ALR⤪ {c}
+                              ⟫⤪ ARL⤪ {a} {c} {b + d}
 \end{code}
 %</intertwine-fin>
 
@@ -90,8 +105,8 @@ ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = tabulate id
 %<*head-fin>
 \AgdaTarget{head⤪}
 \begin{code}
---head⤪ : ∀ {n w} → (suc n * w) ⤪ w
---head⤪ {n} {w} = inject+ (n * w)
+head⤪ : ∀ {n w} → (suc n * w) ⤪ w
+head⤪ {n} {w} = tabulate $ inject+ (n * w)
 \end{code}
 %</head-fin>
 
@@ -99,8 +114,8 @@ ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = tabulate id
 %<*uncons-fin>
 \AgdaTarget{uncons⤪}
 \begin{code}
---uncons⤪ : ∀ {i n} → (suc n * i) ⤪ (i + n * i)
---uncons⤪ = id
+uncons⤪ : ∀ {i n} → (suc n * i) ⤪ (i + n * i)
+uncons⤪ = id⤪
 \end{code}
 %</uncons-fin>
 
@@ -108,8 +123,8 @@ ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = tabulate id
 %<*cons-fin>
 \AgdaTarget{cons⤪}
 \begin{code}
---cons⤪ : ∀ {i n} → (i + n * i) ⤪ (suc n * i)
---cons⤪ = id
+cons⤪ : ∀ {i n} → (i + n * i) ⤪ (suc n * i)
+cons⤪ = id⤪
 \end{code}
 %</cons-fin>
 
@@ -117,51 +132,51 @@ ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = tabulate id
 %<*singleton-fin>
 \AgdaTarget{singleton⤪}
 \begin{code}
---singleton⤪ : ∀ {w} → w ⤪ (1 * w)
---singleton⤪ {w} rewrite +-identityᵣ w = id
+singleton⤪ : ∀ {w} → w ⤪ (1 * w)
+singleton⤪ {w} rewrite +-identityᵣ w = id⤪
 \end{code}
 %</singleton-fin>
 
 
 \begin{code}
---twiceSuc : ∀ n w → w + (n + suc n) * w ≡ w + n * w + (w + n * w)
---twiceSuc = solve 2 eq refl where
---  eq = λ n w → w :+ (n :+ (con 1 :+ n)) :* w := w :+ n :* w :+ (w :+ n :* w)
+twiceSuc : ∀ n w → w + (n + suc n) * w ≡ w + n * w + (w + n * w)
+twiceSuc = solve 2 eq refl where
+  eq = λ n w → w :+ (n :+ (con 1 :+ n)) :* w := w :+ n :* w :+ (w :+ n :* w)
 \end{code}
 
 %<*vecHalf-fin>
 \AgdaTarget{vecHalf⤪}
 \begin{code}
---vecHalf⤪ : ∀ {n w} → ((2 * suc n) * w) ⤪ (suc n * w + suc n * w)
---vecHalf⤪ {n} {w} rewrite +-identityᵣ n | twiceSuc n w = id
+vecHalf⤪ : ∀ {n w} → ((2 * suc n) * w) ⤪ (suc n * w + suc n * w)
+vecHalf⤪ {n} {w} rewrite +-identityᵣ n | twiceSuc n w = id⤪
 \end{code}
 %</vecHalf-fin>
 
 
 \begin{code}
---eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
---eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
+eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
+eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
 
---vecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
---vecHalfPowEq zero w rewrite +-identityᵣ w = refl
---vecHalfPowEq (suc n) w = begin
---    2 ^ suc (suc n) * w                 ≡⟨ refl ⟩
---    2 * 2 ^ suc n * w                   ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
---    2 * (2 ^ suc n * w)                 ≡⟨ cong (λ x → 2 * x) $ vecHalfPowEq n w ⟩
---    2 * (2 ^ n * w  +  2 ^ n * w)       ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
---    (2 ^ n * w + 2 ^ n * w) * 2         ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
---    2 ^ n * w * 2   +  2 ^ n * w * 2    ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  eqAdd p p) ⟩
---    2 * (2 ^ n * w) +  2 * (2 ^ n * w)  ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
---    2 * 2 ^ n * w   +  2 * 2 ^ n * w    ≡⟨ refl ⟩
---    2 ^ suc n * w   +  2 ^ suc n * w
---  ∎
+vecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
+vecHalfPowEq zero w rewrite +-identityᵣ w = refl
+vecHalfPowEq (suc n) w = begin
+    2 ^ suc (suc n) * w                 ≡⟨ refl ⟩
+    2 * 2 ^ suc n * w                   ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
+    2 * (2 ^ suc n * w)                 ≡⟨ cong (λ x → 2 * x) $ vecHalfPowEq n w ⟩
+    2 * (2 ^ n * w  +  2 ^ n * w)       ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
+    (2 ^ n * w + 2 ^ n * w) * 2         ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
+    2 ^ n * w * 2   +  2 ^ n * w * 2    ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  eqAdd p p) ⟩
+    2 * (2 ^ n * w) +  2 * (2 ^ n * w)  ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
+    2 * 2 ^ n * w   +  2 * 2 ^ n * w    ≡⟨ refl ⟩
+    2 ^ suc n * w   +  2 ^ suc n * w
+  ∎
 \end{code}
 
 %<*vecHalfPow-fin>
 \AgdaTarget{vecHalfPow⤪}
 \begin{code}
---vecHalfPow⤪ : ∀ {n w} → ((2 ^ suc n) * w) ⤪ ((2 ^ n) * w + (2 ^ n) * w)
---vecHalfPow⤪ {n} {w} rewrite vecHalfPowEq n w = id
+vecHalfPow⤪ : ∀ {n w} → ((2 ^ suc n) * w) ⤪ ((2 ^ n) * w + (2 ^ n) * w)
+vecHalfPow⤪ {n} {w} rewrite vecHalfPowEq n w = id⤪
 \end{code}
 %</vecHalfPow-fin>
 
@@ -169,9 +184,9 @@ ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = tabulate id
 %<*forkVec-fin>
 \AgdaTarget{forkVec⤪}
 \begin{code}
---forkVec⤪ : ∀ {k n} → n ⤪ (k * n)
---forkVec⤪ {k} {zero}  x rewrite *-right-zero k = x
---forkVec⤪ {_} {suc m} x = (toℕ x) mod (suc m)
+forkVec⤪ : ∀ {k n} → n ⤪ (k * n)
+forkVec⤪ {k} {zero}  rewrite *-right-zero k = id⤪
+forkVec⤪ {_} {suc m} = tabulate $ λ x → (toℕ x) mod (suc m)
 \end{code}
 %</forkVec-fin>
 
@@ -179,8 +194,8 @@ ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = tabulate id
 %<*forkProd-fin>
 \AgdaTarget{fork×⤪}
 \begin{code}
---fork×⤪ : ∀ {w} → w ⤪ (w + w)
---fork×⤪ {w} rewrite sym $ cong (_+_ w) (+-identityᵣ w) = forkVec⤪ {2} {w}
+fork×⤪ : ∀ {w} → w ⤪ (w + w)
+fork×⤪ {w} rewrite sym $ cong (_+_ w) (+-identityᵣ w) = forkVec⤪ {2} {w}
 \end{code}
 %</forkProd-fin>
 
