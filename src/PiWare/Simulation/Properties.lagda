@@ -40,11 +40,13 @@ open Setoid ≋-setoid using () renaming (sym to ≋-sym)
 %<*id-plug-implements-id>
 \AgdaTarget{id⤨-id}
 \begin{code}
+postulate ext : ∀ {a b} {α : Set a} {β : Set b} {f g : α → β} → (∀ x → f x ≡ g x) → f ≡ g
+
 id⤨-id : ∀ {i} (w : W i) → ⟦ id⤨ ⟧ w ≡ id w
 id⤨-id w =
   begin
     ⟦ id⤨ ⟧ w
-  ≡⟨ cong tabulate {!!} ⟩
+  ≡⟨ cong tabulate (ext (cong (flip lookup w) ∘ lookup∘tabulate id)) ⟩
     tabulate (flip lookup w)
   ≡⟨ tabulate∘lookup w ⟩
     id w
