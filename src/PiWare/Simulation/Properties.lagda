@@ -12,7 +12,7 @@ open import Data.Vec using (lookup; tabulate; splitAt)
 
 open import Relation.Binary.Indexed.Core using (module Setoid)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; setoid; module ≡-Reasoning)
-open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_)
+open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_; _≡⟨⟩_)
 open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commutativeSemiring)
 open import Algebra using (module CommutativeSemiring)
@@ -35,18 +35,25 @@ open import PiWare.Simulation.Equality Gt
 open Setoid ≋-setoid using () renaming (sym to ≋-sym)
 \end{code}
 
+%<*tabulate-ext>
+\AgdaTarget{tabulate-ext}
+\begin{code}
+tabulate-ext : ∀ {a n} {A : Set a} {f g : Fin n → A} → (∀ x → f x ≡ g x) → tabulate f ≡ tabulate g
+tabulate-ext {n = zero}  _        = refl
+tabulate-ext {n = suc m} ∀x→fx≡gx rewrite ∀x→fx≡gx Fz | tabulate-ext (∀x→fx≡gx ∘ Fs) = refl
+\end{code}
+%</tabulate-ext>
 
--- TODO: can we simplify this proof?
 %<*id-plug-implements-id>
 \AgdaTarget{id⤨-id}
 \begin{code}
-postulate ext : ∀ {a b} {α : Set a} {β : Set b} {f g : α → β} → (∀ x → f x ≡ g x) → f ≡ g
-
 id⤨-id : ∀ {i} (w : W i) → ⟦ id⤨ ⟧ w ≡ id w
 id⤨-id w =
   begin
     ⟦ id⤨ ⟧ w
-  ≡⟨ cong tabulate (ext (cong (flip lookup w) ∘ lookup∘tabulate id)) ⟩
+  ≡⟨⟩
+    tabulate (λ i → flip lookup w (lookup i (tabulate id)))
+  ≡⟨ tabulate-ext (cong (flip lookup w) ∘ lookup∘tabulate id) ⟩
     tabulate (flip lookup w)
   ≡⟨ tabulate∘lookup w ⟩
     id w
@@ -57,14 +64,6 @@ id⤨-id w =
 \begin{code}
 --private
 \end{code}
-%<*tabulate-ext>
-\AgdaTarget{tabulate-ext}
-\begin{code}
--- tabulate-ext : ∀ {a n} {A : Set a} {f g : Fin n → A} → (∀ x → f x ≡ g x) → tabulate f ≡ tabulate g
--- tabulate-ext {n = zero}  _        = refl
--- tabulate-ext {n = suc m} ∀x→fx≡gx rewrite ∀x→fx≡gx Fz | tabulate-ext (∀x→fx≡gx ∘ Fs) = refl
-\end{code}
-%</tabulate-ext>
 
 %<*plug-seq-compose>
 \AgdaTarget{plug-∘}
