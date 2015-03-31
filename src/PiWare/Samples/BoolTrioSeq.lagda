@@ -6,7 +6,7 @@ open import Data.Fin using (Fin)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Circuit BoolTrio using (ℂ; Plug; DelayLoop; _⟫_)
-open import PiWare.Plugs.Core using (_⟫⤪_; _|⤪_; swap⤪; ALR⤪)
+open import PiWare.Plugs.Core using (_⟫⤪_; _|⤪_; id⤪; swap⤪; ALR⤪)
 open import PiWare.Plugs BoolTrio using (swap⤨; fork×⤨)
 open import PiWare.Samples.BoolTrioComb using (¬ℂ; ⊥ℂ; ∨ℂ)
 open import PiWare.Samples.Muxes using (mux)
@@ -37,8 +37,8 @@ toggle = ⊥ℂ ⟫ DelayLoop (∨ℂ ⟫ ¬ℂ ⟫ fork×⤨)
 \begin{code}
 reg : ℂ 2 1
 reg = DelayLoop (rearrange ⟫ mux ⟫ fork×⤨)
-    where rearrange = Plug $    swap⤪ {1} {1}   |⤪   id
-                             ⟫⤪               ALR⤪ {1} {1}
-                             ⟫⤪ id {A = Fin 1}  |⤪   swap⤪ {1}
+    where rearrange = Plug $    swap⤪ {1} {1} |⤪   id⤪
+                             ⟫⤪          ALR⤪ {1} {1}
+                             ⟫⤪ id⤪ {1}       |⤪   swap⤪ {1}
 \end{code}
 %</reg>
