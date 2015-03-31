@@ -1,14 +1,14 @@
 \begin{code}
 module PiWare.Samples.Muxes where
 
-open import Function using (id; _∘_)
+open import Function using (_∘_)
 open import Data.Nat using (zero; suc; _+_)
 open import Data.Fin using (Fin)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Circuit BoolTrio using (𝐂; _⟫_; _∥_; Plug; Nil)
 open import PiWare.Plugs BoolTrio using (fork×⤨; id⤨; fst⤨; snd⤨)
-open import PiWare.Plugs.Core using (_⤪_; _⟫⤪_; _|⤪_; fork×⤪; ALR⤪; ARL⤪; intertwine⤪; swap⤪)
+open import PiWare.Plugs.Core using (_⤪_; _⟫⤪_; _|⤪_; id⤪; fork×⤪; ALR⤪; ARL⤪; intertwine⤪; swap⤪)
 open import PiWare.Samples.BoolTrioComb using (¬ℂ; ∧ℂ; ∨ℂ)
 \end{code}
 
@@ -28,13 +28,13 @@ mux =
 \begin{code}
 adapt⤪ : ∀ n → (1 + ((1 + n) + (1 + n))) ⤪ ((1 + 1 + 1) + (1 + (n + n)))
 adapt⤪ n =
-                             fork×⤪ {1}     |⤪    id {A = Fin ((1 + n) + (1 + n))}
-    ⟫⤪                   id {A = Fin 2}     |⤪    intertwine⤪ {1} {n} {1} {n}
-    ⟫⤪                            ARL⤪ {1 + 1} {1 + 1} {n + n}
-    ⟫⤪        intertwine⤪ {1} {1} {1} {1}   |⤪    id
-    ⟫⤪  (id {A = Fin 2} |⤪ swap⤪ {1} {1})   |⤪    id {A = Fin (n + n)}
-    ⟫⤪               ARL⤪ {1 + 1} {1} {1}   |⤪    id
-    ⟫⤪                            ALR⤪ {1 + 1 + 1} {1} {n + n}
+                      fork×⤪ {1}     |⤪    id⤪ {(1 + n) + (1 + n)}
+    ⟫⤪                   id⤪ {2}     |⤪    intertwine⤪ {1} {n} {1} {n}
+    ⟫⤪                     ARL⤪ {1 + 1} {1 + 1} {n + n}
+    ⟫⤪ intertwine⤪ {1} {1} {1} {1}   |⤪    id⤪
+    ⟫⤪  (id⤪ {2} |⤪ swap⤪ {1} {1})  |⤪    id⤪ {n + n}
+    ⟫⤪        ARL⤪ {1 + 1} {1} {1}   |⤪    id⤪
+    ⟫⤪                      ALR⤪ {1 + 1 + 1} {1} {n + n}
 
 adapt⤨ : ∀ n → 𝐂 (1 + ((1 + n) + (1 + n))) ((1 + 1 + 1) + (1 + (n + n)))
 adapt⤨ = Plug ∘ adapt⤪
