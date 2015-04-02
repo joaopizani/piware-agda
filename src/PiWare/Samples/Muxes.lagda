@@ -6,8 +6,8 @@ open import Data.Nat using (zero; suc; _+_)
 open import Data.Fin using (Fin)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (𝐂; _⟫_; _∥_; Plug; Nil)
-open import PiWare.Plugs BoolTrio using (fork×⤨; id⤨; fst⤨; snd⤨)
+open import PiWare.Circuit BoolTrio using (𝐂; _⟫_; _∥_; Plug)
+open import PiWare.Plugs BoolTrio using (fork×⤨; nil⤨; id⤨; fst⤨; snd⤨)
 open import PiWare.Plugs.Core using (_⤪_; _⟫⤪_; _|⤪_; id⤪; fork×⤪; ALR⤪; ARL⤪; intertwine⤪; swap⤪)
 open import PiWare.Samples.BoolTrioComb using (¬ℂ; ∧ℂ; ∨ℂ)
 \end{code}
@@ -44,7 +44,7 @@ adapt⤨ = Plug ∘ adapt⤪
 \AgdaTarget{muxN}
 \begin{code}
 muxN : ∀ n → 𝐂 (1 + (n + n)) n
-muxN zero    = Nil
+muxN zero    = nil⤨
 muxN (suc n) = adapt⤨ n  ⟫  mux ∥ muxN n
 \end{code}
 %</muxN>

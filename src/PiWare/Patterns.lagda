@@ -10,18 +10,18 @@ open import Data.Bool using (Bool)
 open import Data.Vec using (Vec; []; _∷_; replicate; foldr; map)
 open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
 
-open import PiWare.Circuit Gt using (ℂ; Nil; _⟫_; _∥_)
+open import PiWare.Circuit Gt using (ℂ; _⟫_; _∥_)
 open import PiWare.Plugs Gt using (id⤨)
 \end{code}
 
 
 -- Base case relies on the identity of _∥_:
--- ∀ c' : Nil ∥ c' ≡⟦⟧  c'  (where _≡⟦⟧_ means "have same simulation semantics")
+-- ∀ c' : id⤨ ∥ c' ≋ c'  (where _≋_ means "have same simulation semantics")
 %<*pars>
 \AgdaTarget{pars}
 \begin{code}
 pars : ∀ {k i o p} (cs : Vec (ℂ {p} i o) k) → ℂ {p} (k * i) (k * o)
-pars {k} {i} {o} {p} = foldr (λ k → ℂ {p} (k * i) (k * o)) _∥_ Nil
+pars {k} {i} {o} {p} = foldr (λ k → ℂ {p} (k * i) (k * o)) _∥_ id⤨
 \end{code}
 %</pars>
 

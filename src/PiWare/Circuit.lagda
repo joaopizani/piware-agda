@@ -36,10 +36,9 @@ data ℂ : {p : IsComb} → Ix → Ix → Set
 %</Circuit-any>
 
 %<*Circuit>
-\AgdaTarget{ℂ, Nil, Gate, DelayLoop, Plug, \_⟫\_, \_∥\_, \_|+\_}
+\AgdaTarget{ℂ, Gate, DelayLoop, Plug, \_⟫\_, \_∥\_, \_|+\_}
 \begin{code}
 data ℂ where
-    Nil   : ∀ {n}   → 𝐂 n zero
     Gate  : ∀ g     → 𝐂 (|in| g) (|out| g)
     Plug  : ∀ {i o} → i ⤪ o → 𝐂 i o
 

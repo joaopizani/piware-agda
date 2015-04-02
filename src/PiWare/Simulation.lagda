@@ -22,7 +22,7 @@ open Atomic At using (W; n→atom)
 open Gates At Gt using (|in|; |out|; spec)
 open import PiWare.Synthesizable At using (untag; untagList)
 open import PiWare.Circuit Gt using (ℂ; σ)
-open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyNil★; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty⑆★)
+open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty⑆★)
 \end{code}
 
 
@@ -36,7 +36,6 @@ W⟶W m n = W m → W n
 
 %<*combinator-Word-function-types>
 \begin{code}
-nil      : TyNil★ W⟶W
 gate     : TyGate★ W⟶W
 plug     : TyPlug★ W⟶W
 seq-comb : Ty⟫★ W⟶W
@@ -48,7 +47,6 @@ sum-comb : Ty⑆★ W⟶W
 %<*combinator-Word-function-defs>
 \AgdaTarget{nil,gate,plug,seq-comb,par-comb,sum-comb}
 \begin{code}
-nil                 = const ε
 gate                = spec
 plug p ins          = tabulate (flip lookup ins ∘′ flip lookup p)
 seq-comb            = flip _∘′_
@@ -62,7 +60,7 @@ sum-comb {i₁} f₁ f₂ = [ f₁ , f₂ ]′ ∘′ untag {i₁}
 \begin{code}
 simulation-combinational★ : ℂσ★ {W⟶W}
 simulation-combinational★ = record
-  { Nil★ = nil;       Gate★ = gate;      Plug★ = plug
+  { Gate★ = gate;      Plug★ = plug
   ; _⟫★_ = seq-comb;  _∥★_  = par-comb;  _⑆★_ = sum-comb}
 \end{code}
 %</simulation-combinational-algebra>
@@ -130,7 +128,7 @@ sum-seq {i₁} f₁ f₂ (w⁰ ∷ w⁻) | inj₂ w⁰₂         | _   , w⁻�
 \begin{code}
 simulation-sequential★ : ℂ★ {W⟶W} {W⇒ᶜW}
 simulation-sequential★ = record
-  { Nil★ = nil ∘′ head;   Gate★ = λ g → gate g ∘′ head;   Plug★ = λ f → plug f ∘′ head
+  { Gate★ = λ g → gate g ∘′ head;   Plug★ = λ f → plug f ∘′ head
   ; _⟫★_ = seq-seq; _∥★_ = par-seq; _⑆★_ = sum-seq
   ; DelayLoop★ = delay-seq
   }

@@ -28,7 +28,7 @@ open import Data.Vec.Extra
 open Atomic At using (W)
 open import PiWare.Plugs.Core using (_⤪_)
 open import PiWare.Plugs Gt using (id⤨)
-open import PiWare.Circuit Gt using (ℂ; Nil; Plug; _⟫_; _∥_)
+open import PiWare.Circuit Gt using (ℂ; Plug; _⟫_; _∥_)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open import PiWare.Simulation.Equality Gt
   using (_≊_; _≋_; refl≋; ≅⇒≋; ≋-setoid)
@@ -126,7 +126,7 @@ id⤨-id w =
 %<*par-identity-left>
 \AgdaTarget{∥-identityₗ}
 \begin{code}
---∥-identityₗ : ∀ {i o} (c : ℂ i o) → Nil {0} ∥ c ≋ c
+--∥-identityₗ : ∀ {i o} (c : ℂ i o) → id⤨ {0} ∥ c ≋ c
 --∥-identityₗ _ = ≅⇒≋ (λ _ → reflᵥ _)
 \end{code}
 %</par-identity-left>
@@ -134,9 +134,9 @@ id⤨-id w =
 %<*par-identity-right>
 \AgdaTarget{∥-identityᵣ}
 \begin{code}
---∥-identityᵣ : ∀ {i o} (c : ℂ i o) → c ∥ Nil {0} ≋ c
+--∥-identityᵣ : ∀ {i o} (c : ℂ i o) → c ∥ id⤨ {0} ≋ c
 --∥-identityᵣ {i} {o} c = refl≋ (+-identityᵣ i) ∥-identityᵣ-≊
---  where ∥-identityᵣ-≊ : c ∥ Nil {0} ≊ c
+--  where ∥-identityᵣ-≊ : c ∥ id⤨ {0} ≊ c
 --        ∥-identityᵣ-≊ w≈w′ rewrite to-≡ (proj₁∘splitAt-last≈ w≈w′) = xs++[]=xs (⟦ c ⟧ _)
 \end{code}
 %</par-identity-right>

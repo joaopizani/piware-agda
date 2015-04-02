@@ -8,14 +8,13 @@ open import Data.Nat using (ℕ; _+_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Circuit Gt using (ℂ)
-open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; TyNil★; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty⑆★)
+open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty⑆★)
 \end{code}
 
 \begin{code}
 Area : (m n : Ix) → Set
 Area _ _ = ℕ
 
-nil : TyNil★ Area
 gate : TyGate★ Area
 plug : TyPlug★ Area
 delayLoop : ∀ {i o l} → Area (i + l) (o + l) → Area i o
@@ -33,7 +32,7 @@ sum a₁ a₂ = 1 + (a₁ + a₂)  --TODO: now we use "1" for the area of the un
 
 area-combinational★ : ℂσ★ {Area}
 area-combinational★ = record
-  { Nil★ = nil {X};         Gate★ = gate;                Plug★ = plug
+  { Gate★ = gate;                Plug★ = plug
   ; _⟫★_ = seq {X} {X} {X};  _∥★_ = par {X} {X} {X} {X};  _⑆★_ = sum {X} {X} {X}
   } where postulate X : _
 

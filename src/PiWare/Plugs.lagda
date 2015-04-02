@@ -9,13 +9,21 @@ open import Data.Nat using (ℕ; suc; _+_; _*_)
 
 open import PiWare.Circuit Gt using (𝐂; Plug)
 open import PiWare.Plugs.Core
-    using ( id⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
+    using ( nil⤪; id⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
           ; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
 
 open import Algebra using (module CommutativeSemiring)
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
 open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 \end{code}
+
+
+%<*nil-plug>
+\begin{code}
+nil⤨ : ∀ {n} → 𝐂 n 0
+nil⤨ = Plug nil⤪
+\end{code}
+%</nil-plug>
 
 
 %<*id-plug>

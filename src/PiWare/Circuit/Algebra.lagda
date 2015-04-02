@@ -9,15 +9,14 @@ open import Data.Fin using (Fin)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
-open import PiWare.Circuit Gt using (ℂ; σ; Nil; Gate; Plug; DelayLoop; _⟫_; _∥_; _⑆_)
+open import PiWare.Circuit Gt using (ℂ; σ; Gate; Plug; DelayLoop; _⟫_; _∥_; _⑆_)
 open Gates At Gt using (|in|; |out|)
 \end{code}
 
 
 %<*combinator-types-parameterized>
 \begin{code}
-TyNil★ TyGate★ TyPlug★ Ty⟫★ Ty∥★ Ty⑆★ : (Ix → Ix → Set) → Set
-TyNil★  F = ∀ {n}            → F n zero
+TyGate★ TyPlug★ Ty⟫★ Ty∥★ Ty⑆★ : (Ix → Ix → Set) → Set
 TyGate★ F = ∀ g#             → F (|in| g#) (|out| g#)
 TyPlug★ F = ∀ {i o} → i ⤪ o → F i o
 Ty⟫★    F = ∀ {i m o}       → F i m   → F m o   → F i o
@@ -33,8 +32,7 @@ module _ {Carrier : Ix → Ix → Set} where
 %<*Circuit-combinational-algebra-type>
 \begin{code}
  record ℂσ★ : Set where
-   field Nil★  : TyNil★ Carrier
-         Gate★ : TyGate★ Carrier
+   field Gate★ : TyGate★ Carrier
          Plug★ : TyPlug★ Carrier
          _⟫★_  : Ty⟫★ Carrier
          _∥★_  : Ty∥★ Carrier
@@ -49,7 +47,6 @@ module _ {Carrier : Ix → Ix → Set} where
 %<*Circuit-combinational-cata>
 \begin{code}
   cataℂσ : ∀ {i o} → ℂ {σ} i o → Carrier i o
-  cataℂσ Nil       = Nil★
   cataℂσ (Gate g)  = Gate★ g
   cataℂσ (Plug f)  = Plug★ f
   cataℂσ (c₁ ⟫ c₂) = cataℂσ c₁ ⟫★  cataℂσ c₂
@@ -65,8 +62,7 @@ module _ {Carrierσ : Ix → Ix → Set} {Carrier : Ix → Ix → Set} where
 %<*Circuit-algebra-type>
 \begin{code}
  record ℂ★ : Set where
-   field Nil★  : TyNil★ Carrier
-         Gate★ : TyGate★ Carrier
+   field Gate★ : TyGate★ Carrier
          Plug★ : TyPlug★ Carrier
          _⟫★_  : Ty⟫★ Carrier
          _∥★_  : Ty∥★ Carrier
@@ -82,7 +78,6 @@ module _ {Carrierσ : Ix → Ix → Set} {Carrier : Ix → Ix → Set} where
 %<*Circuit-cata>
 \begin{code}
   cataℂ : ∀ {i o} → ℂ i o → Carrier i o
-  cataℂ Nil           = Nil★
   cataℂ (Gate g)      = Gate★ g
   cataℂ (Plug f)      = Plug★ f
   cataℂ (DelayLoop c) = DelayLoop★ (cataℂσ {Carrierσ} Aℓσ c)

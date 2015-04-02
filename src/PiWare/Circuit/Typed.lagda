@@ -14,7 +14,7 @@ open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 import PiWare.Circuit as Circ
-open Circ Gt using (ℂ; IsComb; Nil; Gate; Plug; DelayLoop; _⟫_; _∥_; _⑆_)
+open Circ Gt using (ℂ; IsComb; Gate; Plug; DelayLoop; _⟫_; _∥_; _⑆_)
 open Circ Gt using (σ; ω) public
 
 open Atomic At using (Atom#) 
@@ -46,14 +46,6 @@ record ℂ̂ {p : IsComb} (α β : Set) {i j : Ix} : Set where
 
 
 -- "Smart constructors"
-%<*nilC>
-\AgdaTarget{nilℂ̂}
-\begin{code}
-nilℂ̂ : ∀ {α i β} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {0} ⦄ → 𝐂̂ α β
-nilℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ Nil
-\end{code}
-%</nilC>
-
 %<*gateC>
 \AgdaTarget{gateℂ̂}
 \begin{code}
