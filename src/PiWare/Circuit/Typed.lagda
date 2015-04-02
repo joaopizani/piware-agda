@@ -14,7 +14,7 @@ open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
 import PiWare.Circuit as Circ
-open Circ Gt using (ℂ; IsComb; Gate; Plug; DelayLoop; _⟫_; _∥_; _⑆_)
+open Circ Gt using (ℂ; IsComb; Gate; Plug; DelayLoop; _⟫_; _∥_)
 open Circ Gt using (σ; ω) public
 
 open Atomic At using (Atom#) 
@@ -29,10 +29,9 @@ open Gates At Gt using (|in|; |out|)
 record ℂ̂ {p : IsComb} (α β : Set) {i j : Ix} : Set where
     inductive
     constructor Mkℂ̂
-    field
-        ⦃ sα ⦄ : ⇓W⇑ α {i}
-        ⦃ sβ ⦄ : ⇓W⇑ β {j}
-        base : ℂ {p} i j
+    field ⦃ sα ⦄ : ⇓W⇑ α {i}
+          ⦃ sβ ⦄ : ⇓W⇑ β {j}
+          base : ℂ {p} i j
 \end{code}
 %</Circuit-typed>
 
@@ -88,15 +87,6 @@ _∥̂_ : ∀ {α i γ k β j δ l p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑
 _∥̂_ ⦃ sα ⦄ ⦃ sγ ⦄ ⦃ sβ ⦄ ⦃ sδ ⦄ (Mkℂ̂ c₁) (Mkℂ̂ c₂) = Mkℂ̂ ⦃ ⇓W⇑-× ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ ⇓W⇑-× ⦃ sγ ⦄ ⦃ sδ ⦄ ⦄ (c₁ ∥ c₂)
 \end{code}
 %</par>
-
-%<*sum>
-\AgdaTarget{|+̂}
-\begin{code}
-⑆̂ : ∀ {α i β j γ k p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄ (r ε : Atom#) {d : r ≢ Fz}
-     → ℂ̂ {p} α γ {i} {k} → ℂ̂ {p} β γ {j} {k} → ℂ̂ {p} (α ⊎ β) γ {suc (i ⊔ j)} {k}
-⑆̂ ⦃ sα ⦄ ⦃ sβ ⦄ ⦃ sγ ⦄ r ε {d} (Mkℂ̂ c₁) (Mkℂ̂ c₂) = Mkℂ̂ ⦃ ⇓W⇑-⊎ r ε {d} ⦃ sα ⦄ ⦃ sβ ⦄ ⦄ ⦃ sγ ⦄ (c₁ ⑆ c₂)
-\end{code}
-%</sum>
 
 \begin{code}
 infixr 9 _∥̂_

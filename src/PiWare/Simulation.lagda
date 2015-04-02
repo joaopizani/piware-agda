@@ -4,11 +4,10 @@ open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
-open import Function using (_∘′_; const; flip)
+open import Function using (_∘′_; flip)
 open import Data.Nat using (_+_)
 open import Data.Fin using () renaming (zero to Fz)
 open import Data.Product using (_,_; uncurry′) renaming (map to mapₚ)
-open import Data.Sum using (inj₁; inj₂; [_,_]′)
 open import Data.Stream using (Stream)
 open import Data.List using (List; []; _∷_)
 open import Data.List.NonEmpty using (_∷_) renaming (map to map⁺)
@@ -20,9 +19,8 @@ open import Data.Vec using (Vec; _++_; lookup; replicate; drop; tabulate) renami
 
 open Atomic At using (W; n→atom)
 open Gates At Gt using (|in|; |out|; spec)
-open import PiWare.Synthesizable At using (untag; untagList)
 open import PiWare.Circuit Gt using (ℂ; σ)
-open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyGate★; TyPlug★; Ty⟫★; Ty∥★; Ty⑆★)
+open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyGate★; TyPlug★; Ty⟫★; Ty∥★)
 \end{code}
 
 
@@ -40,7 +38,6 @@ gate     : TyGate★ W⟶W
 plug     : TyPlug★ W⟶W
 seq-comb : Ty⟫★ W⟶W
 par-comb : Ty∥★ W⟶W
-sum-comb : Ty⑆★ W⟶W
 \end{code}
 %</combinator-Word-function-types>
 
@@ -51,7 +48,6 @@ gate                = spec
 plug p ins          = tabulate (flip lookup ins ∘′ flip lookup p)
 seq-comb            = flip _∘′_
 par-comb {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ splitAt′ i₁
-sum-comb {i₁} f₁ f₂ = [ f₁ , f₂ ]′ ∘′ untag {i₁}
 \end{code}
 %</combinator-Word-function-defs>
 
@@ -59,9 +55,7 @@ sum-comb {i₁} f₁ f₂ = [ f₁ , f₂ ]′ ∘′ untag {i₁}
 \AgdaTarget{simulation-combinational★}
 \begin{code}
 simulation-combinational★ : ℂσ★ {W⟶W}
-simulation-combinational★ = record
-  { Gate★ = gate;      Plug★ = plug
-  ; _⟫★_ = seq-comb;  _∥★_  = par-comb;  _⑆★_ = sum-comb}
+simulation-combinational★ = record { Gate★ = gate;  Plug★ = plug;  _⟫★_ = seq-comb;  _∥★_ = par-comb }
 \end{code}
 %</simulation-combinational-algebra>
 
@@ -107,7 +101,6 @@ delay-seq {_} {o} f = takeᵥ o ∘′ delay o f
 \begin{code}
 seq-seq : Ty⟫★ W⇒ᶜW
 par-seq : Ty∥★ W⇒ᶜW
-sum-seq : Ty⑆★ W⇒ᶜW
 \end{code}
 %</combinator-word-causal-function-types>
 
@@ -116,10 +109,6 @@ sum-seq : Ty⑆★ W⇒ᶜW
 \begin{code}
 seq-seq      f₁ f₂ = f₂ ∘′ map⁺ f₁ ∘′ tailsᶜ
 par-seq {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ unzip⁺ ∘′ splitAt⁺ i₁
-
-sum-seq {i₁} f₁ f₂ (w⁰ ∷ w⁻) with untag {i₁} w⁰ | untagList {i₁} w⁻
-sum-seq {i₁} f₁ f₂ (w⁰ ∷ w⁻) | inj₁ w⁰₁         | w⁻₁ , _   = f₁ (w⁰₁ ∷ w⁻₁)
-sum-seq {i₁} f₁ f₂ (w⁰ ∷ w⁻) | inj₂ w⁰₂         | _   , w⁻₂ = f₂ (w⁰₂ ∷ w⁻₂)
 \end{code}
 %</combinator-word-causal-function-defs>
 
@@ -127,11 +116,7 @@ sum-seq {i₁} f₁ f₂ (w⁰ ∷ w⁻) | inj₂ w⁰₂         | _   , w⁻�
 \AgdaTarget{simulation-sequential★}
 \begin{code}
 simulation-sequential★ : ℂ★ {W⟶W} {W⇒ᶜW}
-simulation-sequential★ = record
-  { Gate★ = λ g → gate g ∘′ head;   Plug★ = λ f → plug f ∘′ head
-  ; _⟫★_ = seq-seq; _∥★_ = par-seq; _⑆★_ = sum-seq
-  ; DelayLoop★ = delay-seq
-  }
+simulation-sequential★ = record { Gate★ = λ g → gate g ∘′ head; Plug★ = λ f → plug f ∘′ head; _⟫★_ = seq-seq; _∥★_ = par-seq; DelayLoop★ = delay-seq}
 \end{code}
 %</simulation-causal-algebra>
 

@@ -6,13 +6,12 @@ module PiWare.Synthesizable (At : Atomic) where
 open import Function using (_∘′_; _$_; const)
 open import Data.Unit using (⊤; tt)
 open import Data.Bool using (if_then_else_)
-open import Data.Product using (_×_; _,_; <_,_>)
-open import Data.Sum using (_⊎_; inj₁; inj₂; isInj₁; isInj₂; [_,_]) renaming (map to map⊎)
+open import Data.Product using (_×_; _,_)
+open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using () renaming (zero to Fz)
 open import Data.Fin.Properties using (_≟_)
 open import Data.Nat using (suc; _+_; _*_; _⊔_)
 open import Data.Vec using (Vec; _++_; splitAt; concat) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
-open import Data.List using (List; gfilter; map)
 
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Decidable using (⌊_⌋)
@@ -40,32 +39,6 @@ record ⇓W⇑ (α : Set) {i : Ix} : Set where
 \begin{code}
 open ⇓W⇑ ⦃ ... ⦄
 \end{code}
-
-
--- Deduce Left or Right from tag. CONVENTION: Left = #0, Right by default (if atom→n t ≠ #0)
-%<*untag>
-\AgdaTarget{untag}
-\begin{code}
-untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
-untag {i} {j} (t ◁ ab) = (if ⌊ atom→n t ≟ Fz ⌋ then (inj₁ ∘′ unpadFrom₁ j) else (inj₂ ∘′ unpadFrom₂ i)) ab
-\end{code}
-%</untag>
-
-%<*seggregateSums>
-\AgdaTarget{seggregateSums}
-\begin{code}
-seggregateSums : ∀ {ℓ} {α β : Set ℓ} → List (α ⊎ β) → List α × List β
-seggregateSums = < gfilter isInj₁ , gfilter isInj₂ >
-\end{code}
-%</seggregateSums>
-
-%<*untagList>
-\AgdaTarget{untagList}
-\begin{code}
-untagList : ∀ {i j} → List (W (suc (i ⊔ j))) → List (W i) × List (W j)
-untagList = seggregateSums ∘′ map untag
-\end{code}
-%</untagList>
 
 
 -- basic instances
@@ -112,6 +85,15 @@ instance
 \end{code}
 %</Synth-Vec>
 
+
+-- Deduce Left or Right from tag. TODO CONVENTION: Left = #0, Right by default (if atom→n t ≠ #0)
+%<*untag>
+\AgdaTarget{untag}
+\begin{code}
+untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
+untag {i} {j} (t ◁ ab) = (if ⌊ atom→n t ≟ Fz ⌋ then (inj₁ ∘′ unpadFrom₁ j) else (inj₂ ∘′ unpadFrom₂ i)) ab
+\end{code}
+%</untag>
 
 %<*Synth-Sum>
 \AgdaTarget{⇓W⇑-⊎}
