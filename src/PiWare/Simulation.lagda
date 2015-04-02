@@ -50,7 +50,7 @@ sum-comb : Ty⑆★ W⟶W
 \begin{code}
 nil                 = const ε
 gate                = spec
-plug p inputs       = tabulate (λ i → lookup (lookup i p) inputs)
+plug p ins          = tabulate (flip lookup ins ∘′ flip lookup p)
 seq-comb            = flip _∘′_
 par-comb {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ splitAt′ i₁
 sum-comb {i₁} f₁ f₂ = [ f₁ , f₂ ]′ ∘′ untag {i₁}
