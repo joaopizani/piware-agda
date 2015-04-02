@@ -47,7 +47,7 @@ open ⇓W⇑ ⦃ ... ⦄
 \AgdaTarget{untag}
 \begin{code}
 untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
-untag {i} {j} (t ◁ ab) = if ⌊ atom→n t ≟ Fz ⌋ then (inj₁ ∘′ unpadFrom₁ j) else (inj₂ ∘′ unpadFrom₂ i) $ ab
+untag {i} {j} (t ◁ ab) = (if ⌊ atom→n t ≟ Fz ⌋ then (inj₁ ∘′ unpadFrom₁ j) else (inj₂ ∘′ unpadFrom₂ i)) ab
 \end{code}
 %</untag>
 
@@ -88,7 +88,7 @@ instance
  ⇓W⇑-× : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
  ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
      where down : (α × β) → W (i + j)
-           down (a , b) = (⇓ a) ++ (⇓ b)
+           down (a , b) = (⇓ {i = i} a) ++ (⇓ b)
  
            up : W (i + j) → (α × β)
            up w with splitAt i w
@@ -120,10 +120,10 @@ instance
  ⇓W⇑-⊎ : ∀ {α i β j} (r p : Atom#) {d : r ≢ Fz} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
  ⇓W⇑-⊎ {α} {i} {β} {j} r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
    where down : α ⊎ β → W (suc (i ⊔ j))
-         down = [ (λ a → (n→atom Fz) ◁ (padTo₁ j withA n→atom p) (⇓ a))
+         down = [ (λ a → (n→atom Fz) ◁ (padTo₁ j withA n→atom p) (⇓ {i = i} a))
                 , (λ b → (n→atom r)  ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
            
          up : W (suc (i ⊔ j)) → α ⊎ β
-         up = map⊎ ⇑ ⇑ ∘′ untag
+         up = map⊎ (⇑ {i = i}) (⇑ {i = j}) ∘′ untag
 \end{code}
 %</Synth-Sum>

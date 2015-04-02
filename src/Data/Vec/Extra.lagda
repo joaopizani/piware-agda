@@ -186,7 +186,7 @@ split-++ v₁ v₁′ v₂ v₂′ p = map to-≡ to-≡ (split-++′ v₁ v₁�
 %<*splitAt-++>
 \AgdaTarget{splitAt-++}
 \begin{code}
-splitAt-++ : ∀ {ℓ} {α : Set ℓ} {m} n (v₁ : Vec α n) (v₂ : Vec α m) → splitAt n (v₁ ++ v₂) ≡ v₁ , v₂ , refl
+splitAt-++ : ∀ {ℓ} {α : Set ℓ} {m} n (v₁ : Vec α n) (v₂ : Vec α m) → splitAt n (v₁ ++ v₂) ≡ (v₁ , (v₂ , refl))
 splitAt-++ n v₁ v₂ with splitAt n (v₁ ++ v₂)
 splitAt-++ n v₁ v₂ | v₁′ , v₂′ , p with split-++ v₁ v₁′ v₂ v₂′ p   | p
 splitAt-++ n v₁ v₂ | .v₁ , .v₂ , _ | refl , refl                   | refl = refl
