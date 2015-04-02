@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Simulation.Properties {At : Atomic} (Gt : Gates At) where
 
-open import Function using (id; _∘_; _$_; flip)
+open import Function using (id; _∘_; _∘′_; _$_; flip)
 open import Data.Nat using (zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Product using (_,_)
@@ -51,8 +51,8 @@ id⤨-id : ∀ {i} (w : W i) → ⟦ id⤨ ⟧ w ≡ id w
 id⤨-id w =
   begin
     ⟦ id⤨ ⟧ w
-  ≡⟨⟩
-    tabulate (λ i → flip lookup w (lookup i (tabulate id)))
+  ≡⟨⟩  -- by definition of ⟦_⟧
+    tabulate (flip lookup w ∘′ flip lookup (tabulate id))
   ≡⟨ tabulate-ext (cong (flip lookup w) ∘ lookup∘tabulate id) ⟩
     tabulate (flip lookup w)
   ≡⟨ tabulate∘lookup w ⟩
@@ -61,10 +61,10 @@ id⤨-id w =
 \end{code}
 %</id-plug-implements-id>
 
+
 \begin{code}
 --private
 \end{code}
-
 %<*plug-seq-compose>
 \AgdaTarget{plug-∘}
 \begin{code}
