@@ -47,8 +47,8 @@ module _ {Carrier : Ix → Ix → Set} where
   cataℂσ : ∀ {i o} → ℂ {σ} i o → Carrier i o
   cataℂσ (Gate g)  = Gate★ g
   cataℂσ (Plug f)  = Plug★ f
-  cataℂσ (c₁ ⟫ c₂) = cataℂσ c₁ ⟫★  cataℂσ c₂
-  cataℂσ (c₁ ∥ c₂) = cataℂσ c₁ ∥★  cataℂσ c₂
+  cataℂσ (c₁ ⟫ c₂) = cataℂσ c₁ ⟫★ cataℂσ c₂
+  cataℂσ (c₁ ∥ c₂) = cataℂσ c₁ ∥★ cataℂσ c₂
 \end{code}
 %</Circuit-combinational-cata>
 

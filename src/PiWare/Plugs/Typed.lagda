@@ -4,6 +4,7 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Plugs.Typed {At : Atomic} (Gt : Gates At) where
 
+open import Data.Unit using (⊤)
 open import Data.Nat using (suc; _+_; _*_)
 open import Data.Vec using (Vec)
 open import Data.Product using (_×_)
@@ -15,9 +16,17 @@ open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) u
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
 open import PiWare.Circuit.Typed Gt using (𝐂̂; Mkℂ̂)
 open import PiWare.Plugs Gt
-    using ( id⤨; swap⤨; intertwine⤨; ALR⤨; ARL⤨; head⤨; vecHalf⤨; vecHalfPow⤨
+    using ( nil⤨; id⤨; swap⤨; intertwine⤨; ALR⤨; ARL⤨; head⤨; vecHalf⤨; vecHalfPow⤨
           ; fst⤨; snd⤨; singleton⤨; forkVec⤨; fork×⤨; uncons⤨; cons⤨)
 \end{code}
+
+
+%<*nil-plug-typed>
+\begin{code}
+nil⤨̂ : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → 𝐂̂ α ⊤
+nil⤨̂ ⦃ sα ⦄ = Mkℂ̂ ⦃ sα ⦄ nil⤨
+\end{code}
+%</nil-plug-typed>
 
 
 %<*id-plug-typed>

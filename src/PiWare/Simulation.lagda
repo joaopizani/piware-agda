@@ -52,10 +52,10 @@ par-comb {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ split
 %</combinator-Word-function-defs>
 
 %<*simulation-combinational-algebra>
-\AgdaTarget{simulation-combinational★}
+\AgdaTarget{simulation-combinational}
 \begin{code}
-simulation-combinational★ : ℂσ★ {W⟶W}
-simulation-combinational★ = record { Gate★ = gate;  Plug★ = plug;  _⟫★_ = seq-comb;  _∥★_ = par-comb }
+simulation-combinational : ℂσ★ {W⟶W}
+simulation-combinational = record { Gate★ = gate;  Plug★ = plug;  _⟫★_ = seq-comb;  _∥★_ = par-comb }
 \end{code}
 %</simulation-combinational-algebra>
 
@@ -63,7 +63,7 @@ simulation-combinational★ = record { Gate★ = gate;  Plug★ = plug;  _⟫★
 \AgdaTarget{⟦\_⟧}
 \begin{code}
 ⟦_⟧ : ∀ {i o} → ℂ i o → W⟶W i o
-⟦_⟧ = cataℂσ simulation-combinational★
+⟦_⟧ = cataℂσ simulation-combinational
 \end{code}
 %</simulation-combinational>
 
@@ -113,10 +113,10 @@ par-seq {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ unzip�
 %</combinator-word-causal-function-defs>
 
 %<*simulation-causal-algebra>
-\AgdaTarget{simulation-sequential★}
+\AgdaTarget{simulation-sequential}
 \begin{code}
-simulation-sequential★ : ℂ★ {W⟶W} {W⇒ᶜW}
-simulation-sequential★ = record { Gate★ = λ g → gate g ∘′ head; Plug★ = λ f → plug f ∘′ head; _⟫★_ = seq-seq; _∥★_ = par-seq; DelayLoop★ = delay-seq}
+simulation-sequential : ℂ★ {W⟶W} {W⇒ᶜW}
+simulation-sequential = record { Gate★ = λ g → gate g ∘′ head; Plug★ = λ f → plug f ∘′ head; _⟫★_ = seq-seq; _∥★_ = par-seq; DelayLoop★ = delay-seq}
 \end{code}
 %</simulation-causal-algebra>
 
@@ -124,7 +124,7 @@ simulation-sequential★ = record { Gate★ = λ g → gate g ∘′ head; Plug�
 \AgdaTarget{⟦\_⟧ᶜ}
 \begin{code}
 ⟦_⟧ᶜ : ∀ {i o} → ℂ i o → (W i ⇒ᶜ W o)
-⟦_⟧ᶜ = cataℂ simulation-combinational★ simulation-sequential★
+⟦_⟧ᶜ = cataℂ simulation-combinational simulation-sequential
 \end{code}
 %</simulation-causal>
 

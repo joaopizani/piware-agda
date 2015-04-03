@@ -28,7 +28,7 @@ data ℂ : {p : IsComb} → Ix → Ix → Set
 %</Circuit-predecl>
 
 %<*Circuit-any>
-\AgdaTarget{𝐜}
+\AgdaTarget{𝐂}
 \begin{code}
 𝐂 : Ix → Ix → Set
 𝐂 i o = ∀ {p} → ℂ {p} i o
