@@ -15,6 +15,7 @@ open Gates At Gt using (|in|; |out|)
 
 
 %<*combinator-types-parameterized>
+\AgdaTarget{TyGate★, TyPlug★, Ty⟫★, Ty∥★}
 \begin{code}
 TyGate★ TyPlug★ Ty⟫★ Ty∥★ : (Ix → Ix → Set) → Set
 TyGate★ F = ∀ g#             → F (|in| g#) (|out| g#)

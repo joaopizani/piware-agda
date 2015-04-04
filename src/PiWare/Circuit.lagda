@@ -39,13 +39,12 @@ data ℂ : {p : IsComb} → Ix → Ix → Set
 \AgdaTarget{ℂ, Gate, DelayLoop, Plug, \_⟫\_, \_∥\_, \_|+\_}
 \begin{code}
 data ℂ where
-    Gate  : ∀ g     → 𝐂 (|in| g) (|out| g)
+    Gate  : ∀ g             → 𝐂 (|in| g) (|out| g)
     Plug  : ∀ {i o} → i ⤪ o → 𝐂 i o
-
-    DelayLoop : ∀ {i o l} → ℂ {σ} (i + l) (o + l) → ℂ {ω} i o
-
     _⟫_ : ∀ {i m o p}       → ℂ {p} i m   → ℂ {p} m o   → ℂ {p} i o
     _∥_ : ∀ {i₁ o₁ i₂ o₂ p} → ℂ {p} i₁ o₁ → ℂ {p} i₂ o₂ → ℂ {p} (i₁ + i₂) (o₁ + o₂)
+
+    DelayLoop : ∀ {i o l} → ℂ {σ} (i + l) (o + l) → ℂ {ω} i o
 \end{code}
 %</Circuit>
 
