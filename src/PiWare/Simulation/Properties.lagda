@@ -28,7 +28,7 @@ open import Data.Vec.Extra
 open Atomic At using (W)
 open import PiWare.Plugs.Core using (_⤪_)
 open import PiWare.Plugs Gt using (id⤨)
-open import PiWare.Circuit Gt using (ℂ; Plug; _⟫_; _∥_)
+open import PiWare.Circuit using (ℂ; Plug; _⟫_; _∥_)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open import PiWare.Simulation.Equality Gt using (_≊_; _≋_; refl≋; ≅⇒≋; ≋-setoid)
 open Setoid ≋-setoid using () renaming (sym to ≋-sym)

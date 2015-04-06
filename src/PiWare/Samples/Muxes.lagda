@@ -6,7 +6,7 @@ open import Data.Nat.Base using (zero; suc; _+_)
 open import Data.Fin using (Fin)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (𝐂; _⟫_; _∥_; Plug)
+open import PiWare.Circuit {Gt = BoolTrio} using (𝐂; _⟫_; _∥_; Plug)
 open import PiWare.Plugs BoolTrio using (fork×⤨; nil⤨; id⤨; fst⤨; snd⤨)
 open import PiWare.Plugs.Core using (_⤪_; _⟫⤪_; _|⤪_; id⤪; fork×⤪; ALR⤪; ARL⤪; intertwine⤪; swap⤪)
 open import PiWare.Samples.BoolTrioComb using (¬ℂ; ∧ℂ; ∨ℂ)

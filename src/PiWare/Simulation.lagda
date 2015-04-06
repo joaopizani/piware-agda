@@ -19,8 +19,8 @@ open import Data.Vec using (Vec; _++_; lookup; replicate; drop; tabulate) renami
 
 open Atomic At using (W; n→atom)
 open Gates At Gt using (|in|; |out|; spec)
-open import PiWare.Circuit Gt using (ℂ; σ)
-open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyGate★; TyPlug★; Ty⟫★; Ty∥★)
+open import PiWare.Circuit {Gt = Gt} using (ℂ; σ)
+open import PiWare.Circuit.Algebra {Gt = Gt} using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyGate★; TyPlug★; Ty⟫★; Ty∥★)
 \end{code}
 
 
@@ -63,7 +63,7 @@ simulation-combinational = record { Gate★ = gate;  Plug★ = plug;  _⟫★_ =
 \AgdaTarget{⟦\_⟧}
 \begin{code}
 ⟦_⟧ : ∀ {i o} → ℂ i o → W⟶W i o
-⟦_⟧ = cataℂσ simulation-combinational
+⟦_⟧ = cataℂσ {Aℓ = simulation-combinational}
 \end{code}
 %</simulation-combinational>
 
@@ -125,7 +125,7 @@ simulation-sequential = record { Gate★ = λ g → gate g ∘′ head; Plug★ 
 \AgdaTarget{⟦\_⟧ᶜ}
 \begin{code}
 ⟦_⟧ᶜ : ∀ {i o} → ℂ i o → (W i ⇒ᶜ W o)
-⟦_⟧ᶜ = cataℂ simulation-combinational simulation-sequential
+⟦_⟧ᶜ = cataℂ {Aℓσ = simulation-combinational} {simulation-sequential}
 \end{code}
 %</simulation-causal>
 

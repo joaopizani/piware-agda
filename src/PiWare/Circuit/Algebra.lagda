@@ -2,13 +2,13 @@
 open import PiWare.Atom using (Atomic)
 open import PiWare.Gates using (Gates; module Gates)
 
-module PiWare.Circuit.Algebra {At : Atomic} (Gt : Gates At) where
+module PiWare.Circuit.Algebra {At : Atomic} {Gt : Gates At} where
 
 open import Data.Nat.Base using (_+_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
-open import PiWare.Circuit Gt using (ℂ; σ; Gate; Plug; DelayLoop; _⟫_; _∥_)
+open import PiWare.Circuit {Gt = Gt} using (ℂ; σ; Gate; Plug; DelayLoop; _⟫_; _∥_)
 open Gates At Gt using (|in|; |out|)
 \end{code}
 
@@ -40,7 +40,7 @@ module _ {Carrier : Ix → Ix → Set} where
 %</Circuit-combinational-algebra-type>
 
 \begin{code}
- module _ (Aℓ : ℂσ★) where
+ module _ {Aℓ : ℂσ★} where
   open ℂσ★ Aℓ
 \end{code}
 %<*Circuit-combinational-cata>
@@ -71,7 +71,7 @@ module _ {Carrierσ : Ix → Ix → Set} {Carrier : Ix → Ix → Set} where
 %</Circuit-algebra-type>
 
 \begin{code}
- module _ (Aℓσ : ℂσ★ {Carrierσ}) (Aℓ : ℂ★) where
+ module _ {Aℓσ : ℂσ★ {Carrierσ}} {Aℓ : ℂ★} where
   open ℂ★ Aℓ
 \end{code}
 %<*Circuit-cata>
@@ -80,7 +80,7 @@ module _ {Carrierσ : Ix → Ix → Set} {Carrier : Ix → Ix → Set} where
   cataℂ : ∀ {i o} → ℂ i o → Carrier i o
   cataℂ (Gate g)      = Gate★ g
   cataℂ (Plug f)      = Plug★ f
-  cataℂ (DelayLoop c) = DelayLoop★ (cataℂσ {Carrierσ} Aℓσ c)
+  cataℂ (DelayLoop c) = DelayLoop★ (cataℂσ {Carrierσ} {Aℓσ} c)
   cataℂ (c₁ ⟫ c₂)     = cataℂ c₁ ⟫★ cataℂ c₂
   cataℂ (c₁ ∥ c₂)     = cataℂ c₁ ∥★ cataℂ c₂
 \end{code}
