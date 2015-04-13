@@ -78,6 +78,7 @@ W⇒ᶜW i o = W i ⇒ᶜ W o
 %</Word-causal-function>
 
 -- TODO: Now it's hardcoded to pad the sequence with th first element being (replicate (n→atom Fz))
+-- TODO: memoize this
 %<*delay>
 \AgdaTarget{delay}
 \begin{code}
