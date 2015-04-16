@@ -87,13 +87,13 @@ proj₁∘splitAt-last≈ {v = v} v≈w = transᵥ (proj₁∘splitAt-last v) v�
 %</proj₁∘splitAt-last≈>
 
 
-%<*group-noproof>
+%<*group-ignore-eq>
 \AgdaTarget{group′}
 \begin{code}
 group′ : ∀ {ℓ} {α : Set ℓ} n k → Vec α (n * k) → Vec (Vec α k) n
 group′ n k = proj₁ ∘ group n k
 \end{code}
-%</group-noproof>
+%</group-ignore-eq>
 
 
 %<*≈-++-prefix>

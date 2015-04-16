@@ -3,7 +3,7 @@ open import PiWare.Atom using (Atomic; module Atomic)
 
 module PiWare.Synthesizable (At : Atomic) where
 
-open import Function using (_∘′_; _$_; const)
+open import Function using (_∘′_; const)
 open import Data.Unit using (⊤; tt)
 open import Data.Bool using (if_then_else_)
 open import Data.Product using (_×_; _,_)
@@ -24,15 +24,14 @@ open Atomic At using (Atom#; W; atom→n; n→atom)
 \end{code}
 
 
--- Provides a mapping between metalanguage types and words
+-- Provides a mapping between metalanguage types and sets of words
 %<*Synth>
 \AgdaTarget{⇓W⇑, ⇓, ⇑}
 \begin{code}
 record ⇓W⇑ (α : Set) {i : Ix} : Set where
     constructor ⇓W⇑[_,_]
-    field
-        ⇓ : α → W i
-        ⇑ : W i → α
+    field ⇓ : α → W i
+          ⇑ : W i → α
 \end{code}
 %</Synth>
 
@@ -45,6 +44,7 @@ open ⇓W⇑ ⦃ ... ⦄
 \begin{code}
 instance
 \end{code}
+
 %<*Synth-Unit>
 \AgdaTarget{⇓W⇑-⊤}
 \begin{code}
@@ -53,27 +53,24 @@ instance
 \end{code}
 %</Synth-Unit>
 
-
 %<*Synth-Product>
 \AgdaTarget{⇓W⇑-×}
 \begin{code}
-instance
  ⇓W⇑-× : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
  ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
-     where down : (α × β) → W (i + j)
-           down (a , b) = (⇓ {i = i} a) ++ (⇓ b)
+   where
+     down : (α × β) → W (i + j)
+     down (a , b) = (⇓ {i = i} a) ++ (⇓ b)
  
-           up : W (i + j) → (α × β)
-           up w with splitAt i w
-           up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
+     up : W (i + j) → (α × β)
+     up w with splitAt i w
+     up .(⇓a ++ ⇓b) | ⇓a , ⇓b , refl = ⇑ ⇓a , ⇑ ⇓b
 \end{code}
 %</Synth-Product>
-
 
 %<*Synth-Vec>
 \AgdaTarget{⇓W⇑-Vec}
 \begin{code}
-instance
  ⇓W⇑-Vec : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
  ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
    where
@@ -95,17 +92,20 @@ untag {i} {j} (t ◁ ab) = (if ⌊ atom→n t ≟ Fz ⌋ then (inj₁ ∘′ unp
 \end{code}
 %</untag>
 
+\begin{code}
+instance
+\end{code}
 %<*Synth-Sum>
 \AgdaTarget{⇓W⇑-⊎}
 \begin{code}
-instance
  ⇓W⇑-⊎ : ∀ {α i β j} (r p : Atom#) {d : r ≢ Fz} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
  ⇓W⇑-⊎ {α} {i} {β} {j} r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
-   where down : α ⊎ β → W (suc (i ⊔ j))
-         down = [ (λ a → (n→atom Fz) ◁ (padTo₁ j withA n→atom p) (⇓ {i = i} a))
-                , (λ b → (n→atom r)  ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
-           
-         up : W (suc (i ⊔ j)) → α ⊎ β
-         up = map⊎ (⇑ {i = i}) (⇑ {i = j}) ∘′ untag
+   where
+     down : α ⊎ β → W (suc (i ⊔ j))
+     down = [ (λ a → (n→atom Fz) ◁ (padTo₁ j withA n→atom p) (⇓ {i = i} a))
+            , (λ b → (n→atom r)  ◁ (padTo₂ i withA n→atom p) (⇓ b)) ]
+       
+     up : W (suc (i ⊔ j)) → α ⊎ β
+     up = map⊎ (⇑ {i = i}) (⇑ {i = j}) ∘′ untag
 \end{code}
 %</Synth-Sum>

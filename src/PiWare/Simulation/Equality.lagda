@@ -44,10 +44,10 @@ infixl 3 _≊_
 %<*Circ-eq-sim>
 \AgdaTarget{\_≋\_}
 \begin{code}
+infixl 3 _≋_
+
 data _≋_ {i₁ o₁ i₂ o₂} : ℂ i₁ o₁ → ℂ i₂ o₂ → Set where
   refl≋ : {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} (i≡ : i₁ ≡ i₂) → c₁ ≊ c₂ → c₁ ≋ c₂
-
-infixl 3 _≋_
 \end{code}
 %</Circ-eq-sim>
 

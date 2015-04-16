@@ -11,7 +11,7 @@ open import Data.Product using (_,_; uncurry′) renaming (map to mapₚ)
 open import Data.Stream using (Stream)
 open import Data.List using (List; []; _∷_)
 open import Data.List.NonEmpty using (_∷_) renaming (map to map⁺)
-open import Data.CausalStream using (_⇒ᶜ_; runᶜ; tailsᶜ)
+open import Data.CausalStream using (_⇒ᶜ_; runᶜ; pasts)
 open import Data.Vec.Extra using (splitAt′)
 open import Data.List.NonEmpty using (head)
 open import Data.List.NonEmpty.Extra using (unzip⁺; splitAt⁺; uncurry⁺)
@@ -108,7 +108,7 @@ par-seq : Ty∥★ W⇒ᶜW
 %<*combinator-word-causal-function-defs>
 \AgdaTarget{seq-seq,par-seq,sum-seq}
 \begin{code}
-seq-seq      f₁ f₂ = f₂ ∘′ map⁺ f₁ ∘′ tailsᶜ
+seq-seq      f₁ f₂ = f₂ ∘′ map⁺ f₁ ∘′ pasts
 par-seq {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ unzip⁺ ∘′ splitAt⁺ i₁
 \end{code}
 %</combinator-word-causal-function-defs>

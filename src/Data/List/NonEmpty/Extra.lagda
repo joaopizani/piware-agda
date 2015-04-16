@@ -20,15 +20,6 @@ unzip⁺ ((x , y) ∷ zs) = map (_∷_ x) (_∷_ y) (unzip zs)
 %</unzip-nonempty>
 
 
-%<*uncurry-nonempty>
-\AgdaTarget{uncurry⁺}
-\begin{code}
-uncurry⁺ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {γ : Set ℓ₂} → (α → List α → γ) → List⁺ α → γ
-uncurry⁺ f (x ∷ xs) = f x xs
-\end{code}
-%</uncurry-nonempty>
-
-
 %<*splitAt-nonempty>
 \AgdaTarget{splitAt⁺}
 \begin{code}
@@ -37,6 +28,14 @@ splitAt⁺ m = map⁺ (splitAt′ m)
 \end{code}
 %</splitAt-nonempty>
 
+
+%<*uncurry-nonempty>
+\AgdaTarget{uncurry⁺}
+\begin{code}
+uncurry⁺ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {γ : Set ℓ₂} → (α → List α → γ) → List⁺ α → γ
+uncurry⁺ f (x ∷ xs) = f x xs
+\end{code}
+%</uncurry-nonempty>
 
 -- Needs to use the trick with tails⁺' and uncurry⁺ to "convince" the termination checker
 %<*tails-nonempty>

@@ -6,8 +6,7 @@ module PiWare.Patterns {At : Atomic} (Gt : Gates At) where
 
 open import Function using (const; _∘′_; _$_)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
-open import Data.Bool using (Bool)
-open import Data.Vec using (Vec; []; _∷_; replicate; foldr; map)
+open import Data.Vec using (Vec; replicate; foldr)
 open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
 
 open import PiWare.Circuit Gt using (ℂ; _⟫_; _∥_)
@@ -62,6 +61,6 @@ seqsN k = seqs ∘′ replicate {n = k}
 \begin{code}
 row : ∀ {k i o h p} → ℂ {p} (h + i) (o + h) → ℂ {p} (h + (k * i)) ((k * o) + h)
 row {zero}  {i} {o} {h} _ rewrite +-identityᵣ h = id⤨
-row {suc k} {i} {o} {h} c = undefined where postulate undefined : _  -- row {k} {i} {o} {h} c
+row {suc k} {i} {o} {h} c = ⊥ where postulate ⊥ : _  -- row {k} {i} {o} {h} c
 \end{code}
 %</row>

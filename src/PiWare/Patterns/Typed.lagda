@@ -13,6 +13,10 @@ open import PiWare.Patterns Gt using (parsN; seqsN)
 \end{code}
 
 
+--TODO: parŝ
+--TODO: seqŝ
+
+
 %<*parsN-typed>
 \AgdaTarget{parsN̂}
 \begin{code}

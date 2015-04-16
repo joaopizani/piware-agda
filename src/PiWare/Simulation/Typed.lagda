@@ -10,6 +10,9 @@ open import Data.Stream using (Stream; map)
 open import PiWare.Circuit.Typed Gt using (ℂ̂; Mkℂ̂)
 open import PiWare.Simulation Gt using (⟦_⟧; ⟦_⟧ω)
 open import PiWare.Synthesizable At using (module ⇓W⇑)
+\end{code}
+
+\begin{code}
 open ⇓W⇑ ⦃ ... ⦄ using (⇓; ⇑)
 \end{code}
 

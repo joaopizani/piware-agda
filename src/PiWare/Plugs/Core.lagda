@@ -24,6 +24,7 @@ open import PiWare.Interface using (Ix)
 
 
 %<*Plug-type>
+\AgdaTarget{\_⤪\_}
 \begin{code}
 infix 8 _⤪_
 
@@ -34,6 +35,7 @@ i ⤪ o = Vec (Fin i) o
 
 
 %<*Plug-par>
+\AgdaTarget{\_|⤪\_}
 \begin{code}
 infixr 7 _|⤪_
 
@@ -43,6 +45,7 @@ _|⤪_ {a} {b} {c} {d} f g = map (inject+ c) f ++ map (raise a) g
 %</Plug-par>
 
 %<*Plug-seq>
+\AgdaTarget{\_⟫⤪\_}
 \begin{code}
 infixr 6 _⟫⤪_
 
@@ -53,6 +56,7 @@ f ⟫⤪ g = map (flip lookup f) g
 
 
 %<*nil-fin>
+\AgdaTarget{nil⤪}
 \begin{code}
 nil⤪ : ∀ {n} → n ⤪ 0
 nil⤪ = ε
@@ -61,6 +65,7 @@ nil⤪ = ε
 
 
 %<*id-fin>
+\AgdaTarget{id⤪}
 \begin{code}
 id⤪ : ∀ {n} → n ⤪ n
 id⤪ = tabulate id

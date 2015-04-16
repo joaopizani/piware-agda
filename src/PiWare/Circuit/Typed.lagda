@@ -1,23 +1,19 @@
 \begin{code}
-open import PiWare.Atom using (Atomic; module Atomic)
+open import PiWare.Atom using (Atomic)
 open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Circuit.Typed {At : Atomic} (Gt : Gates At) where
 
-open import Data.Nat using (ℕ; suc; _+_; _⊔_)
-open import Data.Fin using (Fin) renaming (zero to Fz)
+open import Data.Nat using (_+_)
 open import Data.Product using (_×_)
-open import Data.Sum using (_⊎_)
-open import Relation.Binary.PropositionalEquality using (_≢_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
-open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-⊎)
-import PiWare.Circuit as Circ
-open Circ Gt using (ℂ; IsComb; Gate; Plug; DelayLoop; _⟫_; _∥_)
-open Circ Gt using (σ; ω) public
+open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×)
+import PiWare.Circuit as Circuit
+open Circuit Gt using (ℂ; IsComb; Gate; Plug; DelayLoop; _⟫_; _∥_)
+open Circuit Gt using (σ; ω) public
 
-open Atomic At using (Atom#) 
 open Gates At Gt using (|in|; |out|)
 \end{code}
 
@@ -48,8 +44,8 @@ record ℂ̂ {p : IsComb} (α β : Set) {i j : Ix} : Set where
 %<*gateC>
 \AgdaTarget{gateℂ̂}
 \begin{code}
-gateℂ̂ : ∀ g# {α β} ⦃ _ : ⇓W⇑ α {|in| g#} ⦄ ⦃ _ : ⇓W⇑ β {|out| g#} ⦄ → 𝐂̂ α β
-gateℂ̂ g# ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (Gate g#)
+gateℂ̂ : ∀ g {α β} ⦃ _ : ⇓W⇑ α {|in| g} ⦄ ⦃ _ : ⇓W⇑ β {|out| g} ⦄ → 𝐂̂ α β
+gateℂ̂ g ⦃ sα ⦄ ⦃ sβ ⦄ = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (Gate g)
 \end{code}
 %</gateC>
 
@@ -66,7 +62,7 @@ plugℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ f = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (Plug f)
 \begin{code}
 delayℂ̂ : ∀ {α i β j γ k} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ ⦃ _ : ⇓W⇑ γ {k} ⦄
          → ℂ̂ {σ} (α × γ) (β × γ) {i + k} {j + k} → ℂ̂ {ω} α β {i} {j}
-delayℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ̂ c') = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (DelayLoop c')
+delayℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ̂ c) = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (DelayLoop c)
 \end{code}
 %</delayC>
 

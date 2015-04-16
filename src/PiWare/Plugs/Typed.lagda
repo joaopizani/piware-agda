@@ -22,6 +22,7 @@ open import PiWare.Plugs Gt
 
 
 %<*nil-plug-typed>
+\AgdaTarget{nil⤨̂}
 \begin{code}
 nil⤨̂ : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → 𝐂̂ α ⊤
 nil⤨̂ ⦃ sα ⦄ = Mkℂ̂ ⦃ sα ⦄ nil⤨

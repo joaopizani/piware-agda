@@ -4,8 +4,7 @@ open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Circuit.Algebra {At : Atomic} (Gt : Gates At) where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_)
-open import Data.Fin using (Fin)
+open import Data.Nat using (_+_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
@@ -30,6 +29,7 @@ Ty∥★    F = ∀ {i₁ o₁ i₂ o₂} → F i₁ o₁ → F i₂ o₂ → F 
 module _ {Carrier : Ix → Ix → Set} where
 \end{code}
 %<*Circuit-combinational-algebra-type>
+\AgdaTarget{ℂσ★}
 \begin{code}
  record ℂσ★ : Set where
    field Gate★ : TyGate★ Carrier
@@ -44,6 +44,7 @@ module _ {Carrier : Ix → Ix → Set} where
   open ℂσ★ Aℓ
 \end{code}
 %<*Circuit-combinational-cata>
+\AgdaTarget{cataℂσ}
 \begin{code}
   cataℂσ : ∀ {i o} → ℂ {σ} i o → Carrier i o
   cataℂσ (Gate g)  = Gate★ g
@@ -58,6 +59,7 @@ module _ {Carrier : Ix → Ix → Set} where
 module _ {Carrierσ : Ix → Ix → Set} {Carrier : Ix → Ix → Set} where
 \end{code}
 %<*Circuit-algebra-type>
+\AgdaTarget{ℂ★}
 \begin{code}
  record ℂ★ : Set where
    field Gate★ : TyGate★ Carrier
@@ -73,6 +75,7 @@ module _ {Carrierσ : Ix → Ix → Set} {Carrier : Ix → Ix → Set} where
   open ℂ★ Aℓ
 \end{code}
 %<*Circuit-cata>
+\AgdaTarget{cataℂ}
 \begin{code}
   cataℂ : ∀ {i o} → ℂ i o → Carrier i o
   cataℂ (Gate g)      = Gate★ g

@@ -19,6 +19,7 @@ open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) u
 
 
 %<*nil-plug>
+\AgdaTarget{nil⤨}
 \begin{code}
 nil⤨ : ∀ {n} → 𝐂 n 0
 nil⤨ = Plug nil⤪
