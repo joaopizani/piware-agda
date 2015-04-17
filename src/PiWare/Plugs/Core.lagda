@@ -4,8 +4,8 @@ module PiWare.Plugs.Core where
 open import Function using (id; _$_; flip)
 open import Data.Fin using (Fin; toℕ; inject+; raise)
 open import Data.Vec using (Vec; map; _++_; lookup; tabulate) renaming ([] to ε)
+open import Data.Nat.Base using (zero; suc; _+_; _*_)
 open import Data.Nat.DivMod using (_mod_)
-open import Data.Nat using (zero; suc; _+_; _*_)
 
 open import Relation.Binary.PropositionalEquality using (cong; sym; refl; _≡_; module ≡-Reasoning)
 open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_)

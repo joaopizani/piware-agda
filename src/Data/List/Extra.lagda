@@ -1,7 +1,7 @@
 \begin{code}
 module Data.List.Extra where
 
-open import Data.List using (List; []; _∷_)
+open import Data.List.Base using (List; []; _∷_)
 open import Data.Product using (_×_; _,_; map)
 \end{code}
 

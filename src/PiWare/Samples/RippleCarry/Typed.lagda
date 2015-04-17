@@ -1,10 +1,10 @@
 \begin{code}
 module PiWare.Samples.RippleCarry.Typed where
 
-open import Data.Nat using (_+_; _*_)
+open import Data.Nat.Base using (_+_; _*_)
 open import Data.Product using (_×_)
 open import Data.Vec using (Vec)
-open import Data.Bool using () renaming (Bool to B)
+open import Data.Bool.Base using () renaming (Bool to B)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Circuit.Typed BoolTrio using (𝐂̂; Mkℂ̂)

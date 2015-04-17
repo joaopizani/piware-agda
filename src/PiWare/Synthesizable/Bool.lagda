@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.Synthesizable.Bool where
 
-open import Data.Bool using () renaming (Bool to B)
+open import Data.Bool.Base using () renaming (Bool to B)
 open import Data.Vec using (head) renaming ([_] to singleton)
 
 open import PiWare.Atom.Bool using (Atomic-B)

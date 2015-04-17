@@ -2,10 +2,10 @@
 open import Level using () renaming (suc to lsuc)
 
 open import Function using (_$_; _∘_)
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat.Base using (ℕ; zero; suc; _+_)
 open import Data.Empty using (⊥)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
-open import Data.Bool using (true) renaming (Bool to B)
+open import Data.Bool.Base using (true) renaming (Bool to B)
 open import Data.Vec using (Vec; replicate; lookup; [_]; _++_; zipWith; _⊛_) renaming ([] to ε; _∷_ to _◁_)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)

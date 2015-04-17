@@ -1,9 +1,9 @@
 \begin{code}
 module PiWare.Samples.BoolTrioComb.Typed where
 
-open import Data.Bool using () renaming (Bool to B)
+open import Data.Bool.Base using () renaming (Bool to B)
 open import Data.Product using (_×_)
-open import Data.Unit using (⊤)
+open import Data.Unit.Base using (⊤)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Circuit.Typed BoolTrio using (𝐂̂; Mkℂ̂)

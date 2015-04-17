@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.Samples.BoolTrioComb where
 
-open import Data.Nat using (_+_)
+open import Data.Nat.Base using (_+_)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio; ⊥ℂ#; ⊤ℂ#; ¬ℂ#; ∧ℂ#; ∨ℂ#)
 open import PiWare.Circuit BoolTrio using (𝐂; Gate; _⟫_; _∥_)

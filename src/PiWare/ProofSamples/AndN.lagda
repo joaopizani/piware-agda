@@ -2,8 +2,8 @@
 module PiWare.ProofSamples.AndN where
 
 open import Function using (_∘′_)
-open import Data.Nat using (zero; suc)
-open import Data.Bool using (true)
+open import Data.Nat.Base using (zero; suc)
+open import Data.Bool.Base using (true)
 open import Data.Vec using (replicate; _∷_; [_])
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)

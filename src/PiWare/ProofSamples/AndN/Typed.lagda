@@ -1,8 +1,8 @@
 \begin{code}
 module PiWare.ProofSamples.AndN.Typed where
 
-open import Data.Nat using (zero; suc)
-open import Data.Bool using (true)
+open import Data.Nat.Base using (zero; suc)
+open import Data.Bool.Base using (true)
 open import Data.Vec using (replicate)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 

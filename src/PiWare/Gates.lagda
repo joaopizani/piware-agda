@@ -3,7 +3,7 @@ open import PiWare.Atom using (Atomic; module Atomic)
 
 module PiWare.Gates (At : Atomic) where
 
-open import Data.Nat using (ℕ)
+open import Data.Nat.Base using (ℕ)
 open import Data.Fin using (Fin)
 
 open import PiWare.Interface using (Ix)

@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Circuit.Algebra {At : Atomic} (Gt : Gates At) where
 
-open import Data.Nat using (_+_)
+open import Data.Nat.Base using (_+_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)

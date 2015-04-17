@@ -5,7 +5,7 @@ open import PiWare.Gates using (Gates)
 module PiWare.Simulation.Properties {At : Atomic} (Gt : Gates At) where
 
 open import Function using (id; _∘_; _∘′_; _$_; flip)
-open import Data.Nat using (zero; suc; _+_)
+open import Data.Nat.Base using (zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Product using (_,_)
 open import Data.Vec using (lookup; tabulate; splitAt)

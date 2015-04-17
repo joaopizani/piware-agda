@@ -2,8 +2,8 @@
 module PiWare.ProofSamples.BoolTrioSeq where
 
 open import Function using (_$_)
-open import Data.Unit using (tt)
-open import Data.Bool using (not; false; true)
+open import Data.Unit.Base using (tt)
+open import Data.Bool.Base using (not; false; true)
 open import Data.Product using (_,_)
 open import Coinduction using (♯_; ♭)
 open import Data.Stream using (_∷_; head; tail; take; repeat; iterate; zipWith; _≈_)

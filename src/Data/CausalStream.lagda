@@ -3,7 +3,7 @@ module Data.CausalStream where
 
 open import Level using (_⊔_)
 open import Data.Product using (_×_; _,_)
-open import Data.List using (List; _∷_) renaming ([] to ε)
+open import Data.List.Base using (List; _∷_) renaming ([] to ε)
 open import Data.List.NonEmpty using (List⁺; _∷_)
 open import Data.List.NonEmpty.Extra using (tails⁺)
 

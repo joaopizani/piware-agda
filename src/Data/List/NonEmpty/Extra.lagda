@@ -1,8 +1,8 @@
 \begin{code}
 module Data.List.NonEmpty.Extra where
 
-open import Data.Nat using (_+_)
-open import Data.List using (List; []; _∷_)
+open import Data.Nat.Base using (_+_)
+open import Data.List.Base using (List; []; _∷_)
 open import Data.List.NonEmpty using (List⁺; _∷_) renaming (map to map⁺; [_] to [_]⁺)
 open import Data.Product using (_×_; _,_; map)
 open import Data.List.Extra using (unzip)

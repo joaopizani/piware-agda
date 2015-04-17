@@ -2,7 +2,7 @@
 module PiWare.Samples.RippleCarry where
 
 open import Function using (id; _$_)
-open import Data.Nat using (zero; suc; _+_; _*_)
+open import Data.Nat.Base using (zero; suc; _+_; _*_)
 open import Data.Fin using (Fin)
 
 open import PiWare.Plugs.Core using (_|⤪_; _⟫⤪_; id⤪; fst⤪; swap⤪; ARL⤪)

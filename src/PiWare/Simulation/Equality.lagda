@@ -5,7 +5,7 @@ open import PiWare.Gates using (Gates)
 module PiWare.Simulation.Equality {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘_; _$_)
-open import Data.Nat using (ℕ)
+open import Data.Nat.Base using (ℕ)
 open import Data.Product using (_×_; uncurry)
 
 open import Data.Vec.Equality using () renaming (module PropositionalEquality to VPE)

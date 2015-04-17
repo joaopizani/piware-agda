@@ -2,7 +2,7 @@
 module PiWare.Samples.Muxes where
 
 open import Function using (_∘_)
-open import Data.Nat using (zero; suc; _+_)
+open import Data.Nat.Base using (zero; suc; _+_)
 open import Data.Fin using (Fin)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)

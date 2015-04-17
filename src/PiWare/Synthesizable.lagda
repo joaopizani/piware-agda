@@ -4,13 +4,13 @@ open import PiWare.Atom using (Atomic; module Atomic)
 module PiWare.Synthesizable (At : Atomic) where
 
 open import Function using (_∘′_; const)
-open import Data.Unit using (⊤; tt)
-open import Data.Bool using (if_then_else_)
+open import Data.Unit.Base using (⊤; tt)
+open import Data.Bool.Base using (if_then_else_)
+open import Data.Nat.Base using (suc; _+_; _*_; _⊔_)
 open import Data.Product using (_×_; _,_)
 open import Data.Sum using (_⊎_; inj₁; inj₂; [_,_]) renaming (map to map⊎)
 open import Data.Fin using () renaming (zero to Fz)
 open import Data.Fin.Properties using (_≟_)
-open import Data.Nat using (suc; _+_; _*_; _⊔_)
 open import Data.Vec using (Vec; _++_; splitAt; concat) renaming (_∷_ to _◁_; [] to ε; map to mapᵥ)
 
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)

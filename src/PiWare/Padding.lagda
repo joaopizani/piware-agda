@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.Padding where
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _⊔_; _≤_; z≤n; s≤s)
+open import Data.Nat.Base using (ℕ; zero; suc; _+_; _⊔_; _≤_; z≤n; s≤s)
 open import Data.Product using (_,_; Σ-syntax)
 open import Data.Vec using (Vec; _++_; replicate; take)
 

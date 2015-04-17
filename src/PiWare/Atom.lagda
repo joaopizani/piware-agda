@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.Atom where
 
-open import Data.Nat using (ℕ; suc)
+open import Data.Nat.Base using (ℕ; suc)
 open import Data.Fin using (Fin)
 open import Data.Vec using (Vec)
 

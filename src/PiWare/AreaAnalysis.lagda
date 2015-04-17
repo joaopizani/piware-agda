@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.AreaAnalysis {At : Atomic} (Gt : Gates At) where
 
-open import Data.Nat using (ℕ; _+_)
+open import Data.Nat.Base using (ℕ; _+_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Circuit Gt using (ℂ)

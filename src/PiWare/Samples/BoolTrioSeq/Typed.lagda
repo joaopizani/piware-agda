@@ -1,8 +1,8 @@
 \begin{code}
 module PiWare.Samples.BoolTrioSeq.Typed where
 
-open import Data.Bool using () renaming (Bool to B)
-open import Data.Unit using (⊤)
+open import Data.Bool.Base using () renaming (Bool to B)
+open import Data.Unit.Base using (⊤)
 open import Data.Product using (_×_)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)

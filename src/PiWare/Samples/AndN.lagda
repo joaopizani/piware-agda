@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.Samples.AndN where
 
-open import Data.Nat using (zero; suc)
+open import Data.Nat.Base using (zero; suc)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
 open import PiWare.Circuit BoolTrio using (𝐂; _⟫_; _∥_)

@@ -2,7 +2,7 @@
 module Data.Vec.Extra where
 
 open import Function using (id; _∘_; _$_)
-open import Data.Nat using (zero; suc; _+_; _*_)
+open import Data.Nat.Base using (zero; suc; _+_; _*_)
 open import Data.Product using (∃₂; _×_; _,_; map; proj₁; proj₂)
 open import Data.Vec using (Vec; splitAt; []; _∷_; _++_; group)
 

@@ -2,10 +2,10 @@
 module PiWare.Gates.BoolTrio where
 
 open import Function using (const)
-open import Data.Nat using (ℕ)
+open import Data.Nat.Base using (ℕ)
+open import Data.Bool.Base using (false; true; not; _∧_; _∨_) renaming (Bool to B)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Vec using ([_]) renaming (_∷_ to _◁_; [] to ε)
-open import Data.Bool using (false; true; not; _∧_; _∨_) renaming (Bool to B)
 
 open import PiWare.Atom.Bool using (Atomic-B)
 open import PiWare.Interface using (Ix)

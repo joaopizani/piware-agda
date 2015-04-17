@@ -5,11 +5,11 @@ open import PiWare.Gates using (Gates; module Gates)
 module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘′_; flip)
-open import Data.Nat using (_+_)
+open import Data.Nat.Base using (_+_)
 open import Data.Fin using () renaming (zero to Fz)
 open import Data.Product using (_,_; uncurry′) renaming (map to mapₚ)
 open import Data.Stream using (Stream)
-open import Data.List using (List; []; _∷_)
+open import Data.List.Base using (List; []; _∷_)
 open import Data.List.NonEmpty using (_∷_) renaming (map to map⁺)
 open import Data.CausalStream using (_⇒ᶜ_; runᶜ; pasts)
 open import Data.Vec.Extra using (splitAt′)

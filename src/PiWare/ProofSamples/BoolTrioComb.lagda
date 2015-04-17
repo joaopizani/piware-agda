@@ -1,7 +1,7 @@
 \begin{code}
 module PiWare.ProofSamples.BoolTrioComb where
 
-open import Data.Bool using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to B)
+open import Data.Bool.Base using (not; _∧_; _∨_; _xor_; true; false) renaming (Bool to B)
 open import Data.Product using (_×_; _,_; uncurry′)
 open import Data.Vec using (Vec; _∷_) renaming ([] to ε)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)

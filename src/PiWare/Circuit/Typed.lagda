@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Circuit.Typed {At : Atomic} (Gt : Gates At) where
 
-open import Data.Nat using (_+_)
+open import Data.Nat.Base using (_+_)
 open import Data.Product using (_×_)
 
 open import PiWare.Interface using (Ix)

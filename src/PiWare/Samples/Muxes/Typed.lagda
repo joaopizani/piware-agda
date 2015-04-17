@@ -1,8 +1,8 @@
 \begin{code}
 module PiWare.Samples.Muxes.Typed where
 
-open import Data.Nat using (_+_; _*_)
-open import Data.Bool using () renaming (Bool to B)
+open import Data.Nat.Base using (_+_; _*_)
+open import Data.Bool.Base using () renaming (Bool to B)
 open import Data.Vec using (Vec)
 open import Data.Product using (_×_; proj₂)
 

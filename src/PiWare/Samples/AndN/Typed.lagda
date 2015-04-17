@@ -2,7 +2,7 @@
 module PiWare.Samples.AndN.Typed where
 
 open import Function using (id)
-open import Data.Bool using () renaming (Bool to B)
+open import Data.Bool.Base using () renaming (Bool to B)
 open import Data.Vec using (Vec)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)

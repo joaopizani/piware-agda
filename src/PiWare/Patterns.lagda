@@ -5,7 +5,7 @@ open import PiWare.Gates using (Gates)
 module PiWare.Patterns {At : Atomic} (Gt : Gates At) where
 
 open import Function using (const; _∘′_; _$_)
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec; replicate; foldr)
 open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
 

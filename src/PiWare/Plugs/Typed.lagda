@@ -4,8 +4,8 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Plugs.Typed {At : Atomic} (Gt : Gates At) where
 
-open import Data.Unit using (⊤)
-open import Data.Nat using (suc; _+_; _*_)
+open import Data.Unit.Base using (⊤)
+open import Data.Nat.Base using (suc; _+_; _*_)
 open import Data.Vec using (Vec)
 open import Data.Product using (_×_)
 

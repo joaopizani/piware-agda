@@ -1,9 +1,9 @@
 \begin{code}
 module PiWare.Atom.Bool where
 
-open import Data.Bool using (true; false) renaming (Bool to B)
+open import Data.Bool.Base using (true; false) renaming (Bool to B)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
-open import Data.Nat using (suc)
+open import Data.Nat.Base using (suc)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
