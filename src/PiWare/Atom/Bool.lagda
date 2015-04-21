@@ -5,7 +5,7 @@ open import Data.Bool.Base using (true; false) renaming (Bool to B)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Nat.Base using (suc)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; →-to-⟶)
 
 open import PiWare.Atom using (Atomic)
 \end{code}
@@ -77,10 +77,12 @@ Atomic-B : Atomic
 Atomic-B = record
   { Atom      = B
   ; |Atom|-1  = |B|-1
-  ; n→atom    = n→B
-  ; atom→n    = B→n
-  ; inv-left  = inv-left-B
-  ; inv-right = inv-right-B
+  ; enum      = record { to         = →-to-⟶ n→B
+                       ; from       = →-to-⟶ B→n
+                       ; inverse-of = record { left-inverse-of  = inv-left-B
+                                             ; right-inverse-of = inv-right-B
+                                             }
+                       }
   }
 \end{code}
 %</Atomic-Bool>
