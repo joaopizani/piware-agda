@@ -23,7 +23,6 @@ open Gates At Gt using (|in|; |out|)
 \AgdaTarget{ℂ}
 \begin{code}
 record ℂ̂ {p : IsComb} (α β : Set) {i j : Ix} : Set where
-    inductive
     constructor Mkℂ̂
     field ⦃ sα ⦄ : ⇓W⇑ α {i}
           ⦃ sβ ⦄ : ⇓W⇑ β {j}

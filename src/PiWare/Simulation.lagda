@@ -17,7 +17,11 @@ open import Data.List.NonEmpty using (head)
 open import Data.List.NonEmpty.Extra using (unzip⁺; splitAt⁺; uncurry⁺)
 open import Data.Vec using (Vec; _++_; lookup; replicate; drop; tabulate) renaming ([] to ε; take to takeᵥ)
 
-open Atomic At using (W; n→atom)
+open import Function.Equality using (_⟨$⟩_)
+open import Function.Inverse using (module Inverse)
+open Inverse using (to; from)
+
+open Atomic At using (W; enum)
 open Gates At Gt using (|in|; |out|; spec)
 open import PiWare.Circuit {Gt = Gt} using (ℂ; σ)
 open import PiWare.Circuit.Algebra {Gt = Gt} using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyGate★; TyPlug★; Ty⟫★; Ty∥★)
@@ -85,7 +89,7 @@ W⇒ᶜW i o = W i ⇒ᶜ W o
 delay : ∀ o {i l} → W⟶W (i + l) (o + l) → W⇒ᶜW i (o + l)
 delay o {i} {l} = uncurry⁺ ∘′ delay′ o {i} {l}
   where delay′ : ∀ o {i l} → W⟶W (i + l) (o + l) → W i → List (W i) → W (o + l)
-        delay′ _ f w⁰ []         = f (w⁰ ++ replicate (n→atom Fz))
+        delay′ _ f w⁰ []         = f (w⁰ ++ replicate (to enum ⟨$⟩ Fz))
         delay′ o f w⁰ (w⁻¹ ∷ w⁻) = f (w⁰ ++ drop o (delay′ o f w⁻¹ w⁻))
 \end{code}
 %</delay>
