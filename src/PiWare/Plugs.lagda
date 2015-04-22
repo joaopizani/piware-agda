@@ -7,7 +7,7 @@ module PiWare.Plugs {At : Atomic} (Gt : Gates At) where
 open import Function using (id)
 open import Data.Nat.Base using (ℕ; suc; _+_; _*_)
 
-open import PiWare.Circuit Gt using (𝐂; Plug)
+open import PiWare.Circuit {Gt = Gt} using (𝐂; Plug)
 open import PiWare.Plugs.Core
     using ( nil⤪; id⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
           ; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)

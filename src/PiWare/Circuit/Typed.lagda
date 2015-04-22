@@ -11,8 +11,8 @@ open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×)
 import PiWare.Circuit as Circuit
-open Circuit Gt using (ℂ; IsComb; Gate; Plug; DelayLoop; _⟫_; _∥_)
-open Circuit Gt using (σ; ω) public
+open Circuit {Gt = Gt} using (ℂ; IsComb; Gate; Plug; DelayLoop; _⟫_; _∥_)
+open Circuit {Gt = Gt} using (σ; ω) public
 
 open Gates At Gt using (|in|; |out|)
 \end{code}

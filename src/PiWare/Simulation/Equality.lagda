@@ -15,7 +15,7 @@ open import Relation.Binary.Indexed.Core using (Setoid; IsEquivalence)
 
 import Relation.Binary.Indexed.EqReasoning as IdxEqReasoning
 
-open import PiWare.Circuit Gt using (ℂ)
+open import PiWare.Circuit using (ℂ)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open Atomic At using (W)
 \end{code}

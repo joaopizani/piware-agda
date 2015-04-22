@@ -4,7 +4,7 @@ module PiWare.Samples.AndN where
 open import Data.Nat.Base using (zero; suc)
 
 open import PiWare.Gates.BoolTrio using (BoolTrio)
-open import PiWare.Circuit BoolTrio using (𝐂; _⟫_; _∥_)
+open import PiWare.Circuit {Gt = BoolTrio} using (𝐂; _⟫_; _∥_)
 open import PiWare.Plugs BoolTrio using (id⤨)
 open import PiWare.Samples.BoolTrioComb using (⊤ℂ; ∧ℂ)
 \end{code}

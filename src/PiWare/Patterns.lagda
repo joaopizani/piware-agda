@@ -9,7 +9,7 @@ open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec; replicate; foldr)
 open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
 
-open import PiWare.Circuit Gt using (ℂ; _⟫_; _∥_)
+open import PiWare.Circuit {Gt = Gt} using (ℂ; _⟫_; _∥_)
 open import PiWare.Plugs Gt using (id⤨)
 \end{code}
 
