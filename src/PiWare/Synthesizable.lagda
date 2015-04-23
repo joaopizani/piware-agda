@@ -1,5 +1,5 @@
 \begin{code}
-open import PiWare.Atom using (Atomic; module Atomic)
+open import PiWare.Atom using (Atomic; module Atomic; module Inverse′)
 
 module PiWare.Synthesizable (At : Atomic) where
 
@@ -15,15 +15,13 @@ open import Data.Vec using (Vec; _++_; splitAt; concat) renaming (_∷_ to _◁_
 
 open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Decidable using (⌊_⌋)
-open import Function.Equality using (_⟨$⟩_)
-open import Function.Inverse using (module Inverse)
-open Inverse using (to; from)
 
 open import Data.Vec.Extra using (group′)
 
 open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
 open import PiWare.Interface using (Ix)
 open Atomic At using (Atom#; W; enum)
+open Inverse′ using (from; to)
 \end{code}
 
 
@@ -91,7 +89,7 @@ instance
 \AgdaTarget{untag}
 \begin{code}
 untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
-untag {i} {j} (t ◁ ab) = ( if ⌊ from enum ⟨$⟩ t ≟ Fz ⌋
+untag {i} {j} (t ◁ ab) = ( if ⌊ from enum t ≟ Fz ⌋
                            then (inj₁ ∘′ unpadFrom₁ j)
                            else (inj₂ ∘′ unpadFrom₂ i)
                          ) ab
@@ -108,8 +106,8 @@ instance
  ⇓W⇑-⊎ {α} {i} {β} {j} r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
    where
      down : α ⊎ β → W (suc (i ⊔ j))
-     down = [ (λ a → (to enum ⟨$⟩ Fz) ◁ (padTo₁ j withA (to enum ⟨$⟩ p)) (⇓ {i = i} a))
-            , (λ b → (to enum ⟨$⟩ r)  ◁ (padTo₂ i withA (to enum ⟨$⟩ p)) (⇓ b)) ]
+     down = [ (λ a → (to enum Fz) ◁ (padTo₁ j withA (to enum p)) (⇓ {i = i} a))
+            , (λ b → (to enum r)  ◁ (padTo₂ i withA (to enum p)) (⇓ b)) ]
        
      up : W (suc (i ⊔ j)) → α ⊎ β
      up = map⊎ (⇑ {i = i}) (⇑ {i = j}) ∘′ untag

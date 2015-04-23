@@ -1,5 +1,5 @@
 \begin{code}
-open import PiWare.Atom using (Atomic; module Atomic)
+open import PiWare.Atom using (Atomic; module Atomic; module Inverse′)
 open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
@@ -19,7 +19,7 @@ open import Data.Vec using (Vec; _++_; lookup; replicate; drop; tabulate) renami
 
 open import Function.Equality using (_⟨$⟩_)
 open import Function.Inverse using (module Inverse)
-open Inverse using (to; from)
+open Inverse′ using (to)
 
 open Atomic At using (W; enum)
 open Gates At Gt using (|in|; |out|; spec)
@@ -89,7 +89,7 @@ W⇒ᶜW i o = W i ⇒ᶜ W o
 delay : ∀ o {i l} → W⟶W (i + l) (o + l) → W⇒ᶜW i (o + l)
 delay o {i} {l} = uncurry⁺ ∘′ delay′ o {i} {l}
   where delay′ : ∀ o {i l} → W⟶W (i + l) (o + l) → W i → List (W i) → W (o + l)
-        delay′ _ f w⁰ []         = f (w⁰ ++ replicate (to enum ⟨$⟩ Fz))
+        delay′ _ f w⁰ []         = f (w⁰ ++ replicate (to enum Fz))
         delay′ o f w⁰ (w⁻¹ ∷ w⁻) = f (w⁰ ++ drop o (delay′ o f w⁻¹ w⁻))
 \end{code}
 %</delay>
