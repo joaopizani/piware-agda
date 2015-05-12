@@ -54,13 +54,14 @@ seqsN k = seqs ∘′ replicate {n = k}
 
 
 -- TODO
+-- Nested from LEFT TO RIGHT (foldl)
 \begin{code}
 \end{code}
 %<*row>
 \AgdaTarget{row}
 \begin{code}
-row : ∀ {k i o h p} → ℂ {p} (h + i) (o + h) → ℂ {p} (h + (k * i)) ((k * o) + h)
-row {zero}  {i} {o} {h} _ rewrite +-identityᵣ h = id⤨
-row {suc k} {i} {o} {h} c = ⊥ where postulate ⊥ : _  -- row {k} {i} {o} {h} c
+row : ∀ {k a b c p} → ℂ {p} (a + b) (c + a) → ℂ {p} (a + (k * b)) ((k * c) + a)
+row {zero}  {a} {b} {c} _ rewrite +-identityᵣ a = id⤨
+row {suc k} {a} {b} {c} f = {!id⤨ {c} ∥ row {k} {a} {b} {c} f !}
 \end{code}
 %</row>
