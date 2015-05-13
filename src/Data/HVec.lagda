@@ -1,4 +1,6 @@
 \begin{code}
+module Data.HVec where
+
 open import Level using (_⊔_; Level; Lift; lift) renaming (suc to lsuc)
 
 open import Function using (_$_; _∘_; id)
