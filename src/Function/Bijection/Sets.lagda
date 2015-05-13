@@ -7,36 +7,68 @@ open import Relation.Binary.PropositionalEquality using (_≡_; sym; cong; modul
 \end{code}
 
 
+%<*Injective>
+\AgdaTarget{Injective′}
 \begin{code}
 Injective′ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} → (α → β) → Set _
 Injective′ f = ∀ {x y} → f x ≡ f y → x ≡ y
+\end{code}
+%</Injective>
 
 
+%<*Injection>
+\AgdaTarget{Injection′}
+\begin{code}
 record Injection′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     to        : α → β
     injective : Injective′ to
+\end{code}
+%</Injection>
 
 
+%<*Equivalence>
+\AgdaTarget{Equivalence′}
+\begin{code}
 record Equivalence′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     to   : α → β
     from : β → α
+\end{code}
+%</Equivalence>
 
 
+%<*LeftInverseOf>
+\AgdaTarget{\_LeftInverseOf′\_}
+\begin{code}
 _LeftInverseOf′_ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} → (β → α) → (α → β) → Set _
 f LeftInverseOf′ g = ∀ x → f (g x) ≡ x
+\end{code}
+%</LeftInverseOf>
 
+%<*RightInverseOf>
+\AgdaTarget{\_RightInverseOf′\_}
+\begin{code}
 _RightInverseOf′_ : ∀ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} → (β → α) → (α → β) → Set _
 f RightInverseOf′ g = g LeftInverseOf′ f
+\end{code}
+%</RightInverseOf>
 
 
+%<*Surjective>
+\AgdaTarget{Surjective′}
+\begin{code}
 record Surjective′ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} (to : α → β) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     from             : β → α
     right-inverse-of : from RightInverseOf′ to
+\end{code}
+%</Surjective>
 
 
+%<*LeftInverse>
+\AgdaTarget{LeftInverse′}
+\begin{code}
 record LeftInverse′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     to              : α → β
@@ -59,16 +91,24 @@ record LeftInverse′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set 
   equivalence = record { to = to;  from = from }
 
   to-from : ∀ {x y} → to x ≡ y → from y ≡ x
-  to-from {x} {y} to-x≡y = begin
-    from y      ≡⟨ cong from (sym to-x≡y) ⟩
-    from (to x) ≡⟨ left-inverse-of x ⟩
-    x           ∎
+  to-from {x} {y} to-x≡y =
+    begin  from y  ≡⟨ cong from (sym to-x≡y) ⟩  from (to x)  ≡⟨ left-inverse-of x ⟩  x  ∎
+\end{code}
+%</LeftInverse>
 
 
+%<*RightInverse>
+\AgdaTarget{RightInverse′}
+\begin{code}
 RightInverse′ : ∀ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) → Set _
 RightInverse′ α β = LeftInverse′ β α
+\end{code}
+%</RightInverse>
 
 
+%<*Surjection>
+\AgdaTarget{Surjection′}
+\begin{code}
 record Surjection′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     to         : α → β
@@ -94,8 +134,13 @@ record Surjection′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (
   equivalence = record { to   = to
                        ; from = from
                        }
+\end{code}
+%</Surjection>
 
 
+%<*Bijective>
+\AgdaTarget{Bijective′}
+\begin{code}
 record Bijective′ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} (to : α → β) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     injective  : Injective′  to
@@ -105,8 +150,13 @@ record Bijective′ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} (to : α
 
   left-inverse-of : from LeftInverseOf′ to
   left-inverse-of x = injective (right-inverse-of (to x))
+\end{code}
+%</Bijective>
 
 
+%<*Bijection>
+\AgdaTarget{Bijection′}
+\begin{code}
 record Bijection′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     to : α → β
@@ -129,14 +179,24 @@ record Bijection′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (�
                         }
 
   open LeftInverse′ left-inverse public using (to-from)
+\end{code}
+%</Bijection>
 
 
+%<*InverseOf>
+\AgdaTarget{\_InverseOf′\_}
+\begin{code}
 record _InverseOf′_ {ℓ₁ ℓ₂} {α : Set ℓ₁} {β : Set ℓ₂} (from : β → α) (to : α → β) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     left-inverse-of  : from LeftInverseOf′  to
     right-inverse-of : from RightInverseOf′ to
+\end{code}
+%</InverseOf>
 
 
+%<*Inverse>
+\AgdaTarget{Inverse′}
+\begin{code}
 record Inverse′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ₁ ⊔ ℓ₂) where
   field
     to : α → β
@@ -163,8 +223,14 @@ record Inverse′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ
                      }
 
   open Bijection′ bijection public using (equivalence; surjective; surjection; right-inverse; to-from; from-to)
+\end{code}
+%</Inverse>
 
 
+%<*Inverse-infix>
+\AgdaTarget{\_↔′\_}
+\begin{code}
 _↔′_ : ∀ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) → Set (ℓ₁ ⊔ ℓ₂)
 α ↔′ β = Inverse′ α β
 \end{code}
+%</Inverse-infix>
