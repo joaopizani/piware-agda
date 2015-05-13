@@ -1,9 +1,10 @@
 \begin{code}
-open import Level using (_⊔_; Level) renaming (suc to lsuc)
+open import Level using (_⊔_; Level; Lift; lift) renaming (suc to lsuc)
 
 open import Function using (_$_; _∘_; id)
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Empty using (⊥)
+open import Data.Unit.Base using (⊤; tt)
 open import Data.Fin using (Fin; #_) renaming (zero to Fz; suc to Fs)
 open import Data.Bool using (true) renaming (Bool to B)
 open import Data.Vec using (Vec; replicate; lookup; [_]; _++_; zipWith; _⊛_; last) renaming ([] to ε; _∷_ to _◁_)
@@ -36,14 +37,12 @@ data Vec↑′ {ℓ₁ ℓ₂} {I : Set ℓ₁} (C : I → Set ℓ₂) : ∀ n �
 
 -- Index-related-heterogeneous vectors
 \begin{code}
-record ⊤′ {ℓ} : Set ℓ where constructor tt′  -- Universe-polymorphic Unit
-
 _◁?_ : ∀ {ℓ n} {I : Set ℓ} → I → Vec I n → Set ℓ
-_ ◁? ε        = ⊤′
+_ ◁? ε        = Lift ⊤
 x ◁? (y ◁ ys) = x ≡ y
 
 _⧺?_ : ∀ {ℓ m n} {I : Set ℓ} → Vec I m → Vec I n → Set ℓ
-ε        ⧺? _  = ⊤′
+ε        ⧺? _  = Lift ⊤
 (x ◁ xs) ⧺? ys = last (x ◁ xs) ◁? ys
 
 postulate tail-⧺? : ∀ {m n ℓ} {I : Set ℓ} {x : I} {xs : Vec I m} {ys : Vec I n} → (x ◁ xs) ⧺? ys → xs ⧺? ys
@@ -197,5 +196,5 @@ postulate ℂ : ℕ → ℕ → Set
 postulate Gate : ∀ i o → ℂ i o
 
 test1Vec↑⁼ : Vec↑⁼ ℂ _ (1 ◁ 5 ◁ 2 ◁ ε) (5 ◁ 2 ◁ 3 ◁ ε)
-test1Vec↑⁼ = Gate 1 5 ◁⁼[ refl ] Gate 5 2 ◁⁼[ refl ] Gate 2 3 ◁⁼[ tt′ ] ε⁼
+test1Vec↑⁼ = Gate 1 5 ◁⁼[ refl ] Gate 5 2 ◁⁼[ refl ] Gate 2 3 ◁⁼[ lift tt ] ε⁼
 \end{code}
