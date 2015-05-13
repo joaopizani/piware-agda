@@ -5,6 +5,8 @@ AGDA_MODULES=Data/CausalStream \
 			 Data/List/Extra \
 			 Data/List/NonEmpty/Extra \
 			 Data/Vec/Extra \
+			 Data/HVec \
+			 Function/Bijection/Sets \
 			 Relation/Binary/Indexed/Core/Extra \
 			 Relation/Binary/Indexed/Extra \
 			 Relation/Binary/Indexed/PreorderReasoning \

@@ -1,5 +1,5 @@
 \begin{code}
-open import PiWare.Atom using (Atomic; module Atomic; module Inverse′)
+open import PiWare.Atom using (Atomic; module Atomic)
 
 module PiWare.Synthesizable (At : Atomic) where
 
@@ -17,11 +17,12 @@ open import Relation.Binary.PropositionalEquality using (_≢_; refl)
 open import Relation.Nullary.Decidable using (⌊_⌋)
 
 open import Data.Vec.Extra using (group′)
+open import Function.Bijection.Sets using (module Inverse′)
+open Inverse′ using (from; to)
 
 open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
 open import PiWare.Interface using (Ix)
 open Atomic At using (Atom#; W; enum)
-open Inverse′ using (from; to)
 \end{code}
 
 

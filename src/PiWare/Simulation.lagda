@@ -1,5 +1,5 @@
 \begin{code}
-open import PiWare.Atom using (Atomic; module Atomic; module Inverse′)
+open import PiWare.Atom using (Atomic; module Atomic)
 open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Simulation {At : Atomic} (Gt : Gates At) where
@@ -18,7 +18,7 @@ open import Data.List.NonEmpty.Extra using (unzip⁺; splitAt⁺; uncurry⁺)
 open import Data.Vec using (Vec; _++_; lookup; replicate; drop; tabulate) renaming ([] to ε; take to takeᵥ)
 
 open import Function.Equality using (_⟨$⟩_)
-open import Function.Inverse using (module Inverse)
+open import Function.Bijection.Sets using (module Inverse′)
 open Inverse′ using (to)
 
 open Atomic At using (W; enum)
