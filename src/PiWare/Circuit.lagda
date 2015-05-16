@@ -17,7 +17,7 @@ open Gates At Gt using (|in|; |out|)
 \AgdaTarget{IsComb, σ, ω}
 \begin{code}
 data IsComb : Set where
-  σ ω : IsComb  -- ω ≝ sequential
+  σ ω : IsComb
 \end{code}
 %</IsComb>
 
