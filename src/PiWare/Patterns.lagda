@@ -6,9 +6,13 @@ module PiWare.Patterns {At : Atomic} (Gt : Gates At) where
 
 open import Function using (const; _∘′_; _$_)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_)
-open import Data.Vec using (Vec; replicate; foldr)
+open import Data.Vec using (Vec; replicate; foldr; head; last)
 open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
+open import Data.Maybe.Base using (maybe′)
 
+open import Data.HVec using (Vec↑⁼; ε⁼; _◁⁼[_]_)
+
+open import PiWare.Interface using (Ix)
 open import PiWare.Circuit {Gt = Gt} using (ℂ; _⟫_; _∥_)
 open import PiWare.Plugs Gt using (id⤨)
 \end{code}
@@ -39,10 +43,18 @@ parsN {k} = pars ∘′ replicate {n = k}
 %<*seqs>
 \AgdaTarget{seqs}
 \begin{code}
-seqs : ∀ {k io p} → Vec (ℂ {p} io io) k → ℂ {p} io io
+seqs : ∀ {n io p} → Vec (ℂ {p} io io) n → ℂ {p} io io
 seqs {_} {io} {p} = foldr (const $ ℂ {p} io io) _⟫_ id⤨
 \end{code}
 %</seqs>
+
+
+--TODO: write as fold? (fold over Vec↑⁼)
+-- Yorick's _⟫[_]_
+seqs′ : ∀ {n is os p} → Vec↑⁼ (ℂ {p}) (suc n) is os → ℂ {p} (head is) (last os)
+seqs′ (c ◁⁼[ p ] ε⁼) = c
+seqs′ (c₁ ◁⁼[ p₁ ] c₂ ◁⁼[ p₂ ] cs) = c₁ ⟫ seqs′ {!c₂ ◁⁼[ p₂ ] cs!}
+
 
 %<*seqsN>
 \AgdaTarget{seqsN}
@@ -54,14 +66,11 @@ seqsN k = seqs ∘′ replicate {n = k}
 
 
 -- TODO
--- Nested from LEFT TO RIGHT (foldl)
-\begin{code}
-\end{code}
 %<*row>
 \AgdaTarget{row}
 \begin{code}
 row : ∀ {k a b c p} → ℂ {p} (a + b) (c + a) → ℂ {p} (a + (k * b)) ((k * c) + a)
 row {zero}  {a} {b} {c} _ rewrite +-identityᵣ a = id⤨
-row {suc k} {a} {b} {c} f = {!id⤨ {c} ∥ row {k} {a} {b} {c} f !}
+row {suc k} {a} {b} {c} f = ⊥ where postulate ⊥ : _  -- id⤨ {c} ∥ row {k} {a} {b} {c} f
 \end{code}
 %</row>

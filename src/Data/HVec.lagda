@@ -7,9 +7,10 @@ open import Function using (_$_; _∘_; id)
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Empty using (⊥)
 open import Data.Unit.Base using (⊤; tt)
+open import Data.Product using (_,_)
 open import Data.Fin using (Fin; #_) renaming (zero to Fz; suc to Fs)
 open import Data.Bool using (true) renaming (Bool to B)
-open import Data.Vec using (Vec; replicate; lookup; [_]; _++_; zipWith; _⊛_; last) renaming ([] to ε; _∷_ to _◁_)
+open import Data.Vec using (Vec; replicate; lookup; [_]; _++_; last; initLast) renaming ([] to ε; _∷_ to _◁_)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 \end{code}
@@ -47,7 +48,11 @@ _⧺?_ : ∀ {ℓ m n} {I : Set ℓ} → Vec I m → Vec I n → Set ℓ
 ε        ⧺? _  = Lift ⊤
 (x ◁ xs) ⧺? ys = last (x ◁ xs) ◁? ys
 
-postulate tail-⧺? : ∀ {m n ℓ} {I : Set ℓ} {x : I} {xs : Vec I m} {ys : Vec I n} → (x ◁ xs) ⧺? ys → xs ⧺? ys
+postulate last∘◁ : ∀ {n ℓ} {α : Set ℓ} (x : α) (xs : Vec α (suc n)) → last (x ◁ xs) ≡ last xs
+
+tail-⧺? : ∀ {m n ℓ} {I : Set ℓ} {x : I} {xs : Vec I m} {ys : Vec I n} → (x ◁ xs) ⧺? ys → xs ⧺? ys
+tail-⧺? {x = _} {xs = ε}      _ = lift tt
+tail-⧺? {x = x} {xs = z ◁ zs} p rewrite last∘◁ x (z ◁ zs) = p
 
 -- This maybe not true? Maybe a more specific version...
 postulate concat-◁? : ∀ {m n ℓ} {I : Set ℓ} {x : I} {xs : Vec I m} {ys : Vec I n} → x ◁? xs → x ◁? (xs ++ ys)
