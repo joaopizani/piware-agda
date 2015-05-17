@@ -19,6 +19,6 @@ open import PiWare.Samples.AndN using (andN)
 \begin{code}
 proof-andN-alltrue : ∀ n → ⟦ andN n ⟧ (replicate true) ≡ [ true ]
 proof-andN-alltrue zero    = refl
-proof-andN-alltrue (suc n) = cong (spec-and ∘′ _∷_ true) (proof-andN-alltrue n)
+proof-andN-alltrue (suc n) = cong (spec-and ∘′ (true ∷_)) (proof-andN-alltrue n)
 \end{code}
 %</proof-andN-alltrue>
