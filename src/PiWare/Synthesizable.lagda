@@ -32,8 +32,8 @@ open Atomic At using (Atom#; W; enum)
 \begin{code}
 record ⇓W⇑ (α : Set) {i : Ix} : Set where
     constructor ⇓W⇑[_,_]
-    field ⇓ : α → W i
-          ⇑ : W i → α
+    field  ⇓ : α → W i
+           ⇑ : W i → α
 \end{code}
 %</Synth>
 
