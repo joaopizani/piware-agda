@@ -10,9 +10,11 @@ open import Data.Unit.Base using (⊤; tt)
 open import Data.Product using (_,_)
 open import Data.Fin using (Fin; #_) renaming (zero to Fz; suc to Fs)
 open import Data.Bool using (true) renaming (Bool to B)
-open import Data.Vec using (Vec; replicate; lookup; [_]; _++_; last; initLast) renaming ([] to ε; _∷_ to _◁_)
+open import Data.Vec using (Vec; replicate; lookup; [_]; _++_; last; initLast; _∷ʳ_) renaming ([] to ε; _∷_ to _◁_)
 
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+
+open import Data.Nat.Properties.Simple using (+-right-identity)
 \end{code}
 
 
@@ -49,19 +51,23 @@ _⧺?_ : ∀ {ℓ m n} {I : Set ℓ} → Vec I m → Vec I n → Set ℓ
 (x ◁ xs) ⧺? ys = last (x ◁ xs) ◁? ys
 
 postulate last∘◁ : ∀ {n ℓ} {α : Set ℓ} (x : α) (xs : Vec α (suc n)) → last (x ◁ xs) ≡ last xs
+--last∘◁ x (y ◁ ε) = refl
+--last∘◁ x (y ◁ z ◁ zs)         with initLast (x ◁ y ◁ z ◁ zs)
+--last∘◁ x (y ◁ z ◁ .ε)         | (.x ◁ .y ◁ ε)       , .z , refl = refl
+--last∘◁ x (y ◁ z ◁ .(zs ∷ʳ l)) | (.x ◁ .y ◁ .z ◁ zs) , l  , refl = {!!}
 
-tail-⧺? : ∀ {m n ℓ} {I : Set ℓ} {x : I} {xs : Vec I m} {ys : Vec I n} → (x ◁ xs) ⧺? ys → xs ⧺? ys
-tail-⧺? {x = _} {xs = ε}      _ = lift tt
-tail-⧺? {x = x} {xs = z ◁ zs} p rewrite last∘◁ x (z ◁ zs) = p
+tail-⧺ : ∀ {m n ℓ} {I : Set ℓ} {x : I} {xs : Vec I m} {ys : Vec I n} → (x ◁ xs) ⧺? ys → xs ⧺? ys
+tail-⧺ {x = _} {xs = ε}      _ = lift tt
+tail-⧺ {x = x} {xs = z ◁ zs} p rewrite last∘◁ x (z ◁ zs) = p
 
 -- This maybe not true? Maybe a more specific version...
-postulate concat-◁? : ∀ {m n ℓ} {I : Set ℓ} {x : I} {xs : Vec I m} {ys : Vec I n} → x ◁? xs → x ◁? (xs ++ ys)
+postulate concat-◁ : ∀ {m n ℓ} {I : Set ℓ} {x : I} {xs : Vec I m} {ys : Vec I n} → x ◁? xs → x ◁? (xs ++ ys)
 
 
 infixr 30 _◁⁼[_]_
 
 data Vec↑⁼ {ℓ₁ ℓ₂} {I : Set ℓ₁} (C : I → I → Set ℓ₂) : ∀ n (is os : Vec I n) → Set (lsuc (ℓ₁ ⊔ ℓ₂)) where
-    ε⁼   : Vec↑⁼ C 0 ε ε
+    ε⁼      : Vec↑⁼ C 0 ε ε
     _◁⁼[_]_ : ∀ {n i₀ o₀ is os} → C i₀ o₀ → o₀ ◁? is → Vec↑⁼ C n is os → Vec↑⁼ C (suc n) (i₀ ◁ is) (o₀ ◁ os)
 \end{code}
 
@@ -132,10 +138,10 @@ _⧺↑′_ : ∀ {m n ℓ₁ ℓ₂} {I : Set ℓ₁} {C : I → Set ℓ₂} {i
 
 infixr 5 _⧺↑⁼_
 
-_⧺↑⁼_ : ∀ {m n ℓ₁ ℓ₂} {I : Set ℓ₁} {C : I → I → Set ℓ₂} {is₁ os₁ : Vec I m} {is₂ os₂ : Vec I n}
-        → Vec↑⁼ C m is₁ os₁ → Vec↑⁼ C n is₂ os₂ → {p : os₁ ⧺? is₂} → Vec↑⁼ C (m + n) (is₁ ++ is₂) (os₁ ++ os₂)
-ε⁼ ⧺↑⁼ ys = ys
-_⧺↑⁼_ {os₁ = (o₁ ◁ os₁)} {is₂ = is₂} (x ◁⁼[ p◁? ] xs) ys {p⧺?} = x ◁⁼[ concat-◁? p◁? ] (_⧺↑⁼_ xs ys {tail-⧺? {xs = os₁} {ys = is₂} p⧺?})
+_⧺↑⁼_ : ∀ {m n ℓ₁ ℓ₂} {I : Set ℓ₁} {C : I → I → Set ℓ₂} {is₁ os₁ : Vec I m} {is₂ os₂ : Vec I n} → Vec↑⁼ C m is₁ os₁ → Vec↑⁼ C n is₂ os₂ → {p : os₁ ⧺? is₂} → Vec↑⁼ C (m + n) (is₁ ++ is₂) (os₁ ++ os₂)
+_⧺↑⁼_ {m = 0}      {n = n′}     ε⁼ ys = ys
+_⧺↑⁼_ {m = suc m′} {n = 0}      (x ◁⁼[ x◁? ] xs) ε⁼               = {!!}
+_⧺↑⁼_ {m = suc m′} {n = suc n′} (x ◁⁼[ x◁? ] xs) (y ◁⁼[ y◁? ] ys) = {!!}
 \end{code}
 
 
