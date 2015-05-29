@@ -26,6 +26,19 @@ open Atomic At using (Atom#; W; enum)
 \end{code}
 
 
+-- Deduce Left or Right from tag. TODO CONVENTION: Left = #0, Right by default (if atom→n t ≠ #0)
+%<*untag>
+\AgdaTarget{untag}
+\begin{code}
+untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
+untag {i} {j} (t ◁ ab) = ( if ⌊ from enum t ≟ Fz ⌋
+                           then (inj₁ ∘′ unpadFrom₁ j)
+                           else (inj₂ ∘′ unpadFrom₂ i)
+                         ) ab
+\end{code}
+%</untag>
+
+
 -- Provides a mapping between metalanguage types and sets of words
 %<*Synth>
 \AgdaTarget{⇓W⇑, ⇓, ⇑}
@@ -43,21 +56,20 @@ open ⇓W⇑ ⦃ ... ⦄
 
 
 -- basic instances
-\begin{code}
-instance
-\end{code}
-
 %<*Synth-Unit>
 \AgdaTarget{⇓W⇑-⊤}
 \begin{code}
+instance
  ⇓W⇑-⊤ : ⇓W⇑ ⊤ {0}
  ⇓W⇑-⊤ = ⇓W⇑[ const ε , const tt ]
 \end{code}
 %</Synth-Unit>
 
+
 %<*Synth-Product>
 \AgdaTarget{⇓W⇑-×}
 \begin{code}
+instance
  ⇓W⇑-× : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α × β)
  ⇓W⇑-× {α} {i} {β} {j} ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
    where
@@ -70,9 +82,11 @@ instance
 \end{code}
 %</Synth-Product>
 
+
 %<*Synth-Vec>
 \AgdaTarget{⇓W⇑-Vec}
 \begin{code}
+instance
  ⇓W⇑-Vec : ∀ {α i n} ⦃ _ : ⇓W⇑ α {i} ⦄ → ⇓W⇑ (Vec α n)
  ⇓W⇑-Vec {α} {i} {n} ⦃ sα ⦄ = ⇓W⇑[ down , up ]
    where
@@ -85,24 +99,10 @@ instance
 %</Synth-Vec>
 
 
--- Deduce Left or Right from tag. TODO CONVENTION: Left = #0, Right by default (if atom→n t ≠ #0)
-%<*untag>
-\AgdaTarget{untag}
-\begin{code}
-untag : ∀ {i j} → W (suc (i ⊔ j)) → W i ⊎ W j
-untag {i} {j} (t ◁ ab) = ( if ⌊ from enum t ≟ Fz ⌋
-                           then (inj₁ ∘′ unpadFrom₁ j)
-                           else (inj₂ ∘′ unpadFrom₂ i)
-                         ) ab
-\end{code}
-%</untag>
-
-\begin{code}
-instance
-\end{code}
 %<*Synth-Sum>
 \AgdaTarget{⇓W⇑-⊎}
 \begin{code}
+instance
  ⇓W⇑-⊎ : ∀ {α i β j} (r p : Atom#) {d : r ≢ Fz} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
  ⇓W⇑-⊎ {α} {i} {β} {j} r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
    where
