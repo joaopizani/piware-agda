@@ -20,7 +20,7 @@ open import Data.Vec.Extra using (group′)
 open import Function.Bijection.Sets using (module Inverse′)
 open Inverse′ using (from; to)
 
-open import PiWare.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
+open import Data.Vec.Padding using (padTo₁_withA_; unpadFrom₁; padTo₂_withA_; unpadFrom₂)
 open import PiWare.Interface using (Ix)
 open Atomic At using (Atom#; W; enum)
 \end{code}

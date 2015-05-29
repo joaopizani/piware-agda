@@ -1,5 +1,5 @@
 \begin{code}
-module PiWare.Padding where
+module Data.Vec.Padding where
 
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _⊔_; _≤_; z≤n; s≤s)
 open import Data.Product using (_,_; Σ-syntax)
