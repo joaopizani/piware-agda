@@ -56,8 +56,8 @@ pattern _≺_ x xs⁺ = x ∷ xs⁺
 \AgdaTarget{runᶜ}
 \begin{code}
 runᶜ : ∀ {α β : Set} → (α ⇒ᶜ β) → (Stream α → Stream β)
-runᶜ f (x⁰ ≺ x⁺) = runᶜ' f (ε ≻ x⁰) (♭ x⁺)
-  where runᶜ' : ∀ {α β} → (α ⇒ᶜ β) → Γᶜ α → Stream α → Stream β
-        runᶜ' f (x⁻ ≻ x⁰) (x¹ ≺ x⁺) = f (x⁻ ≻ x⁰) ∷ ♯ runᶜ' f (x⁻ ≻ x⁰ ≻ x¹) (♭ x⁺)
+runᶜ f (x⁰ ≺ x⁺) = runᶜ′ f (ε ≻ x⁰) (♭ x⁺)
+  where runᶜ′ : ∀ {α β} → (α ⇒ᶜ β) → Γᶜ α → Stream α → Stream β
+        runᶜ′ f (x⁻ ≻ x⁰) (x¹ ≺ x⁺) = f (x⁻ ≻ x⁰) ∷ ♯ runᶜ′ f (x⁻ ≻ x⁰ ≻ x¹) (♭ x⁺)
 \end{code}
 %</run-causal>
