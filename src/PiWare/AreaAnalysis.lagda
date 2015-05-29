@@ -7,8 +7,8 @@ module PiWare.AreaAnalysis {At : Atomic} (Gt : Gates At) where
 open import Data.Nat.Base using (ℕ; _+_)
 
 open import PiWare.Interface using (Ix)
-open import PiWare.Circuit Gt using (ℂ)
-open import PiWare.Circuit.Algebra Gt using (ℂσ★; cataℂσ; TyGate★; TyPlug★; Ty⟫★; Ty∥★)
+open import PiWare.Circuit {Gt = Gt} using (ℂ)
+open import PiWare.Circuit.Algebra {Gt = Gt} using (ℂσ★; cataℂσ; TyGate★; TyPlug★; Ty⟫★; Ty∥★)
 \end{code}
 
 
@@ -35,30 +35,26 @@ par : Ty∥★ Area
 -- TODO: now we use "1" for the area of the underlying memory element
 %<*combinator-Area-defs>
 \begin{code}
-nil = 0
-gate _ = 1
-plug _ = 0
-delayLoop aᵢ = 1 + aᵢ
-seq a₁ a₂ = a₁ + a₂
-par a₁ a₂ = a₁ + a₂
+nil             = 0
+gate      _     = 1
+plug      _     = 0
+delayLoop aᵢ    = 1 + aᵢ
+seq       a₁ a₂ = a₁ + a₂
+par       a₁ a₂ = a₁ + a₂
 \end{code}
 %</combinator-Area-defs>
 
 
 -- TODO: why the need for these implicit parameters being passed here?
-\begin{code}
-module _ where
- postulate X : ℕ
-\end{code}
 %<*area-combinational-algebra>
-\AgdaTarget{area-combinational★}
+\AgdaTarget{area-combinational}
 \begin{code}
- area-combinational★ : ℂσ★ {Area}
- area-combinational★ = record { Gate★ = gate
-                              ; Plug★ = plug
-                              ; _⟫★_  = seq {X} {X} {X}
-                              ; _∥★_  = par {X} {X} {X} {X}
-                              }
+area-combinational : ℂσ★ {Area}
+area-combinational = record { Gate★ = gate
+                            ; Plug★ = plug
+                            ; _⟫★_  = seq {X} {X} {X}
+                            ; _∥★_  = par {X} {X} {X} {X}
+                            } where postulate X : _
 \end{code}
 %</area-combinational-algebra>
 
@@ -67,6 +63,6 @@ module _ where
 \AgdaTarget{⟦\_⟧ₐ}
 \begin{code}
 ⟦_⟧ₐ : ∀ {i o} → ℂ i o → Area i o
-⟦_⟧ₐ = cataℂσ area-combinational★
+⟦_⟧ₐ = cataℂσ area-combinational
 \end{code}
 %</area-combinational>

@@ -67,7 +67,7 @@ simulation-combinational = record { Gate★ = gate;  Plug★ = plug;  _⟫★_ =
 \AgdaTarget{⟦\_⟧}
 \begin{code}
 ⟦_⟧ : ∀ {i o} → ℂ i o → W⟶W i o
-⟦_⟧ = cataℂσ {Aℓ = simulation-combinational}
+⟦_⟧ = cataℂσ simulation-combinational
 \end{code}
 %</simulation-combinational>
 
@@ -129,7 +129,7 @@ simulation-sequential = record { Gate★ = λ g → gate g ∘′ head; Plug★ 
 \AgdaTarget{⟦\_⟧ᶜ}
 \begin{code}
 ⟦_⟧ᶜ : ∀ {i o} → ℂ i o → (W i ⇒ᶜ W o)
-⟦_⟧ᶜ = cataℂ {Aℓσ = simulation-combinational} {simulation-sequential}
+⟦_⟧ᶜ = cataℂ {Aℓσ = simulation-combinational} simulation-sequential
 \end{code}
 %</simulation-causal>
 
