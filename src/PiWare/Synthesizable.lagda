@@ -60,7 +60,7 @@ open ⇓W⇑ ⦃ ... ⦄
 \AgdaTarget{⇓W⇑-⊤}
 \begin{code}
 instance
- ⇓W⇑-⊤ : ⇓W⇑ ⊤ {0}
+ ⇓W⇑-⊤ : ⇓W⇑ ⊤
  ⇓W⇑-⊤ = ⇓W⇑[ const ε , const tt ]
 \end{code}
 %</Synth-Unit>
@@ -99,11 +99,12 @@ instance
 %</Synth-Vec>
 
 
+-- TODO CONVENTION: Left = #0
 %<*Synth-Sum>
 \AgdaTarget{⇓W⇑-⊎}
 \begin{code}
 instance
- ⇓W⇑-⊎ : ∀ {α i β j} (r p : Atom#) {d : r ≢ Fz} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β) {suc (i ⊔ j)}
+ ⇓W⇑-⊎ : ∀ {α i β j} (r p : Atom#) {d : r ≢ Fz} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ⇓W⇑ (α ⊎ β)
  ⇓W⇑-⊎ {α} {i} {β} {j} r p ⦃ sα ⦄ ⦃ sβ ⦄ = ⇓W⇑[ down , up ]
    where
      down : α ⊎ β → W (suc (i ⊔ j))
