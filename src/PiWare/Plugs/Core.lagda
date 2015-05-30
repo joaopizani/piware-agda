@@ -10,14 +10,12 @@ open import Data.Nat.DivMod using (_mod_)
 open import Relation.Binary.PropositionalEquality using (cong; sym; refl; _≡_; module ≡-Reasoning)
 open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_)
 
-open import Data.Nat.Properties.Simple using (*-right-zero)
+open import Data.Nat.Properties.Simple using (*-right-zero; +-right-identity)
 open import Algebra using (module CommutativeSemiring)
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring; module SemiringSolver to ℕ-SemiringSolver)
-open CommutativeSemiring ℕ-commSemiring using (+-assoc; +-identity; +-comm; *-assoc; *-comm; distribʳ)
+open CommutativeSemiring ℕ-commSemiring using (+-assoc; +-comm; *-assoc; *-comm; distribʳ)
 open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 open ℕ-SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
-open import Data.Product using (proj₂)
-+-identityᵣ = proj₂ +-identity
 
 open import PiWare.Interface using (Ix)
 \end{code}
@@ -78,7 +76,7 @@ id⤪ = tabulate id
 \AgdaTarget{swap⤪}
 \begin{code}
 swap⤪ : ∀ {n m} → (n + m) ⤪ (m + n)
-swap⤪ {n} {zero}  rewrite +-identityᵣ n = id⤪
+swap⤪ {n} {zero}  rewrite +-right-identity n = id⤪
 swap⤪ {n} {suc m} = ⊥′ where postulate ⊥′ : _
 \end{code}
 %</swap-fin>
@@ -146,7 +144,7 @@ cons⤪ = id⤪
 \AgdaTarget{singleton⤪}
 \begin{code}
 singleton⤪ : ∀ {w} → w ⤪ (1 * w)
-singleton⤪ {w} rewrite +-identityᵣ w = id⤪
+singleton⤪ {w} rewrite +-right-identity w = id⤪
 \end{code}
 %</singleton-fin>
 
@@ -161,7 +159,7 @@ twiceSuc = solve 2 eq refl where
 \AgdaTarget{vecHalf⤪}
 \begin{code}
 vecHalf⤪ : ∀ {n w} → ((2 * suc n) * w) ⤪ (suc n * w + suc n * w)
-vecHalf⤪ {n} {w} rewrite +-identityᵣ n | twiceSuc n w = id⤪
+vecHalf⤪ {n} {w} rewrite +-right-identity n | twiceSuc n w = id⤪
 \end{code}
 %</vecHalf-fin>
 
@@ -171,7 +169,7 @@ eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
 eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
 
 vecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
-vecHalfPowEq zero w rewrite +-identityᵣ w = refl
+vecHalfPowEq zero w rewrite +-right-identity w = refl
 vecHalfPowEq (suc n) w = begin
     2 ^ suc (suc n) * w                 ≡⟨ refl ⟩
     2 * 2 ^ suc n * w                   ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
@@ -208,7 +206,7 @@ forkVec⤪ {_} {suc m} = tabulate $ λ x → (toℕ x) mod (suc m)
 \AgdaTarget{fork×⤪}
 \begin{code}
 fork×⤪ : ∀ {w} → w ⤪ (w + w)
-fork×⤪ {w} rewrite sym $ cong (_+_ w) (+-identityᵣ w) = forkVec⤪ {2} {w}
+fork×⤪ {w} rewrite sym $ cong (_+_ w) (+-right-identity w) = forkVec⤪ {2} {w}
 \end{code}
 %</forkProd-fin>
 

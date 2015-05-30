@@ -7,10 +7,10 @@ module PiWare.Patterns {At : Atomic} (Gt : Gates At) where
 open import Function using (const; _∘′_; _$_)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec; replicate; foldr; head; last)
-open import Data.Nat.Properties.Simple using () renaming (+-right-identity to +-identityᵣ)
+open import Data.Nat.Properties.Simple using (+-right-identity)
 open import Data.Maybe.Base using (maybe′)
 
-open import Data.HVec using (Vec↑⁼; ε⁼; _◁⁼[_]_)
+open import Data.RVec using (Vec↑⁼; ε⁼; _◁⁼[_]_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Circuit {Gt = Gt} using (ℂ; _⟫_; _∥_)
@@ -70,7 +70,7 @@ seqsN k = seqs ∘′ replicate {n = k}
 \AgdaTarget{row}
 \begin{code}
 row : ∀ {k a b c p} → ℂ {p} (a + b) (c + a) → ℂ {p} (a + (k * b)) ((k * c) + a)
-row {zero}  {a} {b} {c} _ rewrite +-identityᵣ a = id⤨
+row {zero}  {a} {b} {c} _ rewrite +-right-identity a = id⤨
 row {suc k} {a} {b} {c} f = ⊥ where postulate ⊥ : _  -- id⤨ {c} ∥ row {k} {a} {b} {c} f
 \end{code}
 %</row>
