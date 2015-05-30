@@ -6,16 +6,16 @@ module PiWare.Simulation.Equality {At : Atomic} (Gt : Gates At) where
 
 open import Function using (_∘_; _$_)
 open import Data.Nat.Base using (ℕ)
-open import Data.Product using (_×_; uncurry)
+open import Data.Product using (_×_; uncurry′)
 
 open import Data.Vec.Equality using () renaming (module PropositionalEquality to VPE)
 open VPE using (to-≡; _≈_) renaming (refl to reflᵥ; sym to symᵥ; trans to transᵥ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Relation.Binary.Indexed.Core using (Setoid; IsEquivalence)
 
+open import Relation.Binary.Indexed.Core using (Setoid; IsEquivalence)
 import Relation.Binary.Indexed.EqReasoning as IdxEqReasoning
 
-open import PiWare.Circuit using (ℂ)
+open import PiWare.Circuit {Gt = Gt} using (ℂ)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open Atomic At using (W)
 \end{code}
@@ -56,9 +56,9 @@ data _≋_ {i₁ o₁ i₂ o₂} : ℂ i₁ o₁ → ℂ i₂ o₂ → Set where
 \AgdaTarget{≅⇒≋}
 \begin{code}
 ≅⇒≋ : ∀ {i o₁ o₂} {c₁ : ℂ i o₁} {c₂ : ℂ i o₂} → c₁ ≅ c₂ → c₁ ≋ c₂
-≅⇒≋ {i} {c₁ = c₁} {c₂} c₁≅c₂ = refl≋ refl ≊⇒≊
-  where ≊⇒≊ : {w₁ w₂ : W i} → w₁ ≈ w₂ → ⟦ c₁ ⟧ w₁ ≈ ⟦ c₂ ⟧ w₂
-        ≊⇒≊ w₁≈w₂ rewrite to-≡ w₁≈w₂ = c₁≅c₂ _
+≅⇒≋ {i} {c₁ = c₁} {c₂} c₁≅c₂ = refl≋ refl f
+  where f : {w₁ w₂ : W i} → w₁ ≈ w₂ → ⟦ c₁ ⟧ w₁ ≈ ⟦ c₂ ⟧ w₂
+        f w₁≈w₂ rewrite to-≡ w₁≈w₂ = c₁≅c₂ _
 \end{code}
 %</Circ-eq-one-input-to-equal>
 
@@ -90,7 +90,7 @@ data _≋_ {i₁ o₁ i₂ o₂} : ℂ i₁ o₁ → ℂ i₂ o₂ → Set where
 %<*Circ-eq-isEquivalence>
 \AgdaTarget{≋-isEquivalence}
 \begin{code}
-≋-isEquivalence : IsEquivalence (uncurry ℂ) _≋_
+≋-isEquivalence : IsEquivalence (uncurry′ ℂ) _≋_
 ≋-isEquivalence = record
   { refl  = ≋-refl
   ; sym   = ≋-sym
@@ -104,7 +104,7 @@ data _≋_ {i₁ o₁ i₂ o₂} : ℂ i₁ o₁ → ℂ i₂ o₂ → Set where
 \begin{code}
 ≋-setoid : Setoid (ℕ × ℕ) _ _
 ≋-setoid = record
-  { Carrier       = uncurry ℂ
+  { Carrier       = uncurry′ ℂ
   ; _≈_           = _≋_
   ; isEquivalence = ≋-isEquivalence
   }
