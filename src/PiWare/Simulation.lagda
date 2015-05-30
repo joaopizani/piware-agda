@@ -17,7 +17,6 @@ open import Data.List.NonEmpty using (head)
 open import Data.List.NonEmpty.Extra using (unzip⁺; splitAt⁺; uncurry⁺)
 open import Data.Vec using (Vec; _++_; lookup; replicate; drop; tabulate) renaming ([] to ε; take to takeᵥ)
 
-open import Function.Equality using (_⟨$⟩_)
 open import Function.Bijection.Sets using (module Inverse′)
 open Inverse′ using (to)
 
@@ -38,36 +37,36 @@ W⟶W m n = W m → W n
 
 %<*combinator-Word-function-types>
 \begin{code}
-gate     : TyGate★ W⟶W
-plug     : TyPlug★ W⟶W
-seq-comb : Ty⟫★ W⟶W
-par-comb : Ty∥★ W⟶W
+gateσ  : TyGate★ W⟶W
+plugσ  : TyPlug★ W⟶W
+seqσ   : Ty⟫★    W⟶W
+parσ   : Ty∥★    W⟶W
 \end{code}
 %</combinator-Word-function-types>
 
 %<*combinator-Word-function-defs>
-\AgdaTarget{nil,gate,plug,seq-comb,par-comb,sum-comb}
+\AgdaTarget{gateσ,plugσ,seqσ,parσ}
 \begin{code}
-gate                = spec
-plug p ins          = tabulate (flip lookup ins ∘′ flip lookup p)
-seq-comb            = flip _∘′_
-par-comb {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ splitAt′ i₁
+gateσ        = spec
+plugσ p ins  = tabulate (flip lookup ins ∘′ flip lookup p)
+seqσ         = flip _∘′_
+parσ f₁ f₂   = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ splitAt′ _
 \end{code}
 %</combinator-Word-function-defs>
 
-%<*simulation-combinational-algebra>
-\AgdaTarget{simulation-combinational}
+%<*simulation-sigma-algebra>
+\AgdaTarget{simulationσ}
 \begin{code}
-simulation-combinational : ℂσ★ {W⟶W}
-simulation-combinational = record { Gate★ = gate;  Plug★ = plug;  _⟫★_ = seq-comb;  _∥★_ = par-comb }
+simulationσ : ℂσ★ {W⟶W}
+simulationσ = record { Gate★ = gateσ;  Plug★ = plugσ;  _⟫★_ = seqσ;  _∥★_ = parσ }
 \end{code}
-%</simulation-combinational-algebra>
+%</simulation-sigma-algebra>
 
 %<*simulation-combinational>
 \AgdaTarget{⟦\_⟧}
 \begin{code}
 ⟦_⟧ : ∀ {i o} → ℂ i o → W⟶W i o
-⟦_⟧ = cataℂσ simulation-combinational
+⟦_⟧ = cataℂσ simulationσ
 \end{code}
 %</simulation-combinational>
 
@@ -81,7 +80,7 @@ W⇒ᶜW i o = W i ⇒ᶜ W o
 \end{code}
 %</Word-causal-function>
 
--- TODO: Now it's hardcoded to pad the sequence with th first element being (replicate (n→atom Fz))
+-- TODO: Now it's hardcoded to pad the sequence with the first element being: replicate (n→atom Fz)
 -- TODO: memoize this
 %<*delay>
 \AgdaTarget{delay}
@@ -94,34 +93,38 @@ delay o {i} {l} = uncurry⁺ ∘′ delay′ o {i} {l}
 \end{code}
 %</delay>
 
-%<*delay-seq>
-\AgdaTarget{delay-seq}
+%<*delay-causal>
+\AgdaTarget{delayᶜ}
 \begin{code}
-delay-seq : ∀ {i o l} → W⟶W (i + l) (o + l) → W⇒ᶜW i o
-delay-seq {_} {o} f = takeᵥ o ∘′ delay o f
+delayᶜ : ∀ {i o l} → W⟶W (i + l) (o + l) → W⇒ᶜW i o
+delayᶜ {_} {o} f = takeᵥ o ∘′ delay o f
 \end{code}
-%</delay-seq>
+%</delay-causal>
 
-%<*combinator-word-causal-function-types>
+%<*combinator-causal-function-types>
 \begin{code}
-seq-seq : Ty⟫★ W⇒ᶜW
-par-seq : Ty∥★ W⇒ᶜW
+gateᶜ : TyGate★ W⇒ᶜW
+plugᶜ : TyPlug★ W⇒ᶜW
+seqᶜ  : Ty⟫★    W⇒ᶜW
+parᶜ  : Ty∥★    W⇒ᶜW
 \end{code}
-%</combinator-word-causal-function-types>
+%</combinator-causal-function-types>
 
-%<*combinator-word-causal-function-defs>
-\AgdaTarget{seq-seq,par-seq,sum-seq}
+%<*combinator-causal-function-defs>
+\AgdaTarget{seqω,parω}
 \begin{code}
-seq-seq      f₁ f₂ = f₂ ∘′ map⁺ f₁ ∘′ pasts
-par-seq {i₁} f₁ f₂ = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ unzip⁺ ∘′ splitAt⁺ i₁
+gateᶜ g     = gateσ g ∘′ head
+plugᶜ f     = plugσ f ∘′ head
+seqᶜ f₁ f₂  = f₂ ∘′ map⁺ f₁ ∘′ pasts
+parᶜ f₁ f₂  = uncurry′ _++_ ∘′ mapₚ f₁ f₂ ∘′ unzip⁺ ∘′ splitAt⁺ _
 \end{code}
-%</combinator-word-causal-function-defs>
+%</combinator-causal-function-defs>
 
 %<*simulation-causal-algebra>
-\AgdaTarget{simulation-sequential}
+\AgdaTarget{simulationᶜ}
 \begin{code}
-simulation-sequential : ℂ★ {W⟶W} {W⇒ᶜW}
-simulation-sequential = record { Gate★ = λ g → gate g ∘′ head; Plug★ = λ f → plug f ∘′ head; _⟫★_ = seq-seq; _∥★_ = par-seq; DelayLoop★ = delay-seq}
+simulationᶜ : ℂ★ {W⟶W} {W⇒ᶜW}
+simulationᶜ = record { Gate★ = gateᶜ;  Plug★ = plugᶜ;  _⟫★_ = seqᶜ;  _∥★_ = parᶜ;  DelayLoop★ = delayᶜ}
 \end{code}
 %</simulation-causal-algebra>
 
@@ -129,7 +132,7 @@ simulation-sequential = record { Gate★ = λ g → gate g ∘′ head; Plug★ 
 \AgdaTarget{⟦\_⟧ᶜ}
 \begin{code}
 ⟦_⟧ᶜ : ∀ {i o} → ℂ i o → (W i ⇒ᶜ W o)
-⟦_⟧ᶜ = cataℂ {Aℓσ = simulation-combinational} simulation-sequential
+⟦_⟧ᶜ = cataℂ {Aℓσ = simulationσ} simulationᶜ
 \end{code}
 %</simulation-causal>
 
