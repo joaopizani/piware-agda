@@ -2,10 +2,10 @@
 module PiWare.Plugs.Core where
 
 open import Function using (id; _$_; flip)
-open import Data.Fin using (Fin; toℕ; inject+; raise)
-open import Data.Vec using (Vec; map; _++_; lookup; tabulate) renaming ([] to ε)
+open import Data.Fin using (Fin; inject+; raise)
+open import Data.Product using (_,_)
+open import Data.Vec using (Vec; map; _++_; lookup; tabulate; splitAt; replicate; concat) renaming ([] to ε; _∷_ to _◁_)
 open import Data.Nat.Base using (zero; suc; _+_; _*_)
-open import Data.Nat.DivMod using (_mod_)
 
 open import Relation.Binary.PropositionalEquality using (cong; sym; refl; _≡_; module ≡-Reasoning)
 open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_)
@@ -29,6 +29,7 @@ infix 8 _⤪_
 _⤪_ : Ix → Ix → Set
 i ⤪ o = Vec (Fin i) o
 \end{code}
+
 %</Plug-type>
 
 
@@ -71,13 +72,12 @@ id⤪ = tabulate id
 %</id-fin>
 
 
--- TODO: fix this
 %<*swap-fin>
 \AgdaTarget{swap⤪}
 \begin{code}
 swap⤪ : ∀ {n m} → (n + m) ⤪ (m + n)
-swap⤪ {n} {zero}  rewrite +-right-identity n = id⤪
-swap⤪ {n} {suc m} = ⊥′ where postulate ⊥′ : _
+swap⤪ {n} {m} with splitAt n (tabulate id)
+swap⤪ {n} {m} | vₙ , vₘ , _ = vₘ ++ vₙ
 \end{code}
 %</swap-fin>
 
@@ -196,8 +196,7 @@ vecHalfPow⤪ {n} {w} rewrite vecHalfPowEq n w = id⤪
 \AgdaTarget{forkVec⤪}
 \begin{code}
 forkVec⤪ : ∀ {k n} → n ⤪ (k * n)
-forkVec⤪ {k} {zero}  rewrite *-right-zero k = id⤪
-forkVec⤪ {_} {suc m} = tabulate $ λ x → (toℕ x) mod (suc m)
+forkVec⤪ {k} = concat $ replicate {n = k} (tabulate id)
 \end{code}
 %</forkVec-fin>
 
@@ -206,7 +205,7 @@ forkVec⤪ {_} {suc m} = tabulate $ λ x → (toℕ x) mod (suc m)
 \AgdaTarget{fork×⤪}
 \begin{code}
 fork×⤪ : ∀ {w} → w ⤪ (w + w)
-fork×⤪ {w} rewrite sym $ cong (_+_ w) (+-right-identity w) = forkVec⤪ {2} {w}
+fork×⤪ = tabulate id ++ tabulate id
 \end{code}
 %</forkProd-fin>
 
