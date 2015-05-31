@@ -22,8 +22,10 @@ open import Data.Vec.Equality using () renaming (module PropositionalEquality to
 open VecPropEq using (from-≡; to-≡) renaming (refl to reflᵥ)
 open import Data.Vec.Properties using (tabulate-allFin; map-lookup-allFin; lookup∘tabulate; tabulate∘lookup)
 open module X {a} {α : Set a} = Data.Vec.Properties.UsingVectorEquality (setoid α) using (xs++[]=xs)
-open import Data.Vec.Extra
-  using (proj₁∘splitAt-last≈; ++-assoc; ++-assoc-split₁; ++-assoc-split₂; ++-assoc-split₃; splitAt-++; ₁; ₂′)
+
+open import Data.Vec.Extra using (₁; ₂′)
+open import Data.Vec.Properties.Extra
+  using (proj₁∘splitAt-last≈; ++-assoc; ++-assoc-split₁; ++-assoc-split₂; ++-assoc-split₃; splitAt-++; tabulate-ext)
 
 open Atomic At using (W)
 open import PiWare.Plugs.Core using (_⤪_)
@@ -34,15 +36,6 @@ open import PiWare.Simulation.Equality Gt using (_≋_; refl≋; ≅⇒≋; ≋-
 open Setoid ≋-setoid using () renaming (sym to ≋-sym)
 \end{code}
 
-
-%<*tabulate-ext>
-\AgdaTarget{tabulate-ext}
-\begin{code}
-tabulate-ext : ∀ {a n} {A : Set a} {f g : Fin n → A} → (∀ x → f x ≡ g x) → tabulate f ≡ tabulate g
-tabulate-ext {n = zero}  _        = refl
-tabulate-ext {n = suc m} ∀x→fx≡gx rewrite ∀x→fx≡gx Fz | tabulate-ext (∀x→fx≡gx ∘ Fs) = refl
-\end{code}
-%</tabulate-ext>
 
 %<*id-plug-implements-id>
 \AgdaTarget{id⤨-id}
