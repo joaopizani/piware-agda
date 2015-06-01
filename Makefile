@@ -1,19 +1,25 @@
 STDLIB=${HOME}/build/agda/lib/current/src
 SRC=src
 
-AGDA_MODULES=Data/CausalStream \
+AGDA_MODULES=Category/NaturalT \
+			 Category/Functor/Extra \
+             Data/CausalStream \
 			 Data/List/Extra \
 			 Data/List/NonEmpty/Extra \
 			 Data/Vec/Extra \
+			 Data/Vec/Padding \
+			 Data/Vec/Properties/Extra \
 			 Data/HVec \
+			 Data/IVec \
+			 Data/RVec \
 			 Function/Bijection/Sets \
 			 Relation/Binary/Indexed/Core/Extra \
 			 Relation/Binary/Indexed/Extra \
+			 Relation/Binary/Indexed/Equality/Core \
 			 Relation/Binary/Indexed/PreorderReasoning \
 			 Relation/Binary/Indexed/EqReasoning \
              PiWare/Atom \
              PiWare/Atom/Bool \
-             PiWare/Padding \
              PiWare/Synthesizable \
              PiWare/Synthesizable/Bool \
 			 PiWare/Interface \
@@ -26,6 +32,7 @@ AGDA_MODULES=Data/CausalStream \
              PiWare/Simulation \
              PiWare/Simulation/Equality \
              PiWare/Simulation/Properties \
+			 PiWare/AreaAnalysis \
              PiWare/Patterns \
              PiWare/Samples/BoolTrioComb \
 			 PiWare/Samples/Muxes \
