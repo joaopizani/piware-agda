@@ -2,11 +2,16 @@
 module Data.Vec.Extra where
 
 open import Function using (id; _∘_)
-open import Data.Nat.Base using (suc; _+_; _*_)
+open import Data.Nat.Base using (ℕ; suc; _+_; _*_)
 open import Data.Product using (∃₂; _×_; proj₁; proj₂; map)
-open import Data.Vec using (Vec; splitAt; _++_; group; initLast)
+open import Data.Vec using (Vec; splitAt; _++_; group; initLast; applicative)
 
+open import Category.Functor using (RawFunctor)
+open import Category.Applicative.Indexed using (module RawIApplicative)
+open RawIApplicative using (rawFunctor)
 open import Relation.Binary.PropositionalEquality using (_≡_)
+
+open import Category.NaturalT using (NaturalT)
 \end{code}
 
 
@@ -60,3 +65,21 @@ initLast′ : ∀ {ℓ n} {α : Set ℓ} (xs : Vec α (suc n)) → Vec α n × �
 initLast′ = map id proj₁ ∘ initLast
 \end{code}
 %</initLast-noproof>
+
+
+%<*VecF>
+\AgdaTarget{VecF}
+\begin{code}
+VecF : ∀ {ℓ} n → RawFunctor (λ (α : Set ℓ) → Vec α n)
+VecF n = rawFunctor applicative
+\end{code}
+%</VecF>
+
+
+%<*VecNaturalT>
+\AgdaTarget{VecNaturalT}
+\begin{code}
+VecNaturalT : ∀ {ℓ} → ℕ → ℕ → Set _
+VecNaturalT {ℓ} m n = NaturalT (VecF {ℓ} m) (VecF {ℓ} n)
+\end{code}
+%</VecNaturalT>
