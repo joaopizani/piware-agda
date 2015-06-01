@@ -23,17 +23,31 @@ open VecPropEq using (from-≡; to-≡) renaming (refl to reflᵥ)
 open import Data.Vec.Properties using (tabulate-allFin; map-lookup-allFin; lookup∘tabulate; tabulate∘lookup)
 open module X {a} {α : Set a} = Data.Vec.Properties.UsingVectorEquality (setoid α) using (xs++[]=xs)
 
-open import Data.Vec.Extra using (₁; ₂′)
+open import Data.Vec.Extra using (₁; ₂′; VecNaturalT)
 open import Data.Vec.Properties.Extra
   using (proj₁∘splitAt-last≈; ++-assoc; ++-assoc-split₁; ++-assoc-split₂; ++-assoc-split₃; splitAt-++; tabulate-ext)
 
+open import Category.NaturalT using (module NaturalT)
+open NaturalT using (op)
+
 open Atomic At using (W)
 open import PiWare.Plugs.Core using (_⤪_)
-open import PiWare.Plugs Gt using (id⤨)
+open import PiWare.Plugs Gt using (id⤨; plug-Vecη)
 open import PiWare.Circuit using (ℂ; Plug; _⟫_; _∥_)
 open import PiWare.Simulation Gt using (⟦_⟧)
 open import PiWare.Simulation.Equality Gt using (_≋_; refl≋; ≅⇒≋; ≋-setoid)
 open Setoid ≋-setoid using () renaming (sym to ≋-sym)
+\end{code}
+
+
+-- TODO: Could be made to hold by definition
+\begin{code}
+postulate plug-Vecη-⟦⟧ : ∀ {i o} (η : VecNaturalT i o) (w : W i) → ⟦ plug-Vecη η ⟧ w ≡ op η w
+--plug-Vecη-⟦⟧ {i} η w = begin
+--  {!!}
+--    ≡⟨ {!!} ⟩
+--  {!!}
+--    ∎
 \end{code}
 
 

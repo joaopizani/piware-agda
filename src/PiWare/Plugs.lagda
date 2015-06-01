@@ -6,15 +6,20 @@ module PiWare.Plugs {At : Atomic} (Gt : Gates At) where
 
 open import Function using (id)
 open import Data.Nat.Base using (ℕ; suc; _+_; _*_)
+open import Data.Vec using (allFin)
+
+open import Algebra using (module CommutativeSemiring)
+open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
+open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
+
+open import Data.Vec.Extra using (VecNaturalT)
+open import Category.NaturalT using (module NaturalT)
+open NaturalT using (op)
 
 open import PiWare.Circuit {Gt = Gt} using (𝐂; Plug)
 open import PiWare.Plugs.Core
     using ( nil⤪; id⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
           ; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
-
-open import Algebra using (module CommutativeSemiring)
-open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
-open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 \end{code}
 
 
@@ -161,3 +166,12 @@ snd⤨ : ∀ {m n} → 𝐂 (m + n) n
 snd⤨ {m} = Plug (snd⤪ {m})
 \end{code}
 %</snd-plug>
+
+
+%<*plug-Vec-eta>
+\AgdaTarget{plug-Vecη}
+\begin{code}
+plug-Vecη : ∀ {i o} → VecNaturalT i o → 𝐂 i o
+plug-Vecη η = Plug (op η (allFin _))
+\end{code}
+%</plug-Vec-eta>
