@@ -4,13 +4,13 @@ module Data.Vec.Properties.Extra where
 open import Function using (_∘_; _$_; id)
 open import Data.Nat.Base using (zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
-open import Data.Product using (proj₁; _×_; _,_; map)
-open import Data.Vec using (Vec; splitAt; _++_; _∷_; []; tabulate; initLast; _∷ʳ_)
+open import Data.Product using (proj₁; _×_; _,_) renaming (map to map×)
+open import Data.Vec using (Vec; splitAt; _++_; [_]; _∷_; []; tabulate; initLast; _∷ʳ_; map; replicate)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; setoid)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; setoid; cong₂; cong)
 open import Data.Vec.Equality using () renaming (module PropositionalEquality to VPE)
-open VPE using (_≈_; []-cong; _∷-cong_; from-≡; to-≡) renaming (sym to symᵥ; trans to transᵥ)
-open import Data.Vec.Properties using (module UsingVectorEquality)
+open VPE using (_≈_; []-cong; _∷-cong_; from-≡; to-≡) renaming (refl to reflᵥ; sym to symᵥ; trans to transᵥ)
+open import Data.Vec.Properties using (module UsingVectorEquality; ∷-injective)
 open module Dummy {a} {A : Set a} = UsingVectorEquality (setoid A) using (xs++[]=xs)
 
 open import Data.Vec.Extra using (proj₂′; ₁; ₂′; initLast′)
@@ -143,7 +143,7 @@ split-++′ (_ ∷ _)  (_ ∷ _)   _  _   (x≈x′ ∷-cong rest) | xs≈xs′ 
 \AgdaTarget{split-++}
 \begin{code}
 split-++ : ∀ {n m ℓ} {α : Set ℓ} (v₁ v₁′ : Vec α n) (v₂ v₂′ : Vec α m) → v₁ ++ v₂ ≡ v₁′ ++ v₂′ → v₁ ≡ v₁′ × v₂ ≡ v₂′
-split-++ v₁ v₁′ v₂ v₂′ p = map to-≡ to-≡ (split-++′ v₁ v₁′ v₂ v₂′ $ from-≡ p)
+split-++ v₁ v₁′ v₂ v₂′ p = map× to-≡ to-≡ (split-++′ v₁ v₁′ v₂ v₂′ $ from-≡ p)
 \end{code}
 %</split-++>
 
@@ -172,8 +172,46 @@ tabulate-ext {n = suc m} p rewrite p Fz | tabulate-ext (p ∘ Fs) = refl
 %<*drop-initLast-noproof>
 \AgdaTarget{drop-initLast′}
 \begin{code}
-drop-initLast′ : ∀ {ℓ n} {α : Set ℓ} (x : α) (xs : Vec α (suc n)) → initLast′ (x ∷ xs) ≡ map (x ∷_) id (initLast′ xs)
+drop-initLast′ : ∀ {ℓ n} {α : Set ℓ} (x : α) (xs : Vec α (suc n)) → initLast′ (x ∷ xs) ≡ map× (x ∷_) id (initLast′ xs)
 drop-initLast′ _ xs         with initLast xs
 drop-initLast′ _ .(ys ∷ʳ y) | ys , y , refl = refl
 \end{code}
 %</drop-initLast-noproof>
+
+
+%<*snoc-injective>
+\AgdaTarget{∷ʳ-injective}
+\begin{code}
+∷ʳ-injective : ∀ {ℓ n} {α : Set ℓ} {x y : α} (xs ys : Vec α n) → xs ∷ʳ x ≡ ys ∷ʳ y → x ≡ y × xs ≡ ys
+∷ʳ-injective               []       []        refl = refl , refl
+∷ʳ-injective {x = x′} {y′} (x ∷ xs) (y ∷ ys)  p    with ∷-injective p
+∷ʳ-injective {x = x′} {y′} (x ∷ xs) (.x ∷ ys) p    | refl , p′ = map× id (cong₂ _∷_ refl) (∷ʳ-injective xs ys p′)
+\end{code}
+%</snoc-injective>
+
+
+%<*concat-singleton-snoc>
+\begin{code}
+++-∷ʳ : ∀ {ℓ n} {α : Set ℓ} (xs : Vec α n) (x : α) → xs ∷ʳ x ≈ xs ++ [ x ]
+++-∷ʳ []       x = reflᵥ [ x ]
+++-∷ʳ (y ∷ ys) x = refl ∷-cong ++-∷ʳ ys x
+\end{code}
+%</concat-singleton-snoc>
+
+
+%<*map-cong>
+\begin{code}
+map-cong : ∀ {ℓ m n} {α β : Set ℓ} (f : α → β) {xs : Vec α m} {ys : Vec α n} → xs ≈ ys → map f xs ≈ map f ys
+map-cong _ []-cong             = []-cong
+map-cong f (refl ∷-cong xs≈ys) = refl ∷-cong map-cong f xs≈ys
+\end{code}
+%</map-cong>
+
+
+%<*map-replicate>
+\begin{code}
+map-replicate : ∀ {ℓ₁ ℓ₂ n} {α : Set ℓ₁} {β : Set ℓ₂} (f : α → β) (x : α) → map f (replicate x) ≡ replicate {n = n} (f x)
+map-replicate {n = zero}  _ _ = refl
+map-replicate {n = suc k} f x = cong (f x ∷_) (map-replicate f x)
+\end{code}
+%</map-replicate>
