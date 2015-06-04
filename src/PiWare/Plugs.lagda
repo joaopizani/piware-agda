@@ -11,6 +11,7 @@ open import Data.Vec using (allFin)
 open import Algebra using (module CommutativeSemiring)
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
 open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
+open import Relation.Binary.PropositionalEquality using (_≡_)
 
 open import Data.Vec.Extra using (VecNaturalT)
 open import Category.NaturalT using (module NaturalT)
@@ -18,8 +19,8 @@ open NaturalT using (op)
 
 open import PiWare.Circuit {Gt = Gt} using (𝐂; Plug)
 open import PiWare.Plugs.Core
-    using ( nil⤪; id⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪; vecHalfPow⤪
-          ; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
+    using ( nil⤪; id⤪; rewireId⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪
+          ; vecHalfPow⤪; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
 \end{code}
 
 
@@ -39,6 +40,15 @@ id⤨ : ∀ {n} → 𝐂 n n
 id⤨ = Plug id⤪
 \end{code}
 %</id-plug>
+
+
+%<*rewireId-plug>
+\AgdaTarget{rewireId⤨}
+\begin{code}
+rewireId⤨ : ∀ {i o} (p : i ≡ o) → 𝐂 i o
+rewireId⤨ p = Plug (rewireId⤪ p)
+\end{code}
+%</rewireId-plug>
 
 
 %<*swap-plug>

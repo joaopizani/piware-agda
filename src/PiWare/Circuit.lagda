@@ -7,6 +7,8 @@ module PiWare.Circuit {At : Atomic} {Gt : Gates At} where
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
 
+open import Data.Vec.Extra using (VecNaturalT)
+
 open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
 open Gates At Gt using (|in|; |out|)

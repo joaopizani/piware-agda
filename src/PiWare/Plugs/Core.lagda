@@ -72,6 +72,15 @@ id⤪ = tabulate id
 %</id-fin>
 
 
+%<*rewireId-fin>
+\AgdaTarget{rewireId⤪}
+\begin{code}
+rewireId⤪ : ∀ {i o} (p : i ≡ o) → i ⤪ o
+rewireId⤪ refl = id⤪
+\end{code}
+%</rewireId-fin>
+
+
 %<*swap-fin>
 \AgdaTarget{swap⤪}
 \begin{code}

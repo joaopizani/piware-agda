@@ -12,12 +12,13 @@ open import Data.Product using (_×_)
 open import Algebra using (module CommutativeSemiring)
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring)
 open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
+open import Relation.Binary.PropositionalEquality using (_≡_)
 
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
 open import PiWare.Circuit.Typed Gt using (𝐂̂; Mkℂ̂)
 open import PiWare.Plugs Gt
-    using ( nil⤨; id⤨; swap⤨; intertwine⤨; ALR⤨; ARL⤨; head⤨; vecHalf⤨; vecHalfPow⤨
-          ; fst⤨; snd⤨; singleton⤨; forkVec⤨; fork×⤨; uncons⤨; cons⤨)
+    using ( nil⤨; id⤨; rewireId⤨; swap⤨; intertwine⤨; ALR⤨; ARL⤨; head⤨; vecHalf⤨
+          ; vecHalfPow⤨; fst⤨; snd⤨; singleton⤨; forkVec⤨; fork×⤨; uncons⤨; cons⤨)
 \end{code}
 
 
@@ -37,6 +38,16 @@ id⤨̂ : ∀ {α i} ⦃ _ : ⇓W⇑ α {i} ⦄ → 𝐂̂ α α
 id⤨̂ ⦃ sα ⦄ = Mkℂ̂ ⦃ sα ⦄ ⦃ sα ⦄ id⤨
 \end{code}
 %</id-plug-typed>
+
+
+-- Like "unsafe coerce" or "reinterpret_cast"
+%<*rewireId-plug-typed>
+\AgdaTarget{rewireId⤨̂}
+\begin{code}
+rewireId⤨̂ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ (p : i ≡ j) → 𝐂̂ α β
+rewireId⤨̂ ⦃ sα ⦄ ⦃ sβ ⦄ p = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (rewireId⤨ p)
+\end{code}
+%</rewireId-plug-typed>
 
 
 %<*swap-plug-typed>
