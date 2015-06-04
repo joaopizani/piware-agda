@@ -10,7 +10,7 @@ open import Data.Vec using (Vec; replicate; foldr; head; last)
 open import Data.Nat.Properties.Simple using (+-right-identity)
 open import Data.Maybe.Base using (maybe′)
 
-open import Data.RVec using (Vec↑⁼; ε⁼; _◁⁼[_]_)
+--open import Data.RVec using (Vec↑⁼; ε⁼; _◁⁼[_]_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Circuit {Gt = Gt} using (ℂ; _⟫_; _∥_)

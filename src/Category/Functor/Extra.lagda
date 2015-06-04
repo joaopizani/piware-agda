@@ -36,6 +36,5 @@ app-NaturalT ηₐ = record { op = opₐ ηₐ; op-<$> = op-<$>ₐ ηₐ }
 
 %<*product-functor>
 \begin{code}
-×-functor
 \end{code}
 %</product-functor>
