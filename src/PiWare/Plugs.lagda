@@ -182,6 +182,6 @@ snd⤨ {m} = Plug (snd⤪ {m})
 \AgdaTarget{plug-Vecη}
 \begin{code}
 plug-Vecη : ∀ {i o} → VecNaturalT i o → 𝐂 i o
-plug-Vecη η = Plug (op η (allFin _))
+plug-Vecη {i} η = Plug (op η (allFin i))
 \end{code}
 %</plug-Vec-eta>

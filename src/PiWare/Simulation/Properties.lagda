@@ -4,178 +4,43 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Simulation.Properties {At : Atomic} (Gt : Gates At) where
 
-open import Function using (id; _∘_; _∘′_; _$_; flip; _⟨_⟩_)
+open import Function using (id; _∘_; _$_)
 open import Data.Nat.Base using (_+_)
-open import Data.Fin using (Fin)
 open import Data.Product using (_,_)
-open import Data.Vec using (Vec; lookup; tabulate; splitAt; allFin; map)
+open import Data.Vec using (splitAt)
 
-open import Relation.Binary.Indexed.Core using (module Setoid)
 open import Data.Nat.Properties.Simple using (+-right-identity; +-assoc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; setoid; module ≡-Reasoning)
 open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_; _≡⟨⟩_)
 
-open import Data.Vec.Equality using () renaming (module PropositionalEquality to VecPropEq)
-open VecPropEq using (from-≡; to-≡; _≈_) renaming (refl to reflᵥ)
-open import Data.Vec.Properties using (tabulate-allFin; tabulate∘lookup; lookup∘tabulate; lookup-morphism; map-lookup-allFin)
-open module X {a} {α : Set a} = Data.Vec.Properties.UsingVectorEquality (setoid α) using (xs++[]=xs)
+open import Data.Vec.Equality using (module PropositionalEquality)
+open PropositionalEquality using (_≈_; to-≡; from-≡; _++-cong_) renaming (refl to reflᵥ)
+open import Data.Vec.Properties using (module UsingVectorEquality)
+open module X {a} {α : Set a} = UsingVectorEquality (setoid α) using (xs++[]=xs)
 
-open import Data.Vec.Extra using (₁; ₂′; VecNaturalT)
+open import Data.Vec.Extra using (₁; ₂′)
 open import Data.Vec.Properties.Extra
-  using (proj₁∘splitAt-last≈; ++-assoc; ++-assoc-split₁; ++-assoc-split₂; ++-assoc-split₃; splitAt-++; tabulate-ext)
+  using (proj₁∘splitAt-last≈; ++-assoc; ++-assoc-split₁; ++-assoc-split₂; ++-assoc-split₃; splitAt-++)
 
-open import Category.NaturalT using (module NaturalT; _∘⇓_)
-open import Category.Functor.Extra using (app-NaturalT)
-open NaturalT using (op; op-<$>)
-
-open Atomic At using (W)
-open import PiWare.Plugs Gt using (id⤨; plug-Vecη)
+open import PiWare.Plugs Gt using (id⤨)
 open import PiWare.Circuit using (ℂ; _⟫_; _∥_)
 open import PiWare.Simulation Gt using (⟦_⟧)
-open import PiWare.Simulation.Equality Gt using (_≅_; _≋_; refl≋; ≅⇒≋; ≋-setoid)
-open Setoid ≋-setoid using () renaming (sym to ≋-sym; refl to ≋-refl; trans to ≋-trans)
+open import PiWare.Simulation.Equality Gt using (_≅_; _≋_; refl≋; ≅⇒≋; ≋-sym)
+open import PiWare.Simulation.Properties.Plugs Gt using (id⤨-id)
 \end{code}
-
-
-%<*flip-lookup>
-\AgdaTarget{lookupᵗ}
-\begin{code}
-lookupᵗ : ∀ {ℓ n} {α : Set ℓ} → Vec α n → Fin n → α
-lookupᵗ = flip lookup
-\end{code}
-%</flip-lookup>
-
-
--- TODO: Could be made to hold by definition
-%<*plug-Vec-eta-sim>
-\AgdaTarget{plug-Vecη-⟦⟧}
-\begin{code}
-plug-Vecη-⟦⟧ : ∀ {i o} (η : VecNaturalT i o) (w : W i) → ⟦ plug-Vecη η ⟧ w ≡ op η w
-plug-Vecη-⟦⟧ {i} η w = begin
-    tabulate (λ i → lookupᵗ w (lookup i $ op η (allFin _))) ≡⟨ tabulate-ext (λ i → sym $ op-<$> (app-NaturalT $ lookup-morphism i) (lookupᵗ w) _) ⟩
-    tabulate (lookupᵗ (map (lookupᵗ w) (op η (allFin _))))  ≡⟨ tabulate-ext (λ i → sym $ cong (lookup i) (op-<$> η (lookupᵗ w) _)) ⟩
-    tabulate (lookupᵗ (op η (map (lookupᵗ w) (allFin _))))  ≡⟨ tabulate∘lookup _ ⟩
-    op η (map (lookupᵗ w) (allFin _))                       ≡⟨ cong (op η) (map-lookup-allFin _) ⟩
-    op η w
-  ∎
-\end{code}
-%</plug-Vec-eta-sim>
-
-
-%<*id-plug-implements-id>
-\AgdaTarget{id⤨-id}
-\begin{code}
-id⤨-id : ∀ {i} (w : W i) → ⟦ id⤨ ⟧ w ≡ id w
-id⤨-id w = begin
-    ⟦ id⤨ ⟧ w                                   ≡⟨⟩  -- by definition of ⟦_⟧
-    tabulate (lookupᵗ w ∘′ lookupᵗ (allFin _))  ≡⟨ tabulate-ext (cong (lookupᵗ w) ∘ lookup∘tabulate id) ⟩
-    tabulate (lookupᵗ w)                        ≡⟨ tabulate∘lookup w ⟩
-    id w
-  ∎
-\end{code}
-%</id-plug-implements-id>
-
-
-%<*id⤨-cong>
-\begin{code}
-id⤨-cong : ∀ {i j} (p : i ≡ j) → id⤨ {i} ≋ id⤨ {j}
-id⤨-cong refl = ≋-refl
-\end{code}
-%</id⤨-cong>
 
 
 \begin{code}
-private
+infixl 4 _⟫-cong_
 \end{code}
-%<*plug-Vec-eta-id-one-input>
-\AgdaTarget{plug-Vecη-id′}
+%<*seq-cong>
+\AgdaTarget{⟫-cong}
 \begin{code}
- plug-Vecη-id′ : ∀ {j} (η : VecNaturalT j j) → (∀ {X} (w : Vec X j) → op η w ≡ w) → plug-Vecη η ≅ id⤨
- plug-Vecη-id′ η η-id w = from-≡ $ begin
-     ⟦ plug-Vecη η ⟧ w  ≡⟨ plug-Vecη-⟦⟧ η w ⟩
-     op η w             ≡⟨ η-id w ⟩
-     w                  ≡⟨ sym (id⤨-id w) ⟩
-     ⟦ id⤨ ⟧ w
-   ∎
+_⟫-cong_ : ∀ {i₁ i₂ m₁ m₂ o₁ o₂} {c₁ : ℂ i₁ m₁} {d₁ : ℂ m₁ o₁} {c₂ : ℂ i₂ m₂} {d₂ : ℂ m₂ o₂}
+           → c₁ ≋ c₂ → d₁ ≋ d₂ → (c₁ ⟫ d₁) ≋ (c₂ ⟫ d₂)
+(refl≋ refl c₁≊c₂) ⟫-cong (refl≋ refl d₁≊d₂) = ≅⇒≋ (d₁≊d₂ ∘ c₁≊c₂ ∘ reflᵥ)
 \end{code}
-%</plug-Vec-eta-id-one-input>
-
-
-\begin{code}
-private
-\end{code}
-%<*plug-Vec-eta-comp-one-input>
-\AgdaTarget{plug-Vecη-∘′}
-\begin{code}
- plug-Vecη-∘′ : ∀ {i m o} (η : VecNaturalT i m) (ε : VecNaturalT m o) → plug-Vecη η ⟫ plug-Vecη ε ≅ plug-Vecη (ε ∘⇓ η)
- plug-Vecη-∘′ η ε w = from-≡ $
-   begin
-     ⟦ plug-Vecη η ⟫ plug-Vecη ε ⟧ w       ≡⟨⟩
-     ⟦ plug-Vecη ε ⟧ (⟦ plug-Vecη η ⟧ w)   ≡⟨ plug-Vecη-⟦⟧ ε (⟦ plug-Vecη η ⟧ w) ⟩
-     op ε (⟦ plug-Vecη η ⟧ w)              ≡⟨ cong (op ε) (plug-Vecη-⟦⟧ η w) ⟩
-     (op ε ∘ op η) w                       ≡⟨⟩
-     op (ε ∘⇓ η) w                         ≡⟨ sym (plug-Vecη-⟦⟧ (ε ∘⇓ η) w) ⟩
-     ⟦ plug-Vecη (ε ∘⇓ η) ⟧ w
-   ∎
-\end{code}
-%</plug-Vec-eta-comp-one-input>
-
-
-\begin{code}
-private
-\end{code}
-%<*plug-Vec-eta-ext-one-input>
-\AgdaTarget{plug-Vecη-ext′}
-\begin{code}
- plug-Vecη-ext′ : ∀ {i o} (η : VecNaturalT i o) (ε : VecNaturalT i o)
-                  → (∀ {X} (w : Vec X i) → op η w ≡ op ε w) → plug-Vecη η ≅ plug-Vecη ε
- plug-Vecη-ext′ η ε η≈ε w = from-≡ $ begin
-     ⟦ plug-Vecη η ⟧ w  ≡⟨ plug-Vecη-⟦⟧ η w ⟩
-     op η w             ≡⟨ η≈ε w ⟩
-     op ε w             ≡⟨ sym (plug-Vecη-⟦⟧ ε w) ⟩
-     ⟦ plug-Vecη ε ⟧ w
-   ∎
-\end{code}
-%</plug-Vec-eta-ext-one-input>
-
-
-%<*plug-Vec-eta-id>
-\AgdaTarget{plug-Vecη-id}
-\begin{code}
-plug-Vecη-id : ∀ {j} (η : VecNaturalT j j) → (∀ {X : Set} (w : Vec X j) → op η w ≡ w) → plug-Vecη η ≋ id⤨
-plug-Vecη-id η p = ≅⇒≋ (plug-Vecη-id′ η p)
-\end{code}
-%</plug-Vec-eta-id>
-
-
-%<*plug-Vec-eta-comp>
-\AgdaTarget{plug-Vecη-∘}
-\begin{code}
-plug-Vecη-∘ : ∀ {i m o} (η : VecNaturalT i m) (ε : VecNaturalT m o) → plug-Vecη η ⟫ plug-Vecη ε ≋ plug-Vecη (ε ∘⇓ η)
-plug-Vecη-∘ η ε = ≅⇒≋ (plug-Vecη-∘′ η ε)
-\end{code}
-%</plug-Vec-eta-comp>
-
-
-%<*plug-Vec-eta-ext>
-\AgdaTarget{plug-Vecη-ext}
-\begin{code}
-plug-Vecη-ext : ∀ {i o} {η : VecNaturalT i o} {ε : VecNaturalT i o}
-                → (∀ {X} (w : Vec X i) → op η w ≡ op ε w) → plug-Vecη η ≋ plug-Vecη ε
-plug-Vecη-ext {η = η} {ε} p = ≅⇒≋ (plug-Vecη-ext′ η ε p)
-\end{code}
-%</plug-Vec-eta-ext>
-
-
-%<*plugs-Vec-eta-inverse>
-\AgdaTarget{plugs-Vecη⁻¹}
-\begin{code}
-plugs-Vecη⁻¹ : ∀ {i o} (η : VecNaturalT i o) (ε : VecNaturalT o i)
-               → (∀ {X} (w : Vec X i) → (op ε ∘ op η) w ≡ w) → plug-Vecη η ⟫ plug-Vecη ε ≋ id⤨ {i}
-plugs-Vecη⁻¹ η ε p = plug-Vecη-∘ η ε ⟨ ≋-trans ⟩ plug-Vecη-id (ε ∘⇓ η) p
-\end{code}
-%</plugs-Vec-eta-inverse>
-
+%</seq-cong>
 
 
 %<*seq-right-identity>
@@ -186,6 +51,7 @@ plugs-Vecη⁻¹ η ε p = plug-Vecη-∘ η ε ⟨ ≋-trans ⟩ plug-Vecη-id 
 \end{code}
 %</seq-right-identity>
 
+
 %<*seq-left-identity>
 \AgdaTarget{⟫-left-identity}
 \begin{code}
@@ -193,6 +59,7 @@ plugs-Vecη⁻¹ η ε p = plug-Vecη-∘ η ε ⟨ ≋-trans ⟩ plug-Vecη-id 
 ⟫-left-identity c = ≅⇒≋ (from-≡ ∘ cong ⟦ c ⟧ ∘ id⤨-id)
 \end{code}
 %</seq-left-identity>
+
 
 %<*seq-assoc>
 \AgdaTarget{⟫-assoc}
@@ -203,6 +70,19 @@ plugs-Vecη⁻¹ η ε p = plug-Vecη-∘ η ε ⟨ ≋-trans ⟩ plug-Vecη-id 
 %</seq-assoc>
 
 
+\begin{code}
+infixr 5 _∥-cong_
+\end{code}
+%<*par-cong>
+\AgdaTarget{_∥-cong_}
+\begin{code}
+_∥-cong_ : ∀ {i₁ o₁ j₁ p₁ i₂ o₂ j₂ p₂} {c₁ : ℂ i₁ o₁} {d₁ : ℂ j₁ p₁} {c₂ : ℂ i₂ o₂} {d₂ : ℂ j₂ p₂}
+           → c₁ ≋ c₂ → d₁ ≋ d₂ → (c₁ ∥ d₁) ≋ (c₂ ∥ d₂)
+(refl≋ refl c₁≊c₂) ∥-cong (refl≋ refl d₁≊d₂) = ≅⇒≋ (λ _ → (c₁≊c₂ (reflᵥ _)) ++-cong (d₁≊d₂ (reflᵥ _)))
+\end{code}
+%</par-cong>
+
+
 %<*par-left-identity>
 \AgdaTarget{∥-left-identity}
 \begin{code}
@@ -210,6 +90,7 @@ plugs-Vecη⁻¹ η ε p = plug-Vecη-∘ η ε ⟨ ≋-trans ⟩ plug-Vecη-id 
 ∥-left-identity _ = ≅⇒≋ (λ _ → reflᵥ _)
 \end{code}
 %</par-left-identity>
+
 
 %<*par-right-identity>
 \AgdaTarget{∥-right-identity}
@@ -220,6 +101,7 @@ plugs-Vecη⁻¹ η ε p = plug-Vecη-∘ η ε ⟨ ≋-trans ⟩ plug-Vecη-id 
         ∥-right-identity′ w≈w′ rewrite to-≡ (proj₁∘splitAt-last≈ w≈w′) = xs++[]=xs (⟦ c ⟧ _)
 \end{code}
 %</par-right-identity>
+
 
 %<*par-assoc>
 \AgdaTarget{∥-assoc}
@@ -263,6 +145,7 @@ rows-to-cols {i₁} {m₁} f₁ f₂ g₁ g₂ = ≅⇒≋ (from-≡ ∘ f)
         f w rewrite splitAt-++ m₁ (⟦ f₁ ⟧ $ ₁ (splitAt i₁ w)) (⟦ f₂ ⟧ $ ₂′ (splitAt i₁ w)) = refl
 \end{code}
 %</rows-to-cols>
+
 
 %<*cols-to-rows>
 \AgdaTarget{cols-to-rows}
