@@ -56,9 +56,9 @@ plug-Vecη-⟦⟧ {i} η w = begin
 \begin{code}
 id⤨-id : ∀ {i} (w : W i) → ⟦ id⤨ ⟧ w ≡ id w
 id⤨-id w = begin
-    ⟦ id⤨ ⟧ w                                  ≡⟨⟩  -- by definition of ⟦_⟧
-    tabulate (lookupᵗ w ∘ lookupᵗ (allFin _))  ≡⟨ tabulate-ext (cong (lookupᵗ w) ∘ lookup∘tabulate id) ⟩
-    tabulate (lookupᵗ w)                       ≡⟨ tabulate∘lookup w ⟩
+    ⟦ id⤨ ⟧ w                                     ≡⟨⟩  -- by definition of ⟦_⟧
+    tabulate (lookupᵗ w ∘ lookupᵗ (tabulate id))  ≡⟨ tabulate-ext (cong (lookupᵗ w) ∘ lookup∘tabulate id) ⟩
+    tabulate (lookupᵗ w)                          ≡⟨ tabulate∘lookup w ⟩
     id w
   ∎
 \end{code}
@@ -97,12 +97,11 @@ private
 \AgdaTarget{plug-Vecη-∘′}
 \begin{code}
  plug-Vecη-∘′ : ∀ {i m o} (η : VecNaturalT i m) (ε : VecNaturalT m o) → plug-Vecη η ⟫ plug-Vecη ε ≅ plug-Vecη (ε ∘⇓ η)
- plug-Vecη-∘′ η ε w = from-≡ $
-   begin
+ plug-Vecη-∘′ η ε w = from-≡ $ begin
      ⟦ plug-Vecη η ⟫ plug-Vecη ε ⟧ w       ≡⟨⟩
      ⟦ plug-Vecη ε ⟧ (⟦ plug-Vecη η ⟧ w)   ≡⟨ plug-Vecη-⟦⟧ ε (⟦ plug-Vecη η ⟧ w) ⟩
      op ε (⟦ plug-Vecη η ⟧ w)              ≡⟨ cong (op ε) (plug-Vecη-⟦⟧ η w) ⟩
-     (op ε ∘ op η) w                       ≡⟨⟩
+     (op ε ∘ op η) w                       ≡⟨⟩  -- by definition of _∘⇓_
      op (ε ∘⇓ η) w                         ≡⟨ sym (plug-Vecη-⟦⟧ (ε ∘⇓ η) w) ⟩
      ⟦ plug-Vecη (ε ∘⇓ η) ⟧ w
    ∎
