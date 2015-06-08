@@ -6,6 +6,7 @@ module PiWare.Circuit {At : Atomic} {Gt : Gates At} where
 
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _⊔_)
 open import Data.Fin using (Fin)
+open import Relation.Binary.PropositionalEquality using (_≡_)
 
 open import Data.Vec.Extra using (VecNaturalT)
 
@@ -37,6 +38,11 @@ data ℂ : {p : IsComb} → Ix → Ix → Set
 \end{code}
 %</Circuit-any>
 
+\begin{code}
+infixl 4 _⟫_
+infixr 5 _∥_
+\end{code}
+
 %<*Circuit>
 \AgdaTarget{ℂ, Gate, DelayLoop, Plug, \_⟫\_, \_∥\_, \_|+\_}
 \begin{code}
@@ -49,8 +55,3 @@ data ℂ where
     DelayLoop : ∀ {i o l} → ℂ {σ} (i + l) (o + l) → ℂ {ω} i o
 \end{code}
 %</Circuit>
-
-\begin{code}
-infixl 4 _⟫_
-infixr 5 _∥_
-\end{code}

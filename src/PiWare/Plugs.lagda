@@ -17,7 +17,7 @@ open import Data.Vec.Extra using (VecNaturalT)
 open import Category.NaturalT using (module NaturalT)
 open NaturalT using (op)
 
-open import PiWare.Circuit {Gt = Gt} using (𝐂; Plug)
+open import PiWare.Circuit {Gt = Gt} using (𝐂; ℂ; Plug)
 open import PiWare.Plugs.Core
     using ( nil⤪; id⤪; rewireId⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪
           ; vecHalfPow⤪; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
@@ -49,6 +49,15 @@ rewireId⤨ : ∀ {i o} (p : i ≡ o) → 𝐂 i o
 rewireId⤨ p = Plug (rewireId⤪ p)
 \end{code}
 %</rewireId-plug>
+
+
+%<*rewireIO-plug>
+\AgdaTarget{rewireIO⤨}
+\begin{code}
+rewireIO⤨ : ∀ {i i′ o o′ p} (i≡ : i ≡ i′) (o≡ : o ≡ o′) → ℂ {p} i o → ℂ {p} i′ o′
+rewireIO⤨ i≡ o≡ rewrite i≡ | o≡ = id
+\end{code}
+%</rewireIO-plug>
 
 
 %<*swap-plug>

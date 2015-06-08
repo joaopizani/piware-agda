@@ -8,14 +8,85 @@ open import Function using (const; _∘′_; _$_)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec; replicate; foldr; head; last)
 open import Data.Nat.Properties.Simple using (+-right-identity)
-open import Data.Maybe.Base using (maybe′)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 --open import Data.RVec using (Vec↑⁼; ε⁼; _◁⁼[_]_)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Circuit {Gt = Gt} using (ℂ; _⟫_; _∥_)
-open import PiWare.Plugs Gt using (id⤨)
+open import PiWare.Plugs Gt using (id⤨; rewireId⤨; rewireIO⤨)
+open import PiWare.Simulation.Equality Gt using (_≋_; ≋-refl)
 \end{code}
+
+
+\begin{code}
+infixl 4 _⟫[_]-impl_
+\end{code}
+
+\begin{code}
+_⟫[_]-impl_ : ∀ {i m₁ m₂ o p} (c₁ : ℂ {p} i m₁) (eq : m₁ ≡ m₂) (c₂ : ℂ {p} m₂ o) → ℂ {p} i o
+c₁ ⟫[ eq ]-impl c₂ = c₁ ⟫ rewireId⤨ eq ⟫ c₂
+\end{code}
+
+\begin{code}
+abstract
+\end{code}
+\begin{code}
+ _⟫[_]_ : ∀ {i m₁ m₂ o p} (c₁ : ℂ {p} i m₁) (eq : m₁ ≡ m₂) (c₂ : ℂ {p} m₂ o) → ℂ {p} i o
+ _⟫[_]_ = _⟫[_]-impl_
+\end{code}
+
+\begin{code}
+ reveal-⟫[] : ∀ {i m o} {c₁ : ℂ i m} {c₂ : ℂ m o} → (c₁ ⟫[ refl ] c₂) ≋ (c₁ ⟫[ refl ]-impl c₂)
+ reveal-⟫[] = ≋-refl
+\end{code}
+
+
+\begin{code}
+infixr 5 _∥[_]l[_]-impl_
+\end{code}
+
+\begin{code}
+_∥[_]l[_]-impl_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (c₁ : ℂ {p} i₁ o₁) (i₁≡ : i₁ ≡ i₁′) (o₁≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
+c₁ ∥[ i₁≡ ]l[ o₁≡ ]-impl c₂ = rewireIO⤨ i₁≡ o₁≡ c₁ ∥ c₂
+\end{code}
+
+\begin{code}
+abstract
+\end{code}
+\begin{code}
+ _∥[_]l[_]_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (c₁ : ℂ {p} i₁ o₁) (i₁≡ : i₁ ≡ i₁′) (o₁≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
+ _∥[_]l[_]_ = _∥[_]l[_]-impl_
+\end{code}
+
+\begin{code}
+ reveal-∥[]l : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ]l[ refl ] c₂) ≋ (c₁ ∥[ refl ]l[ refl ]-impl c₂)
+ reveal-∥[]l = ≋-refl
+\end{code}
+
+
+\begin{code}
+infixr 5 _∥[_]r[_]-impl_
+\end{code}
+
+\begin{code}
+_∥[_]r[_]-impl_ : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i₂≡ : i₂ ≡ i₂′) (o₂≡ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
+c₁ ∥[ i₂≡ ]r[ o₂≡ ]-impl c₂ = c₁ ∥ rewireIO⤨ i₂≡ o₂≡ c₂
+\end{code}
+
+\begin{code}
+abstract
+\end{code}
+\begin{code}
+ _∥[_]r[_]_ : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i₂≡ : i₂ ≡ i₂′) (o₂≡ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
+ _∥[_]r[_]_ = _∥[_]r[_]-impl_
+\end{code}
+
+\begin{code}
+ reveal-∥[]r : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ]r[ refl ] c₂) ≋ (c₁ ∥[ refl ]r[ refl ]-impl c₂)
+ reveal-∥[]r = ≋-refl
+\end{code}
+
 
 
 -- Base case relies on the identity of _∥_:
