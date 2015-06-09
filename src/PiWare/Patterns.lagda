@@ -4,7 +4,7 @@ open import PiWare.Gates using (Gates)
 
 module PiWare.Patterns {At : Atomic} (Gt : Gates At) where
 
-open import Function using (const; _∘′_; _$_)
+open import Function using (const; _∘′_; _$_; id)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_; _*_)
 open import Data.Vec using (Vec; replicate; foldr; head; last)
 open import Data.Nat.Properties.Simple using (+-right-identity)
@@ -14,9 +14,27 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import PiWare.Interface using (Ix)
 open import PiWare.Circuit {Gt = Gt} using (ℂ; _⟫_; _∥_)
-open import PiWare.Plugs Gt using (id⤨; rewireId⤨; rewireIO⤨)
+open import PiWare.Plugs Gt using (id⤨; rewireId⤨)
 open import PiWare.Simulation.Equality Gt using (_≋_; ≋-refl)
 \end{code}
+
+
+\begin{code}
+adaptEqI⤨ : ∀ {i i′ o p} (i≡ : i ≡ i′) → ℂ {p} i o → ℂ {p} i′ o
+adaptEqI⤨ i≡ rewrite i≡ = id
+
+adaptEqO⤨ : ∀ {i o o′ p} (o≡ : o ≡ o′) → ℂ {p} i o → ℂ {p} i o′
+adaptEqO⤨ o≡ rewrite o≡ = id
+\end{code}
+
+
+%<*rewireIO-plug>
+\AgdaTarget{rewireIO⤨}
+\begin{code}
+adaptEqIO⤨ : ∀ {i i′ o o′ p} (i≡ : i ≡ i′) (o≡ : o ≡ o′) → ℂ {p} i o → ℂ {p} i′ o′
+adaptEqIO⤨ i≡ o≡ = adaptEqO⤨ o≡ ∘′ adaptEqI⤨ i≡
+\end{code}
+%</rewireIO-plug>
 
 
 \begin{code}
@@ -48,7 +66,7 @@ infixr 5 _∥[_]l[_]-impl_
 
 \begin{code}
 _∥[_]l[_]-impl_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (c₁ : ℂ {p} i₁ o₁) (i₁≡ : i₁ ≡ i₁′) (o₁≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
-c₁ ∥[ i₁≡ ]l[ o₁≡ ]-impl c₂ = rewireIO⤨ i₁≡ o₁≡ c₁ ∥ c₂
+c₁ ∥[ i₁≡ ]l[ o₁≡ ]-impl c₂ = adaptEqIO⤨ i₁≡ o₁≡ c₁ ∥ c₂
 \end{code}
 
 \begin{code}
@@ -71,7 +89,7 @@ infixr 5 _∥[_]r[_]-impl_
 
 \begin{code}
 _∥[_]r[_]-impl_ : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i₂≡ : i₂ ≡ i₂′) (o₂≡ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
-c₁ ∥[ i₂≡ ]r[ o₂≡ ]-impl c₂ = c₁ ∥ rewireIO⤨ i₂≡ o₂≡ c₂
+c₁ ∥[ i₂≡ ]r[ o₂≡ ]-impl c₂ = c₁ ∥ adaptEqIO⤨ i₂≡ o₂≡ c₂
 \end{code}
 
 \begin{code}

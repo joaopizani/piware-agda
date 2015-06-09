@@ -51,15 +51,6 @@ rewireId⤨ p = Plug (rewireId⤪ p)
 %</rewireId-plug>
 
 
-%<*rewireIO-plug>
-\AgdaTarget{rewireIO⤨}
-\begin{code}
-rewireIO⤨ : ∀ {i i′ o o′ p} (i≡ : i ≡ i′) (o≡ : o ≡ o′) → ℂ {p} i o → ℂ {p} i′ o′
-rewireIO⤨ i≡ o≡ rewrite i≡ | o≡ = id
-\end{code}
-%</rewireIO-plug>
-
-
 %<*swap-plug>
 \AgdaTarget{swap⤨}
 \begin{code}
