@@ -106,7 +106,7 @@ ALR⤪ {w} {v} {y} = adaptId⤪ (+-assoc w v y)
 \AgdaTarget{ARL⤪}
 \begin{code}
 ARL⤪ : ∀ {w v y} → (w + (v + y)) ⤪ ((w + v) + y)
-ARL⤪ {w} {v} {y} rewrite sym (+-assoc w v y) = id⤪
+ARL⤪ {w} {v} {y} = adaptId⤪ (sym (+-assoc w v y))
 \end{code}
 %</ARL-fin>
 
@@ -155,7 +155,7 @@ cons⤪ = id⤪
 \AgdaTarget{singleton⤪}
 \begin{code}
 singleton⤪ : ∀ {w} → w ⤪ (1 * w)
-singleton⤪ {w} rewrite +-right-identity w = id⤪
+singleton⤪ {w} = adaptId⤪ (sym (+-right-identity w))
 \end{code}
 %</singleton-fin>
 
@@ -198,7 +198,7 @@ vecHalfPowEq (suc n) w = begin
 \AgdaTarget{vecHalfPow⤪}
 \begin{code}
 vecHalfPow⤪ : ∀ {n w} → ((2 ^ suc n) * w) ⤪ ((2 ^ n) * w + (2 ^ n) * w)
-vecHalfPow⤪ {n} {w} rewrite vecHalfPowEq n w = id⤪
+vecHalfPow⤪ {n} {w} = adaptId⤪ (vecHalfPowEq n w)
 \end{code}
 %</vecHalfPow-fin>
 
