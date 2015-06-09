@@ -13,7 +13,7 @@ open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_)
 open import Data.Nat.Properties.Simple using (*-right-zero; +-right-identity)
 open import Algebra using (module CommutativeSemiring)
 open import Data.Nat.Properties using () renaming (commutativeSemiring to ℕ-commSemiring; module SemiringSolver to ℕ-SemiringSolver)
-open CommutativeSemiring ℕ-commSemiring using (+-assoc; +-comm; *-assoc; *-comm; distribʳ)
+open import Data.Nat.Properties.Simple using (+-assoc; +-comm; *-assoc; *-comm; distribʳ-*-+)
 open import Algebra.Operations (CommutativeSemiring.semiring ℕ-commSemiring) using (_^_)
 open ℕ-SemiringSolver using (solve; _:=_; con; _:+_; _:*_)
 
@@ -21,11 +21,13 @@ open import PiWare.Interface using (Ix)
 \end{code}
 
 
+\begin{code}
+infix 8 _⤪_
+\end{code}
+
 %<*Plug-type>
 \AgdaTarget{\_⤪\_}
 \begin{code}
-infix 8 _⤪_
-
 _⤪_ : Ix → Ix → Set
 i ⤪ o = Vec (Fin i) o
 \end{code}
@@ -75,7 +77,7 @@ id⤪ = tabulate id
 %<*adaptId-fin>
 \AgdaTarget{adaptId⤪}
 \begin{code}
-adaptId⤪ : ∀ {i o} (p : i ≡ o) → i ⤪ o
+adaptId⤪ : ∀ {n n′} (p : n ≡ n′) → n ⤪ n′
 adaptId⤪ refl = id⤪
 \end{code}
 %</adaptId-fin>
@@ -95,7 +97,7 @@ swap⤪ {n} {m} | vₙ , vₘ , _ = vₘ ++ vₙ
 \AgdaTarget{ALR⤪}
 \begin{code}
 ALR⤪ : ∀ {w v y} → ((w + v) + y) ⤪ (w + (v + y))
-ALR⤪ {w} {v} {y} rewrite +-assoc w v y = id⤪
+ALR⤪ {w} {v} {y} = adaptId⤪ (+-assoc w v y)
 \end{code}
 %</ALR-fin>
 
@@ -184,7 +186,7 @@ vecHalfPowEq (suc n) w = begin
     2 * 2 ^ suc n * w                   ≡⟨ *-assoc 2 (2 ^ suc n) w ⟩
     2 * (2 ^ suc n * w)                 ≡⟨ cong (λ x → 2 * x) $ vecHalfPowEq n w ⟩
     2 * (2 ^ n * w  +  2 ^ n * w)       ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
-    (2 ^ n * w + 2 ^ n * w) * 2         ≡⟨ distribʳ 2 (2 ^ n * w) (2 ^ n * w) ⟩
+    (2 ^ n * w + 2 ^ n * w) * 2         ≡⟨ distribʳ-*-+ 2 (2 ^ n * w) (2 ^ n * w) ⟩
     2 ^ n * w * 2   +  2 ^ n * w * 2    ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  eqAdd p p) ⟩
     2 * (2 ^ n * w) +  2 * (2 ^ n * w)  ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
     2 * 2 ^ n * w   +  2 * 2 ^ n * w    ≡⟨ refl ⟩
