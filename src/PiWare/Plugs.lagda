@@ -19,7 +19,7 @@ open NaturalT using (op)
 
 open import PiWare.Circuit {Gt = Gt} using (𝐂; ℂ; Plug)
 open import PiWare.Plugs.Core
-    using ( nil⤪; id⤪; rewireId⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪
+    using ( nil⤪; id⤪; adaptId⤪; swap⤪; ALR⤪; ARL⤪; intertwine⤪; head⤪; vecHalf⤪
           ; vecHalfPow⤪; fst⤪; snd⤪; singleton⤪; forkVec⤪; fork×⤪; uncons⤪; cons⤪)
 \end{code}
 
@@ -42,13 +42,13 @@ id⤨ = Plug id⤪
 %</id-plug>
 
 
-%<*rewireId-plug>
-\AgdaTarget{rewireId⤨}
+%<*adaptId-plug>
+\AgdaTarget{adaptId⤨}
 \begin{code}
-rewireId⤨ : ∀ {i o} (p : i ≡ o) → 𝐂 i o
-rewireId⤨ p = Plug (rewireId⤪ p)
+adaptId⤨ : ∀ {i o} (p : i ≡ o) → 𝐂 i o
+adaptId⤨ p = Plug (adaptId⤪ p)
 \end{code}
-%</rewireId-plug>
+%</adaptId-plug>
 
 
 %<*swap-plug>
