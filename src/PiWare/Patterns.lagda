@@ -146,6 +146,72 @@ abstract
 
 
 
+\begin{code}
+infixr 5 _∥[_]i[_]-impl_
+\end{code}
+
+%<*par-het-input-impl>
+\AgdaTarget{\_∥[\_]i[\_]-impl\_}
+\begin{code}
+_∥[_]i[_]-impl_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : i₁ ≡ i₁′) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂′) (o₁ + o₂)
+c₁ ∥[ ≡₁ ]i[ ≡₂ ]-impl c₂ = adaptEqI ≡₁ c₁ ∥ adaptEqI ≡₂ c₂ 
+\end{code}
+%</par-het-input-impl>
+
+\begin{code}
+abstract
+\end{code}
+%<*par-het-input>
+\AgdaTarget{\_∥[\_]i[\_]\_}
+\begin{code}
+ _∥[_]i[_]_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : i₁ ≡ i₁′) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂′) (o₁ + o₂)
+ _∥[_]i[_]_ = _∥[_]i[_]-impl_
+\end{code}
+%</par-het-input>
+
+%<*par-het-input-reveal>
+\AgdaTarget{reveal-∥[]}
+\begin{code}
+ reveal-∥[]i : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ]i[ refl ] c₂) ≋ (c₁ ∥[ refl ]i[ refl ]-impl c₂)
+ reveal-∥[]i = ≋-refl
+\end{code}
+%</par-het-input-reveal>
+
+
+
+\begin{code}
+infixr 5 _∥[_]o[_]-impl_
+\end{code}
+
+%<*par-het-output-impl>
+\AgdaTarget{\_∥[\_]o[\_]-impl\_}
+\begin{code}
+_∥[_]o[_]-impl_ : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (≡₂ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂) (o₁′ + o₂′)
+c₁ ∥[ ≡₁ ]o[ ≡₂ ]-impl c₂ = adaptEqO ≡₁ c₁ ∥ adaptEqO ≡₂ c₂
+\end{code}
+%</par-het-output-impl>
+
+\begin{code}
+abstract
+\end{code}
+%<*par-het-output>
+\AgdaTarget{\_∥[\_]o[\_]\_}
+\begin{code}
+ _∥[_]o[_]_ : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (≡₂ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂) (o₁′ + o₂′)
+ _∥[_]o[_]_ = _∥[_]o[_]-impl_
+\end{code}
+%</par-het-output>
+
+%<*par-het-output-reveal>
+\AgdaTarget{reveal-∥[]o}
+\begin{code}
+ reveal-∥[]o : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ]o[ refl ] c₂) ≋ (c₁ ∥[ refl ]o[ refl ]-impl c₂)
+ reveal-∥[]o = ≋-refl
+\end{code}
+%</par-het-output-reveal>
+
+
+
 -- Base case relies on the identity of _∥_:
 -- ∀ c' : id⤨ ∥ c' ≋ c'  (where _≋_ means "have same simulation semantics")
 %<*pars>
