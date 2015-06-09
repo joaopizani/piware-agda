@@ -7,7 +7,7 @@ open import Data.Product using (_,_)
 open import Data.Vec using (Vec; map; _++_; lookup; tabulate; splitAt; replicate; concat) renaming ([] to ε; _∷_ to _◁_)
 open import Data.Nat.Base using (zero; suc; _+_; _*_)
 
-open import Relation.Binary.PropositionalEquality using (cong; sym; refl; _≡_; module ≡-Reasoning)
+open import Relation.Binary.PropositionalEquality using (cong; cong₂; sym; refl; _≡_; module ≡-Reasoning)
 open ≡-Reasoning using (begin_; _∎; _≡⟨_⟩_)
 
 open import Data.Nat.Properties.Simple using (*-right-zero; +-right-identity)
@@ -176,9 +176,6 @@ vecHalf⤪ {n} {w} rewrite +-right-identity n | twiceSuc n w = id⤪
 
 
 \begin{code}
-eqAdd : ∀ {a b c d} → a ≡ c → b ≡ d → a + b ≡ c + d
-eqAdd a≡c b≡d rewrite a≡c | b≡d = refl
-
 vecHalfPowEq : ∀ n w → 2 ^ suc n * w  ≡  2 ^ n * w  +  2 ^ n * w
 vecHalfPowEq zero w rewrite +-right-identity w = refl
 vecHalfPowEq (suc n) w = begin
@@ -187,8 +184,8 @@ vecHalfPowEq (suc n) w = begin
     2 * (2 ^ suc n * w)                 ≡⟨ cong (λ x → 2 * x) $ vecHalfPowEq n w ⟩
     2 * (2 ^ n * w  +  2 ^ n * w)       ≡⟨ *-comm 2 (2 ^ n * w + 2 ^ n * w) ⟩
     (2 ^ n * w + 2 ^ n * w) * 2         ≡⟨ distribʳ-*-+ 2 (2 ^ n * w) (2 ^ n * w) ⟩
-    2 ^ n * w * 2   +  2 ^ n * w * 2    ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  eqAdd p p) ⟩
-    2 * (2 ^ n * w) +  2 * (2 ^ n * w)  ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  eqAdd p p) ⟩
+    2 ^ n * w * 2   +  2 ^ n * w * 2    ≡⟨ (let p = *-comm (2 ^ n * w) 2  in  cong₂ _+_ p p) ⟩
+    2 * (2 ^ n * w) +  2 * (2 ^ n * w)  ≡⟨ (let p = sym (*-assoc 2 (2 ^ n) w)  in  cong₂ _+_ p p) ⟩
     2 * 2 ^ n * w   +  2 * 2 ^ n * w    ≡⟨ refl ⟩
     2 ^ suc n * w   +  2 ^ suc n * w
   ∎
