@@ -22,12 +22,40 @@ open import Data.Vec.Extra using (₁; ₂′)
 open import Data.Vec.Properties.Extra
   using (proj₁∘splitAt-last≈; ++-assoc; ++-assoc-split₁; ++-assoc-split₂; ++-assoc-split₃; splitAt-++)
 
-open import PiWare.Plugs Gt using (id⤨)
 open import PiWare.Circuit using (ℂ; _⟫_; _∥_)
+open import PiWare.Plugs Gt using (id⤨)
+open import PiWare.Patterns Gt using (adaptEqI; adaptEqO; adaptEqIO)
 open import PiWare.Simulation Gt using (⟦_⟧)
-open import PiWare.Simulation.Equality Gt using (_≅_; _≋_; refl≋; ≅⇒≋; ≋-sym)
+open import PiWare.Simulation.Equality Gt using (_≅_; _≋_; refl≋; ≅⇒≋; ≋-refl; ≋-sym)
 open import PiWare.Simulation.Properties.Plugs Gt using (id⤨-id)
 \end{code}
+
+
+%<*adaptEqI-noop>
+\AgdaTarget{adaptEqI-noop}
+\begin{code}
+adaptEqI-noop : ∀ {i i′ o} {i≡ : i ≡ i′} (c : ℂ i o) → adaptEqI i≡ c ≋ c
+adaptEqI-noop {i≡ = p} c rewrite p = ≋-refl
+\end{code}
+%</adaptEqI-noop>
+
+
+%<*adaptEqO-noop>
+\AgdaTarget{adaptEqO-noop}
+\begin{code}
+adaptEqO-noop : ∀ {i o o′} {o≡ : o ≡ o′} (c : ℂ i o) → adaptEqO o≡ c ≋ c
+adaptEqO-noop {o≡ = p} c rewrite p = ≋-refl
+\end{code}
+%</adaptEqO-noop>
+
+
+%<*adaptEqIO-noop>
+\AgdaTarget{adaptEqIO-noop}
+\begin{code}
+adaptEqIO-noop : ∀ {i i′ o o′} {i≡ : i ≡ i′} {o≡ : o ≡ o′} (c : ℂ i o) → adaptEqIO i≡ o≡ c ≋ c
+adaptEqIO-noop {i≡ = pᵢ} {pₒ} c rewrite pᵢ | pₒ = ≋-refl
+\end{code}
+%</adaptEqIO-noop>
 
 
 \begin{code}
