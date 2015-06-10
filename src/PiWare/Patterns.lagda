@@ -80,15 +80,11 @@ abstract
 
 
 
-\begin{code}
-infixr 5 _∥[_]l[_]-impl_
-\end{code}
-
 %<*par-het-left-impl>
-\AgdaTarget{\_∥[\_]l[\_]-impl\_}
+\AgdaTarget{[\_]\_[\_]∥-impl\_}
 \begin{code}
-_∥[_]l[_]-impl_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (c₁ : ℂ {p} i₁ o₁) (i₁≡ : i₁ ≡ i₁′) (o₁≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
-c₁ ∥[ i₁≡ ]l[ o₁≡ ]-impl c₂ = adaptEqIO i₁≡ o₁≡ c₁ ∥ c₂
+[_]_[_]∥-impl_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (i≡ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (o≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
+[ i≡ ] c₁ [ o≡ ]∥-impl c₂ = adaptEqIO i≡ o≡ c₁ ∥ c₂
 \end{code}
 %</par-het-left-impl>
 
@@ -96,32 +92,28 @@ c₁ ∥[ i₁≡ ]l[ o₁≡ ]-impl c₂ = adaptEqIO i₁≡ o₁≡ c₁ ∥ c
 abstract
 \end{code}
 %<*par-het-left>
-\AgdaTarget{\_∥[\_]l[\_]\_}
+\AgdaTarget{[\_]\_[\_]∥\_}
 \begin{code}
- _∥[_]l[_]_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (c₁ : ℂ {p} i₁ o₁) (i₁≡ : i₁ ≡ i₁′) (o₁≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
- _∥[_]l[_]_ = _∥[_]l[_]-impl_
+ [_]_[_]∥_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (i≡ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (o≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
+ [_]_[_]∥_ = [_]_[_]∥-impl_
 \end{code}
 %</par-het-left>
 
 %<*par-het-left-reveal>
 \AgdaTarget{reveal-∥[]l}
 \begin{code}
- reveal-∥[]l : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ]l[ refl ] c₂) ≋ (c₁ ∥[ refl ]l[ refl ]-impl c₂)
+ reveal-∥[]l : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → ([ refl ] c₁ [ refl ]∥ c₂) ≋ ([ refl ] c₁ [ refl ]∥-impl c₂)
  reveal-∥[]l = ≋-refl
 \end{code}
 %</par-het-left-reveal>
 
 
 
-\begin{code}
-infixr 5 _∥[_]r[_]-impl_
-\end{code}
-
 %<*par-het-right-impl>
-\AgdaTarget{\_∥[\_]r[\_]-impl\_}
+\AgdaTarget{\_∥-impl[\_]\_[\_]}
 \begin{code}
-_∥[_]r[_]-impl_ : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i₂≡ : i₂ ≡ i₂′) (o₂≡ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
-c₁ ∥[ i₂≡ ]r[ o₂≡ ]-impl c₂ = c₁ ∥ adaptEqIO i₂≡ o₂≡ c₂
+_∥-impl[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i≡ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) (o≡ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
+c₁ ∥-impl[ i≡ ] c₂ [ o≡ ] = c₁ ∥ adaptEqIO i≡ o≡ c₂
 \end{code}
 %</par-het-right-impl>
 
@@ -129,32 +121,28 @@ c₁ ∥[ i₂≡ ]r[ o₂≡ ]-impl c₂ = c₁ ∥ adaptEqIO i₂≡ o₂≡ c
 abstract
 \end{code}
 %<*par-het-right>
-\AgdaTarget{\_∥[\_]r[\_]\_}
+\AgdaTarget{\_∥[\_]\_[\_]}
 \begin{code}
- _∥[_]r[_]_ : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i₂≡ : i₂ ≡ i₂′) (o₂≡ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
- _∥[_]r[_]_ = _∥[_]r[_]-impl_
+ _∥[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i≡ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) (o≡ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
+ _∥[_]_[_] = _∥-impl[_]_[_]
 \end{code}
 %</par-het-right>
 
 %<*par-het-right-reveal>
 \AgdaTarget{reveal-∥[]r}
 \begin{code}
- reveal-∥[]r : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ]r[ refl ] c₂) ≋ (c₁ ∥[ refl ]r[ refl ]-impl c₂)
+ reveal-∥[]r : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ] c₂ [ refl ]) ≋ (c₁ ∥-impl[ refl ] c₂ [ refl ])
  reveal-∥[]r = ≋-refl
 \end{code}
 %</par-het-right-reveal>
 
 
 
-\begin{code}
-infixr 5 _∥[_]i[_]-impl_
-\end{code}
-
 %<*par-het-input-impl>
-\AgdaTarget{\_∥[\_]i[\_]-impl\_}
+\AgdaTarget{[\_]\_∥-impl[\_]\_}
 \begin{code}
-_∥[_]i[_]-impl_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : i₁ ≡ i₁′) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂′) (o₁ + o₂)
-c₁ ∥[ ≡₁ ]i[ ≡₂ ]-impl c₂ = adaptEqI ≡₁ c₁ ∥ adaptEqI ≡₂ c₂ 
+[_]_∥-impl[_]_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ p} (≡₁ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂′) (o₁ + o₂)
+[ ≡₁ ] c₁ ∥-impl[ ≡₂ ] c₂ = adaptEqI ≡₁ c₁ ∥ adaptEqI ≡₂ c₂ 
 \end{code}
 %</par-het-input-impl>
 
@@ -162,32 +150,28 @@ c₁ ∥[ ≡₁ ]i[ ≡₂ ]-impl c₂ = adaptEqI ≡₁ c₁ ∥ adaptEqI ≡�
 abstract
 \end{code}
 %<*par-het-input>
-\AgdaTarget{\_∥[\_]i[\_]\_}
+\AgdaTarget{[\_]\_∥[\_]\_}
 \begin{code}
- _∥[_]i[_]_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : i₁ ≡ i₁′) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂′) (o₁ + o₂)
- _∥[_]i[_]_ = _∥[_]i[_]-impl_
+ [_]_∥[_]_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ p} (≡₁ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂′) (o₁ + o₂)
+ [_]_∥[_]_ = [_]_∥-impl[_]_
 \end{code}
 %</par-het-input>
 
 %<*par-het-input-reveal>
-\AgdaTarget{reveal-∥[]}
+\AgdaTarget{reveal-∥[]i}
 \begin{code}
- reveal-∥[]i : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ]i[ refl ] c₂) ≋ (c₁ ∥[ refl ]i[ refl ]-impl c₂)
+ reveal-∥[]i : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → ([ refl ] c₁ ∥[ refl ] c₂) ≋ ([ refl ] c₁ ∥-impl[ refl ] c₂)
  reveal-∥[]i = ≋-refl
 \end{code}
 %</par-het-input-reveal>
 
 
 
-\begin{code}
-infixr 5 _∥[_]o[_]-impl_
-\end{code}
-
 %<*par-het-output-impl>
-\AgdaTarget{\_∥[\_]o[\_]-impl\_}
+\AgdaTarget{\_[\_]∥-impl\_[\_]}
 \begin{code}
-_∥[_]o[_]-impl_ : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (≡₂ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂) (o₁′ + o₂′)
-c₁ ∥[ ≡₁ ]o[ ≡₂ ]-impl c₂ = adaptEqO ≡₁ c₁ ∥ adaptEqO ≡₂ c₂
+_[_]∥-impl_[_] : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) (≡₂ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂) (o₁′ + o₂′)
+c₁ [ ≡₁ ]∥-impl c₂ [ ≡₂ ] = adaptEqO ≡₁ c₁ ∥ adaptEqO ≡₂ c₂
 \end{code}
 %</par-het-output-impl>
 
@@ -195,17 +179,17 @@ c₁ ∥[ ≡₁ ]o[ ≡₂ ]-impl c₂ = adaptEqO ≡₁ c₁ ∥ adaptEqO ≡�
 abstract
 \end{code}
 %<*par-het-output>
-\AgdaTarget{\_∥[\_]o[\_]\_}
+\AgdaTarget{\_[\_]∥\_[\_]}
 \begin{code}
- _∥[_]o[_]_ : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (≡₂ : o₂ ≡ o₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁ + i₂) (o₁′ + o₂′)
- _∥[_]o[_]_ = _∥[_]o[_]-impl_
+ _[_]∥_[_] : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) (≡₂ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂) (o₁′ + o₂′)
+ _[_]∥_[_] = _[_]∥-impl_[_]
 \end{code}
 %</par-het-output>
 
 %<*par-het-output-reveal>
 \AgdaTarget{reveal-∥[]o}
 \begin{code}
- reveal-∥[]o : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ ∥[ refl ]o[ refl ] c₂) ≋ (c₁ ∥[ refl ]o[ refl ]-impl c₂)
+ reveal-∥[]o : ∀ {i₁ i₂ o₁ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → (c₁ [ refl ]∥ c₂ [ refl ]) ≋ (c₁ [ refl ]∥-impl c₂ [ refl ])
  reveal-∥[]o = ≋-refl
 \end{code}
 %</par-het-output-reveal>
