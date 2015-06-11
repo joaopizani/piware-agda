@@ -22,8 +22,8 @@ open import PiWare.Simulation.Equality Gt using (_≋_; ≋-refl)
 %<*adaptEqI>
 \AgdaTarget{adaptEqI}
 \begin{code}
-adaptEqI : ∀ {i i′ o p} (i≡ : i ≡ i′) → ℂ {p} i o → ℂ {p} i′ o
-adaptEqI i≡ rewrite i≡ = id
+adaptEqI : ∀ {i i′ o p} (≡ᵢ : i ≡ i′) → ℂ {p} i o → ℂ {p} i′ o
+adaptEqI ≡ᵢ rewrite ≡ᵢ = id
 \end{code}
 %</adaptEqI>
 
@@ -31,8 +31,8 @@ adaptEqI i≡ rewrite i≡ = id
 %<*adaptEqO>
 \AgdaTarget{adaptEqO}
 \begin{code}
-adaptEqO : ∀ {i o o′ p} (o≡ : o ≡ o′) → ℂ {p} i o → ℂ {p} i o′
-adaptEqO o≡ rewrite o≡ = id
+adaptEqO : ∀ {i o o′ p} (≡ₒ : o ≡ o′) → ℂ {p} i o → ℂ {p} i o′
+adaptEqO ≡ₒ rewrite ≡ₒ = id
 \end{code}
 %</adaptEqO>
 
@@ -40,8 +40,8 @@ adaptEqO o≡ rewrite o≡ = id
 %<*adaptEqIO>
 \AgdaTarget{adaptEqIO}
 \begin{code}
-adaptEqIO : ∀ {i i′ o o′ p} (i≡ : i ≡ i′) (o≡ : o ≡ o′) → ℂ {p} i o → ℂ {p} i′ o′
-adaptEqIO i≡ o≡ = adaptEqO o≡ ∘′ adaptEqI i≡
+adaptEqIO : ∀ {i i′ o o′ p} (≡ᵢ : i ≡ i′) (≡ₒ : o ≡ o′) → ℂ {p} i o → ℂ {p} i′ o′
+adaptEqIO ≡ᵢ ≡ₒ = adaptEqO ≡ₒ ∘′ adaptEqI ≡ᵢ
 \end{code}
 %</adaptEqIO>
 
@@ -83,8 +83,8 @@ abstract
 %<*par-het-left-impl>
 \AgdaTarget{[\_]\_[\_]∥-impl\_}
 \begin{code}
-[_]_[_]∥-impl_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (i≡ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (o≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
-[ i≡ ] c₁ [ o≡ ]∥-impl c₂ = adaptEqIO i≡ o≡ c₁ ∥ c₂
+[_]_[_]∥-impl_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (≡ᵢ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (≡ₒ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
+[ ≡ᵢ ] c₁ [ ≡ₒ ]∥-impl c₂ = adaptEqIO ≡ᵢ ≡ₒ c₁ ∥ c₂
 \end{code}
 %</par-het-left-impl>
 
@@ -94,7 +94,7 @@ abstract
 %<*par-het-left>
 \AgdaTarget{[\_]\_[\_]∥\_}
 \begin{code}
- [_]_[_]∥_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (i≡ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (o≡ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
+ [_]_[_]∥_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (≡ᵢ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (≡ₒ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
  [_]_[_]∥_ = [_]_[_]∥-impl_
 \end{code}
 %</par-het-left>
@@ -112,8 +112,8 @@ abstract
 %<*par-het-right-impl>
 \AgdaTarget{\_∥-impl[\_]\_[\_]}
 \begin{code}
-_∥-impl[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i≡ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) (o≡ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
-c₁ ∥-impl[ i≡ ] c₂ [ o≡ ] = c₁ ∥ adaptEqIO i≡ o≡ c₂
+_∥-impl[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡ᵢ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) (≡ₒ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
+c₁ ∥-impl[ ≡ᵢ ] c₂ [ ≡ₒ ] = c₁ ∥ adaptEqIO ≡ᵢ ≡ₒ c₂
 \end{code}
 %</par-het-right-impl>
 
@@ -123,7 +123,7 @@ abstract
 %<*par-het-right>
 \AgdaTarget{\_∥[\_]\_[\_]}
 \begin{code}
- _∥[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (i≡ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) (o≡ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
+ _∥[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡ᵢ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) (≡ₒ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
  _∥[_]_[_] = _∥-impl[_]_[_]
 \end{code}
 %</par-het-right>
