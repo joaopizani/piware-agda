@@ -17,7 +17,7 @@ open import Relation.Binary.PropositionalEquality using (_≡_)
 open import PiWare.Synthesizable At using (⇓W⇑; ⇓W⇑-×; ⇓W⇑-Vec)
 open import PiWare.Circuit.Typed Gt using (𝐂̂; Mkℂ̂)
 open import PiWare.Plugs Gt
-    using ( nil⤨; id⤨; rewireId⤨; swap⤨; intertwine⤨; ALR⤨; ARL⤨; head⤨; vecHalf⤨
+    using ( nil⤨; id⤨; adaptId⤨; swap⤨; intertwine⤨; ALR⤨; ARL⤨; head⤨; vecHalf⤨
           ; vecHalfPow⤨; fst⤨; snd⤨; singleton⤨; forkVec⤨; fork×⤨; uncons⤨; cons⤨)
 \end{code}
 
@@ -44,8 +44,8 @@ id⤨̂ ⦃ sα ⦄ = Mkℂ̂ ⦃ sα ⦄ ⦃ sα ⦄ id⤨
 %<*rewireId-plug-typed>
 \AgdaTarget{rewireId⤨̂}
 \begin{code}
-rewireId⤨̂ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ (p : i ≡ j) → 𝐂̂ α β
-rewireId⤨̂ ⦃ sα ⦄ ⦃ sβ ⦄ p = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (rewireId⤨ p)
+adaptId⤨̂ : ∀ {α i β j} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ (p : i ≡ j) → 𝐂̂ α β
+adaptId⤨̂ ⦃ sα ⦄ ⦃ sβ ⦄ p = Mkℂ̂ ⦃ sα ⦄ ⦃ sβ ⦄ (adaptId⤨ p)
 \end{code}
 %</rewireId-plug-typed>
 

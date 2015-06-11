@@ -15,11 +15,12 @@ open Atomic At using (W)
 \AgdaTarget{Gates, |Gates|, |in|, |out|, spec, Gate\#}
 \begin{code}
 record Gates : Set where
-    field
-        |Gates|    : ℕ
-        |in| |out| : Fin |Gates| → Ix
-        spec       : (g : Fin |Gates|) → (W (|in| g) → W (|out| g))
+    field |Gates| : ℕ
 
     Gate# = Fin |Gates|
+
+    field
+        |in| |out|  : Gate# → Ix
+        spec        : (g : Gate#) → (W (|in| g) → W (|out| g))
 \end{code}
 %</Gates>

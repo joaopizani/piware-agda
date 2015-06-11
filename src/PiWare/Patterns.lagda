@@ -22,7 +22,7 @@ open import PiWare.Simulation.Equality Gt using (_≋_; ≋-refl)
 %<*adaptEqI>
 \AgdaTarget{adaptEqI}
 \begin{code}
-adaptEqI : ∀ {i i′ o p} (≡ᵢ : i ≡ i′) → ℂ {p} i o → ℂ {p} i′ o
+adaptEqI : ∀ {i i′ o 𝐜} (≡ᵢ : i ≡ i′) → ℂ {𝐜} i o → ℂ {𝐜} i′ o
 adaptEqI ≡ᵢ rewrite ≡ᵢ = id
 \end{code}
 %</adaptEqI>
@@ -31,7 +31,7 @@ adaptEqI ≡ᵢ rewrite ≡ᵢ = id
 %<*adaptEqO>
 \AgdaTarget{adaptEqO}
 \begin{code}
-adaptEqO : ∀ {i o o′ p} (≡ₒ : o ≡ o′) → ℂ {p} i o → ℂ {p} i o′
+adaptEqO : ∀ {i o o′ 𝐜} (≡ₒ : o ≡ o′) → ℂ {𝐜} i o → ℂ {𝐜} i o′
 adaptEqO ≡ₒ rewrite ≡ₒ = id
 \end{code}
 %</adaptEqO>
@@ -40,7 +40,7 @@ adaptEqO ≡ₒ rewrite ≡ₒ = id
 %<*adaptEqIO>
 \AgdaTarget{adaptEqIO}
 \begin{code}
-adaptEqIO : ∀ {i i′ o o′ p} (≡ᵢ : i ≡ i′) (≡ₒ : o ≡ o′) → ℂ {p} i o → ℂ {p} i′ o′
+adaptEqIO : ∀ {i i′ o o′ 𝐜} (≡ᵢ : i ≡ i′) (≡ₒ : o ≡ o′) → ℂ {𝐜} i o → ℂ {𝐜} i′ o′
 adaptEqIO ≡ᵢ ≡ₒ = adaptEqO ≡ₒ ∘′ adaptEqI ≡ᵢ
 \end{code}
 %</adaptEqIO>
@@ -54,7 +54,7 @@ infixl 4 _⟫[_]-impl_
 %<*seq-het-impl>
 \AgdaTarget{\_⟫[\_]-impl\_}
 \begin{code}
-_⟫[_]-impl_ : ∀ {i m₁ m₂ o p} (c₁ : ℂ {p} i m₁) (eq : m₁ ≡ m₂) (c₂ : ℂ {p} m₂ o) → ℂ {p} i o
+_⟫[_]-impl_ : ∀ {i m₁ m₂ o 𝐜} (c₁ : ℂ {𝐜} i m₁) (eq : m₁ ≡ m₂) (c₂ : ℂ {𝐜} m₂ o) → ℂ {𝐜} i o
 c₁ ⟫[ eq ]-impl c₂ = c₁ ⟫ adaptId⤨ eq ⟫ c₂
 \end{code}
 %</seq-het-impl>
@@ -65,11 +65,12 @@ abstract
 %<*seq-het>
 \AgdaTarget{\_⟫[\_]\_}
 \begin{code}
- _⟫[_]_ : ∀ {i m₁ m₂ o p} (c₁ : ℂ {p} i m₁) (eq : m₁ ≡ m₂) (c₂ : ℂ {p} m₂ o) → ℂ {p} i o
+ _⟫[_]_ : ∀ {i m₁ m₂ o 𝐜} (c₁ : ℂ {𝐜} i m₁) (eq : m₁ ≡ m₂) (c₂ : ℂ {𝐜} m₂ o) → ℂ {𝐜} i o
  _⟫[_]_ = _⟫[_]-impl_
 \end{code}
 %</seq-het>
 
+-- TODO: reveal only works with the combinational equality
 %<*seq-het-reveal>
 \AgdaTarget{reveal-⟫[]}
 \begin{code}
@@ -83,7 +84,7 @@ abstract
 %<*par-het-left-impl>
 \AgdaTarget{[\_]\_[\_]∥-impl\_}
 \begin{code}
-[_]_[_]∥-impl_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (≡ᵢ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (≡ₒ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
+[_]_[_]∥-impl_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ 𝐜} (≡ᵢ : i₁ ≡ i₁′) (c₁ : ℂ {𝐜} i₁ o₁) (≡ₒ : o₁ ≡ o₁′) (c₂ : ℂ {𝐜} i₂ o₂) → ℂ {𝐜} (i₁′ + i₂) (o₁′ + o₂)
 [ ≡ᵢ ] c₁ [ ≡ₒ ]∥-impl c₂ = adaptEqIO ≡ᵢ ≡ₒ c₁ ∥ c₂
 \end{code}
 %</par-het-left-impl>
@@ -94,11 +95,12 @@ abstract
 %<*par-het-left>
 \AgdaTarget{[\_]\_[\_]∥\_}
 \begin{code}
- [_]_[_]∥_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ p} (≡ᵢ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (≡ₒ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂) (o₁′ + o₂)
+ [_]_[_]∥_ : ∀ {i₁ i₁′ i₂ o₁ o₁′ o₂ 𝐜} (≡ᵢ : i₁ ≡ i₁′) (c₁ : ℂ {𝐜} i₁ o₁) (≡ₒ : o₁ ≡ o₁′) (c₂ : ℂ {𝐜} i₂ o₂) → ℂ {𝐜} (i₁′ + i₂) (o₁′ + o₂)
  [_]_[_]∥_ = [_]_[_]∥-impl_
 \end{code}
 %</par-het-left>
 
+-- TODO: reveal only works with the combinational equality
 %<*par-het-left-reveal>
 \AgdaTarget{reveal-∥[]l}
 \begin{code}
@@ -112,7 +114,7 @@ abstract
 %<*par-het-right-impl>
 \AgdaTarget{\_∥-impl[\_]\_[\_]}
 \begin{code}
-_∥-impl[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡ᵢ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) (≡ₒ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
+_∥-impl[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ 𝐜} (c₁ : ℂ {𝐜} i₁ o₁) (≡ᵢ : i₂ ≡ i₂′) (c₂ : ℂ {𝐜} i₂ o₂) (≡ₒ : o₂ ≡ o₂′) → ℂ {𝐜} (i₁ + i₂′) (o₁ + o₂′)
 c₁ ∥-impl[ ≡ᵢ ] c₂ [ ≡ₒ ] = c₁ ∥ adaptEqIO ≡ᵢ ≡ₒ c₂
 \end{code}
 %</par-het-right-impl>
@@ -123,11 +125,12 @@ abstract
 %<*par-het-right>
 \AgdaTarget{\_∥[\_]\_[\_]}
 \begin{code}
- _∥[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡ᵢ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) (≡ₒ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂′) (o₁ + o₂′)
+ _∥[_]_[_] : ∀ {i₁ i₂ i₂′ o₁ o₂ o₂′ 𝐜} (c₁ : ℂ {𝐜} i₁ o₁) (≡ᵢ : i₂ ≡ i₂′) (c₂ : ℂ {𝐜} i₂ o₂) (≡ₒ : o₂ ≡ o₂′) → ℂ {𝐜} (i₁ + i₂′) (o₁ + o₂′)
  _∥[_]_[_] = _∥-impl[_]_[_]
 \end{code}
 %</par-het-right>
 
+-- TODO: reveal only works with the combinational equality
 %<*par-het-right-reveal>
 \AgdaTarget{reveal-∥[]r}
 \begin{code}
@@ -141,7 +144,7 @@ abstract
 %<*par-het-input-impl>
 \AgdaTarget{[\_]\_∥-impl[\_]\_}
 \begin{code}
-[_]_∥-impl[_]_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ p} (≡₁ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂′) (o₁ + o₂)
+[_]_∥-impl[_]_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ 𝐜} (≡₁ : i₁ ≡ i₁′) (c₁ : ℂ {𝐜} i₁ o₁) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {𝐜} i₂ o₂) → ℂ {𝐜} (i₁′ + i₂′) (o₁ + o₂)
 [ ≡₁ ] c₁ ∥-impl[ ≡₂ ] c₂ = adaptEqI ≡₁ c₁ ∥ adaptEqI ≡₂ c₂ 
 \end{code}
 %</par-het-input-impl>
@@ -152,11 +155,12 @@ abstract
 %<*par-het-input>
 \AgdaTarget{[\_]\_∥[\_]\_}
 \begin{code}
- [_]_∥[_]_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ p} (≡₁ : i₁ ≡ i₁′) (c₁ : ℂ {p} i₁ o₁) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {p} i₂ o₂) → ℂ {p} (i₁′ + i₂′) (o₁ + o₂)
+ [_]_∥[_]_ : ∀ {i₁ i₁′ i₂ i₂′ o₁ o₂ 𝐜} (≡₁ : i₁ ≡ i₁′) (c₁ : ℂ {𝐜} i₁ o₁) (≡₂ : i₂ ≡ i₂′) (c₂ : ℂ {𝐜} i₂ o₂) → ℂ {𝐜} (i₁′ + i₂′) (o₁ + o₂)
  [_]_∥[_]_ = [_]_∥-impl[_]_
 \end{code}
 %</par-het-input>
 
+-- TODO: reveal only works with the combinational equality
 %<*par-het-input-reveal>
 \AgdaTarget{reveal-∥[]i}
 \begin{code}
@@ -170,7 +174,7 @@ abstract
 %<*par-het-output-impl>
 \AgdaTarget{\_[\_]∥-impl\_[\_]}
 \begin{code}
-_[_]∥-impl_[_] : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) (≡₂ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂) (o₁′ + o₂′)
+_[_]∥-impl_[_] : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ 𝐜} (c₁ : ℂ {𝐜} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (c₂ : ℂ {𝐜} i₂ o₂) (≡₂ : o₂ ≡ o₂′) → ℂ {𝐜} (i₁ + i₂) (o₁′ + o₂′)
 c₁ [ ≡₁ ]∥-impl c₂ [ ≡₂ ] = adaptEqO ≡₁ c₁ ∥ adaptEqO ≡₂ c₂
 \end{code}
 %</par-het-output-impl>
@@ -181,11 +185,12 @@ abstract
 %<*par-het-output>
 \AgdaTarget{\_[\_]∥\_[\_]}
 \begin{code}
- _[_]∥_[_] : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ p} (c₁ : ℂ {p} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (c₂ : ℂ {p} i₂ o₂) (≡₂ : o₂ ≡ o₂′) → ℂ {p} (i₁ + i₂) (o₁′ + o₂′)
+ _[_]∥_[_] : ∀ {i₁ i₂ o₁ o₁′ o₂ o₂′ 𝐜} (c₁ : ℂ {𝐜} i₁ o₁) (≡₁ : o₁ ≡ o₁′) (c₂ : ℂ {𝐜} i₂ o₂) (≡₂ : o₂ ≡ o₂′) → ℂ {𝐜} (i₁ + i₂) (o₁′ + o₂′)
  _[_]∥_[_] = _[_]∥-impl_[_]
 \end{code}
 %</par-het-output>
 
+-- TODO: reveal only works with the combinational equality
 %<*par-het-output-reveal>
 \AgdaTarget{reveal-∥[]o}
 \begin{code}
@@ -201,15 +206,15 @@ abstract
 %<*pars>
 \AgdaTarget{pars}
 \begin{code}
-pars : ∀ {k i o p} (cs : Vec (ℂ {p} i o) k) → ℂ {p} (k * i) (k * o)
-pars {k} {i} {o} {p} = foldr (λ k → ℂ {p} (k * i) (k * o)) _∥_ id⤨
+pars : ∀ {k i o 𝐜} (cs : Vec (ℂ {𝐜} i o) k) → ℂ {𝐜} (k * i) (k * o)
+pars {k} {i} {o} {𝐜} = foldr (λ k → ℂ {𝐜} (k * i) (k * o)) _∥_ id⤨
 \end{code}
 %</pars>
 
 %<*parsN>
 \AgdaTarget{parsN}
 \begin{code}
-parsN : ∀ {k i o p} → ℂ {p} i o → ℂ {p} (k * i) (k * o)
+parsN : ∀ {k i o 𝐜} → ℂ {𝐜} i o → ℂ {𝐜} (k * i) (k * o)
 parsN {k} = pars ∘′ replicate {n = k}
 \end{code}
 %</parsN>
@@ -221,15 +226,15 @@ parsN {k} = pars ∘′ replicate {n = k}
 %<*seqs>
 \AgdaTarget{seqs}
 \begin{code}
-seqs : ∀ {n io p} → Vec (ℂ {p} io io) n → ℂ {p} io io
-seqs {_} {io} {p} = foldr (const $ ℂ {p} io io) _⟫_ id⤨
+seqs : ∀ {n io 𝐜} → Vec (ℂ {𝐜} io io) n → ℂ {𝐜} io io
+seqs {_} {io} {𝐜} = foldr (const $ ℂ {𝐜} io io) _⟫_ id⤨
 \end{code}
 %</seqs>
 
 
 --TODO: write as fold? (fold over Vec↑⁼)
 -- Yorick's _⟫[_]_
-seqs′ : ∀ {n is os p} → Vec↑⁼ (ℂ {p}) (suc n) is os → ℂ {p} (head is) (last os)
+seqs′ : ∀ {n is os 𝐜} → Vec↑⁼ (ℂ {𝐜}) (suc n) is os → ℂ {𝐜} (head is) (last os)
 seqs′ (c ◁⁼[ p ] ε⁼) = c
 seqs′ (c₁ ◁⁼[ p₁ ] c₂ ◁⁼[ p₂ ] cs) = c₁ ⟫ seqs′ {!c₂ ◁⁼[ p₂ ] cs!}
 
@@ -237,7 +242,7 @@ seqs′ (c₁ ◁⁼[ p₁ ] c₂ ◁⁼[ p₂ ] cs) = c₁ ⟫ seqs′ {!c₂ �
 %<*seqsN>
 \AgdaTarget{seqsN}
 \begin{code}
-seqsN : ∀ k {io p} → ℂ {p} io io → ℂ {p} io io
+seqsN : ∀ k {io 𝐜} → ℂ {𝐜} io io → ℂ {𝐜} io io
 seqsN k = seqs ∘′ replicate {n = k}
 \end{code}
 %</seqsN>
@@ -247,7 +252,7 @@ seqsN k = seqs ∘′ replicate {n = k}
 %<*row>
 \AgdaTarget{row}
 \begin{code}
-row : ∀ {k a b c p} → ℂ {p} (a + b) (c + a) → ℂ {p} (a + (k * b)) ((k * c) + a)
+row : ∀ {k a b c 𝐜} → ℂ {𝐜} (a + b) (c + a) → ℂ {𝐜} (a + (k * b)) ((k * c) + a)
 row {zero}  {a} {b} {c} _ rewrite +-right-identity a = id⤨
 row {suc k} {a} {b} {c} f = ⊥ where postulate ⊥ : _  -- id⤨ {c} ∥ row {k} {a} {b} {c} f
 \end{code}

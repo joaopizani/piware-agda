@@ -20,9 +20,9 @@ open import PiWare.Patterns Gt using (parsN; seqsN)
 %<*parsN-typed>
 \AgdaTarget{parsN̂}
 \begin{code}
-parsN̂ : ∀ {k α i β j p} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂ̂ {p} α β {i} {j} → ℂ̂ {p} (Vec α k) (Vec β k) {k * i} {k * j}
-parsN̂ {k = k} {i = i} {j = j} {p = p} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ̂ c) =
-    Mkℂ̂ ⦃ ⇓W⇑-Vec ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec ⦃ sβ ⦄ ⦄ (parsN {k} {i} {j} {p} c)
+parsN̂ : ∀ {k α i β j 𝐜} ⦃ _ : ⇓W⇑ α {i} ⦄ ⦃ _ : ⇓W⇑ β {j} ⦄ → ℂ̂ {𝐜} α β {i} {j} → ℂ̂ {𝐜} (Vec α k) (Vec β k) {k * i} {k * j}
+parsN̂ {k = k} {i = i} {j = j} {𝐜 = ι} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ̂ c) =
+    Mkℂ̂ ⦃ ⇓W⇑-Vec ⦃ sα ⦄ ⦄ ⦃ ⇓W⇑-Vec ⦃ sβ ⦄ ⦄ (parsN {k} {i} {j} {ι} c)
 \end{code}
 %</parsN-typed>
 
@@ -30,7 +30,7 @@ parsN̂ {k = k} {i = i} {j = j} {p = p} ⦃ sα ⦄ ⦃ sβ ⦄ (Mkℂ̂ c) =
 %<*seqsN-typed>
 \AgdaTarget{seqsN̂}
 \begin{code}
-seqsN̂ : ∀ k {α j p} ⦃ _ : ⇓W⇑ α {j} ⦄ → ℂ̂ {p} α α {j} {j} → ℂ̂ {p} α α {j} {j}
-seqsN̂ k {p = p} ⦃ sα ⦄ (Mkℂ̂ c) = Mkℂ̂ ⦃ sα ⦄ ⦃ sα ⦄ (seqsN k {p = p} c)
+seqsN̂ : ∀ k {α j 𝐜} ⦃ _ : ⇓W⇑ α {j} ⦄ → ℂ̂ {𝐜} α α {j} {j} → ℂ̂ {𝐜} α α {j} {j}
+seqsN̂ k {𝐜 = ι} ⦃ sα ⦄ (Mkℂ̂ c) = Mkℂ̂ ⦃ sα ⦄ ⦃ sα ⦄ (seqsN k {𝐜 = ι} c)
 \end{code}
 %</seqsN-typed>
