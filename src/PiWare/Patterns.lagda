@@ -71,6 +71,9 @@ abstract
 %</seq-het>
 
 -- TODO: reveal only works with the combinational equality
+\begin{code}
+abstract
+\end{code}
 %<*seq-het-reveal>
 \AgdaTarget{reveal-⟫[]}
 \begin{code}
@@ -101,6 +104,9 @@ abstract
 %</par-het-left>
 
 -- TODO: reveal only works with the combinational equality
+\begin{code}
+abstract
+\end{code}
 %<*par-het-left-reveal>
 \AgdaTarget{reveal-∥[]l}
 \begin{code}
@@ -131,6 +137,9 @@ abstract
 %</par-het-right>
 
 -- TODO: reveal only works with the combinational equality
+\begin{code}
+abstract
+\end{code}
 %<*par-het-right-reveal>
 \AgdaTarget{reveal-∥[]r}
 \begin{code}
@@ -161,6 +170,9 @@ abstract
 %</par-het-input>
 
 -- TODO: reveal only works with the combinational equality
+\begin{code}
+abstract
+\end{code}
 %<*par-het-input-reveal>
 \AgdaTarget{reveal-∥[]i}
 \begin{code}
@@ -191,6 +203,9 @@ abstract
 %</par-het-output>
 
 -- TODO: reveal only works with the combinational equality
+\begin{code}
+abstract
+\end{code}
 %<*par-het-output-reveal>
 \AgdaTarget{reveal-∥[]o}
 \begin{code}

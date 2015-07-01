@@ -78,10 +78,12 @@ data _≋_ {i₁ o₁ i₂ o₂} : ℂ i₁ o₁ → ℂ i₂ o₂ → Set where
 \end{code}
 %</Circ-eq-sim-i-equal>
 
+\begin{code}
+abstract
+\end{code}
 %<*Circ-eq-sim-o-equal>
 \AgdaTarget{≋⇒o≡}
 \begin{code}
-abstract
  ≋⇒o≡ : ∀ {i₁ o₁ i₂ o₂} {c₁ : ℂ i₁ o₁} {c₂ : ℂ i₂ o₂} → c₁ ≋ c₂ → o₁ ≡ o₂
  ≋⇒o≡ (refl≋ refl c₁≊c₂) = length-equal (c₁≊c₂ $ reflᵥ dummy)
    where dummy : ∀ {n} → W n
