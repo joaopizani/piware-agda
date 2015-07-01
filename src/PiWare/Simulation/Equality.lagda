@@ -48,15 +48,15 @@ private
 %</Circ-eq-sim-equal-inputs>
 
 \begin{code}
-module ≊-inconsistent-do-not-use where
+module ≊-unsound-do-not-use where
 \end{code}
-%<*Circ-eq-sim-equal-inputs-inconsistent>
-\AgdaTarget{≊-inconsistent}
+%<*Circ-eq-sim-equal-inputs-unsound>
+\AgdaTarget{≊-unsound}
 \begin{code}
- ≊-inconsistent : (c₁ : ℂ 0 0) (c₂ : ℂ 1 1) → c₁ ≊ c₂
- ≊-inconsistent c₁ c₂ ()
+ ≊-unsound : (c₁ : ℂ 0 0) (c₂ : ℂ 1 1) → c₁ ≊ c₂
+ ≊-unsound c₁ c₂ ()
 \end{code}
-%</Circ-eq-sim-equal-inputs-inconsistent>
+%</Circ-eq-sim-equal-inputs-unsound>
 
 
 %<*Circ-eq-sim>
