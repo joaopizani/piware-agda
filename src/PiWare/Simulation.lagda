@@ -21,19 +21,12 @@ open import Function.Bijection.Sets using (module Inverse′)
 open Inverse′ using (to)
 
 open Atomic At using (W; enum)
+open PiWare.Gates At using (W⟶W)
 open Gates At Gt using (|in|; |out|; spec)
 open import PiWare.Circuit {Gt = Gt} using (ℂ; σ)
 open import PiWare.Circuit.Algebra {Gt = Gt} using (ℂσ★; cataℂσ; ℂ★; cataℂ; TyGate★; TyPlug★; Ty⟫★; Ty∥★)
 \end{code}
 
-
-%<*Word-function>
-\AgdaTarget{W⟶W}
-\begin{code}
-W⟶W : ∀ m n → Set
-W⟶W m n = W m → W n
-\end{code}
-%</Word-function>
 
 %<*combinator-Word-function-types>
 \begin{code}
