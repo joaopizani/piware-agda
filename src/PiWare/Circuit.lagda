@@ -1,5 +1,5 @@
 \begin{code}
-open import PiWare.Atom using (Atomic)
+open import PiWare.Atom using (Atomic; module Atomic)
 open import PiWare.Gates using (Gates; module Gates)
 
 module PiWare.Circuit {At : Atomic} {Gt : Gates At} where
@@ -13,6 +13,7 @@ open import Data.Vec.Extra using (VecNaturalT)
 open import PiWare.Interface using (Ix)
 open import PiWare.Plugs.Core using (_⤪_)
 open Gates At Gt using (|in|; |out|)
+open Atomic At using (W)
 \end{code}
 
 

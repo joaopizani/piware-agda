@@ -4,28 +4,23 @@ module PiWare.Circuit.Applicative where
 open import Data.Nat using (ℕ; _+_)
 open import Data.Bool.Base using (Bool)
 open import Data.Vec using (Vec)
+
+open import PiWare.Atom.Bool using (Atomic-B)
+open import PiWare.Atom using (module Atomic)
+open Atomic Atomic-B using (W)
+open import PiWare.Gates.BoolTrio using (BoolTrio)
+open import PiWare.Circuit {Gt = BoolTrio} using (𝐂; _∥_; _⟫_)
+open import PiWare.Plugs BoolTrio using (id⤨)
+open import PiWare.Samples.BoolTrioComb using (∧ℂ; ¬ℂ)
 \end{code}
 
 
 \begin{code}
-W : ℕ → Set
-W = Vec Bool
+infixl 0 _﹩_
 
-data ℂ : ℕ → ℕ → Set where
-  PURE : ∀ {n} → W n → ℂ 0 n
-  ID : ∀ {n} → ℂ n n
-  AND OR : ℂ 2 1
-  NOT : ℂ 1 1
-  _⟫_ : ∀ {a b c}    → ℂ a b → ℂ b c → ℂ a c
-  _∥_ : ∀ {a b c d}  → ℂ a b → ℂ c d → ℂ (a + c) (b + d)
+_﹩_ : ∀ {a b m n} → 𝐂 (a + n) b → 𝐂 m a → 𝐂 (m + n) b
+_﹩_ c cₐ = cₐ ∥ id⤨ ⟫ c
 
-
-pure : ∀ {n} → W n → ℂ 0 n
-pure = PURE
-
-
--- _⊗_ : ℂ (a → b) → ℂ a → ℂ b
-_⊗_ : ∀ {a b m n} → ℂ (a + n) b → ℂ m a → ℂ (m + n) b
-_⊗_ cab ca = (ca ∥ ID) ⟫ cab
-
+test₁ : 𝐂 2 1
+test₁ = ∧ℂ ﹩ ¬ℂ ﹩ ¬ℂ
 \end{code}

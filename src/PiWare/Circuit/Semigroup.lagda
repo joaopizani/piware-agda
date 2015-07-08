@@ -65,7 +65,7 @@ Op₂⟶Spec _·_ (x ∷ y ∷ []) = [ x · y ]
 \AgdaTarget{·Gt}
 \begin{code}
 Op₂⟶Gates : Op₂ Atom → Gates
-Op₂⟶Gates _·_ = record { |Gates| = 1;  |in| = const 2;  |out| = const 1;  spec = const (Op₂⟶Spec _·_) }
+Op₂⟶Gates op = record { |Gates| = 1;  |in| = const 2;  |out| = const 1;  spec = const (Op₂⟶Spec op) }
 \end{code}
 %</Op2-to-Gates>
 
