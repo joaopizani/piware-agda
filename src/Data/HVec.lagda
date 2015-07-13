@@ -3,6 +3,7 @@ module Data.HVec where
 
 open import Level using () renaming (suc to lsuc)
 
+open import Data.Unit.Base using (⊤; tt)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Bool.Base using (true) renaming (Bool to B)
@@ -87,6 +88,11 @@ map↑ f ε̂        = ε̂
 map↑ f (x ◁̂ xs) = f x ◁̂ map↑ f xs
 \end{code}
 
+
+\begin{code}
+⊤s : ∀ {n} → Vec↑ n (replicate ⊤)
+⊤s = replicate↑ tt
+\end{code}
 
 
 \begin{code}
