@@ -1,9 +1,10 @@
 \begin{code}
 module Data.HVec where
 
-open import Level using () renaming (suc to lsuc)
+open import Level using (Lift) renaming (suc to lsuc)
 
 open import Data.Unit.Base using (⊤; tt)
+open import Data.Product using (_×_; _,_)
 open import Data.Nat.Base using (ℕ; zero; suc; _+_)
 open import Data.Fin using (Fin) renaming (zero to Fz; suc to Fs)
 open import Data.Bool.Base using (true) renaming (Bool to B)
@@ -44,6 +45,15 @@ tail↑ (_ ◁̂ xs) = xs
 \begin{code}
 [_]↑ : ∀ {ℓ} {α : Set ℓ} → α → Vec↑ 1 [ α ]
 [ x ]↑ = x ◁̂ ε̂
+
+vec↑ : ∀ {n ℓ} → Vec (Set ℓ) n → Set (lsuc ℓ)
+vec↑ ε        = Lift ⊤
+vec↑ (α ◁ αs) = α × vec↑ αs
+
+lookup′↑ : ∀ {n ℓ} {αs : Vec (Set ℓ) n} (k : Fin n) → vec↑ αs → lookup k αs
+lookup′↑ {αs = ε}      ()     _
+lookup′↑ {αs = _ ◁ _} Fz     (x , _)  = x
+lookup′↑ {αs = _ ◁ _} (Fs k) (_ , xs) = lookup′↑ k xs
 \end{code}
 
 
