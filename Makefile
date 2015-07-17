@@ -12,6 +12,9 @@ AGDA_MODULES=Category/NaturalT \
 			 Data/Vec/Extra \
 			 Data/Vec/Padding \
 			 Data/Vec/Properties/Extra \
+			 Data/Fin/Properties/Extra \
+			 Data/FiniteTypes/Base \
+			 Data/ElimFinite \
 			 Function/Bijection/Sets \
 			 PiWare/AreaAnalysis \
              PiWare/Atom \
