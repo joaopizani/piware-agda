@@ -14,6 +14,8 @@ open import Data.Fin.Properties.Extra using (toℕ↣)
 \end{code}
 
 
+%<*Finite>
+\AgdaTarget{Finite, to∘from}
 \begin{code}
 record Finite {ℓ} (α : Set ℓ) : Set ℓ where
   field |α| : ℕ
@@ -25,15 +27,21 @@ record Finite {ℓ} (α : Set ℓ) : Set ℓ where
     from    : α → α#
     to∘from : ∀ x → to (from x) ≡ x
 \end{code}
+%</Finite>
 
+%<*from-inj-eqn>
+\AgdaTarget{from↣, \_≟ⁿ\_}
 \begin{code}
   from↣ : α ↣ Fin |α|
   from↣ = record { to = →-to-⟶ from;  injective = from-inj }
     where from-inj : ∀ {x y} → from x ≡ from y → x ≡ y
           from-inj {x} {y} fromX≡fromY = sym (to∘from x) ⟨ trans ⟩ cong to fromX≡fromY ⟨ trans ⟩ to∘from y
 
-  infix 4 _≟ⁿ_
-
   _≟ⁿ_ : Decidable {A = α} _≡_
   _≟ⁿ_ = eq? (toℕ↣ ∘′ from↣)
+\end{code}
+%</from-inj-eqn>
+
+\begin{code}
+  infix 4 _≟ⁿ_
 \end{code}
