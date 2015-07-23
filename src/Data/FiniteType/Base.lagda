@@ -10,7 +10,7 @@ open import Function.Injection using (_↣_) renaming (_∘_ to _∘′_)
 open import Relation.Binary.Core using (Decidable)
 open import Relation.Binary.PropositionalEquality using (_≡_; sym; cong; trans; →-to-⟶)
 
-open import Data.Fin.Properties.Extra using (toℕ↣)
+open import Data.Fin.Properties.Extra using (eq?ⁿ)
 \end{code}
 
 
@@ -38,7 +38,7 @@ record Finite {ℓ} (α : Set ℓ) : Set ℓ where
           from-inj {x} {y} fromX≡fromY = sym (to∘from x) ⟨ trans ⟩ cong to fromX≡fromY ⟨ trans ⟩ to∘from y
 
   _≟ⁿ_ : Decidable {A = α} _≡_
-  _≟ⁿ_ = eq? (toℕ↣ ∘′ from↣)
+  _≟ⁿ_ = eq?ⁿ from↣
 \end{code}
 %</from-inj-eqn>
 
