@@ -5,7 +5,7 @@ open import Data.Nat.Base using (ℕ; suc)
 open import Data.Fin using (Fin)
 open import Data.Vec using (Vec)
 
-open import Function.Bijection.Sets using (_↔′_)
+open import Function.Bijection.Sets using (_↔′_; module Inverse′)
 \end{code}
 
 
@@ -22,5 +22,7 @@ record Atomic : Set₁ where
            enum  : Atom# ↔′ Atom
 
     W = Vec Atom
+
+    open Inverse′ enum public
 \end{code}
 %</Atomic>
