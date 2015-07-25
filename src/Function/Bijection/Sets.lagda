@@ -56,10 +56,10 @@ infix 3 _↔′_
 \end{code}
 
 %<*Equivalence-infix>
-\AgdaTarget{\_↔′\_}
+\AgdaTarget{\_⇔′\_}
 \begin{code}
-_↔′_ : ∀ {ℓ₁ ℓ₂} → Set ℓ₁ → Set ℓ₂ → Set _
-α ↔′ β = Equivalence′ α β
+_⇔′_ : ∀ {ℓ₁ ℓ₂} → Set ℓ₁ → Set ℓ₂ → Set _
+α ⇔′ β = Equivalence′ α β
 \end{code}
 %</Equivalence-infix>
 
@@ -282,7 +282,7 @@ record Inverse′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ
 %<*Inverse-infix>
 \AgdaTarget{\_↔′\_}
 \begin{code}
-_⇔′_ : ∀ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) → Set (ℓ₁ ⊔ ℓ₂)
-α ⇔′ β = Inverse′ α β
+_↔′_ : ∀ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) → Set (ℓ₁ ⊔ ℓ₂)
+α ↔′ β = Inverse′ α β
 \end{code}
 %</Inverse-infix>
