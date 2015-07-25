@@ -25,5 +25,5 @@ elimFin {P = P} {ps = ps} i = subst id (lookup∘tabulate P i) $ lookup′↑ i 
 
 \begin{code}
 elimFinite : ∀ {ℓ} {α : Set ℓ} {P : α → Set} ⦃ fin : Finite α ⦄ {ps : vec↑ (tabulate (P ∘ to))} → ∀ x → P x
-elimFinite {P = P} ⦃ fin ⦄ {ps} x = subst P (to∘from x) $ elimFin {P = P ∘ to} {ps} (from x)
+elimFinite {P = P} ⦃ fin ⦄ {ps} x = subst P (right-inverse-of x) $ elimFin {P = P ∘ to} {ps} (from x)
 \end{code}

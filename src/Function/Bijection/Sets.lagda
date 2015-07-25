@@ -27,6 +27,19 @@ record Injection′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (�
 %</Injection>
 
 
+\begin{code}
+infix 3 _↣′_
+\end{code}
+
+%<*Injection-infix>
+\AgdaTarget{\_↣′\_}
+\begin{code}
+_↣′_ : ∀ {ℓ₁ ℓ₂} → Set ℓ₁ → Set ℓ₂ → Set _
+α ↣′ β = Injection′ α β
+\end{code}
+%</Injection-infix>
+
+
 %<*Equivalence>
 \AgdaTarget{Equivalence′}
 \begin{code}
@@ -36,6 +49,19 @@ record Equivalence′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set 
     from : β → α
 \end{code}
 %</Equivalence>
+
+
+\begin{code}
+infix 3 _↔′_
+\end{code}
+
+%<*Equivalence-infix>
+\AgdaTarget{\_↔′\_}
+\begin{code}
+_↔′_ : ∀ {ℓ₁ ℓ₂} → Set ℓ₁ → Set ℓ₂ → Set _
+α ↔′ β = Equivalence′ α β
+\end{code}
+%</Equivalence-infix>
 
 
 %<*LeftInverseOf>
@@ -97,6 +123,19 @@ record LeftInverse′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set 
 %</LeftInverse>
 
 
+\begin{code}
+infix 3 _↞′_
+\end{code}
+
+%<*LeftInverse-infix>
+\AgdaTarget{\_↞′\_}
+\begin{code}
+_↞′_ : ∀ {ℓ₁ ℓ₂} → Set ℓ₁ → Set ℓ₂ → Set _
+α ↞′ β = LeftInverse′ α β
+\end{code}
+%</LeftInverse-infix>
+
+
 %<*RightInverse>
 \AgdaTarget{RightInverse′}
 \begin{code}
@@ -136,6 +175,19 @@ record Surjection′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (
                        }
 \end{code}
 %</Surjection>
+
+
+\begin{code}
+infix 3 _↠′_
+\end{code}
+
+%<*Surjection-infix>
+\AgdaTarget{\_↠′\_}
+\begin{code}
+_↠′_ : ∀ {ℓ₁ ℓ₂} → Set ℓ₁ → Set ℓ₂ → Set _
+α ↠′ β = Surjection′ α β
+\end{code}
+%</Surjection-infix>
 
 
 %<*Bijective>
@@ -230,7 +282,7 @@ record Inverse′ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) : Set (ℓ
 %<*Inverse-infix>
 \AgdaTarget{\_↔′\_}
 \begin{code}
-_↔′_ : ∀ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) → Set (ℓ₁ ⊔ ℓ₂)
-α ↔′ β = Inverse′ α β
+_⇔′_ : ∀ {ℓ₁ ℓ₂} (α : Set ℓ₁) (β : Set ℓ₂) → Set (ℓ₁ ⊔ ℓ₂)
+α ⇔′ β = Inverse′ α β
 \end{code}
 %</Inverse-infix>
