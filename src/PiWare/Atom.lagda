@@ -6,6 +6,7 @@ open import Data.Fin using (Fin)
 open import Data.Vec using (Vec)
 
 open import Function.Bijection.Sets using (_↔′_; module Inverse′)
+open import Data.FiniteType.Base using (Finite)
 \end{code}
 
 
@@ -26,3 +27,21 @@ record Atomic : Set₁ where
     open Inverse′ enum public
 \end{code}
 %</Atomic>
+
+
+\begin{code}
+open Atomic ⦃ … ⦄
+\end{code}
+
+
+%<*Finite-Atomic>
+\AgdaTargeT{Finite-Atomic}
+\begin{code}
+instance
+ Finite-Atomic : ⦃ At : Atomic ⦄ → Finite Atom
+ Finite-Atomic ⦃ At ⦄ = record { |α| = |Atom|
+                               ; surjection = record { to = to
+                                                     ; surjective = record { from = from
+                                                                           ; right-inverse-of = right-inverse-of } } }
+\end{code}
+%</Finite-Atomic>
